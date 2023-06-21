@@ -1,0 +1,48 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>로그인</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col my-10">
+        <h1 class="text-4xl font-bold">
+            로그인
+        </h1>
+        <div class="max-w-2xl w-full px-4">
+            <form th:action method="POST" class="flex flex-col gap-6">
+                <div class="form-control">
+                    <input type="text" name="userId" placeholder="아이디" class="input input-bordered"/>
+                </div>
+                <div class="form-control">
+                    <input type="password" name="password" placeholder="비밀번호" class="input input-bordered"/>
+                </div>
+                <button id="btn-login" class="btn btn-block gap-1"
+                        style="background-color: rgb(220 252 231); border: none;">
+                    <span class="text-black">로그인</span>
+                </button>
+            </form>
+            <button id="btn-signUp" class="btn btn-block gap-1"
+                    style="background-color:white;">
+                <span class="text-black">회원가입</span>
+            </button>
+            <div class="text-center">
+                <span>아이디 / 비밀번호 찾기</span>
+            </div>
+            <a href="/oauth2/authorization/naver" class="btn btn-block btn-outline gap-1 border-none"
+               style="background-color: #2DB400;">
+                <i class="fa-solid fa-n text-white"></i>
+                <span class="text-white">네이버 로그인</span>
+            </a>
+            <a href="/oauth2/authorization/kakao" class="btn btn-block btn-outline gap-1 border-none"
+               style="background-color: #fae100;">
+                <i class="fa-solid fa-n text-white"></i>
+                <span class="text-white">카카오톡 로그인</span>
+            </a>
+        </div>
+    </div>
+</main>
+</body>
+
+</html>

@@ -19,7 +19,7 @@ spring:
 logging:
   level:
     root: INFO
-    com.ll.mypill: DEBUG
+    com.mypill: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
 server:
