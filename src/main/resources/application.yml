@@ -3,9 +3,9 @@ spring:
     include: secret
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: 'jdbc:mariadb://127.0.0.1:3306/${secret.dbName}?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul'
-    username: '${secret.username}'
-    password: '${secret.password}'
+    url: 'jdbc:mariadb://127.0.0.1:3306/${custom.dev_db.dbName}?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul'
+    username: '${custom.dev_db.username}'
+    password: '${custom.dev_db.password}'
   thymeleaf:
     enabled: true
   jpa:
