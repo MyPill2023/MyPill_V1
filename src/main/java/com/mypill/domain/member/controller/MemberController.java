@@ -1,9 +1,12 @@
 package com.mypill.domain.member.controller;
 
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.form.JoinForm;
+import com.mypill.domain.member.form.LoginForm;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +27,12 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(String userId, String password) {
-        RsData<Member> rsData = memberService.login(userId, password);
+    public String login(@Valid LoginForm loginForm) {
+        RsData<Member> rsData = memberService.login(loginForm.getUserId(), loginForm.getPassword());
         if (rsData.isFail()) {
             return rq.historyBack(rsData.getMsg());
         }
-        return rq.redirectWithMsg("/",rsData);
+        return rq.redirectWithMsg("/", rsData);
     }
 
     @GetMapping("/join")
@@ -38,11 +41,12 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(String userId, String username, String password, String email) {
-        RsData<Member> rsData = memberService.join(userId, username, password, email);
+    public String join(@Valid JoinForm joinForm) {
+        RsData<Member> rsData = memberService.join(joinForm.getUserId(), joinForm.getUserType(),
+                joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail());
         if (rsData.isFail()) {
             return rq.historyBack(rsData.getMsg());
         }
-        return rq.redirectWithMsg("/",rsData);
+        return rq.redirectWithMsg("/usr/member/login", rsData);
     }
 }

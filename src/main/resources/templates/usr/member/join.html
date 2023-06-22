@@ -7,12 +7,43 @@
 <body>
 <main layout:fragment="main">
     <script>
+        window.onload = function () {
+            const radioButtons = document.querySelectorAll('input[name="option"]');
+            for (let i = 0; i < radioButtons.length; i++) {
+                radioButtons[i].checked = false;
+            }
+        };
+
         let MemberJoin__submitDone = false;
 
         function MemberJoin__submit(form) {
             if (MemberJoin__submitDone) {
                 return;
             }
+            const existingUserTypeInput = document.querySelector('input[name="userType"]');
+            if (existingUserTypeInput) {
+                existingUserTypeInput.remove();
+            }
+
+            let radioButtons = form.querySelectorAll('input[name="option"]');
+            let userType = "";
+            for (let i = 0; i < radioButtons.length; i++) {
+                if (radioButtons[i].checked) {
+                    userType = radioButtons[i].value;
+                    break;
+                }
+            }
+
+            if (userType === "") {
+                toastWarning("회원 유형을 선택해주세요.");
+                return;
+            }
+
+            const userTypeInput = document.createElement("input");
+            userTypeInput.type = "hidden";
+            userTypeInput.name = "userType";
+            userTypeInput.value = userType;
+            form.appendChild(userTypeInput);
 
             form.userId.value = form.userId.value.trim();
 
@@ -55,9 +86,28 @@
         <h1 class="text-4xl font-bold">
             회원가입
         </h1>
+
         <div class="max-w-2xl w-full px-4">
-            <form th:action method="POST" class="flex flex-col gap-3"
+
+            <form th:action method="POST" class="flex flex-col gap-3" id="joinForm"
                   onsubmit="MemberJoin__submit(this); return false;">
+                <span>회원 유형</span>
+                <div class="flex flex-row">
+                    <div class="w-1/2">
+                        <input type="radio" name="option" id="1" class="peer hidden" value="1"/>
+                        <label for="1"
+                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">
+                            일반 회원
+                        </label>
+                    </div>
+                    <div class="w-1/2">
+                        <input type="radio" name="option" id="2" class="peer hidden" value="2"/>
+                        <label for="2"
+                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">
+                            판매자 회원
+                        </label>
+                    </div>
+                </div>
                 <div class="form-control flex">
                     <span>아이디</span>
                     <input type="text" name="userId" placeholder="아이디를 입력하세요" class="input input-bordered"/>
@@ -78,7 +128,8 @@
                     <span>이메일</span>
                     <input type="text" name="email" placeholder="이메일 주소" class="input input-bordered"/>
                 </div>
-                <!--             구매자 /판매자 선택 버튼 필요-->
+                <!-- 일반 회원 / 판매 업체 선택 버튼 필요-->
+
 
                 <button id="btn-join" class="btn btn-block gap-1"
                         style="background-color: rgb(220 252 231); border: none;">

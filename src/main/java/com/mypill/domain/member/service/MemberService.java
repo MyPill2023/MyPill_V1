@@ -1,6 +1,7 @@
 package com.mypill.domain.member.service;
 
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.form.JoinForm;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,14 @@ public class MemberService {
         return RsData.of("S-1", "로그인되었습니다.", member);
     }
 
-    public RsData<Member> join(String userId, String username, String password, String email) {
+    public RsData<Member> join(String userId, String userTypeStr, String username, String password, String email) {
+        Integer userType = Integer.parseInt(userTypeStr);
         Member newMember = Member.builder()
                 .userId(userId)
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .email(email)
+                .userType(userType)
                 .build();
         Member savedMember = memberRepository.save(newMember);
         return RsData.of("S-1", "회원가입 되었습니다.", savedMember);
