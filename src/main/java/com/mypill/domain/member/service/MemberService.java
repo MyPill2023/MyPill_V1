@@ -27,6 +27,9 @@ public class MemberService {
     }
 
     public RsData<Member> join(String userId, String userTypeStr, String username, String password, String email) {
+        if (memberRepository.findByUserId(userId).isPresent()) {
+            return RsData.of("F-1", "%s(은)는 이미 사용중인 아이디 입니다.".formatted(userId));
+        }
         Integer userType = Integer.parseInt(userTypeStr);
         Member newMember = Member.builder()
                 .userId(userId)
@@ -37,5 +40,14 @@ public class MemberService {
                 .build();
         Member savedMember = memberRepository.save(newMember);
         return RsData.of("S-1", "회원가입 되었습니다.", savedMember);
+    }
+
+    public boolean isIdDuplicated(String userId) {
+        System.out.println("지나감");
+        System.out.println(userId);
+        if (memberRepository.findByUserId(userId).isPresent()) {
+            return true;
+        }
+        return false;
     }
 }

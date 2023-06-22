@@ -2,11 +2,56 @@
 
 <head>
     <title>회원가입</title>
+    <style>
+        #btn-idCheck {
+            background-color: GhostWhite;
+            width: 15%;
+            height: 40px;
+        }
+
+        .idCheckMsgF {
+            color: red;
+        }
+
+        .idCheckMsgT {
+            color: blue;
+        }
+    </style>
 </head>
 
 <body>
 <main layout:fragment="main">
     <script>
+        let validUserId;
+        let idChecked = false;
+        $(function () {
+            $("#btn-idCheck").click(function () {
+                validUserId = $("#userId").val();
+                $.ajax({
+                    type: "get",
+                    async: false,
+                    url: "/usr/member/join/idCheck",
+                    data: {validUserId: validUserId},
+                    success: function (data) {
+                        if (data == 1) {
+                            $("#idCheckMsg").text("아이디를 입력하세요.");
+                            $("#idCheckMsg").addClass("idCheckMsgF");
+                            $("#idCheckMsg").removeClass("idCheckMsgT");
+                        } else if (data == 2) {
+                            $("#idCheckMsg").text("이미 사용중인 ID 입니다.");
+                            $("#idCheckMsg").addClass("idCheckMsgF");
+                            $("#idCheckMsg").removeClass("idCheckMsgT");
+                        } else {
+                            $("#idCheckMsg").text("사용 가능한 ID 입니다.");
+                            $("#idCheckMsg").addClass("idCheckMsgT");
+                            $("#idCheckMsg").removeClass("idCheckMsgF");
+                            idChecked = true;
+                        }
+                    }
+                })
+            });
+        });
+
         window.onload = function () {
             const radioButtons = document.querySelectorAll('input[name="option"]');
             for (let i = 0; i < radioButtons.length; i++) {
@@ -50,6 +95,10 @@
             if (form.userId.value.length == 0) {
                 toastWarning("아이디를 입력해주세요.");
                 form.username.focus();
+                return;
+            }
+            if (form.userId.value != validUserId || !idChecked) {
+                toastWarning("중복확인을 해주세요.");
                 return;
             }
 
@@ -109,8 +158,18 @@
                     </div>
                 </div>
                 <div class="form-control flex">
-                    <span>아이디</span>
-                    <input type="text" name="userId" placeholder="아이디를 입력하세요" class="input input-bordered"/>
+                    <div class="flex-row">
+                        <span>아이디</span>
+                        <span id="idCheckMsg"></span>
+                    </div>
+                    <div class="flex-row">
+                        <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요"
+                               class="input input-bordered"/>
+                        <button type="button" id="btn-idCheck" class="btn btn-block"
+                                style="background-color: rgb(220 252 231); border: none;">
+                            <span class="text-black">중복 확인</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-control">
                     <span>이름</span>
