@@ -188,15 +188,15 @@
                 element.value = inputValue.replace(/[^a-zA-Z0-9@.]/g, '');
             }
         }
-
-        function blockKoreanInput(element) {
-            const regex = /^[^ㄱ-ㅎㅏ-ㅣ가-힣]*$/;
+        function enableEnglishAndNumberInput(element) {
+            const regex = /^[a-zA-Z0-9]+$/;
             const inputValue = element.value;
 
             if (!regex.test(inputValue)) {
-                element.value = inputValue.replace(/[ㄱ-ㅎㅏ-ㅣ가-힣]/g, '');
+                element.value = inputValue.replace(/[^a-zA-Z0-9]/g, '');
             }
         }
+
     </script>
 
     <div class="hero-content flex flex-col my-10">
@@ -233,7 +233,7 @@
                     <div class="flex flex-row">
                         <input type="text" id="userId" maxlength="15" name="userId" placeholder="아이디를 입력하세요"
                                class="input input-bordered input input-bordered flex-grow mr-4"
-                               oninput="blockKoreanInput(this)"/>
+                               oninput="enableEnglishAndNumberInput(this)"/>
                         <button type="button" id="btn-idCheck" class="btn btn-block" style="border: none;">
                             <span>중복 확인</span>
                         </button>
