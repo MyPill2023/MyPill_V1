@@ -4,9 +4,7 @@
     <title>회원가입</title>
     <style>
         #btn-idCheck {
-            background-color: GhostWhite;
             width: 15%;
-            height: 40px;
         }
 
         .idCheckMsgF {
@@ -19,7 +17,6 @@
 
         #btn-emailCheck {
             width: 15%;
-            height: 40px;
         }
 
         .emailCheckMsgF {
@@ -80,7 +77,13 @@
                             $("#emailCheckMsg").text("이메일을 입력하세요.");
                             $("#emailCheckMsg").addClass("emailCheckMsgF");
                             $("#emailCheckMsg").removeClass("emailCheckMsgT");
-                        } else if (data == 2) {
+                        }
+                            // else if (data == 2) {
+                            //     $("#emailCheckMsg").text("올바르지 않은 형식입니다.");
+                            //     $("#emailCheckMsg").addClass("emailCheckMsgF");
+                            //     $("#emailCheckMsg").removeClass("emailCheckMsgT");
+                        // }
+                        else if (data == 3) {
                             $("#emailCheckMsg").text("이미 사용중인 이메일 입니다.");
                             $("#emailCheckMsg").addClass("emailCheckMsgF");
                             $("#emailCheckMsg").removeClass("emailCheckMsgT");
@@ -176,6 +179,24 @@
             form.submit();
             MemberJoin__submitDone = true;
         }
+
+        function validateInput(element) {
+            const regex = /^[a-zA-Z0-9@.]+$/;
+            const inputValue = element.value;
+
+            if (!regex.test(inputValue)) {
+                element.value = inputValue.replace(/[^a-zA-Z0-9@.]/g, '');
+            }
+        }
+
+        function blockKoreanInput(element) {
+            const regex = /^[^ㄱ-ㅎㅏ-ㅣ가-힣]*$/;
+            const inputValue = element.value;
+
+            if (!regex.test(inputValue)) {
+                element.value = inputValue.replace(/[ㄱ-ㅎㅏ-ㅣ가-힣]/g, '');
+            }
+        }
     </script>
 
     <div class="hero-content flex flex-col my-10">
@@ -185,7 +206,7 @@
 
         <div class="max-w-2xl w-full px-4">
 
-            <form th:action method="POST" class="flex flex-col gap-3" id="joinForm"
+            <form th:action method="POST" class="flex flex-col gap-3 flex-grow" id="joinForm"
                   onsubmit="MemberJoin__submit(this); return false;">
                 <span>회원 유형</span>
                 <div class="flex flex-row">
@@ -199,7 +220,7 @@
                     <div class="w-1/2">
                         <input type="radio" name="option" id="2" class="peer hidden" value="2"/>
                         <label for="2"
-                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">
+                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-red-500 peer-checked:font-bold peer-checked:text-white">
                             판매자 회원
                         </label>
                     </div>
@@ -209,37 +230,40 @@
                         <span>아이디</span>
                         <span id="idCheckMsg"></span>
                     </div>
-                    <div class="flex-row">
-                        <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요"
-                               class="input input-bordered"/>
-                        <button type="button" id="btn-idCheck" class="btn btn-block"
-                                style="background-color: rgb(220 252 231); border: none;">
-                            <span class="text-black">중복 확인</span>
+                    <div class="flex flex-row">
+                        <input type="text" id="userId" maxlength="15" name="userId" placeholder="아이디를 입력하세요"
+                               class="input input-bordered input input-bordered flex-grow mr-4"
+                               oninput="blockKoreanInput(this)"/>
+                        <button type="button" id="btn-idCheck" class="btn btn-block" style="border: none;">
+                            <span>중복 확인</span>
                         </button>
                     </div>
                 </div>
                 <div class="form-control">
                     <span>이름</span>
-                    <input type="text" name="username" placeholder="실명을 입력하세요" class="input input-bordered"/>
+                    <input type="text" name="username" maxlength="8" placeholder="실명을 입력하세요"
+                           class="input input-bordered"/>
                 </div>
                 <div class="form-control">
                     <span>비밀번호</span>
-                    <input type="password" name="password" placeholder="비밀번호" class="input input-bordered"/>
+                    <input type="password" name="password" maxlength="12" placeholder="비밀번호"
+                           class="input input-bordered"/>
                 </div>
                 <div class="form-control">
                     <span>비밀번호 확인</span>
-                    <input type="password" name="password2" placeholder="비밀번호 확인" class="input input-bordered"/>
+                    <input type="password" name="password2" maxlength="12" placeholder="비밀번호 확인"
+                           class="input input-bordered"/>
                 </div>
                 <div class="form-control flex">
-                    <div class="form-control">
+                    <div class="flex-row">
                         <span>이메일</span>
                         <span id="emailCheckMsg"></span>
                     </div>
-                    <div class="flex-row">
-                        <input type="text" id="email" name="email" placeholder="이메일 주소" class="input input-bordered"/>
-                        <button type="button" id="btn-emailCheck" class="btn btn-block"
-                                style="background-color: rgb(220 252 231); border: none;">
-                            <span class="text-black">중복 확인</span>
+                    <div class="flex flex-row ">
+                        <input type="text" id="email" name="email" maxlength="30" placeholder="이메일 주소"
+                               class="input input-bordered flex-grow mr-4" oninput="validateInput(this)"/>
+                        <button type="button" id="btn-emailCheck" class="btn btn-block" style="border: none;">
+                            <span>중복 확인</span>
                         </button>
                     </div>
                 </div>

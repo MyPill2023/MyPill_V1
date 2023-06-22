@@ -9,7 +9,6 @@ import com.mypill.global.rsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,15 +62,10 @@ public class MemberController {
         }
         return 0;
     }
+
     @ResponseBody
     @GetMapping("/join/emailCheck")
     public int emailCheck(String validEmail) {
-        if (validEmail.equals("")) {
-            return 1;
-        }
-        if (memberService.isEmailDuplicated(validEmail)) {
-            return 2;
-        }
-        return 0;
+        return memberService.isValid(validEmail);
     }
 }
