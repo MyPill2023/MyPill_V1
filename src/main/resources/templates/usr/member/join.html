@@ -16,6 +16,19 @@
         .idCheckMsgT {
             color: blue;
         }
+
+        #btn-emailCheck {
+            width: 15%;
+            height: 40px;
+        }
+
+        .emailCheckMsgF {
+            color: red;
+        }
+
+        .emailCheckMsgT {
+            color: blue;
+        }
     </style>
 </head>
 
@@ -46,6 +59,36 @@
                             $("#idCheckMsg").addClass("idCheckMsgT");
                             $("#idCheckMsg").removeClass("idCheckMsgF");
                             idChecked = true;
+                        }
+                    }
+                })
+            });
+        });
+
+        let validEmail;
+        let emailChecked = false;
+        $(function () {
+            $("#btn-emailCheck").click(function () {
+                validEmail = $("#email").val();
+                $.ajax({
+                    type: "get",
+                    async: false,
+                    url: "/usr/member/join/emailCheck",
+                    data: {validEmail: validEmail},
+                    success: function (data) {
+                        if (data == 1) {
+                            $("#emailCheckMsg").text("이메일을 입력하세요.");
+                            $("#emailCheckMsg").addClass("emailCheckMsgF");
+                            $("#emailCheckMsg").removeClass("emailCheckMsgT");
+                        } else if (data == 2) {
+                            $("#emailCheckMsg").text("이미 사용중인 이메일 입니다.");
+                            $("#emailCheckMsg").addClass("emailCheckMsgF");
+                            $("#emailCheckMsg").removeClass("emailCheckMsgT");
+                        } else {
+                            $("#emailCheckMsg").text("사용 가능한 이메일 입니다.");
+                            $("#emailCheckMsg").addClass("emailCheckMsgT");
+                            $("#emailCheckMsg").removeClass("emailCheckMsgF");
+                            emailChecked = true;
                         }
                     }
                 })
@@ -98,7 +141,7 @@
                 return;
             }
             if (form.userId.value != validUserId || !idChecked) {
-                toastWarning("중복확인을 해주세요.");
+                toastWarning("아이디 중복확인을 해주세요.");
                 return;
             }
 
@@ -123,6 +166,10 @@
             if (form.email.value.length == 0) {
                 toastWarning("이메일을 입력해주세요.");
                 form.email.focus();
+                return;
+            }
+            if (form.email.value != validEmail || !emailChecked) {
+                toastWarning("이메일 중복확인을 해주세요.");
                 return;
             }
 
@@ -183,19 +230,24 @@
                     <span>비밀번호 확인</span>
                     <input type="password" name="password2" placeholder="비밀번호 확인" class="input input-bordered"/>
                 </div>
-                <div class="form-control">
-                    <span>이메일</span>
-                    <input type="text" name="email" placeholder="이메일 주소" class="input input-bordered"/>
+                <div class="form-control flex">
+                    <div class="form-control">
+                        <span>이메일</span>
+                        <span id="emailCheckMsg"></span>
+                    </div>
+                    <div class="flex-row">
+                        <input type="text" id="email" name="email" placeholder="이메일 주소" class="input input-bordered"/>
+                        <button type="button" id="btn-emailCheck" class="btn btn-block"
+                                style="background-color: rgb(220 252 231); border: none;">
+                            <span class="text-black">중복 확인</span>
+                        </button>
+                    </div>
                 </div>
-                <!-- 일반 회원 / 판매 업체 선택 버튼 필요-->
-
-
                 <button id="btn-join" class="btn btn-block gap-1"
                         style="background-color: rgb(220 252 231); border: none;">
                     <span class="text-black">회원 가입</span>
                 </button>
             </form>
-
         </div>
     </div>
 </main>

@@ -63,4 +63,15 @@ public class MemberController {
         }
         return 0;
     }
+    @ResponseBody
+    @GetMapping("/join/emailCheck")
+    public int emailCheck(String validEmail) {
+        if (validEmail.equals("")) {
+            return 1;
+        }
+        if (memberService.isEmailDuplicated(validEmail)) {
+            return 2;
+        }
+        return 0;
+    }
 }

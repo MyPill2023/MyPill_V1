@@ -43,9 +43,15 @@ public class MemberService {
     }
 
     public boolean isIdDuplicated(String userId) {
-        System.out.println("지나감");
-        System.out.println(userId);
         if (memberRepository.findByUserId(userId).isPresent()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isEmailDuplicated(String email) {
+        System.out.println(email);
+        if (memberRepository.findByEmail(email).isPresent()) {
             return true;
         }
         return false;
