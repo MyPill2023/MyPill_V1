@@ -7,9 +7,38 @@
 <body>
 <main layout:fragment="main">
   <div class="hero-content flex flex-col my-10">
-    <h1 class="text-4xl font-bold">
-      상품 상세
-    </h1>
+
+    <div class="flex flex-col gap-5 w-full max-w-md mb-10">
+      <div class="border border-gray-200 p-32 text-center">
+        상품 이미지
+      </div>
+
+      <div class="flex justify-start w-full">
+        <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"> </h1>
+      </div>
+      <div class="flex justify-end w-full">
+        <span class="text-xl font-bold" th:text="${#numbers.formatInteger(productResponse.price, 0, 'COMMA') + '원'}"></span>
+      </div>
+      <div class="divider !my-2"></div>
+      <div class="card w-96 bg-base-100 border border-gray-200">
+        <div class="card-body">
+          <h2 class="card-title mb-2">주요 영양성분</h2>
+          <div th:each="nutrient, loop : ${productResponse.nutrients}">
+            <p th:text="${nutrient.name}"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card w-96 bg-base-100 border border-gray-200">
+        <div class="card-body">
+          <h2 class="card-title mb-2">주요 기능</h2>
+          <div th:each="category, loop : ${productResponse.categories}">
+            <p th:text="${category.name}"></p>
+          </div>
+        </div>
+      </div>
+
+
   </div>
 </main>
 </body>
