@@ -1,0 +1,85 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>상품 등록</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+
+    <script>
+        function RequestCreate__submit(form) {
+            form.name.value = form.name.value.trim();
+
+            if (form.name.value.length === 0) {
+                toastWarning('상품명을 입력해주세요.');
+                form.name.focus();
+                return;
+            }
+
+            form.description.value = form.description.value.trim();
+
+            if (form.description.value.length === 0) {
+                toastWarning('상품 설명을 입력해주세요.');
+                form.description.focus();
+                return;
+            }
+
+            form.price.value = form.price.value.trim();
+
+            if (form.price.value === "") {
+                toastWarning('상품 가격을 입력해주세요.');
+                form.price.focus();
+                return;
+            }
+
+            form.stock.value = form.stock.value.trim();
+
+            if (form.stock.value === "") {
+                toastWarning('상품 재고를 입력해주세요.');
+                form.stock.focus();
+                return;
+            }
+
+            form.submit(); // 폼 발송
+        }
+    </script>
+
+    <div class="hero-content flex flex-col my-10">
+        <h1 class="text-4xl font-bold">
+            상품 등록하기
+        </h1>
+
+        <form id="ProdcutCreateRequest" th:object="${RequestDto}" method="POST" class="m-4" onsubmit="RequestCreate__submit(this); return false;">
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
+                <input type="text" id="name" name="name" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+            </div>
+
+            <div class="flex flex-col mb-4">
+                <span class="text-gray-700 font-bold mb-2">상세 설명</span>
+                <textarea id="description" name="description" placeholder="상품에 대한 상세 설명을 입력해주세요."
+                          class="shadow textarea-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="price" class="block text-gray-700 font-bold mb-2">가격(원)</label>
+                <input type="number" min="0"  id="price" name="price" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+            </div>
+            <div class="mb-4">
+                <label for="stock" class="block text-gray-700 font-bold mb-2">재고</label>
+                <input type="number" min="0"  id="stock" name="stock" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+            </div>
+            <div class="mb-4">
+                <label for="nutrient" class="block text-gray-700 font-bold mb-2">주요 성분</label>
+                <input type="text" id="nutrient" name="nutrient" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+            </div>
+
+            <button class="btn btn-accent">
+                상품 등록
+            </button>
+        </form>
+    </div>
+</main>
+</body>
+
+</html>
