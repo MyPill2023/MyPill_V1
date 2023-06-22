@@ -29,7 +29,20 @@ public class MemberController {
         if (rsData.isFail()) {
             return rq.historyBack(rsData.getMsg());
         }
-        return "redirect:/usr/hom/main";
+        return rq.redirectWithMsg("/",rsData);
     }
 
+    @GetMapping("/join")
+    public String showJoin() {
+        return "usr/member/join";
+    }
+
+    @PostMapping("/join")
+    public String join(String userId, String username, String password, String email) {
+        RsData<Member> rsData = memberService.join(userId, username, password, email);
+        if (rsData.isFail()) {
+            return rq.historyBack(rsData.getMsg());
+        }
+        return rq.redirectWithMsg("/",rsData);
+    }
 }

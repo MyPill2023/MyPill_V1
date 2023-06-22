@@ -1,0 +1,94 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>회원가입</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <script>
+        let MemberJoin__submitDone = false;
+
+        function MemberJoin__submit(form) {
+            if (MemberJoin__submitDone) {
+                return;
+            }
+
+            form.userId.value = form.userId.value.trim();
+
+            if (form.userId.value.length == 0) {
+                toastWarning("아이디를 입력해주세요.");
+                form.username.focus();
+                return;
+            }
+
+            form.password.value = form.password.value.trim();
+
+            if (form.password.value.length == 0) {
+                toastWarning("비밀번호를 입력해주세요.");
+                form.password.focus();
+                return;
+            }
+
+            form.password2.value = form.password2.value.trim();
+
+            if (form.password2.value != form.password.value) {
+                toastWarning("비밀번호가 일치하지 않습니다.");
+                form.password.focus();
+                return;
+            }
+
+            form.email.value = form.email.value.trim();
+
+            if (form.email.value.length == 0) {
+                toastWarning("이메일을 입력해주세요.");
+                form.email.focus();
+                return;
+            }
+
+            form.submit();
+            MemberJoin__submitDone = true;
+        }
+    </script>
+
+    <div class="hero-content flex flex-col my-10">
+        <h1 class="text-4xl font-bold">
+            회원가입
+        </h1>
+        <div class="max-w-2xl w-full px-4">
+            <form th:action method="POST" class="flex flex-col gap-3"
+                  onsubmit="MemberJoin__submit(this); return false;">
+                <div class="form-control flex">
+                    <span>아이디</span>
+                    <input type="text" name="userId" placeholder="아이디를 입력하세요" class="input input-bordered"/>
+                </div>
+                <div class="form-control">
+                    <span>이름</span>
+                    <input type="text" name="username" placeholder="실명을 입력하세요" class="input input-bordered"/>
+                </div>
+                <div class="form-control">
+                    <span>비밀번호</span>
+                    <input type="password" name="password" placeholder="비밀번호" class="input input-bordered"/>
+                </div>
+                <div class="form-control">
+                    <span>비밀번호 확인</span>
+                    <input type="password" name="password2" placeholder="비밀번호 확인" class="input input-bordered"/>
+                </div>
+                <div class="form-control">
+                    <span>이메일</span>
+                    <input type="text" name="email" placeholder="이메일 주소" class="input input-bordered"/>
+                </div>
+                <!--             구매자 /판매자 선택 버튼 필요-->
+
+                <button id="btn-join" class="btn btn-block gap-1"
+                        style="background-color: rgb(220 252 231); border: none;">
+                    <span class="text-black">회원 가입</span>
+                </button>
+            </form>
+
+        </div>
+    </div>
+</main>
+</body>
+
+</html>
