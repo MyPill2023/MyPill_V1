@@ -8,7 +8,7 @@
 <main layout:fragment="main">
 
     <script>
-        function RequestCreate__submit(form) {
+        function productRequestDto__submit(form) {
             form.name.value = form.name.value.trim();
 
             if (form.name.value.length === 0) {
@@ -50,7 +50,7 @@
             상품 등록하기
         </h1>
 
-        <form id="ProdcutCreateRequest" th:object="${RequestDto}" method="POST" class="m-4" onsubmit="RequestCreate__submit(this); return false;">
+        <form th:action method="POST" class="m-4" onsubmit="productRequestDto__submit(this); return false;">
             <div class="mb-4">
                 <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
                 <input type="text" id="name" name="name" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
@@ -63,7 +63,7 @@
             </div>
             <div class="mb-4">
                 <label for="price" class="block text-gray-700 font-bold mb-2">가격(원)</label>
-                <input type="number" min="0"  id="price" name="price" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+                <input type="number" min="0"  id="price" name="price" class="shadow input-accent border rounded py-2 px-3">
             </div>
             <div class="mb-4">
                 <label for="stock" class="block text-gray-700 font-bold mb-2">재고</label>
@@ -74,7 +74,7 @@
                 <input type="text" id="nutrient" name="nutrient" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
             </div>
 
-            <button class="btn btn-accent">
+            <button type="submit" class="btn btn-accent">
                 상품 등록
             </button>
         </form>

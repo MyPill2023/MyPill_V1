@@ -24,16 +24,20 @@ public class ProductController {
     private ProductService productService;
     private Rq rq;
 
-    @PostMapping("/create")
-    public String create(@Valid ProductRequestDto productRequestDto, Model model){
-
-        ProductResponseDto productResponseDto = productService.create(productRequestDto);
-        model.addAttribute("productResponse", productResponseDto);
-
-        return "";
+    @GetMapping("/create")
+    public String showCreate(Model model){
+        return "usr/product/create";
     }
 
-    @GetMapping("/{productId}")
+    @PostMapping("/create")
+    public String create(@Valid ProductRequestDto productRequestDto){
+
+        RsData<ProductResponseDto> createRsData = productService.create(productRequestDto);
+
+        return rq.redirectWithMsg("/product/detail/%s".formatted(createRsData.getData().getId()), createRsData);
+    }
+
+    @GetMapping("/detail/{productId}")
     public String showProduct(@PathVariable Long productId, Model model){
 
         model.addAttribute("productResponse", productService.get(productId));

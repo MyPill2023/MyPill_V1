@@ -17,10 +17,10 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Transactional
-    public ProductResponseDto create(ProductRequestDto requestDto) {
+    public RsData<ProductResponseDto> create(ProductRequestDto requestDto) {
         Product product = Product.of(requestDto);
         productRepository.save(product);
-        return ProductResponseDto.of(product);
+        return RsData.of("S-1", "상품 등록이 완료되었습니다.", ProductResponseDto.of(product));
     }
 
 
