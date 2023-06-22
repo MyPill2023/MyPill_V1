@@ -1,0 +1,43 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Q&A 게시판</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col my-10">
+        <h1 class="text-4xl font-bold">
+            Q&A
+        </h1>
+        <span class="text-lg">맞춤 영양제 찾기</span>
+    </div>
+
+    <table class="table">
+        <thead class="table-dark">
+        <tr>
+            <th>제목</th>
+            <th>날짜</th>
+            <th>시간</th>
+            <th>모집위치</th>
+            <th>모집인원</th>
+            <th>작성자</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="question, loop : ${boardList}">
+            <td>
+                <a th:href="@{|/usr/meeting/detail/${meeting.id}|}" th:text="${meeting.subject}"></a>
+            </td>
+            <td th:text="${meeting.date}"></td>
+            <td th:text="${meeting.time}"></td>
+            <td th:text="${meeting.location}"></td>
+            <td th:text="|${meeting.participantsCount} / ${meeting.capacity}|"></td>
+            <td th:text="${meeting.member.username}"></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+
+</html>

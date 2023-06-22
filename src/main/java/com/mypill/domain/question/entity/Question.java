@@ -1,4 +1,4 @@
-package com.mypill.domain.board.entity;
+package com.mypill.domain.question.entity;
 
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @RequiredArgsConstructor
 @SuperBuilder
 @Builder
-public class Board extends BaseEntity {
+public class Question extends BaseEntity {
 
     private String title;
     private String content;
