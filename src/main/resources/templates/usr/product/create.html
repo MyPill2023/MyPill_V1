@@ -7,61 +7,25 @@
 <body>
 <main layout:fragment="main">
 
-    <script>
-        function productRequestDto__submit(form) {
-            form.name.value = form.name.value.trim();
 
-            if (form.name.value.length === 0) {
-                toastWarning('상품명을 입력해주세요.');
-                form.name.focus();
-                return;
-            }
-
-            form.description.value = form.description.value.trim();
-
-            if (form.description.value.length === 0) {
-                toastWarning('상품 설명을 입력해주세요.');
-                form.description.focus();
-                return;
-            }
-
-            form.price.value = form.price.value.trim();
-
-            if (form.price.value === "") {
-                toastWarning('상품 가격을 입력해주세요.');
-                form.price.focus();
-                return;
-            }
-
-            form.stock.value = form.stock.value.trim();
-
-            if (form.stock.value === "") {
-                toastWarning('상품 재고를 입력해주세요.');
-                form.stock.focus();
-                return;
-            }
-
-            form.submit(); // 폼 발송
-        }
-    </script>
 
     <div class="hero-content flex flex-col my-10">
         <h1 class="text-4xl font-bold">
             상품 등록하기
         </h1>
 
-        <form th:action method="POST" class="m-4" onsubmit="productRequestDto__submit(this); return false;">
-            <div class="mb-4">
+        <form th:action method="POST" class="flex flex-col gap-4" onsubmit="productRequestDto__submit(this, event); return false;">
+            <div>
                 <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
                 <input type="text" id="name" name="name" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
             </div>
 
-            <div class="flex flex-col mb-4">
+            <div class="flex flex-col">
                 <span class="text-gray-700 font-bold mb-2">상세 설명</span>
                 <textarea id="description" name="description" placeholder="상품에 대한 상세 설명을 입력해주세요."
                           class="shadow textarea-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline"></textarea>
             </div>
-            <div class="mb-4">
+            <div>
                 <label for="price" class="block text-gray-700 font-bold mb-2">가격(원)</label>
                 <input type="number" min="0"  id="price" name="price" class="shadow input-accent border rounded py-2 px-3">
             </div>
@@ -69,9 +33,29 @@
                 <label for="stock" class="block text-gray-700 font-bold mb-2">재고</label>
                 <input type="number" min="0"  id="stock" name="stock" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
             </div>
-            <div class="mb-4">
-                <label for="nutrient" class="block text-gray-700 font-bold mb-2">주요 성분</label>
-                <input type="text" id="nutrient" name="nutrient" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+            <div class="form-control">
+                <label class="block text-gray-700 font-bold mb-2">주요 성분</label>
+                <select id="selectedNutrient" name="selectedNutrient" class="select select-accent">
+                    <option disabled selected>주요 영양성분</option>
+                    <option th:each="nutrient, loop : ${nutrients}"
+                            th:value="${nutrient.id}"
+                            th:text="${nutrient.name}"></option>
+                </select>
+                <button type="button" class="btn btn-sm" onclick="addSelectedNutrient()">성분 추가하기</button>
+                <ul id="selectedNutrientList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3"></ul>
+                <input type="hidden" id="nutrients" name="nutrients" value="">
+            </div>
+            <div class="form-control">
+                <label class="block text-gray-700 font-bold mb-2">주요 기능</label>
+                <select id="selectedCategory" name="selectedCategory" class="select select-accent">
+                    <option disabled selected>주요 기능</option>
+                    <option th:each="category, loop : ${categories}"
+                            th:value="${category.id}"
+                            th:text="${category.name}"></option>
+                </select>
+                <button type="button" class="btn btn-sm" onclick="addSelectedCategory()">성분 추가하기</button>
+                <ul id="selectedCategoryList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3"></ul>
+                <input type="hidden" id="categories" name="categories" value="">
             </div>
 
             <button type="submit" class="btn btn-accent">
@@ -79,6 +63,177 @@
             </button>
         </form>
     </div>
+
+
+    <script>
+        // 영양성분 선택
+        function addSelectedNutrient() {
+            var selectBox = document.getElementById("selectedNutrient");
+            var selectedOption = selectBox.options[selectBox.selectedIndex];
+
+            // 비활성화된 경우
+            if (selectedOption.disabled) {
+                return;
+            }
+
+            var selectedNutrientList = document.getElementById("selectedNutrientList");
+
+            // 이미 선택된 옵션인지 확인
+            var selectedOptionValue = selectedOption.value;
+            var selectedItems = selectedNutrientList.getElementsByTagName("li");
+            for (var i = 0; i < selectedItems.length; i++) {
+                var listItem = selectedItems[i];
+                var listItemValue = listItem.getAttribute("data-value");
+
+                // 이미 선택된 옵션인 경우
+                if (listItemValue === selectedOptionValue) {
+                    return;
+                }
+            }
+
+            var listItem = document.createElement("li");
+            listItem.textContent = selectedOption.textContent;
+            listItem.setAttribute("data-value", selectedOptionValue);
+
+            // 삭제 버튼
+            var deleteButton = document.createElement("button");
+            deleteButton.textContent = "X";
+            deleteButton.classList.add("delete-button");
+            deleteButton.addEventListener("click", function () {
+                listItem.remove(); // 항목 삭제
+                updateNutrientsInput();
+            });
+
+            var spaceSpan = document.createElement("span");
+
+            listItem.appendChild(spaceSpan);
+            listItem.appendChild(deleteButton);
+            selectedNutrientList.appendChild(listItem);
+            updateNutrientsInput();
+        }
+
+        function updateNutrientsInput() {
+            var selectedNutrientList = document.getElementById("selectedNutrientList");
+            var selectedItems = selectedNutrientList.getElementsByTagName("li");
+            var nutrientsList = [];
+
+            for (var i = 0; i < selectedItems.length; i++) {
+                var listItem = selectedItems[i];
+                var listItemValue = listItem.getAttribute("data-value");
+                nutrientsList.push(listItemValue);
+            }
+
+            var nutrientsInput = document.getElementById("nutrients");
+            nutrientsInput.value = nutrientsList.join(",");
+        }
+
+        // 주요 기능 카테고리 선택
+        function addSelectedCategory() {
+            var selectBox = document.getElementById("selectedCategory");
+            var selectedOption = selectBox.options[selectBox.selectedIndex];
+
+            // 비활성화된 경우
+            if (selectedOption.disabled) {
+                return;
+            }
+
+            var selectedCategoryList = document.getElementById("selectedCategoryList");
+
+            // 이미 선택된 옵션인지 확인
+            var selectedOptionValue = selectedOption.value;
+            var selectedItems = selectedCategoryList.getElementsByTagName("li");
+            for (var i = 0; i < selectedItems.length; i++) {
+                var listItem = selectedItems[i];
+                var listItemValue = listItem.getAttribute("data-value");
+
+                // 이미 선택된 옵션인 경우
+                if (listItemValue === selectedOptionValue) {
+                    return;
+                }
+            }
+
+            var listItem = document.createElement("li");
+            listItem.textContent = selectedOption.textContent;
+            listItem.setAttribute("data-value", selectedOptionValue);
+
+            // 삭제 버튼
+            var deleteButton = document.createElement("button");
+            deleteButton.textContent = "X";
+            deleteButton.classList.add("delete-button");
+            deleteButton.addEventListener("click", function () {
+                listItem.remove(); // 항목 삭제
+                updateCategoriesInput();
+            });
+
+            var spaceSpan = document.createElement("span");
+
+            listItem.appendChild(spaceSpan);
+            listItem.appendChild(deleteButton);
+            selectedCategoryList.appendChild(listItem);
+            updateCategoriesInput();
+        }
+
+        function updateCategoriesInput() {
+            var selectedCategoryList = document.getElementById("selectedCategoryList");
+            var selectedItems = selectedCategoryList.getElementsByTagName("li");
+            var categoryList = [];
+
+            for (var i = 0; i < selectedItems.length; i++) {
+                var listItem = selectedItems[i];
+                var listItemValue = listItem.getAttribute("data-value");
+                categoryList.push(listItemValue);
+            }
+
+            var categoriesInput = document.getElementById("categories");
+            categoriesInput.value = categoryList.join(",");
+        }
+
+        function productRequestDto__submit(form, event) {
+            form.name.value = form.name.value.trim();
+
+            if (form.name.value.length === 0) {
+                toastWarning("상품명을 입력해주세요.");
+                form.name.focus();
+                return;
+            }
+
+            form.description.value = form.description.value.trim();
+
+            if (form.description.value.length === 0) {
+                toastWarning("상품 설명을 입력해주세요.");
+                form.description.focus();
+                return;
+            }
+
+            form.price.value = form.price.value.trim();
+
+            if (form.price.value === "") {
+                toastWarning("상품 가격을 입력해주세요.");
+                form.price.focus();
+                return;
+            }
+
+            form.stock.value = form.stock.value.trim();
+
+            if (form.stock.value === "") {
+                toastWarning("상품 재고를 입력해주세요.");
+                form.stock.focus();
+                return;
+            }
+
+            updateNutrientsInput();
+            updateCategoriesInput();
+
+            // 폼 제출을 막음
+            event.preventDefault();
+
+            // 폼 발송
+            form.submit();
+        }
+    </script>
+
+
+
 </main>
 </body>
 

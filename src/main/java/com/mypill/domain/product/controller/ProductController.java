@@ -1,5 +1,9 @@
 package com.mypill.domain.product.controller;
 
+import com.mypill.domain.category.entity.Category;
+import com.mypill.domain.category.service.CategoryService;
+import com.mypill.domain.nutrient.Service.NutrientService;
+import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.Service.ProductService;
 import com.mypill.domain.product.dto.request.ProductRequestDto;
 import com.mypill.domain.product.dto.response.ProductResponseDto;
@@ -8,6 +12,7 @@ import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,11 +26,20 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/product")
 public class ProductController {
-    private ProductService productService;
-    private Rq rq;
+    private final ProductService productService;
+    private final NutrientService nutrientService;
+    private final CategoryService categoryService;
+    private final Rq rq;
 
     @GetMapping("/create")
     public String showCreate(Model model){
+
+        List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
+        model.addAttribute("nutrients", nutrients);
+
+        List<Category> categories = categoryService.findAllByOrderByNameAsc();
+        model.addAttribute("categories", categories);
+
         return "usr/product/create";
     }
 

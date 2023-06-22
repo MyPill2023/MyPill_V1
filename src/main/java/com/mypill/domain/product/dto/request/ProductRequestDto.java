@@ -1,8 +1,10 @@
 package com.mypill.domain.product.dto.request;
 
+import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -13,10 +15,12 @@ public class ProductRequestDto {
     private String name;
     @NotBlank(message = "제품의 상세설명을 입력해주세요.")
     private String description;
-    @NotBlank(message = "제품 가격을 입력해주세요.")
+    @NotNull(message = "제품 가격을 입력해주세요.")
     private Long price;
-    @NotBlank(message = "제품의 재고를 입력해주세요.")
+    @NotNull(message = "제품의 재고를 입력해주세요.")
     private Long stock;
-    @NotBlank(message = "제품의 성분을 선택해주세요.")
+    @NotNull(message = "제품의 성분을 선택해주세요.")
     private List<Nutrient> nutrients;
+    @NotNull(message = "제품의 주요기능을 선택해주세요.")
+    private List<Category> categories;
 }
