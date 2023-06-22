@@ -2,7 +2,7 @@ package com.mypill.domain.product.entity;
 
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.nutrient.entity.Nutrient;
-import com.mypill.domain.product.dto.request.ProductRequestDto;
+import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,7 +46,7 @@ public class Product extends BaseEntity {
 
     //이미지
 
-    public static Product of(ProductRequestDto requestDto) {
+    public static Product of(ProductRequest requestDto) {
         return Product.builder()
                 .name(requestDto.getName())
                 .description(requestDto.getDescription())

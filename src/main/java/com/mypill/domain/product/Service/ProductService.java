@@ -1,7 +1,7 @@
 package com.mypill.domain.product.Service;
 
-import com.mypill.domain.product.dto.request.ProductRequestDto;
-import com.mypill.domain.product.dto.response.ProductResponseDto;
+import com.mypill.domain.product.dto.request.ProductRequest;
+import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
 import com.mypill.global.rsData.RsData;
@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,50 +20,52 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public RsData<ProductResponseDto> create(ProductRequestDto requestDto) {
-        Product product = Product.of(requestDto);
+    public RsData<ProductResponse> create(ProductRequest request) {
+        Product product = Product.of(request);
         productRepository.save(product);
-        return RsData.of("S-1", "상품 등록이 완료되었습니다.", ProductResponseDto.of(product));
+        return RsData.of("S-1", "상품 등록이 완료되었습니다.", ProductResponse.of(product));
     }
 
-
-    public ProductResponseDto get(Long productId){
+    public ProductResponse get(Long productId){
         Product product = findById(productId).orElse(null);
-        return ProductResponseDto.of(product);
+        return ProductResponse.of(product);
     }
 
+    public List<ProductResponse> getAllProduct(List<Product> products){
+        return products.stream().map(this::convertToResponse).collect(Collectors.toList());
+    }
 
     @Transactional
-    public RsData<ProductResponseDto> update(Long productId, ProductRequestDto requestDto) {
+    public RsData<ProductResponse> update(Long productId, ProductRequest request
+    ) {
 
         Product product = findById(productId).orElse(null);
         if(product == null){
-            return RsData.of("F-1", "존재하지 않는 상품입니다.", ProductResponseDto.of(product));
+            return RsData.of("F-1", "존재하지 않는 상품입니다.", ProductResponse.of(product));
         }
 
         product = product.toBuilder()
-                .name(requestDto.getName())
-                .description(requestDto.getDescription())
-                .price(requestDto.getPrice())
-                .stock(requestDto.getStock())
-                .nutrients(requestDto.getNutrients())
+                .name(request.getName())
+                .description(request.getDescription())
+                .price(request.getPrice())
+                .stock(request.getStock())
+                .nutrients(request.getNutrients())
                 .build();
 
         productRepository.save(product);
-        return RsData.of("S-1", "상품 수정이 완료되었습니다.", ProductResponseDto.of(product));
+        return RsData.of("S-1", "상품 수정이 완료되었습니다.", ProductResponse.of(product));
     }
 
     @Transactional
-    public RsData<ProductResponseDto> delete(Long productId) {
+    public RsData<ProductResponse> delete(Long productId) {
 
         Product product = findById(productId).orElse(null);
         if(product == null){
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
         productRepository.delete(product);
-        return RsData.of("S-1", "상품 수정이 완료되었습니다.", ProductResponseDto.of(product));
+        return RsData.of("S-1", "상품 수정이 완료되었습니다.", ProductResponse.of(product));
     }
-
 
     public Optional<Product> findById(Long productId){
         return productRepository.findById(productId);
@@ -70,5 +73,9 @@ public class ProductService {
 
     public List<Product> findAll() {
         return productRepository.findAll();
+    }
+
+    private ProductResponse convertToResponse(Product product){
+        return ProductResponse.of(product);
     }
 }

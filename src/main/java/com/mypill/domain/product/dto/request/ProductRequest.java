@@ -2,7 +2,6 @@ package com.mypill.domain.product.dto.request;
 
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.nutrient.entity.Nutrient;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -10,7 +9,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ProductRequestDto {
+public class ProductRequest {
     @NotBlank(message = "제품 이름을 입력해주세요.")
     private String name;
     @NotBlank(message = "제품의 상세설명을 입력해주세요.")

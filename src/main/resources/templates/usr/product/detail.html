@@ -6,7 +6,7 @@
 
 <body>
 <main layout:fragment="main">
-  <div class="hero-content flex flex-col my-10">
+  <div class="hero-content flex flex-col my-10 w-[32rem]">
 
     <div class="flex flex-col gap-5 w-full max-w-md mb-10">
       <div class="border border-gray-200 p-32 text-center">
@@ -20,7 +20,7 @@
         <span class="text-xl font-bold" th:text="${#numbers.formatInteger(productResponse.price, 0, 'COMMA') + '원'}"></span>
       </div>
       <div class="divider !my-2"></div>
-      <div class="card w-96 bg-base-100 border border-gray-200">
+      <div class="card bg-base-100 border border-gray-200">
         <div class="card-body">
           <h2 class="card-title mb-2">주요 영양성분</h2>
           <div th:each="nutrient, loop : ${productResponse.nutrients}">
@@ -29,7 +29,7 @@
         </div>
       </div>
 
-      <div class="card w-96 bg-base-100 border border-gray-200">
+      <div class="card bg-base-100 border border-gray-200">
         <div class="card-body">
           <h2 class="card-title mb-2">주요 기능</h2>
           <div th:each="category, loop : ${productResponse.categories}">
