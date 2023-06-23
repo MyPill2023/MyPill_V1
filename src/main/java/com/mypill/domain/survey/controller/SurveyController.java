@@ -1,16 +1,13 @@
 package com.mypill.domain.survey.controller;
 
-import com.mypill.domain.category.entity.Category;
-import com.mypill.domain.category.service.CategoryService;
+import com.mypill.domain.survey.service.SurveyService;
 import com.mypill.global.rq.Rq;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.LinkedHashMap;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,55 +15,34 @@ import java.util.*;
 public class SurveyController {
 
     private final Rq rq;
-    private final CategoryService categoryService;
+    private final SurveyService surveyService;
 
     @GetMapping("/start")
-    public String showStart(Model model) {
+    public String showStart() {
 
-        List<Category> categories = categoryService.findAllByOrderByNameAsc();
-        model.addAttribute("categories", categories);
+        //맴버아이디 가져오기
 
         return "usr/survey/start";
     }
 
-    @GetMapping("/step")
-    public String showStep(Model model, @RequestParam(name = "category") List<Long> categoryIds, @RequestParam(defaultValue = "1") int stepNo) {
+    @PostMapping("/start")
+    public String start(){
 
-        //현재 스탭 넘버
+        LinkedHashMap<Long, String> map = new LinkedHashMap<>();
+        map.put(1L,"눈 건강");
+        map.put(2L,"면역력 / 항산화");
+        map.put(3L,"뼈, 관절 건강");
+        map.put(4L,"위(소화)");
+        map.put(5L,"두뇌 활동");
+        map.put(6L,"피부");
+        map.put(7L,"다이어트");
+        map.put(8L,"수면");
+        map.put(9L,"간");
+        map.put(10L,"대장");
 
-        int maxStepsCount = categoryIds.size();
-
-        List<StepQuestion> list = new ArrayList<>();
-        list.add(new StepQuestion(1L, "Q1"));
-        list.add(new StepQuestion(2L, "Q2"));
-
-        model.addAttribute("stepQuestions", list);
-        model.addAttribute("categoryIds", categoryIds);
-        model.addAttribute("stepNo", stepNo);
-        model.addAttribute("prevStepNo", stepNo - 1 >= 1 ? stepNo - 1 : 0);
-        model.addAttribute("nextStepNo", stepNo + 1 <= maxStepsCount ? stepNo + 1 : maxStepsCount);
-        model.addAttribute("isFirstStep", stepNo == 1);
-        model.addAttribute("isLastStep", stepNo == maxStepsCount);
-
-        return "usr/survey/step";
+        return "usr/survey/start";
     }
-}
 
-@RequiredArgsConstructor
-@Getter
-class StepQuestion {
-    private final Long id;
-    private final String subject;
-    private List<StepQuestionOption> options = new ArrayList<>() {{
-        add(new StepQuestionOption(1L, "O1"));
-        add(new StepQuestionOption(2L, "O2"));
-        add(new StepQuestionOption(3L, "O3"));
-    }};
-}
 
-@AllArgsConstructor
-@Getter
-class StepQuestionOption {
-    private Long id;
-    private String content;
+
 }
