@@ -1,0 +1,38 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Q&A 게시판</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col my-10">
+        <h1 class="text-4xl font-bold">
+            Q&A
+        </h1>
+        <span class="text-lg"></span>
+
+        <table class="table flex flex-col gap-4">
+            <thead>
+            <tr class="bg-base-200">
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일시</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="question, loop : ${questionList}">
+                <td>
+                    <a th:href="@{|/usr/meeting/detail/${question.id}|}" th:text="${question.title}"></a>
+                </td>
+                <td th:text="${question.createDate}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</main>
+</body>
+
+</html>

@@ -4,16 +4,16 @@ import com.mypill.domain.question.entity.Question;
 import com.mypill.domain.question.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RequestMapping("/question")
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class QuestionController {
     private final QuestionService questionService;
 
@@ -22,6 +22,6 @@ public class QuestionController {
     public String showList(Model model) {
         List<Question> questionList = questionService.getList();
         model.addAttribute("questionList", questionList);
-        return "question/list";
+        return "usr/question/list";
     }
 }

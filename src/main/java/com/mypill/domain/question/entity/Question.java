@@ -1,19 +1,20 @@
 package com.mypill.domain.question.entity;
 
 import com.mypill.global.base.entitiy.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@RequiredArgsConstructor
-@SuperBuilder
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder(toBuilder = true)
 public class Question extends BaseEntity {
 
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 }
