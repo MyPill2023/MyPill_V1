@@ -1,27 +1,61 @@
 <html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>설문조사 시작하기</title>
 </head>
 
 <body>
 <main layout:fragment="main">
+
     <div class="hero-content flex flex-col justify-center my-10 ">
-        <h1 class="text-5xl font-bold">건강 설문
+        <h1 class="text-4xl font-bold">건강 설문
         </h1>
-        <span th:style="${'color: black; font-size:25px; text-align: center'}">불편함을 느끼거나</br>
+        <span th:style="${'color: black; font-size:20px; text-align: center'}">불편함을 느끼거나</br>
             관리가 필요한 것을 선택하세요</br>
         </span>
-        <span th:style="${'color: #568271; font-size:25px; text-align:center'}">최대 3개까지 선택할 수 있습니다
+        <span th:style="${'color: #568271; font-size:20px; text-align:center'}">최대 3개까지 선택할 수 있습니다
         </span>
+        <section class="flex justify-center">
+            <form th:action method="POST" class="flex flex-col gap-4" onsubmit="surveyStartForm__submit(this); return false;">
+                <input type="hidden" name="category">
+                <div class="join join-vertical">
+                    <input class="join-item btn" type="checkbox" name="_category" th:each="category, loop : ${categories}" ria-label="#{category.name}" th:text="${category.name}" th:value="${category.id}" />
+                </div>
+
+
+                <div>
+                    <button class="btn btn-block btn-primary">전송</button>
+                </div>
+            </form>
+        </section>
     </div>
-    <div th:each="entry : ${map}">
-        <label>
-            <input type="checkbox" th:value="${entry.key}" aria-label="Checkbox" class="btn" />
-            <span th:text="${entry.value}"></span>
-        </label>
-    </div>
+<script>
+    function surveyStartForm__submit(form) {
+        const checkedBoxes = Array.from(form.elements["_category"]).filter(
+            (checkbox) => checkbox.checked
+        );
+
+        if (checkedBoxes.length < 1) {
+            toastWarning("1개 이상을 선택해주세요.");
+            return;
+        }
+
+        if (checkedBoxes.length > 3) {
+            toastWarning("3개 이하로 선택해주세요.");
+            return;
+        }
+
+        form.category.value = Array.from(checkedBoxes)
+            .map((checkbox) => checkbox.value)
+            .join(",");
+
+        Array.from(form.elements["_category"]).forEach(function (checkbox) {
+            checkbox.removeAttribute("name");
+        });
+
+        form.submit();
+    }
+</script>
+
 </main>
 </body>
 </html>

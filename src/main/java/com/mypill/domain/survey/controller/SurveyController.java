@@ -1,13 +1,20 @@
 package com.mypill.domain.survey.controller;
 
+import com.mypill.domain.category.entity.Category;
+import com.mypill.domain.category.service.CategoryService;
+import com.mypill.domain.survey.dto.SurveyRequestDto;
+import com.mypill.domain.survey.dto.SurveyResponseDto;
+//import com.mypill.domain.survey.service.SurveyService;
 import com.mypill.domain.survey.service.SurveyService;
 import com.mypill.global.rq.Rq;
+import com.mypill.global.rsData.RsData;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -15,34 +22,24 @@ import java.util.LinkedHashMap;
 public class SurveyController {
 
     private final Rq rq;
+    private final CategoryService categoryService;
     private final SurveyService surveyService;
 
     @GetMapping("/start")
-    public String showStart() {
+    public String showStart(Model model) {
 
-        //맴버아이디 가져오기
+        List<Category> categories = categoryService.findAllByOrderByNameAsc();
+        model.addAttribute("categories", categories);
 
         return "usr/survey/start";
     }
 
     @PostMapping("/start")
-    public String start(){
+    public String start(@Valid SurveyRequestDto surveyRequestDto){
 
-        LinkedHashMap<Long, String> map = new LinkedHashMap<>();
-        map.put(1L,"눈 건강");
-        map.put(2L,"면역력 / 항산화");
-        map.put(3L,"뼈, 관절 건강");
-        map.put(4L,"위(소화)");
-        map.put(5L,"두뇌 활동");
-        map.put(6L,"피부");
-        map.put(7L,"다이어트");
-        map.put(8L,"수면");
-        map.put(9L,"간");
-        map.put(10L,"대장");
+        RsData<SurveyResponseDto> surveyStartRsData = surveyService.start(surveyRequestDto);
 
-        return "usr/survey/start";
+        return rq.redirectWithMsg("/usr/survey/step/%s".formatted(surveyStartRsData.getData().getId()), surveyStartRsData);
     }
-
-
 
 }
