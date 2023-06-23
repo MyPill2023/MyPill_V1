@@ -8,43 +8,52 @@
 <main layout:fragment="main">
 
 
-
     <div class="hero-content flex flex-col my-10">
         <h1 class="text-4xl font-bold">
-            상품 등록하기
+            상품 수정하기
         </h1>
 
-        <form th:action method="POST" class="flex flex-col gap-4" onsubmit="productRequestDto__submit(this, event); return false;">
+        <form th:action method="POST" class="flex flex-col gap-4"
+              onsubmit="productRequestDto__submit(this, event); return false;">
             <div>
                 <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
-                <input type="text" id="name" name="name" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+                <input type="text" id="name" name="name" th:value="${product.name}"
+                       class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
             </div>
 
             <div class="flex flex-col">
                 <span class="text-gray-700 font-bold mb-2">상세 설명</span>
-                <textarea id="description" name="description" placeholder="상품에 대한 상세 설명을 입력해주세요."
+                <textarea id="description" name="description" th:text="${product.description}"
                           class="shadow textarea-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline"></textarea>
             </div>
             <div>
                 <label for="price" class="block text-gray-700 font-bold mb-2">가격(원)</label>
-                <input type="number" min="0"  id="price" name="price" class="shadow input-accent border rounded py-2 px-3">
+                <input type="number" min="0" id="price" name="price" th:value="${product.price}"
+                       class="shadow input-accent border rounded py-2 px-3">
             </div>
             <div class="mb-4">
                 <label for="stock" class="block text-gray-700 font-bold mb-2">재고</label>
-                <input type="number" min="0"  id="stock" name="stock" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+                <input type="number" min="0" id="stock" name="stock" th:value="${product.stock}"
+                       class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
             </div>
-            <div class="form-control">
-                <label class="block text-gray-700 font-bold mb-2">주요 성분</label>
-                <select id="selectedNutrient" name="selectedNutrient" class="select select-accent">
-                    <option disabled selected>주요 영양성분</option>
-                    <option th:each="nutrient, loop : ${nutrients}"
-                            th:value="${nutrient.id}"
-                            th:text="${nutrient.name}"></option>
-                </select>
-                <button type="button" class="btn btn-sm" onclick="addSelectedNutrient()">성분 추가하기</button>
-                <ul id="selectedNutrientList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3"></ul>
-                <input type="hidden" id="nutrients" name="nutrients" value="">
-            </div>
+          <div class="form-control">
+            <label class="block text-gray-700 font-bold mb-2">주요 성분</label>
+            <select id="selectedNutrient" name="selectedNutrient" class="select select-accent">
+              <option disabled selected>주요 영양성분</option>
+              <option th:each="nutrient, loop : ${nutrients}"
+                      th:value="${nutrient.id}"
+                      th:text="${nutrient.name}"></option>
+            </select>
+            <button type="button" class="btn btn-sm" onclick="addSelectedNutrient()">성분 추가하기</button>
+            <ul id="selectedNutrientList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3">
+              <!-- 이미 등록된 영양성분 목록-->
+                <li th:each="nutrient : ${product.nutrients}" th:data-id="${nutrient.id}">
+                    <span th:text="${nutrient.name}"></span>
+                    <button type="button" class="bg-gray-200 px-1 ml-3 cursor-pointer rounded-md" onclick="removeSelectedNutrient(this)">X</button>
+                </li>
+            </ul>
+            <input type="hidden" id="nutrients" name="nutrients" value="">
+          </div>
             <div class="form-control">
                 <label class="block text-gray-700 font-bold mb-2">주요 기능</label>
                 <select id="selectedCategory" name="selectedCategory" class="select select-accent">
@@ -54,7 +63,13 @@
                             th:text="${category.name}"></option>
                 </select>
                 <button type="button" class="btn btn-sm" onclick="addSelectedCategory()">성분 추가하기</button>
-                <ul id="selectedCategoryList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3"></ul>
+                <ul id="selectedCategoryList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3">
+                  <!-- 이미 등록된 주요 기능 카테고리 목록-->
+                    <li th:each="category : ${product.categories}" th:data-id="${category.id}">
+                        <span th:text="${category.name}"></span>
+                        <button type="button" class="bg-gray-200 px-1 ml-3 cursor-pointer rounded-md" onclick="removeSelectedCategory(this)">X</button>
+                    </li>
+                </ul>
                 <input type="hidden" id="categories" name="categories" value="">
             </div>
 
@@ -67,6 +82,7 @@
 
     <script>
         // 영양성분 선택
+
         function addSelectedNutrient() {
             var selectBox = document.getElementById("selectedNutrient");
             var selectedOption = selectBox.options[selectBox.selectedIndex];
@@ -83,7 +99,7 @@
             var selectedItems = selectedNutrientList.getElementsByTagName("li");
             for (var i = 0; i < selectedItems.length; i++) {
                 var listItem = selectedItems[i];
-                var listItemValue = listItem.getAttribute("data-value");
+                var listItemValue = listItem.getAttribute("data-id");
 
                 // 이미 선택된 옵션인 경우
                 if (listItemValue === selectedOptionValue) {
@@ -92,8 +108,10 @@
             }
 
             var listItem = document.createElement("li");
-            listItem.textContent = selectedOption.textContent;
-            listItem.setAttribute("data-value", selectedOptionValue);
+            listItem.setAttribute("data-id", selectedOptionValue);
+
+            var listItemName = document.createElement("span");
+            listItemName.textContent = selectedOption.textContent;
 
             // 삭제 버튼
             var deleteButton = document.createElement("button");
@@ -104,9 +122,7 @@
                 updateNutrientsInput();
             });
 
-            var spaceSpan = document.createElement("span");
-
-            listItem.appendChild(spaceSpan);
+            listItem.appendChild(listItemName);
             listItem.appendChild(deleteButton);
             selectedNutrientList.appendChild(listItem);
             updateNutrientsInput();
@@ -119,12 +135,18 @@
 
             for (var i = 0; i < selectedItems.length; i++) {
                 var listItem = selectedItems[i];
-                var listItemValue = listItem.getAttribute("data-value");
+                var listItemValue = listItem.getAttribute("data-id");
                 nutrientsList.push(listItemValue);
             }
 
             var nutrientsInput = document.getElementById("nutrients");
             nutrientsInput.value = nutrientsList.join(",");
+        }
+
+        function removeSelectedNutrient(button) {
+            var listItem = button.parentNode;
+            listItem.remove();
+            updateNutrientsInput();
         }
 
         // 주요 기능 카테고리 선택
@@ -144,7 +166,7 @@
             var selectedItems = selectedCategoryList.getElementsByTagName("li");
             for (var i = 0; i < selectedItems.length; i++) {
                 var listItem = selectedItems[i];
-                var listItemValue = listItem.getAttribute("data-value");
+                var listItemValue = listItem.getAttribute("data-id");
 
                 // 이미 선택된 옵션인 경우
                 if (listItemValue === selectedOptionValue) {
@@ -153,8 +175,10 @@
             }
 
             var listItem = document.createElement("li");
-            listItem.textContent = selectedOption.textContent;
-            listItem.setAttribute("data-value", selectedOptionValue);
+            listItem.setAttribute("data-id", selectedOptionValue);
+
+            var listItemName = document.createElement("span");
+            listItemName.textContent = selectedOption.textContent;
 
             // 삭제 버튼
             var deleteButton = document.createElement("button");
@@ -165,9 +189,7 @@
                 updateCategoriesInput();
             });
 
-            var spaceSpan = document.createElement("span");
-
-            listItem.appendChild(spaceSpan);
+            listItem.appendChild(listItemName);
             listItem.appendChild(deleteButton);
             selectedCategoryList.appendChild(listItem);
             updateCategoriesInput();
@@ -180,12 +202,18 @@
 
             for (var i = 0; i < selectedItems.length; i++) {
                 var listItem = selectedItems[i];
-                var listItemValue = listItem.getAttribute("data-value");
+                var listItemValue = listItem.getAttribute("data-id");
                 categoryList.push(listItemValue);
             }
 
             var categoriesInput = document.getElementById("categories");
             categoriesInput.value = categoryList.join(",");
+        }
+
+        function removeSelectedCategory(button) {
+            var listItem = button.parentNode;
+            listItem.remove();
+            updateCategoriesInput();
         }
 
         function productRequestDto__submit(form, event) {
@@ -231,7 +259,6 @@
             form.submit();
         }
     </script>
-
 
 
 </main>
