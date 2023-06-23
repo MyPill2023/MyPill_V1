@@ -13,27 +13,20 @@
         <span class="text-lg">맞춤 영양제 찾기</span>
     </div>
 
-    <table class="table">
+    <table class="table" style="display: flex; flex-direction: column; align-items: center">
         <thead class="table-dark">
         <tr>
             <th>제목</th>
-            <th>날짜</th>
-            <th>시간</th>
-            <th>모집위치</th>
-            <th>모집인원</th>
             <th>작성자</th>
+            <th>작성일시</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="question, loop : ${boardList}">
+        <tr th:each="question, loop : ${questionList}">
             <td>
-                <a th:href="@{|/usr/meeting/detail/${meeting.id}|}" th:text="${meeting.subject}"></a>
+                <a th:href="@{|/usr/meeting/detail/${question.id}|}" th:text="${question.title}"></a>
             </td>
-            <td th:text="${meeting.date}"></td>
-            <td th:text="${meeting.time}"></td>
-            <td th:text="${meeting.location}"></td>
-            <td th:text="|${meeting.participantsCount} / ${meeting.capacity}|"></td>
-            <td th:text="${meeting.member.username}"></td>
+            <td th:text="${question.createDate}"></td>
         </tr>
         </tbody>
     </table>
