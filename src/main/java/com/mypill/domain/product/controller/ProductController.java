@@ -10,20 +10,20 @@ import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/product")
+@Tag(name = "ProductController", description = "상품")
 public class ProductController {
     private final ProductService productService;
     private final NutrientService nutrientService;
@@ -31,6 +31,7 @@ public class ProductController {
     private final Rq rq;
 
     @GetMapping("/create")
+    @Operation(summary = "상품 등록 폼")
     public String showCreate(Model model){
 
         List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
@@ -43,6 +44,7 @@ public class ProductController {
     }
 
     @PostMapping("/create")
+    @Operation(summary = "상품 등록")
     public String create(@Valid ProductRequest productRequest){
 
         RsData<ProductResponse> createRsData = productService.create(productRequest);
@@ -51,6 +53,7 @@ public class ProductController {
     }
 
     @GetMapping("/detail/{productId}")
+    @Operation(summary = "상품 상세")
     public String showProduct(@PathVariable Long productId, Model model){
 
         model.addAttribute("productResponse", productService.get(productId));
@@ -59,6 +62,7 @@ public class ProductController {
     }
 
     @GetMapping("/list")
+    @Operation(summary = "상품 전체 목록")
     public String list(Model model){
         List<Product> products = productService.findAll();
 
@@ -68,6 +72,7 @@ public class ProductController {
     }
 
     @PostMapping("/update/{productId}")
+    @Operation(summary = "상품 수정")
     public String update(@PathVariable Long productId, @Valid ProductRequest productRequest){
 
         RsData<ProductResponse> updateRsData = productService.update(productId, productRequest);
