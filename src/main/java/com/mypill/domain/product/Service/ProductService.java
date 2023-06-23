@@ -26,9 +26,14 @@ public class ProductService {
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", ProductResponse.of(product));
     }
 
-    public ProductResponse get(Long productId){
+    public RsData<ProductResponse> get(Long productId){
         Product product = findById(productId).orElse(null);
-        return ProductResponse.of(product);
+
+        if(product == null){
+            return RsData.of("F-1", "존재하지 않는 상품입니다.");
+        }
+
+        return RsData.of("S-1", "존재하는 상품입니다.", ProductResponse.of(product));
     }
 
     public List<ProductResponse> getAllProduct(List<Product> products){
@@ -36,8 +41,7 @@ public class ProductService {
     }
 
     @Transactional
-    public RsData<ProductResponse> update(Long productId, ProductRequest request
-    ) {
+    public RsData<ProductResponse> update(Long productId, ProductRequest request) {
 
         Product product = findById(productId).orElse(null);
         if(product == null){
@@ -50,6 +54,7 @@ public class ProductService {
                 .price(request.getPrice())
                 .stock(request.getStock())
                 .nutrients(request.getNutrients())
+                .categories(request.getCategories())
                 .build();
 
         productRepository.save(product);
@@ -64,7 +69,7 @@ public class ProductService {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
         productRepository.delete(product);
-        return RsData.of("S-1", "상품 수정이 완료되었습니다.", ProductResponse.of(product));
+        return RsData.of("S-1", "상품 삭제가 완료되었습니다.", ProductResponse.of(product));
     }
 
     public Optional<Product> findById(Long productId){

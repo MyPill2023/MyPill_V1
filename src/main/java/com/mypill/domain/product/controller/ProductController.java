@@ -18,9 +18,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/product")
 @Tag(name = "ProductController", description = "상품")
@@ -56,7 +58,7 @@ public class ProductController {
     @Operation(summary = "상품 상세")
     public String showProduct(@PathVariable Long productId, Model model){
 
-        model.addAttribute("productResponse", productService.get(productId));
+        model.addAttribute("productResponse", productService.get(productId).getData());
 
         return "usr/product/detail";
     }
@@ -69,6 +71,22 @@ public class ProductController {
         model.addAttribute("products", productService.getAllProduct(products));
 
         return "usr/product/list";
+    }
+
+    @GetMapping("/update/{productId}")
+    @Operation(summary = "상품 수정 폼")
+    public String updateBefore(@PathVariable Long productId, Model model){
+
+        ProductResponse response = productService.get(productId).getData();
+        model.addAttribute("product", response);
+
+        List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
+        model.addAttribute("nutrients", nutrients);
+
+        List<Category> categories = categoryService.findAllByOrderByNameAsc();
+        model.addAttribute("categories", categories);
+
+        return "usr/product/update";
     }
 
     @PostMapping("/update/{productId}")

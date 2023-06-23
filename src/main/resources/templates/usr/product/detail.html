@@ -38,6 +38,20 @@
         </div>
       </div>
 
+      <div class="card bg-base-100 border border-gray-200">
+        <div class="card-body">
+          <h2 class="card-title mb-2">상품 상세 설명</h2>
+          <span th:text="${productResponse.description}">
+          </span>
+        </div>
+      </div>
+
+      <a th:href="@{|/product/update/${productResponse.id}|}"
+         class="btn btn-success btn-outline flex gap-1">
+        수정하기
+      </a>
+
+
 
   </div>
 </main>
