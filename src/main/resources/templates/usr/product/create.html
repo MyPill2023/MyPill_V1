@@ -98,7 +98,7 @@
             // 삭제 버튼
             var deleteButton = document.createElement("button");
             deleteButton.textContent = "X";
-            deleteButton.classList.add("delete-button");
+            deleteButton.classList.add("px-1", "ml-3", "cursor-pointer");
             deleteButton.addEventListener("click", function () {
                 listItem.remove(); // 항목 삭제
                 updateNutrientsInput();
@@ -159,7 +159,7 @@
             // 삭제 버튼
             var deleteButton = document.createElement("button");
             deleteButton.textContent = "X";
-            deleteButton.classList.add("delete-button");
+            deleteButton.classList.add("px-1", "ml-3", "cursor-pointer");
             deleteButton.addEventListener("click", function () {
                 listItem.remove(); // 항목 삭제
                 updateCategoriesInput();
