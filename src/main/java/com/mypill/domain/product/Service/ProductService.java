@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,7 +69,10 @@ public class ProductService {
         if(product == null){
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
-        productRepository.delete(product);
+
+        product = product.toBuilder().deleteDate(LocalDateTime.now()).build();
+        productRepository.save(product);
+
         return RsData.of("S-1", "상품 삭제가 완료되었습니다.", ProductResponse.of(product));
     }
 
@@ -78,6 +82,9 @@ public class ProductService {
 
     public List<Product> findAll() {
         return productRepository.findAll();
+    }
+    public List<Product> findNotDeleted() {
+        return productRepository.findByDeleteDateIsNull();
     }
 
     private ProductResponse convertToResponse(Product product){

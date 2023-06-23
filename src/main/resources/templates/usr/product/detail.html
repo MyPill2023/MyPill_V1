@@ -50,7 +50,14 @@
          class="btn btn-success btn-outline flex gap-1">
         수정하기
       </a>
-
+      <a class="btn btn-success btn-outline flex gap-1"
+         href="javascript:;"
+         onclick="if ( confirm('상품을 삭제하시겠습니까?') ) $(this).next().submit();">
+        삭제하기</a>
+      <form hidden th:action="@{|/product/delete/${productResponse.id}|}"
+            method="POST">
+        <input type="hidden" name="_method" value="delete">
+      </form>
 
 
   </div>

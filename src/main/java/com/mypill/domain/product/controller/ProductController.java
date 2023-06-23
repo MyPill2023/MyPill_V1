@@ -66,7 +66,7 @@ public class ProductController {
     @GetMapping("/list")
     @Operation(summary = "상품 전체 목록")
     public String list(Model model){
-        List<Product> products = productService.findAll();
+        List<Product> products = productService.findNotDeleted();
 
         model.addAttribute("products", productService.getAllProduct(products));
 
@@ -95,7 +95,16 @@ public class ProductController {
 
         RsData<ProductResponse> updateRsData = productService.update(productId, productRequest);
 
-        return rq.redirectWithMsg("/product/list", updateRsData.getMsg());
+        return rq.redirectWithMsg("/product/list", updateRsData);
+    }
+
+    @PostMapping("/delete/{productId}")
+    @Operation(summary = "상품 수정")
+    public String update(@PathVariable Long productId){
+
+        RsData<ProductResponse> deleteRsData = productService.delete(productId);
+
+        return rq.redirectWithMsg("/product/list", deleteRsData);
     }
 
 }
