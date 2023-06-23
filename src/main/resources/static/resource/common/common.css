@@ -14,13 +14,3 @@ html > body {
 html > body .label-text {
     font-size: 1rem;
 }
-
-.delete-button {
-    background-color: lightgray;
-    color: #ffffff;
-    border: none;
-    padding: 0px 10px;
-    margin-left: 15px;
-    border-radius: 3px;
-    cursor: pointer;
-}

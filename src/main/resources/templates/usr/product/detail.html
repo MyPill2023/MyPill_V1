@@ -38,6 +38,27 @@
         </div>
       </div>
 
+      <div class="card bg-base-100 border border-gray-200">
+        <div class="card-body">
+          <h2 class="card-title mb-2">상품 상세 설명</h2>
+          <span th:text="${productResponse.description}">
+          </span>
+        </div>
+      </div>
+
+      <a th:href="@{|/product/update/${productResponse.id}|}"
+         class="btn btn-success btn-outline flex gap-1">
+        수정하기
+      </a>
+      <a class="btn btn-success btn-outline flex gap-1"
+         href="javascript:;"
+         onclick="if ( confirm('상품을 삭제하시겠습니까?') ) $(this).next().submit();">
+        삭제하기</a>
+      <form hidden th:action="@{|/product/delete/${productResponse.id}|}"
+            method="POST">
+        <input type="hidden" name="_method" value="delete">
+      </form>
+
 
   </div>
 </main>
