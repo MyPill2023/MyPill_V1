@@ -1,0 +1,41 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>메인</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col my-10 2 w-[32rem] max-w-lg">
+        <div class="w-full flex flex-col justify-center gap-5">
+            <h1 class="text-4xl font-bold text-center">
+                상품리스트
+            </h1>
+
+            <div th:each="product, loop : ${products}">
+                <a th:href="@{|/product/detail/${product.id}|}"
+                   class="card bg-base-100 border border-gray-200 hover:bg-green-100">
+                    <div class="card-body">
+
+                        <div class="flex gap-5">
+                            <div class="border border-gray-200 p-10">
+                                상품이미지
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <div class="flex gap-3 mt-2">
+                                    <div th:text="${product.name}" class="text-2xl font-bold"></div>
+                                </div>
+                                <span class="text-xl font-bold"
+                                      th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+</html>
