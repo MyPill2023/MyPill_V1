@@ -1,9 +1,11 @@
 package com.mypill.domain.question.controller;
 
+import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.question.entity.Question;
 import com.mypill.domain.question.form.QuestionForm;
 import com.mypill.domain.question.service.QuestionService;
 import com.mypill.global.rq.Rq;
+import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -40,19 +42,20 @@ public class QuestionController {
         return "usr/question/create";
     }
 
-//    @PostMapping("/create")
-//    public String create(@Valid QuestionForm questionForm, BindingResult bindingResult) {
-//
-//        if (bindingResult.hasErrors()) {
-//            return "usr/board/board_form";
-//        }
-//
-//        Member mem = memberService.getMember(member.getUsername());
-//
-//        questionService.create(boardForm.getTitle(), category, boardForm.getContent(), mem);
-//
-//        return rq.redirectWithMsg("/usr/question/list", "새로운 질문이 등록되었습니다.");
-//    }
+    @PostMapping("/create")
+    public String create(@Valid QuestionForm questionForm, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "usr/board/board_form";
+        }
+
+        Member member = memberService.getMember(member.getUsername());
+
+        RsData<Question> createRsData = questionService.create(questionForm);
+
+        return rq.redirectWithMsg("/question/detail/%s".formatted(createRsData.getData().getId()), createRsData);
+    }
+
 //
 //    @GetMapping("/detail/{id}")
 //    public String detail(Model model, @PathVariable("id") Long id, CommentForm commentForm){

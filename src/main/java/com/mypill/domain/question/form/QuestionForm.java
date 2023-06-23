@@ -11,4 +11,5 @@ public class QuestionForm {
     private String title;
     @NotEmpty(message = "모임소개는 필수항목입니다.")
     private String content;
+    private String image;
 }
