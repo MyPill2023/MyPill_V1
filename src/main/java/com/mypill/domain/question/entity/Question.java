@@ -17,4 +17,7 @@ public class Question extends BaseEntity {
     private String title;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @Column
+    private String image;
 }

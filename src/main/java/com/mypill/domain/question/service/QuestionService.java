@@ -10,9 +10,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
-    private final QuestionRepository boarRepository;
+    private final QuestionRepository questionRepository;
 
     public List<Question> getList() {
-        return boarRepository.findAll();
+        return questionRepository.findAll();
     }
 }
