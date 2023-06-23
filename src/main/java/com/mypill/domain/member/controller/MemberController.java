@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -48,5 +49,23 @@ public class MemberController {
             return rq.historyBack(rsData.getMsg());
         }
         return rq.redirectWithMsg("/usr/member/login", rsData);
+    }
+
+    @ResponseBody
+    @GetMapping("/join/idCheck")
+    public int idCheck(String validUserId) {
+        if (validUserId.equals("")) {
+            return 1;
+        }
+        if (memberService.isIdDuplicated(validUserId)) {
+            return 2;
+        }
+        return 0;
+    }
+
+    @ResponseBody
+    @GetMapping("/join/emailCheck")
+    public int emailCheck(String validEmail) {
+        return memberService.isValid(validEmail);
     }
 }
