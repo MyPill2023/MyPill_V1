@@ -3,7 +3,14 @@
 <head>
     <title>로그인</title>
 </head>
+<script>
 
+    function LoginForm__submit(form) {
+        form.userId.value = form.userId.value.trim();
+        form.password.value = form.password.value.trim();
+        form.submit();
+    }
+</script>
 <body>
 <main layout:fragment="main">
     <div class="hero-content flex flex-col my-10">
@@ -11,7 +18,7 @@
             로그인
         </h1>
         <div class="max-w-2xl w-full px-4">
-            <form th:action method="POST" class="flex flex-col gap-6">
+            <form th:action method="POST" class="flex flex-col gap-6" onsubmit="LoginForm__submit(this); return false;">
                 <div class="form-control">
                     <input type="text" name="userId" placeholder="아이디" class="input input-bordered"/>
                 </div>

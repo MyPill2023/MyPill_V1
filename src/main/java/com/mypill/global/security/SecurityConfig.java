@@ -1,5 +1,6 @@
 package com.mypill.global.security;
 
+import com.mypill.global.security.failure.handler.AuthFailureHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -17,12 +18,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final AuthFailureHandler authFailureHandler;
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .formLogin(
                         formLogin -> formLogin
-                                .loginPage("/")
+                                .loginPage("/usr/member/login")
+                                .usernameParameter("userId")
+                                .failureHandler(authFailureHandler)
                 )
                 .logout(
                         logout -> logout

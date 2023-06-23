@@ -1,7 +1,6 @@
 package com.mypill.domain.member.service;
 
 import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.member.form.JoinForm;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
@@ -16,15 +15,21 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public RsData<Member> login(String userId, String password) {
+    public RsData getErrorMsg(String userId, String password) {
+        if (userId.length() == 0) {
+            return RsData.of("F-1", "아이디를 입력하세요.");
+        }
+        if (password.length() == 0) {
+            return RsData.of("F-2", "비밀번호를 입력하세요.");
+        }
         Member member = memberRepository.findByUserId(userId).orElse(null);
         if (member == null) {
-            return RsData.of("F-1", "등록되지 않은 계정입니다.");
+            return RsData.of("F-3", "등록되지 않은 계정입니다.");
         }
         if (!passwordEncoder.matches(password, member.getPassword())) {
-            return RsData.of("F-2", "비밀번호가 일치하지 않습니다.");
+            return RsData.of("F-4", "비밀번호가 일치하지 않습니다.");
         }
-        return RsData.of("S-1", "로그인되었습니다.", member);
+        return RsData.of("F-5", "알 수 없는 에러가 발생했습니다.");
     }
 
     @Transactional
@@ -52,7 +57,7 @@ public class MemberService {
         return false;
     }
 
-    public int isValid(String email) {
+    public int isValidEmail(String email) {
         if (email.equals("")) {
             return 1;
         }

@@ -2,7 +2,6 @@ package com.mypill.domain.member.controller;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.form.JoinForm;
-import com.mypill.domain.member.form.LoginForm;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
@@ -27,14 +26,6 @@ public class MemberController {
         return "usr/member/login";
     }
 
-    @PostMapping("/login")
-    public String login(@Valid LoginForm loginForm) {
-        RsData<Member> rsData = memberService.login(loginForm.getUserId(), loginForm.getPassword());
-        if (rsData.isFail()) {
-            return rq.historyBack(rsData.getMsg());
-        }
-        return rq.redirectWithMsg("/", rsData);
-    }
 
     @GetMapping("/join")
     public String showJoin() {
@@ -66,6 +57,13 @@ public class MemberController {
     @ResponseBody
     @GetMapping("/join/emailCheck")
     public int emailCheck(String validEmail) {
-        return memberService.isValid(validEmail);
+        return memberService.isValidEmail(validEmail);
     }
+
+    @GetMapping("/login/auth/fail")
+    public String authLoginFail() {
+        RsData rsData = memberService.getErrorMsg(rq.getUserId(), rq.getPassword());
+        return rq.historyBack(rsData.getMsg());
+    }
+
 }
