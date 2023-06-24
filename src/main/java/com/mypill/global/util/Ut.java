@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Ut {
@@ -26,7 +27,17 @@ public class Ut {
                 throw new RuntimeException(e);
             }
         }
+
+        public static Map<String, Object> toMap(String jsonStr) {
+            try {
+                return new ObjectMapper().readValue(jsonStr, LinkedHashMap.class);
+            } catch (JsonProcessingException e) {
+                return null;
+            }
+        }
+
     }
+
 
     public static class time {
         public static String diffFormat1Human(LocalDateTime time1, LocalDateTime time2) {

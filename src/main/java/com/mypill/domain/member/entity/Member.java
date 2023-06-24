@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -36,8 +37,14 @@ public class Member extends BaseEntity {
 
     public List<? extends GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        // 모든 멤버는 member 권한을 가진다.
         grantedAuthorities.add(new SimpleGrantedAuthority("member"));
         return grantedAuthorities;
+    }
+
+    public Map<String, Object> toClaims() {
+        return Map.of(
+                "id", getId(),
+                "username", getUsername()
+        );
     }
 }
