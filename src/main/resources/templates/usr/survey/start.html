@@ -15,10 +15,9 @@
         <span th:style="${'color: #568271; font-size:20px; text-align:center'}">최대 3개까지 선택할 수 있습니다
         </span>
         <section class="flex justify-center">
-            <form th:action method="POST" class="flex flex-col gap-4" onsubmit="surveyStartForm__submit(this); return false;">
-                <input type="hidden" name="category">
+            <form th:action="step" class="flex flex-col gap-4" onsubmit="surveyStartForm__submit(this); return false;">
                 <div class="join join-vertical">
-                    <input class="join-item btn" type="checkbox" name="_category" th:each="category, loop : ${categories}" ria-label="#{category.name}" th:text="${category.name}" th:value="${category.id}" />
+                    <input class="join-item btn" type="checkbox" th:name="category" th:each="category : ${categories}" th:aria-label="|${category.name}__" th:value="${category.id}" />
                 </div>
 
 
@@ -30,7 +29,7 @@
     </div>
 <script>
     function surveyStartForm__submit(form) {
-        const checkedBoxes = Array.from(form.elements["_category"]).filter(
+        const checkedBoxes = Array.from(form.elements["category"]).filter(
             (checkbox) => checkbox.checked
         );
 
@@ -43,14 +42,6 @@
             toastWarning("3개 이하로 선택해주세요.");
             return;
         }
-
-        form.category.value = Array.from(checkedBoxes)
-            .map((checkbox) => checkbox.value)
-            .join(",");
-
-        Array.from(form.elements["_category"]).forEach(function (checkbox) {
-            checkbox.removeAttribute("name");
-        });
 
         form.submit();
     }

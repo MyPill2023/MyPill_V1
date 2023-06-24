@@ -1,10 +1,29 @@
 <html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>설문조사 시작하기</title>
 </head>
-<body>
 
+<body>
+<main layout:fragment="main">
+
+    <div class="hero-content flex flex-col justify-center my-10 ">
+        <h1 class="text-4xl font-bold">설문 [[${stepNo}]]</h1>
+
+        <ul>
+           <li th:each="item : ${stepQuestions}">
+               <h1>
+                   Q : [[${item.subject}]]
+               </h1>
+
+               <ul>
+                   <li th:each="option : ${item.options}">
+                       <input type="radio" name="dd" value="Y">
+                   </li>
+               </ul>
+           </li>
+        </ul>
+
+    </div>
+</main>
 </body>
 </html>
