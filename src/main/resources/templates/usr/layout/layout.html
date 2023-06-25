@@ -18,8 +18,8 @@
                     <li>
                         <a th:if="${@rq.logout}" href="/usr/member/join">회원가입</a>
                         <a th:if="${@rq.logout}" href="/usr/member/login">로그인</a>
-                        <a th:if="${@rq.login}" href="javascript:" onclick="$(this).next().submit();">로그아웃</a>
-                        <form class="!hidden" hidden th:action method="POST"></form>
+                        <a th:if="${@rq.login}" href="javascript: document.logoutForm.submit();">로그아웃</a>
+                        <form name="logoutForm" method="POST" th:action="@{/usr/member/logout}" hidden></form>
                         <a th:if="${@rq.login}" href="/product/create">상품 등록</a>
                     </li>
 
