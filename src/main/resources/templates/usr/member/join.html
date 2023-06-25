@@ -189,7 +189,7 @@
             MemberJoin__submitDone = true;
         }
 
-        function validateEmailInput(element) {
+        function enableInputEmailStyle(element) {
             const regex = /^[a-zA-Z0-9@.]+$/;
             const inputValue = element.value;
             if (!regex.test(inputValue)) {
@@ -197,7 +197,7 @@
             }
         }
 
-        function validateNameInput(element) {
+        function enableInputKorean(element) {
             const regex = /^[ㄱ-힣]+$/;
             const inputValue = element.value;
             if (!regex.test(inputValue)) {
@@ -205,7 +205,7 @@
             }
         }
 
-        function validateUsernameInput(element) {
+        function enableInputEnglishAndNumber(element) {
             const regex = /^[a-zA-Z0-9]+$/;
             const inputValue = element.value;
             if (!regex.test(inputValue)) {
@@ -250,7 +250,7 @@
                         <input type="text" id="username" maxlength="15" name="username" placeholder="아이디를 입력하세요"
                                required pattern=".*\S.*" onkeydown="usernameWrite(this)"
                                class="input input-bordered flex-grow mr-4"
-                               oninput="validateUsernameInput(this)"/>
+                               oninput="enableInputEnglishAndNumber(this)"/>
                         <button type="button" id="btn-usernameCheck" class="btn btn-block" style="border: none;">
                             <span>중복 확인</span>
                         </button>
@@ -261,7 +261,7 @@
                     <input type="text" name="name" maxlength="8" placeholder="실명을 입력하세요"
                            required pattern=".*\S.*"
                            class="input input-bordered"
-                           oninput="validateNameInput(this)"/>
+                           oninput="enableInputKorean(this)"/>
                 </div>
                 <div class="form-control">
                     <div class="flex-row">
@@ -269,8 +269,8 @@
                         <span id="passwordCheckMsg" class="checkMsgF"></span>
                     </div>
                     <input type="password" name="password" maxlength="12" placeholder="비밀번호"
-                           required pattern=".*\S.*"
-                           class="input input-bordered"/>
+                           required pattern=".*\S.*" class="input input-bordered"
+                           oninput="enableInputEnglishAndNumber(this)"/>
                 </div>
                 <div class="form-control">
                     <div class="flex-row">
@@ -278,8 +278,8 @@
                         <span id="password2CheckMsg" class="checkMsgF"></span>
                     </div>
                     <input type="password" name="password2" maxlength="12" placeholder="비밀번호 확인"
-                           required pattern=".*\S.*"
-                           class="input input-bordered"/>
+                           required pattern=".*\S.*" class="input input-bordered"
+                           oninput="enableInputEnglishAndNumber(this)"/>
                 </div>
                 <div class="form-control flex">
                     <div class="flex-row">
@@ -289,7 +289,7 @@
                     <div class="flex flex-row ">
                         <input type="text" id="email" name="email" maxlength="30" placeholder="이메일 주소"
                                required pattern=".*\S.*" onkeydown="emailWrite(this)"
-                               class="input input-bordered flex-grow mr-4" oninput="validateEmailInput(this)"/>
+                               class="input input-bordered flex-grow mr-4" oninput="enableInputEmailStyle(this)"/>
                         <button type="button" id="btn-emailCheck" class="btn btn-block" style="border: none;">
                             <span>중복 확인</span>
                         </button>

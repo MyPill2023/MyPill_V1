@@ -37,6 +37,14 @@
                 form.submit();
                 MemberLogin__submitDone = true;
             }
+
+            function enableInputEnglishAndNumber(element) {
+                const regex = /^[a-zA-Z0-9]+$/;
+                const inputValue = element.value;
+                if (!regex.test(inputValue)) {
+                    element.value = inputValue.replace(/[^a-zA-Z0-9]/g, '');
+                }
+            }
         </script>
         <div class="max-w-2xl w-full px-4">
             <form th:action method="POST" class="flex flex-col gap-6"
@@ -45,7 +53,8 @@
                     <label class="label">
                         <span class="label-text">아이디</span>
                     </label>
-                    <input autofocus type="text" name="username" placeholder="아이디" class="input input-bordered">
+                    <input autofocus type="text" name="username" placeholder="아이디" class="input input-bordered"
+                           oninput="enableInputEnglishAndNumber(this)">
                 </div>
                 <div class="form-control">
                     <label class="label">
