@@ -4,11 +4,33 @@
     <title>로그인</title>
 </head>
 <script>
+    let MemberLogin__submitDone = false;
 
-    function LoginForm__submit(form) {
-        form.userId.value = form.userId.value.trim();
-        form.password.value = form.password.value.trim();
+    function MemberLogin__submit(form) {
+        if (MemberLogin__submitDone) {
+            return;
+        }
+
+        form.username.value = form.username.value.trim();
+
+        if (form.username.value.length == 0) {
+            toastWarning("아이디를 입력해주세요.");
+            form.username.focus();
+
+            return;
+        }
+
+        form.content.value = form.content.value.trim();
+
+        if (form.content.value.length == 0) {
+            toastWarning("비밀번호를 입력해주세요.");
+            form.content.focus();
+
+            return;
+        }
+
         form.submit();
+        MemberLogin__submitDone = true;
     }
 </script>
 <body>
@@ -18,17 +40,17 @@
             로그인
         </h1>
         <div class="max-w-2xl w-full px-4">
-            <form th:action method="POST" class="flex flex-col gap-6" onsubmit="LoginForm__submit(this); return false;">
+            <form th:action method="POST" class="flex flex-col gap-6" onsubmit="MemberLogin__submit(this); return false;">
                 <div class="form-control">
-                    <input type="text" name="userId" placeholder="아이디" class="input input-bordered"/>
+                    <input type="text" name="username" placeholder="아이디" class="input input-bordered"/>
                 </div>
                 <div class="form-control">
                     <input type="password" name="password" placeholder="비밀번호" class="input input-bordered"/>
                 </div>
-                <button id="btn-login" class="btn btn-block gap-1"
-                        style="background-color: rgb(220 252 231); border: none;">
-                    <span class="text-black">로그인</span>
-                </button>
+                <div class="grid grid-cols-2 mt-2 gap-2">
+                    <a href="/member/join" class="btn btn-secondary btn-outline">가입하기</a>
+                    <input class="btn btn-primary" type="submit" value="로그인">
+                </div>
             </form>
             <div class="gap-6">
                 <button id="btn-signUp" class="btn btn-block gap-1"

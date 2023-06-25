@@ -136,14 +136,14 @@
             userTypeInput.value = userType;
             form.appendChild(userTypeInput);
 
-            form.userId.value = form.userId.value.trim();
+            form.username.value = form.username.value.trim();
 
-            if (form.userId.value.length == 0) {
+            if (form.username.value.length == 0) {
                 toastWarning("아이디를 입력해주세요.");
                 form.username.focus();
                 return;
             }
-            if (form.userId.value != validUserId || !idChecked) {
+            if (form.username.value != validUserId || !idChecked) {
                 toastWarning("아이디 중복확인을 해주세요.");
                 return;
             }

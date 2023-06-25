@@ -3,6 +3,6 @@ package com.mypill.domain.member.dto;
 import lombok.Data;
 
 @Data
-public class LoginResponseDto {
+public class LoginResponse {
     private final String accessToken;
 }

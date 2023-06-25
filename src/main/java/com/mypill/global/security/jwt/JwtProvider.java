@@ -1,36 +1,28 @@
-package com.mypill.global.jwt;
+package com.mypill.global.security.jwt;
 
 import com.mypill.global.util.Ut;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
-    private SecretKey cachedSecretKey;
 
-    @Value("${custom.jwt.secretKey}")
-    private String secretKeyPlain;
+    private final SecretKey jwtSecretKey;
 
-    private SecretKey _getSecretKey() {
-        String keyBase64Encoded = Base64.getEncoder().encodeToString(secretKeyPlain.getBytes());
-        return Keys.hmacShaKeyFor(keyBase64Encoded.getBytes());
+    private SecretKey getSecretKey() {
+        return jwtSecretKey;
     }
 
-    public SecretKey getSecretKey() {
-        if (cachedSecretKey == null) cachedSecretKey = _getSecretKey();
-
-        return cachedSecretKey;
-    }
-
-    public String genToken(Map<String, Object> claims, int seconds) {
+    public String generateAccessToken(Map<String, Object> claims, long seconds) {
         long now = new Date().getTime();
         Date accessTokenExpiresIn = new Date(now + 1000L * seconds);
 
@@ -50,6 +42,7 @@ public class JwtProvider {
         } catch (Exception e) {
             return false;
         }
+
         return true;
     }
 
