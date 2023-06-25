@@ -32,30 +32,30 @@
 <body>
 <main layout:fragment="main">
     <script>
-        let validUserId;
-        let idChecked = false;
+        let validUsername;
+        let usernameChecked = false;
         $(function () {
             $("#btn-idCheck").click(function () {
-                validUserId = $("#userId").val();
+                validUsername = $("#username").val();
                 $.ajax({
                     type: "get",
                     async: false,
                     url: "/usr/member/join/idCheck",
-                    data: {validUserId: validUserId},
+                    data: {username: validUsername},
                     success: function (data) {
-                        if (data == 1) {
-                            $("#idCheckMsg").text("아이디를 입력하세요.");
+                        if (data === 1) {
+                            $("#idCheckMsg").text("아이디가 입력되지 않았습니다.");
                             $("#idCheckMsg").addClass("idCheckMsgF");
                             $("#idCheckMsg").removeClass("idCheckMsgT");
-                        } else if (data == 2) {
-                            $("#idCheckMsg").text("이미 사용중인 ID 입니다.");
+                        } else if (data === 2) {
+                            $("#idCheckMsg").text("이미 사용중인 아이디입니다.");
                             $("#idCheckMsg").addClass("idCheckMsgF");
                             $("#idCheckMsg").removeClass("idCheckMsgT");
                         } else {
-                            $("#idCheckMsg").text("사용 가능한 ID 입니다.");
+                            $("#idCheckMsg").text("사용 가능한 아이디입니다.");
                             $("#idCheckMsg").addClass("idCheckMsgT");
                             $("#idCheckMsg").removeClass("idCheckMsgF");
-                            idChecked = true;
+                            usernameChecked = true;
                         }
                     }
                 })
@@ -71,19 +71,17 @@
                     type: "get",
                     async: false,
                     url: "/usr/member/join/emailCheck",
-                    data: {validEmail: validEmail},
+                    data: {email: validEmail},
                     success: function (data) {
-                        if (data == 1) {
-                            $("#emailCheckMsg").text("이메일을 입력하세요.");
+                        if (data === 1) {
+                            $("#emailCheckMsg").text("이메일이 입력되지 않았습니다.");
                             $("#emailCheckMsg").addClass("emailCheckMsgF");
                             $("#emailCheckMsg").removeClass("emailCheckMsgT");
-                        }
-                            // else if (data == 2) {
-                            //     $("#emailCheckMsg").text("올바르지 않은 형식입니다.");
-                            //     $("#emailCheckMsg").addClass("emailCheckMsgF");
-                            //     $("#emailCheckMsg").removeClass("emailCheckMsgT");
-                        // }
-                        else if (data == 3) {
+                        } else if (data === 2) {
+                            $("#emailCheckMsg").text("올바르지 않은 형식입니다.");
+                            $("#emailCheckMsg").addClass("emailCheckMsgF");
+                            $("#emailCheckMsg").removeClass("emailCheckMsgT");
+                        } else if (data === 3) {
                             $("#emailCheckMsg").text("이미 사용중인 이메일 입니다.");
                             $("#emailCheckMsg").addClass("emailCheckMsgF");
                             $("#emailCheckMsg").removeClass("emailCheckMsgT");
@@ -138,19 +136,26 @@
 
             form.username.value = form.username.value.trim();
 
-            if (form.username.value.length == 0) {
+            if (form.username.value.length === 0) {
                 toastWarning("아이디를 입력해주세요.");
                 form.username.focus();
                 return;
             }
-            if (form.username.value != validUserId || !idChecked) {
+            if (form.username.value !== validUsername || !usernameChecked) {
                 toastWarning("아이디 중복확인을 해주세요.");
+                return;
+            }
+            form.name.value = form.name.value.trim();
+
+            if (form.name.value.length === 0) {
+                toastWarning("아이디를 입력해주세요.");
+                form.name.focus();
                 return;
             }
 
             form.password.value = form.password.value.trim();
 
-            if (form.password.value.length == 0) {
+            if (form.password.value.length === 0) {
                 toastWarning("비밀번호를 입력해주세요.");
                 form.password.focus();
                 return;
@@ -158,7 +163,7 @@
 
             form.password2.value = form.password2.value.trim();
 
-            if (form.password2.value != form.password.value) {
+            if (form.password2.value !== form.password.value) {
                 toastWarning("비밀번호가 일치하지 않습니다.");
                 form.password.focus();
                 return;
@@ -166,12 +171,12 @@
 
             form.email.value = form.email.value.trim();
 
-            if (form.email.value.length == 0) {
+            if (form.email.value.length === 0) {
                 toastWarning("이메일을 입력해주세요.");
                 form.email.focus();
                 return;
             }
-            if (form.email.value != validEmail || !emailChecked) {
+            if (form.email.value !== validEmail || !emailChecked) {
                 toastWarning("이메일 중복확인을 해주세요.");
                 return;
             }
@@ -180,7 +185,7 @@
             MemberJoin__submitDone = true;
         }
 
-        function validateInput(element) {
+        function validateEmailInput(element) {
             const regex = /^[a-zA-Z0-9@.]+$/;
             const inputValue = element.value;
 
@@ -188,7 +193,15 @@
                 element.value = inputValue.replace(/[^a-zA-Z0-9@.]/g, '');
             }
         }
-        function enableEnglishAndNumberInput(element) {
+        function validateNameInput(element) {
+            const regex = /^[ㄱ-힣]+$/;
+            const inputValue = element.value;
+
+            if (!regex.test(inputValue)) {
+                element.value = inputValue.replace(/[^ㄱ-힣]/g, '');
+            }
+        }
+        function validateUsernameInput(element) {
             const regex = /^[a-zA-Z0-9]+$/;
             const inputValue = element.value;
 
@@ -231,9 +244,9 @@
                         <span id="idCheckMsg"></span>
                     </div>
                     <div class="flex flex-row">
-                        <input type="text" id="userId" maxlength="15" name="userId" placeholder="아이디를 입력하세요"
+                        <input type="text" id="username" maxlength="15" name="username" placeholder="아이디를 입력하세요"
                                class="input input-bordered input input-bordered flex-grow mr-4"
-                               oninput="enableEnglishAndNumberInput(this)"/>
+                               oninput="validateUsernameInput(this)"/>
                         <button type="button" id="btn-idCheck" class="btn btn-block" style="border: none;">
                             <span>중복 확인</span>
                         </button>
@@ -241,8 +254,9 @@
                 </div>
                 <div class="form-control">
                     <span>이름</span>
-                    <input type="text" name="username" maxlength="8" placeholder="실명을 입력하세요"
-                           class="input input-bordered"/>
+                    <input type="text" name="name" maxlength="8" placeholder="실명을 입력하세요"
+                           class="input input-bordered"
+                           oninput="validateNameInput(this)"/>
                 </div>
                 <div class="form-control">
                     <span>비밀번호</span>
@@ -261,7 +275,7 @@
                     </div>
                     <div class="flex flex-row ">
                         <input type="text" id="email" name="email" maxlength="30" placeholder="이메일 주소"
-                               class="input input-bordered flex-grow mr-4" oninput="validateInput(this)"/>
+                               class="input input-bordered flex-grow mr-4" oninput="validateEmailInput(this)"/>
                         <button type="button" id="btn-emailCheck" class="btn btn-block" style="border: none;">
                             <span>중복 확인</span>
                         </button>

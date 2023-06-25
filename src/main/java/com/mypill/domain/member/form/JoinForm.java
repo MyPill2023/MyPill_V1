@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 public class JoinForm {
     @NotEmpty
-    private String userId;
-    @NotEmpty
     private String username;
+    @NotEmpty
+    private String name;
     @NotEmpty
     private String password;
     @NotEmpty

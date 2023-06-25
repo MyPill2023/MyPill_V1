@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -77,6 +79,39 @@ public class MemberService {
         }
 
         return accessToken;
+    }
+
+    public int idValidation(String username) {
+        if (username.equals("")) {
+            return 1;
+        }
+        if (memberRepository.findByUsername(username).isPresent()) {
+            return 2;
+        }
+        return 0;
+    }
+
+    public int emailValidation(String email) {
+        if (email.equals("")) {
+            return 1;
+        }
+        if (!isValidEmailForm(email)) {
+            return 2;
+        }
+        if (memberRepository.findByEmail(email).isPresent()) {
+            return 3;
+        }
+        return 0;
+    }
+
+    private boolean isValidEmailForm(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     public boolean verifyWithWhiteList(Member member, String token) {

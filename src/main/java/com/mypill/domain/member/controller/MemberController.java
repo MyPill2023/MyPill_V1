@@ -1,27 +1,15 @@
 package com.mypill.domain.member.controller;
 
-import com.mypill.domain.member.dto.LoginRequest;
-import com.mypill.domain.member.dto.LoginResponse;
-import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.form.JoinForm;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.http.MediaType.ALL_VALUE;
 
 @Controller
 @RequiredArgsConstructor
@@ -50,13 +38,24 @@ public class MemberController {
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
     public String join(@Valid JoinForm joinForm) {
-        try{
-            memberService.join(joinForm.getUserId(), joinForm.getUsername(),
+        try {
+            memberService.join(joinForm.getUsername(), joinForm.getName(),
                     joinForm.getPassword(), joinForm.getUserType(), joinForm.getEmail());
-        }
-        catch(AlreadyJoinException e){
+        } catch (AlreadyJoinException e) {
             return rq.historyBack(e.getMessage());
         }
         return rq.redirectWithMsg("/usr/member/login", "회원가입이 완료되었습니다.");
+    }
+
+    @ResponseBody
+    @GetMapping("/join/idCheck")
+    public int idCheck(String username) {
+        return memberService.idValidation(username);
+    }
+
+    @ResponseBody
+    @GetMapping("/join/emailCheck")
+    public int emailCheck(String email) {
+        return memberService.emailValidation(email);
     }
 }

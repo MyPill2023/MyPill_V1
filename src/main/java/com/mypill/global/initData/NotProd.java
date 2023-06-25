@@ -26,8 +26,8 @@ public class NotProd {
         return args -> {
             Member memberUser1 = memberService.join("user1", "김철수", "1234", "1", "cs@naver.com").getData();
             Member memberUser2 = memberService.join("user2", "김영희", "1234", "1", "yh@naver.com").getData();
-            Member memberUser3 = memberService.join("user3", "김짱구", "1234", "1", "zzang@naver.com").getData();
-            Member memberUser4 = memberService.join("user4", "김맹구", "1234", "1", "mk@naver.com").getData();
+            Member memberUser3 = memberService.join("user3", "김짱구", "1234", "2", "zzang@naver.com").getData();
+            Member memberUser4 = memberService.join("user4", "김맹구", "1234", "2", "mk@naver.com").getData();
             Member memberUser5 = memberService.join("user5", "김훈이", "1234", "1", "hoon2@naver.com").getData();
 
             List<Nutrient> nutrients = nutrientService.findAll();
