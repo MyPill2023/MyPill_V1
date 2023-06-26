@@ -15,6 +15,7 @@
 
         <form th:action method="POST" class="flex flex-col gap-4"
               onsubmit="productRequestDto__submit(this, event); return false;">
+            <input type="hidden" id="sellerId" name="sellerId" th:value="${@rq.member.id}">
             <div>
                 <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
                 <input type="text" id="name" name="name" th:value="${product.name}"
@@ -74,7 +75,7 @@
             </div>
 
             <button type="submit" class="btn btn-accent">
-                상품 등록
+                수정 완료
             </button>
         </form>
     </div>
@@ -251,6 +252,20 @@
 
             updateNutrientsInput();
             updateCategoriesInput();
+
+            var selectedNutrientList = document.getElementById("selectedNutrientList");
+            var selectedNutrientItems = selectedNutrientList.getElementsByTagName("li");
+            if (selectedNutrientItems.length === 0) {
+                toastWarning("주요 성분을 선택해주세요.");
+                return;
+            }
+
+            var selectedCategoryList = document.getElementById("selectedCategoryList");
+            var selectedCategoryItems = selectedCategoryList.getElementsByTagName("li");
+            if (selectedCategoryItems.length === 0) {
+                toastWarning("주요 기능을 선택해주세요.");
+                return;
+            }
 
             // 폼 제출을 막음
             event.preventDefault();

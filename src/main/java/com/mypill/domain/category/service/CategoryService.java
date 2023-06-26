@@ -2,6 +2,7 @@ package com.mypill.domain.category.service;
 
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.repository.CategoryRepository;
+import com.mypill.domain.nutrient.entity.Nutrient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +18,8 @@ public class CategoryService {
     }
     public List<Category> findAllByOrderByNameAsc(){
         return categoryRepository.findAllByOrderByNameAsc();
+    }
+    public List<Category> findByIdIn(List<Long> categoryIds) {
+        return categoryRepository.findByIdIn(categoryIds);
     }
 }

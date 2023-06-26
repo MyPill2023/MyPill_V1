@@ -26,7 +26,6 @@ import jakarta.servlet.http.HttpSession;
 @Component
 @RequestScope
 public class Rq {
-    private final MemberService memberService;
     private final MessageSource messageSource;
     private final LocaleResolver localeResolver;
     private final HttpServletRequest req;
@@ -34,15 +33,16 @@ public class Rq {
     private final HttpSession session;
     private final User user;
     private Locale locale;
-    private Member member = null; // 레이지 로딩, 처음부터 넣지 않고, 요청이 들어올 때 넣는다.
+    private final MemberService memberService;
+    private Member member = null;
 
-    public Rq(MemberService memberService, MessageSource messageSource, LocaleResolver localeResolver, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
-        this.memberService = memberService;
+    public Rq(MessageSource messageSource, LocaleResolver localeResolver, HttpServletRequest req, HttpServletResponse resp, HttpSession session, MemberService memberService) {
         this.messageSource = messageSource;
         this.localeResolver = localeResolver;
         this.req = req;
         this.resp = resp;
         this.session = session;
+        this.memberService = memberService;
 
         // 현재 로그인한 회원의 인증정보를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,6 +62,24 @@ public class Rq {
     // 로그아웃 되어 있는지 체크
     public boolean isLogout() {
         return !isLogin();
+    }
+
+    // 로그인 된 회원의 객체
+    public Member getMember() {
+        if (isLogout()) return null;
+
+        // 데이터가 없는지 체크
+        if (member == null) {
+            member = memberService.findByUsername(user.getUsername()).orElseThrow();
+        }
+
+        return member;
+    }
+
+    public boolean isSeller() {
+        if (isLogout()) return false;
+
+        return getMember().isSeller();
     }
 
     public boolean isRefererAdminPage() {
@@ -121,14 +139,5 @@ public class Rq {
 
     public String getPassword() {
         return (String) this.session.getAttribute("password");
-    }
-
-    public Member getMember() {
-        if (isLogout())
-            return null;
-        if (member == null) {
-            member = memberService.findByUsername(user.getUsername()).orElse(null);
-        }
-        return member;
     }
 }
