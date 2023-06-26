@@ -98,9 +98,9 @@ public class ProductController {
     @Operation(summary = "상품 수정")
     public String update(@PathVariable Long productId, @Valid ProductRequest productRequest){
 
-        RsData<ProductResponse> updateRsData = productService.update(productId, productRequest);
+        RsData<Product> updateRsData = productService.update(productId, productRequest);
 
-        return rq.redirectWithMsg("/product/list", updateRsData);
+        return rq.redirectWithMsg("/product/detail/%s".formatted(productId), updateRsData);
     }
 
     @PreAuthorize("hasAuthority('SELLER')")
@@ -108,7 +108,7 @@ public class ProductController {
     @Operation(summary = "상품 삭제")
     public String delete(@PathVariable Long productId){
 
-        RsData<ProductResponse> deleteRsData = productService.delete(productId);
+        RsData<Product> deleteRsData = productService.delete(productId);
 
         return rq.redirectWithMsg("/product/list", deleteRsData);
     }
