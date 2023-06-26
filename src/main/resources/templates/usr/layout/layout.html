@@ -19,7 +19,8 @@
                         <a th:if="${@rq.logout}" href="/usr/member/join">회원가입</a>
                         <a th:if="${@rq.logout}" href="/usr/member/login">로그인</a>
                         <a th:if="${@rq.login}" href="javascript: document.logoutForm.submit();">로그아웃</a>
-                        <form style="display: none" name="logoutForm" method="POST" th:action="@{/usr/member/logout}" hidden></form>
+                        <form style="display: none" name="logoutForm" method="POST" th:action="@{/usr/member/logout}"
+                              hidden></form>
                         <a th:if="${@rq.login}" href="/product/create">상품 등록</a>
                     </li>
 
@@ -37,6 +38,10 @@
                           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </button>
+            <script>
+                // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
+                const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
+            </script>
             <button class="btn btn-ghost btn-circle">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
@@ -77,6 +82,19 @@
             <span class="btm-nav-label text-[11px]">건강설문</span>
         </button>
         <button class="flex flex-col items-center justify-center cursor-pointer" style="flex-basis: 20%;">
+            <svg class="h-8 w-8 p-0.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <g>
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path d="M5.455 15L1 18.5V3a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v12H5.455zm-.692-2H16V4H3v10.385L4.763 13zM8 17h10.237L20 18.385V8h1a1 1 0 0 1 1 1v13.5L17.545 19H9a1 1 0 0 1-1-1v-1z"></path>
+                    </g>
+                </g>
+            </svg>
+        </button>
+        <button class="flex flex-col items-center justify-center cursor-pointer"
+                onclick="location.href='/question/list'" style="flex-basis: 20%;">
             <svg class="h-8 w-8 p-0.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -146,6 +164,33 @@
     </div>
 </div>
 
+<script th:inline="javascript">
+    if (params.msg) {
+        toastNotice(params.msg[0]);
+    }
+
+    if (params.errorMsg) {
+        toastWarning(params.errorMsg[0]);
+    }
+
+    // history.back 에 의해서 돌아온 경우에 실행됨
+    // 평소에도 실행됨
+    $(window).bind("pageshow", function (event) {
+        const localStorageKeyAboutHistoryBackErrorMsg = "historyBackErrorMsg___" + location.href;
+
+        if (localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg)) {
+            toastWarning(localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg));
+            localStorage.removeItem(localStorageKeyAboutHistoryBackErrorMsg);
+        } else {
+            const localStorageKeyAboutHistoryBackErrorMsg = "historyBackErrorMsg___null";
+
+            if (localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg)) {
+                toastWarning(localStorage.getItem(localStorageKeyAboutHistoryBackErrorMsg));
+                localStorage.removeItem(localStorageKeyAboutHistoryBackErrorMsg);
+            }
+        }
+    });
+</script>
 </body>
 
 </html>
