@@ -1,7 +1,10 @@
 <html layout:decorate="~{common/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
 
 <body>
-
+<script>
+    // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
+    const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
+</script>
 <!-- 공통 상단 -->
 <header layout:fragment="header">
     <div class="navbar bg-base-100 shadow-sm">
@@ -40,10 +43,6 @@
                           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </button>
-            <script>
-                // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
-                const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
-            </script>
             <button class="btn btn-ghost btn-circle">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
@@ -95,8 +94,8 @@
                 </g>
             </svg>
         </button>
-        <button class="flex flex-col items-center justify-center cursor-pointer"
-                onclick="location.href='/question/list'" style="flex-basis: 20%;">
+        <a href="/usr/post/list" class="flex flex-col items-center justify-center cursor-pointer"
+           style="flex-basis: 20%;">
             <svg class="h-8 w-8 p-0.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -108,8 +107,7 @@
                 </g>
             </svg>
             <span class="btm-nav-label text-[10px]">질문게시판</span>
-        </button>
-
+        </a>
         <a href="/" class="flex flex-col items-center justify-center cursor-pointer" style="flex-basis: 20%;">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 p-0.5" fill="none" viewBox="0 0 24 24"
                  stroke="currentColor">
