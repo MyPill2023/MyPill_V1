@@ -38,11 +38,7 @@ public class ProductController {
     @Operation(summary = "상품 등록 폼")
     public String showCreate(Model model){
 
-        List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
-        model.addAttribute("nutrients", nutrients);
-
-        List<Category> categories = categoryService.findAllByOrderByNameAsc();
-        model.addAttribute("categories", categories);
+        populateModel(model);
 
         return "usr/product/create";
     }
@@ -66,12 +62,44 @@ public class ProductController {
         return "usr/product/detail";
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list/all")
     @Operation(summary = "상품 전체 목록")
     public String list(Model model){
         List<Product> products = productService.findNotDeleted();
-
         model.addAttribute("products", productService.getAllProduct(products));
+        model.addAttribute("title", "전체보기");
+
+        populateModel(model);
+
+        return "usr/product/list";
+    }
+
+    @GetMapping("/list/nutrient/{nutrientId}")
+    @Operation(summary = "영양 성분별 상품 목록")
+    public String listByNutrition(@PathVariable Long nutrientId, Model model){
+        List<Product> products = productService.findByNutrientsId(nutrientId);
+        model.addAttribute("products", productService.getAllProduct(products));
+
+        nutrientService.findById(nutrientId).ifPresent(nutrient -> {
+            model.addAttribute("title", nutrient.getName());
+        });
+
+        populateModel(model);
+
+        return "usr/product/list";
+    }
+
+    @GetMapping("/list/category/{categorytId}")
+    @Operation(summary = "주요 기능별 상품 목록")
+    public String listByCategory(@PathVariable Long categorytId, Model model){
+        List<Product> products = productService.findByCategoriesId(categorytId);
+        model.addAttribute("products", productService.getAllProduct(products));
+
+        categoryService.findById(categorytId).ifPresent(category -> {
+            model.addAttribute("title", category.getName());
+        });
+
+        populateModel(model);
 
         return "usr/product/list";
     }
@@ -84,11 +112,7 @@ public class ProductController {
         ProductResponse response = productService.get(productId).getData();
         model.addAttribute("product", response);
 
-        List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
-        model.addAttribute("nutrients", nutrients);
-
-        List<Category> categories = categoryService.findAllByOrderByNameAsc();
-        model.addAttribute("categories", categories);
+        populateModel(model);
 
         return "usr/product/update";
     }
@@ -111,6 +135,14 @@ public class ProductController {
         RsData<Product> deleteRsData = productService.delete(productId);
 
         return rq.redirectWithMsg("/product/list", deleteRsData);
+    }
+
+    private void populateModel(Model model) {
+        List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
+        List<Category> categories = categoryService.findAllByOrderByNameAsc();
+
+        model.addAttribute("nutrients", nutrients);
+        model.addAttribute("categories", categories);
     }
 
 }
