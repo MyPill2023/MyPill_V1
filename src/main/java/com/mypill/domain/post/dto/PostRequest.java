@@ -2,10 +2,9 @@ package com.mypill.domain.post.dto;
 
 import com.mypill.domain.post.entity.Post;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class PostCreateRequest {
+public class PostRequest {
 
     private String title;
     private String content;

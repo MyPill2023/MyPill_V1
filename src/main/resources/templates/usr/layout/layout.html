@@ -22,6 +22,9 @@
                         <form style="display: none" name="logoutForm" method="POST" th:action="@{/usr/member/logout}"
                               hidden></form>
                         <a th:if="${@rq.login}" href="/product/create">상품 등록</a>
+                        <a th:if="${@rq.login}" href="/usr/post/create">게시글 작성</a>
+                        <a th:if="${@rq.login}" href="/usr/post/list">게시글 목록</a>
+
                     </li>
 
                 </ul>

@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-@Builder
-@Getter
+@SuperBuilder(toBuilder = true)
 public class Post extends BaseEntity {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private Member member;      // 작성자
@@ -24,7 +23,7 @@ public class Post extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-//    @OneToMany(mappedBy = "question", orphanRemoval = true)
+//    @OneToMany(mappedBy = "post", orphanRemoval = true)
 //    private List<Answer> answers; // 답변
 
     private Long answerCnt;     // 답변 수

@@ -1,6 +1,7 @@
 package com.mypill.domain.post.controller;
 
-import com.mypill.domain.post.dto.PostCreateRequest;
+import com.mypill.domain.post.dto.PostRequest;
+import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import com.mypill.global.rq.Rq;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequestMapping("/usr/post")
 @RequiredArgsConstructor
@@ -43,17 +45,58 @@ public class PostController {
     @GetMapping("/detail/{postId}")
     @Operation(summary = "게시글 상세")
     public String showPost(@PathVariable Long postId, Model model) {
-        model.addAttribute("post", postService.get(postId).getData());
+        Post post = postService.findById(postId).orElse(null);
+        if (post == null) {
+            return rq.historyBack("존재하지 않는 게시글입니다.");
+        }
+        model.addAttribute("post", post);
         return "usr/post/detail";
     }
 
     @PostMapping("/create")
     @Operation(summary = "게시글 등록")
-    public String create(@Valid PostCreateRequest postCreateRequest) {
-        RsData<Post> createRsData = postService.create(postCreateRequest);
+    public String create(@Valid PostRequest postRequest) {
+        RsData<Post> createRsData = postService.create(postRequest);
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData.getMsg());
         }
         return rq.redirectWithMsg("/usr/post/detail/%s".formatted(createRsData.getData().getId()), createRsData);
+    }
+
+    @GetMapping("/update/{postId}")
+    @Operation(summary = "게시글 수정 폼")
+    public String update(@PathVariable Long postId, Model model) {
+        if (rq.isLogout()) {
+            return rq.historyBack("로그인이 필요한 기능입니다.");
+        }
+        Post post = postService.findById(postId).orElse(null);
+        if (post == null) {
+            return rq.historyBack("존재하지 않는 게시글입니다.");
+        }
+//        if (!Objects.equals(post.getAuthor().getId(), rq.getMember().getId())) {
+//            return rq.historyBack("작성자만 수정 가능합니다.");
+//        }
+        model.addAttribute("post", post);
+        return "usr/post/update";
+    }
+
+    @PostMapping("/update/{postId}")
+    @Operation(summary = "게시글 수정")
+    public String update(@PathVariable Long postId, @Valid PostRequest postRequest) {
+        RsData<Post> updateRsData = postService.update(postId, postRequest);
+        if (updateRsData.isFail()) {
+            return rq.historyBack(updateRsData.getMsg());
+        }
+        return rq.redirectWithMsg("/usr/post/detail/%s".formatted(updateRsData.getData().getId()), updateRsData);
+    }
+
+    @PostMapping("/delete/{postId}")
+    @Operation(summary = "게시글 삭제")
+    public String delete(@PathVariable Long postId) {
+        RsData<Post> deleteRsData = postService.delete(postId);
+        if (deleteRsData.isFail()) {
+            return rq.historyBack(deleteRsData.getMsg());
+        }
+        return rq.redirectWithMsg("/usr/post/list", deleteRsData);
     }
 }

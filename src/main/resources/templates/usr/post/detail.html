@@ -12,37 +12,42 @@
             <div class="flex w-full">
                 <h1 class=" text-3xl font-bold" th:text="${post.title}"></h1>
             </div>
-            <div class="flex w-full">
-                <span class="text-xl font-bold">
-                    내용 ㅇㅇㅇㅇ내용 ㅇㅇㅇㅇ내용 ㅇㅇㅇㅇ내용 ㅇㅇㅇㅇ내용 ㅇㅇㅇㅇ
-                </span>
-            </div>
-            <div class="flex justify-end w-full">
+            <div class="flex w-full justify-end">
                 <span class="text-xl font-bold">
 <!--                      th:text="${post.member.username}">-->
                     글쓴이
                 </span>
             </div>
+            <div class="flex justify-end w-full">
+                <span class="text-xl font-bold" th:text="${post.content}">
+                </span>
+            </div>
             <div class="divider !my-2"></div>
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
-                    <h2 class="card-title mb-2">댓글</h2>
-                    <span>ㅇ11</span>
-                    <span>ㅇ12</span>
+                    <h2 class="card-title mb-2">댓글1</h2>
+                    <span>111</span>
+                    <!--                    <div th:each="nutrient, loop : ${post.comments}">-->
+                    <!--                        <p th:text="${comment.content}"></p>-->
+                    <!--                    </div>-->
+                </div>
+                <div class="card-body">
+                    <h2 class="card-title mb-2">댓글2</h2>
+                    <span>222</span>
                     <!--                    <div th:each="nutrient, loop : ${post.comments}">-->
                     <!--                        <p th:text="${comment.content}"></p>-->
                     <!--                    </div>-->
                 </div>
             </div>
 
-            <a th:href="@{|/post/update/${post.id}|}"
+            <a th:href="@{/usr/post/update/{id}(id=${post.id})}"
                class="btn btn-success btn-outline flex gap-1">
                 수정하기
             </a>
             <a class="btn btn-success btn-outline flex gap-1" href="javascript:;"
                onclick="if ( confirm('게시글을 삭제하시겠습니까?') ) $(this).next().submit();">
                 삭제하기</a>
-            <form hidden th:action="@{|/post/delete/${post.id}|}" method="POST">
+            <form hidden th:action="@{/usr/post/delete/{id}(id=${post.id})}" method="POST">
                 <input type="hidden" name="_method" value="delete">
             </form>
         </div>
