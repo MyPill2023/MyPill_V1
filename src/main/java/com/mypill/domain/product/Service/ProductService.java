@@ -123,7 +123,7 @@ public class ProductService {
         return ProductResponse.of(product);
     }
 
-    private boolean hasPermisson (Long sellerId) {
+    private boolean hasPermisson(Long sellerId) {
         return sellerId.equals(rq.getMember().getId());
     }
 }

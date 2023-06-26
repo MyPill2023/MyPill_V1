@@ -1,67 +1,71 @@
 <html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
 
 <head>
-  <title>메인</title>
+    <title>메인</title>
 </head>
 
 <body>
 <main layout:fragment="main">
-  <div class="hero-content flex flex-col my-10 w-[32rem]">
+    <div class="hero-content flex flex-col my-10 w-[32rem]">
 
-    <div class="flex flex-col gap-5 w-full max-w-md mb-10">
-      <div class="border border-gray-200 p-32 text-center">
-        상품 이미지
-      </div>
+        <div class="flex flex-col gap-5 w-full max-w-md mb-10">
+            <div class="border border-gray-200 p-32 text-center">
+                상품 이미지
+            </div>
 
-      <div class="flex flex-col justify-start w-full gap-2">
-        <h3 class=" text-xl" th:text="${productResponse.seller.name}"> </h3>
-        <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"> </h1>
-      </div>
-      <div class="flex justify-end w-full">
-        <span class="text-xl font-bold" th:text="${#numbers.formatInteger(productResponse.price, 0, 'COMMA') + '원'}"></span>
-      </div>
-      <div class="divider !my-2"></div>
-      <div class="card bg-base-100 border border-gray-200">
-        <div class="card-body">
-          <h2 class="card-title mb-2">주요 영양성분</h2>
-          <div th:each="nutrient, loop : ${productResponse.nutrients}">
-            <p th:text="${nutrient.name}"></p>
-          </div>
+            <div class="flex flex-col justify-start w-full gap-2">
+                <h3 class=" text-xl" th:text="${productResponse.seller.name}"></h3>
+                <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"></h1>
+            </div>
+            <div class="flex justify-end w-full">
+                <span class="text-xl font-bold"
+                      th:text="${#numbers.formatInteger(productResponse.price, 0, 'COMMA') + '원'}"></span>
+            </div>
+            <div class="divider !my-2"></div>
+            <div class="card bg-base-100 border border-gray-200">
+                <div class="card-body">
+                    <h2 class="card-title mb-2">주요 영양성분</h2>
+                    <div th:each="nutrient, loop : ${productResponse.nutrients}">
+                        <p th:text="${nutrient.name}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 border border-gray-200">
+                <div class="card-body">
+                    <h2 class="card-title mb-2">주요 기능</h2>
+                    <div th:each="category, loop : ${productResponse.categories}">
+                        <p th:text="${category.name}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 border border-gray-200">
+                <div class="card-body">
+                    <h2 class="card-title mb-2">상품 상세 설명</h2>
+                    <span th:text="${productResponse.description}"></span>
+                </div>
+            </div>
+
+            <div sec:authorize="isAuthenticated()">
+                <div th:if="${productResponse.seller.id == @rq.member.id}">
+                    <a th:href="@{|/product/update/${productResponse.id}|}"
+                       class="btn btn-success btn-outline flex gap-1">
+                        수정하기
+                    </a>
+                    <a class="btn btn-success btn-outline flex gap-1"
+                       href="javascript:;"
+                       onclick="if ( confirm('상품을 삭제하시겠습니까?') ) $(this).next().submit();">
+                        삭제하기</a>
+                    <form hidden th:action="@{|/product/delete/${productResponse.id}|}"
+                          method="POST">
+                        <input type="hidden" name="_method" value="delete">
+                    </form>
+                </div>
+            </div>
+
         </div>
-      </div>
-
-      <div class="card bg-base-100 border border-gray-200">
-        <div class="card-body">
-          <h2 class="card-title mb-2">주요 기능</h2>
-          <div th:each="category, loop : ${productResponse.categories}">
-            <p th:text="${category.name}"></p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card bg-base-100 border border-gray-200">
-        <div class="card-body">
-          <h2 class="card-title mb-2">상품 상세 설명</h2>
-          <span th:text="${productResponse.description}">
-          </span>
-        </div>
-      </div>
-
-      <a th:href="@{|/product/update/${productResponse.id}|}"
-         class="btn btn-success btn-outline flex gap-1">
-        수정하기
-      </a>
-      <a class="btn btn-success btn-outline flex gap-1"
-         href="javascript:;"
-         onclick="if ( confirm('상품을 삭제하시겠습니까?') ) $(this).next().submit();">
-        삭제하기</a>
-      <form hidden th:action="@{|/product/delete/${productResponse.id}|}"
-            method="POST">
-        <input type="hidden" name="_method" value="delete">
-      </form>
-
-
-  </div>
+    </div>
 </main>
 </body>
 
