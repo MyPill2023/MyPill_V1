@@ -1,5 +1,9 @@
 package com.mypill.domain.product.Service;
 
+import com.mypill.domain.category.entity.Category;
+import com.mypill.domain.category.service.CategoryService;
+import com.mypill.domain.nutrient.Service.NutrientService;
+import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
@@ -19,10 +23,21 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final NutrientService nutrientService;
+    private final CategoryService categoryService;
 
     @Transactional
     public RsData<ProductResponse> create(ProductRequest request) {
-        Product product = Product.of(request);
+
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrients().stream()
+                .map(Nutrient::getId)
+                .collect(Collectors.toList()));
+
+        List<Category> categories = categoryService.findByIdIn(request.getCategories().stream()
+                .map(Category::getId)
+                .collect(Collectors.toList()));
+
+        Product product = Product.of(request, nutrients, categories);
         productRepository.save(product);
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", ProductResponse.of(product));
     }
@@ -49,14 +64,15 @@ public class ProductService {
             return RsData.of("F-1", "존재하지 않는 상품입니다.", ProductResponse.of(product));
         }
 
-        product = product.toBuilder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .price(request.getPrice())
-                .stock(request.getStock())
-                .nutrients(request.getNutrients())
-                .categories(request.getCategories())
-                .build();
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrients().stream()
+                .map(Nutrient::getId)
+                .collect(Collectors.toList()));
+
+        List<Category> categories = categoryService.findByIdIn(request.getCategories().stream()
+                .map(Category::getId)
+                .collect(Collectors.toList()));
+
+        product.update(request, nutrients, categories);
 
         productRepository.save(product);
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", ProductResponse.of(product));

@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -46,22 +47,23 @@ public class Product extends BaseEntity {
 
     //이미지
 
-    public static Product of(ProductRequest requestDto) {
+    public static Product of(ProductRequest requestDto, List<Nutrient> nutrients, List<Category> categories) {
         return Product.builder()
                 .name(requestDto.getName())
                 .description(requestDto.getDescription())
                 .price(requestDto.getPrice())
                 .stock(requestDto.getStock())
-                .nutrients(requestDto.getNutrients())
-                .categories(requestDto.getCategories())
+                .nutrients(nutrients)
+                .categories(categories)
                 .build();
     }
 
-//    public void update(ProductRequestDto request){
-//        this.name = request.getName();
-//        this.description = request.getDescription();
-//        this.price = request.getPrice();
-//        this.stock = request.getStock();
-//        this.nutrients = request.getNutrients();
-//    }
+    public void update(ProductRequest requestDto, List<Nutrient> nutrients, List<Category> categories) {
+        this.name = requestDto.getName();
+        this.description = requestDto.getDescription();
+        this.price = requestDto.getPrice();
+        this.stock = requestDto.getStock();
+        this.nutrients = nutrients;
+        this.categories = categories;
+    }
 }
