@@ -15,6 +15,7 @@
         </h1>
 
         <form th:action method="POST" class="flex flex-col gap-4" onsubmit="productRequestDto__submit(this, event); return false;">
+            <input type="hidden" id="sellerId" name="sellerId" th:value="${@rq.member.id}">
             <div>
                 <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
                 <input type="text" id="name" name="name" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">

@@ -2,6 +2,8 @@ package com.mypill.domain.product.Service;
 
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
+import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.nutrient.Service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
@@ -25,6 +27,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final NutrientService nutrientService;
     private final CategoryService categoryService;
+    private final MemberService memberService;
 
     @Transactional
     public RsData<ProductResponse> create(ProductRequest request) {
@@ -37,8 +40,11 @@ public class ProductService {
                 .map(Category::getId)
                 .collect(Collectors.toList()));
 
-        Product product = Product.of(request, nutrients, categories);
+        Member seller = memberService.findById(request.getSellerId()).orElse(null);
+        Product product = Product.of(request, nutrients, categories, seller);
+
         productRepository.save(product);
+
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", ProductResponse.of(product));
     }
 

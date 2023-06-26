@@ -46,7 +46,15 @@ public class Member extends BaseEntity {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("MEMBER"));
 
+        if(isSeller()){
+            authorities.add(new SimpleGrantedAuthority("SELLER"));
+        }
+
         return authorities;
+    }
+
+    public boolean isSeller(){
+        return userType.equals(2);
     }
 
     public Map<String, Object> toClaims() {

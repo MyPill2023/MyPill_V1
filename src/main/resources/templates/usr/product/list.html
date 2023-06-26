@@ -21,9 +21,10 @@
                             <div class="border border-gray-200 p-10">
                                 상품이미지
                             </div>
-                            <div class="flex flex-col gap-2">
-                                <div class="flex gap-3 mt-2">
-                                    <div th:text="${product.name}" class="text-2xl font-bold"></div>
+                            <div class="flex flex-col gap-3">
+                                <div class="flex flex-col gap-1">
+                                    <h3 class=" text-lg" th:text="${product.seller.name}"> </h3>
+                                    <h1 th:text="${product.name}" class="text-2xl font-bold"></h1>
                                 </div>
                                 <span class="text-xl font-bold"
                                       th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>

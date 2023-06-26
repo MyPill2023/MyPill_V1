@@ -37,7 +37,7 @@ public class NotProd {
             List<Category> categories = categoryService.findAll();
             categories = categories.subList(0, 2);
 
-            productService.create(new ProductRequest("루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, nutrients, categories));
+            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, nutrients, categories));
 
         };
     }

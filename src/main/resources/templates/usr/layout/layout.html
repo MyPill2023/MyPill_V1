@@ -21,7 +21,7 @@
                         <a th:if="${@rq.login}" href="javascript: document.logoutForm.submit();">로그아웃</a>
                         <form style="display: none" name="logoutForm" method="POST" th:action="@{/usr/member/logout}"
                               hidden></form>
-                        <a th:if="${@rq.login}" href="/product/create">상품 등록</a>
+                        <a th:if="${@rq.isSeller()}" href="/product/create">상품 등록</a>
                     </li>
 
                 </ul>

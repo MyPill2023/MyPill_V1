@@ -13,7 +13,8 @@
         상품 이미지
       </div>
 
-      <div class="flex justify-start w-full">
+      <div class="flex flex-col justify-start w-full gap-2">
+        <h3 class=" text-xl" th:text="${productResponse.seller.name}"> </h3>
         <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"> </h1>
       </div>
       <div class="flex justify-end w-full">

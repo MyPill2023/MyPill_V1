@@ -1,9 +1,11 @@
 package com.mypill.domain.product.entity;
 
 import com.mypill.domain.category.entity.Category;
+import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.global.base.entitiy.BaseEntity;
+import groovy.lang.Lazy;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -28,6 +30,9 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Long stock;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member seller;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "product_nutrient", // 연결테이블
@@ -47,12 +52,13 @@ public class Product extends BaseEntity {
 
     //이미지
 
-    public static Product of(ProductRequest requestDto, List<Nutrient> nutrients, List<Category> categories) {
+    public static Product of(ProductRequest requestDto, List<Nutrient> nutrients, List<Category> categories, Member seller) {
         return Product.builder()
                 .name(requestDto.getName())
                 .description(requestDto.getDescription())
                 .price(requestDto.getPrice())
                 .stock(requestDto.getStock())
+                .seller(seller)
                 .nutrients(nutrients)
                 .categories(categories)
                 .build();
