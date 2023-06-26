@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface NutrientRepository extends JpaRepository<Nutrient, Long> {
     List<Nutrient> findAllByOrderByNameAsc();
-
     List<Nutrient> findByIdIn(List<Long> nutrientIds);
 }

@@ -108,6 +108,14 @@ public class ProductService {
         return productRepository.findByDeleteDateIsNull();
     }
 
+    public List<Product> findByNutrientsId(Long nutrientId) {
+        return productRepository.findByNutrientsIdAndDeleteDateIsNull(nutrientId);
+    }
+
+    public List<Product> findByCategoriesId(Long categoryId) {
+        return productRepository.findByCategoriesIdAndDeleteDateIsNull(categoryId);
+    }
+
     private  List<Nutrient> MappingNutrient(List<Nutrient> nutrients){
         return nutrientService.findByIdIn(nutrients.stream()
                 .map(Nutrient::getId)

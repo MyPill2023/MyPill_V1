@@ -23,4 +23,8 @@ public class NutrientService {
     public List<Nutrient> findByIdIn(List<Long> nutrientIds) {
         return nutrientRepository.findByIdIn(nutrientIds);
     }
+
+    public Optional<Nutrient> findById(Long nutrientId) {
+        return nutrientRepository.findById(nutrientId);
+    }
 }
