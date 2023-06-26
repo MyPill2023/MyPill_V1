@@ -19,4 +19,8 @@ public class NutrientService {
     public List<Nutrient> findAllByOrderByNameAsc() {
         return nutrientRepository.findAllByOrderByNameAsc();
     }
+
+    public List<Nutrient> findByIdIn(List<Long> nutrientIds) {
+        return nutrientRepository.findByIdIn(nutrientIds);
+    }
 }

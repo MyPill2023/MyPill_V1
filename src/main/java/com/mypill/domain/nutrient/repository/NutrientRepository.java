@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface NutrientRepository extends JpaRepository<Nutrient, Long> {
-    public List<Nutrient> findAllByOrderByNameAsc();
+    List<Nutrient> findAllByOrderByNameAsc();
+
+    List<Nutrient> findByIdIn(List<Long> nutrientIds);
 }

@@ -19,7 +19,6 @@ public class Nutrient {
     private String name;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
-
     @ManyToMany(mappedBy = "nutrients")
     private List<Product> products = new ArrayList<>();
 }

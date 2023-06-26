@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,7 @@ public class ProductController {
     private final CategoryService categoryService;
     private final Rq rq;
 
+    @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/create")
     @Operation(summary = "상품 등록 폼")
     public String showCreate(Model model){
@@ -45,6 +47,7 @@ public class ProductController {
         return "usr/product/create";
     }
 
+    @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/create")
     @Operation(summary = "상품 등록")
     public String create(@Valid ProductRequest productRequest){
@@ -73,6 +76,7 @@ public class ProductController {
         return "usr/product/list";
     }
 
+    @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/update/{productId}")
     @Operation(summary = "상품 수정 폼")
     public String updateBefore(@PathVariable Long productId, Model model){
@@ -89,20 +93,22 @@ public class ProductController {
         return "usr/product/update";
     }
 
+    @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/update/{productId}")
     @Operation(summary = "상품 수정")
     public String update(@PathVariable Long productId, @Valid ProductRequest productRequest){
 
-        RsData<ProductResponse> updateRsData = productService.update(productId, productRequest);
+        RsData<Product> updateRsData = productService.update(productId, productRequest);
 
-        return rq.redirectWithMsg("/product/list", updateRsData);
+        return rq.redirectWithMsg("/product/detail/%s".formatted(productId), updateRsData);
     }
 
+    @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/delete/{productId}")
-    @Operation(summary = "상품 수정")
-    public String update(@PathVariable Long productId){
+    @Operation(summary = "상품 삭제")
+    public String delete(@PathVariable Long productId){
 
-        RsData<ProductResponse> deleteRsData = productService.delete(productId);
+        RsData<Product> deleteRsData = productService.delete(productId);
 
         return rq.redirectWithMsg("/product/list", deleteRsData);
     }

@@ -15,6 +15,7 @@
         </h1>
 
         <form th:action method="POST" class="flex flex-col gap-4" onsubmit="productRequestDto__submit(this, event); return false;">
+            <input type="hidden" id="sellerId" name="sellerId" th:value="${@rq.member.id}">
             <div>
                 <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
                 <input type="text" id="name" name="name" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
@@ -184,6 +185,8 @@
                 categoryList.push(listItemValue);
             }
 
+            console.log(categoryList);
+
             var categoriesInput = document.getElementById("categories");
             categoriesInput.value = categoryList.join(",");
         }
@@ -223,6 +226,20 @@
 
             updateNutrientsInput();
             updateCategoriesInput();
+
+            var selectedNutrientList = document.getElementById("selectedNutrientList");
+            var selectedNutrientItems = selectedNutrientList.getElementsByTagName("li");
+            if (selectedNutrientItems.length === 0) {
+                toastWarning("주요 성분을 선택해주세요.");
+                return;
+            }
+
+            var selectedCategoryList = document.getElementById("selectedCategoryList");
+            var selectedCategoryItems = selectedCategoryList.getElementsByTagName("li");
+            if (selectedCategoryItems.length === 0) {
+                toastWarning("주요 기능을 선택해주세요.");
+                return;
+            }
 
             // 폼 제출을 막음
             event.preventDefault();
