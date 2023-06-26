@@ -10,39 +10,79 @@
         <h1 class="text-4xl font-bold">
             로그인
         </h1>
+        <script>
+            let MemberLogin__submitDone = false;
+
+            function MemberLogin__submit(form) {
+                if (MemberLogin__submitDone) {
+                    return;
+                }
+
+                form.username.value = form.username.value.trim();
+
+                if (form.username.value.length === 0) {
+                    toastWarning("아이디를 입력해주세요.");
+                    form.name.focus();
+                    return;
+                }
+
+                form.password.value = form.password.value.trim();
+
+                if (form.password.value.length === 0) {
+                    toastWarning("비밀번호를 입력해주세요.");
+                    form.password.focus();
+                    return;
+                }
+
+                form.submit();
+                MemberLogin__submitDone = true;
+            }
+
+            function enableInputEnglishAndNumber(element) {
+                const regex = /^[a-zA-Z0-9]+$/;
+                const inputValue = element.value;
+                if (!regex.test(inputValue)) {
+                    element.value = inputValue.replace(/[^a-zA-Z0-9]/g, '');
+                }
+            }
+        </script>
         <div class="max-w-2xl w-full px-4">
-            <form th:action method="POST" class="flex flex-col gap-6">
+            <form th:action method="POST" class="flex flex-col gap-6"
+                  onsubmit="MemberLogin__submit(this); return false;">
                 <div class="form-control">
-                    <input type="text" name="userId" placeholder="아이디" class="input input-bordered"/>
+                    <label class="label">
+                        <span class="label-text">아이디</span>
+                    </label>
+                    <input autofocus type="text" name="username" placeholder="아이디" class="input input-bordered"
+                           oninput="enableInputEnglishAndNumber(this)">
                 </div>
                 <div class="form-control">
-                    <input type="password" name="password" placeholder="비밀번호" class="input input-bordered"/>
+                    <label class="label">
+                        <span class="label-text">비밀번호</span>
+                    </label>
+                    <input type="password" name="password" placeholder="비밀번호" class="input input-bordered">
                 </div>
-                <button id="btn-login" class="btn btn-block gap-1"
-                        style="background-color: rgb(220 252 231); border: none;">
-                    <span class="text-black">로그인</span>
-                </button>
+                <div class="grid grid-cols-2 mt-2 gap-2">
+                    <a href="/usr/member/join" class="btn btn-secondary btn-outline">가입하기</a>
+                    <input class="btn btn-primary" type="submit" value="로그인">
+                </div>
+
+                <div class="gap-6">
+                    <div class="text-center">
+                        <span>아이디 / 비밀번호 찾기</span>
+                    </div>
+                    <a href="/oauth2/authorization/naver" class="btn btn-block btn-outline gap-1 border-none"
+                       style="background-color: #2DB400;">
+                        <i class="fa-solid fa-n text-white"></i>
+                        <span class="text-white">네이버로 로그인하기</span>
+                    </a>
+                    <a href="/oauth2/authorization/kakao" class="btn btn-block btn-outline gap-1 border-none"
+                       style="background-color: #fae100;">
+                        <i class="fa-solid fa-comment text-white"></i>
+                        <span class="text-white">카카오톡으로 로그인하기</span>
+                    </a>
+                </div>
             </form>
-            <div class="gap-6">
-                <button id="btn-signUp" class="btn btn-block gap-1"
-                        onclick="location.href='./join'"
-                        style="background-color:white;">
-                    <span class="text-black">회원가입</span>
-                </button>
-                <div class="text-center">
-                    <span>아이디 / 비밀번호 찾기</span>
-                </div>
-                <a href="/oauth2/authorization/naver" class="btn btn-block btn-outline gap-1 border-none"
-                   style="background-color: #2DB400;">
-                    <i class="fa-solid fa-n text-white"></i>
-                    <span class="text-white">네이버로 로그인하기</span>
-                </a>
-                <a href="/oauth2/authorization/kakao" class="btn btn-block btn-outline gap-1 border-none"
-                   style="background-color: #fae100;">
-                    <i class="fa-solid fa-comment text-white"></i>
-                    <span class="text-white">카카오톡으로 로그인하기</span>
-                </a>
-            </div>
         </div>
     </div>
 </main>

@@ -1,18 +1,15 @@
 package com.mypill.domain.member.controller;
 
-import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.form.JoinForm;
-import com.mypill.domain.member.form.LoginForm;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,50 +19,43 @@ public class MemberController {
     private final MemberService memberService;
     private final Rq rq;
 
+    @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
-    public String showLogin() {
+    public String login(HttpServletRequest request) {
+        String uri = request.getHeader("Referer");
+        if (uri != null && !uri.contains("/usr/member/login")) {
+            request.getSession().setAttribute("prevPage", uri);
+        }
         return "usr/member/login";
     }
 
-    @PostMapping("/login")
-    public String login(@Valid LoginForm loginForm) {
-        RsData<Member> rsData = memberService.login(loginForm.getUserId(), loginForm.getPassword());
-        if (rsData.isFail()) {
-            return rq.historyBack(rsData.getMsg());
-        }
-        return rq.redirectWithMsg("/", rsData);
-    }
-
+    @PreAuthorize("isAnonymous()")
     @GetMapping("/join")
     public String showJoin() {
         return "usr/member/join";
     }
 
+    @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
     public String join(@Valid JoinForm joinForm) {
-        RsData<Member> rsData = memberService.join(joinForm.getUserId(), joinForm.getUserType(),
-                joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail());
-        if (rsData.isFail()) {
-            return rq.historyBack(rsData.getMsg());
+        try {
+            memberService.join(joinForm.getUsername(), joinForm.getName(),
+                    joinForm.getPassword(), joinForm.getUserType(), joinForm.getEmail());
+        } catch (AlreadyJoinException e) {
+            return rq.historyBack(e.getMessage());
         }
-        return rq.redirectWithMsg("/usr/member/login", rsData);
+        return rq.redirectWithMsg("/usr/member/login", "회원가입이 완료되었습니다.");
     }
 
     @ResponseBody
     @GetMapping("/join/idCheck")
-    public int idCheck(String validUserId) {
-        if (validUserId.equals("")) {
-            return 1;
-        }
-        if (memberService.isIdDuplicated(validUserId)) {
-            return 2;
-        }
-        return 0;
+    public int idCheck(String username) {
+        return memberService.idValidation(username);
     }
 
     @ResponseBody
     @GetMapping("/join/emailCheck")
-    public int emailCheck(String validEmail) {
-        return memberService.isValid(validEmail);
+    public int emailCheck(String email) {
+        return memberService.emailValidation(email);
     }
 }
