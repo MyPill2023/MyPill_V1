@@ -1,7 +1,7 @@
 <html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
 
 <head>
-  <title>상품 등록</title>
+  <title>질문 등록</title>
 </head>
 
 <body>
@@ -15,23 +15,15 @@
 
     <form th:action method="POST" class="flex flex-col gap-4" onsubmit="CreateForm__submit(this, event); return false;">
       <div>
-        <label for="name" class="block text-gray-700 font-bold mb-2">제목</label>
-        <input type="text" id="name" name="name" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+        <label for="title" class="block text-gray-700 font-bold mb-2">제목</label>
+        <input type="text" id="title" name="title" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
       </div>
 
       <div class="flex flex-col">
         <span class="text-gray-700 font-bold mb-2">내용</span>
-        <textarea id="description" name="description" placeholder="질문사항을 자세히 입력해주세요."
+        <textarea id="content" name="content" placeholder="질문사항을 자세히 입력해주세요."
                   class="shadow textarea-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
         </textarea>
-      </div>
-
-      <div class="inputArea">
-        <label for="img">이미지</label>
-        <input type="file" id="img" name="file" />
-        <div class="select_img">
-          <img src="" />
-        </div>
       </div>
 
       <button type="submit" class="btn btn-accent">질문 등록</button>
@@ -41,47 +33,21 @@
 
   <script>
     function CreateForm__submit(form, event) {
-      form.name.value = form.name.value.trim();
+      form.title.value = form.title.value.trim();
 
-      if (form.name.value.length === 0) {
-        toastWarning("상품명을 입력해주세요.");
-        form.name.focus();
+      if (form.title.value.length === 0) {
+        toastWarning("제목을 입력해주세요.");
+        form.title.focus();
         return;
       }
 
-      form.description.value = form.description.value.trim();
+      form.content.value = form.content.value.trim();
 
-      if (form.description.value.length === 0) {
-        toastWarning("상품 설명을 입력해주세요.");
-        form.description.focus();
+      if (form.content.value.length === 0) {
+        toastWarning("내용을 입력해주세요.");
+        form.content.focus();
         return;
       }
-
-      form.price.value = form.price.value.trim();
-
-      if (form.price.value === "") {
-        toastWarning("상품 가격을 입력해주세요.");
-        form.price.focus();
-        return;
-      }
-
-      form.stock.value = form.stock.value.trim();
-
-      if (form.stock.value === "") {
-        toastWarning("상품 재고를 입력해주세요.");
-        form.stock.focus();
-        return;
-      }
-
-      $("#img").change(function() {
-        if (this.files && this.files[0]) {
-          var reader = new FileReader;
-          reader.onload = function(data) {
-            $(".select_img img").attr("src", data.target.result).width(500);
-          }
-          reader.readAsDataURL(this.files[0]);
-        }
-      });
 
       // 폼 발송
       form.submit();

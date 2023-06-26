@@ -1,22 +1,22 @@
 package com.mypill.domain.question.entity;
 
-import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.question.form.QuestionForm;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 @Builder
 @Getter
 public class Question extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;      // 작성자
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Member member;      // 작성자
 
     @Column(nullable = false)
     private String title;
@@ -25,20 +25,4 @@ public class Question extends BaseEntity {
 //    @OneToMany(mappedBy = "question", orphanRemoval = true)
 //    private List<Answer> answers; // 답변
     private Long answerCnt;     // 답변 수
-
-//    @OneToOne(fetch = FetchType.LAZY)
-//    private UploadImage uploadImage; // 이미지
-
-    public void update(QuestionDto dto) {
-        this.title = dto.getTitle();
-        this.content = dto.getContent();
-    }
-
-//    public void answerChange(Long answerCnt) {
-//        this.answerCnt = answerCnt;
-//    }
-//
-//    public void setUploadImage(UploadImage uploadImage) {
-//        this.uploadImage = uploadImage;
-//    }
 }

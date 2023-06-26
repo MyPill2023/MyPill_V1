@@ -1,20 +1,17 @@
 package com.mypill.domain.question.controller;
 
-import com.mypill.domain.product.dto.response.ProductResponse;
+import com.mypill.domain.question.dto.QuestionCreateRequest;
 import com.mypill.domain.question.entity.Question;
-import com.mypill.domain.question.form.QuestionForm;
 import com.mypill.domain.question.service.QuestionService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -38,29 +35,16 @@ public class QuestionController {
     }
 
     @GetMapping("/create")
-    public String create(QuestionForm questionForm) {
+    public String create(Model model) {
+        model.addAttribute("QuestionCreateRequest", new QuestionCreateRequest());
+
         return "usr/question/create";
     }
 
     @PostMapping("/create")
-    public String create(@Valid QuestionForm questionForm, BindingResult bindingResult) {
+    public String create(@ModelAttribute QuestionCreateRequest req) {
+        RsData<Question> createRsData = questionService.create(req);
 
-        if (bindingResult.hasErrors()) {
-            return "usr/board/board_form";
-        }
-
-        Member member = memberService.getMember(member.getUsername());
-
-        RsData<Question> createRsData = questionService.create(questionForm);
-
-        return rq.redirectWithMsg("/question/detail/%s".formatted(createRsData.getData().getId()), createRsData);
+        return rq.redirectWithMsg("/question/list", createRsData);
     }
-
-//
-//    @GetMapping("/detail/{id}")
-//    public String detail(Model model, @PathVariable("id") Long id, CommentForm commentForm){
-//        Board board = this.boardService.getBoard(id);
-//        model.addAttribute("board", board);
-//        return "usr/board/board_detail";
-//    }
 }
