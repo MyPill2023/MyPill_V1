@@ -14,9 +14,5 @@ public class MypillApplication {
         SpringApplication.run(MypillApplication.class, args);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
 }

@@ -34,7 +34,6 @@ public class ApiV1MemberController {
     @Operation(summary = "로그인, 엑세스 토큰 발급")
     public ResponseEntity<RsData<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
         Member member = memberService.findByUsername(loginRequest.getUsername()).orElse(null);
-
         if (member == null) {
             return Ut.sp.responseEntityOf(
                     RsData.of(
