@@ -14,11 +14,11 @@
             </div>
             <div class="flex w-full justify-end">
                 <span class="text-xl font-bold">
-<!--                      th:text="${post.member.username}">-->
                     글쓴이
                 </span>
+                <span th:text="${post.poster.name}"></span>
             </div>
-            <div class="flex justify-end w-full">
+            <div class="flex w-full">
                 <span class="text-xl font-bold" th:text="${post.content}">
                 </span>
             </div>

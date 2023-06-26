@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
+import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rsData.RsData;
 
 import com.mypill.global.util.Ut;
@@ -24,6 +26,7 @@ import jakarta.servlet.http.HttpSession;
 @Component
 @RequestScope
 public class Rq {
+    private final MemberService memberService;
     private final MessageSource messageSource;
     private final LocaleResolver localeResolver;
     private final HttpServletRequest req;
@@ -31,8 +34,10 @@ public class Rq {
     private final HttpSession session;
     private final User user;
     private Locale locale;
+    private Member member = null; // 레이지 로딩, 처음부터 넣지 않고, 요청이 들어올 때 넣는다.
 
-    public Rq(MessageSource messageSource, LocaleResolver localeResolver, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
+    public Rq(MemberService memberService, MessageSource messageSource, LocaleResolver localeResolver, HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
+        this.memberService = memberService;
         this.messageSource = messageSource;
         this.localeResolver = localeResolver;
         this.req = req;
@@ -116,5 +121,14 @@ public class Rq {
 
     public String getPassword() {
         return (String) this.session.getAttribute("password");
+    }
+
+    public Member getMember() {
+        if (isLogout())
+            return null;
+        if (member == null) {
+            member = memberService.findByUsername(user.getUsername()).orElse(null);
+        }
+        return member;
     }
 }

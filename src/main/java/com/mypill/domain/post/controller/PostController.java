@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,10 +37,25 @@ public class PostController {
         return "usr/post/list";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     @Operation(summary = "게시글 등록 폼")
     public String create() {
         return "usr/post/create";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/create")
+    @Operation(summary = "게시글 등록")
+    public String create(@Valid PostRequest postRequest) {
+        if (rq.isLogout()) {
+            return rq.historyBack("로그인 후 이용 가능합니다.");
+        }
+        RsData<Post> createRsData = postService.create(postRequest, rq.getMember());
+        if (createRsData.isFail()) {
+            return rq.historyBack(createRsData.getMsg());
+        }
+        return rq.redirectWithMsg("/usr/post/detail/%s".formatted(createRsData.getData().getId()), createRsData);
     }
 
     @GetMapping("/detail/{postId}")
@@ -53,47 +69,46 @@ public class PostController {
         return "usr/post/detail";
     }
 
-    @PostMapping("/create")
-    @Operation(summary = "게시글 등록")
-    public String create(@Valid PostRequest postRequest) {
-        RsData<Post> createRsData = postService.create(postRequest);
-        if (createRsData.isFail()) {
-            return rq.historyBack(createRsData.getMsg());
-        }
-        return rq.redirectWithMsg("/usr/post/detail/%s".formatted(createRsData.getData().getId()), createRsData);
-    }
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/update/{postId}")
     @Operation(summary = "게시글 수정 폼")
     public String update(@PathVariable Long postId, Model model) {
         if (rq.isLogout()) {
-            return rq.historyBack("로그인이 필요한 기능입니다.");
+            return rq.historyBack("로그인 후 이용 가능합니다.");
         }
         Post post = postService.findById(postId).orElse(null);
         if (post == null) {
             return rq.historyBack("존재하지 않는 게시글입니다.");
         }
-//        if (!Objects.equals(post.getAuthor().getId(), rq.getMember().getId())) {
-//            return rq.historyBack("작성자만 수정 가능합니다.");
-//        }
+        if (post.getPoster().getId() != rq.getMember().getId()) {
+            return rq.historyBack("작성자만 수정이 가능합니다.");
+        }
         model.addAttribute("post", post);
         return "usr/post/update";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/update/{postId}")
     @Operation(summary = "게시글 수정")
     public String update(@PathVariable Long postId, @Valid PostRequest postRequest) {
-        RsData<Post> updateRsData = postService.update(postId, postRequest);
+        if (rq.isLogout()) {
+            return rq.historyBack("로그인 후 이용 가능합니다.");
+        }
+        RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember());
         if (updateRsData.isFail()) {
             return rq.historyBack(updateRsData.getMsg());
         }
         return rq.redirectWithMsg("/usr/post/detail/%s".formatted(updateRsData.getData().getId()), updateRsData);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/delete/{postId}")
     @Operation(summary = "게시글 삭제")
     public String delete(@PathVariable Long postId) {
-        RsData<Post> deleteRsData = postService.delete(postId);
+        if (rq.isLogout()) {
+            return rq.historyBack("로그인 후 이용 가능합니다.");
+        }
+        RsData<Post> deleteRsData = postService.delete(postId, rq.getMember());
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData.getMsg());
         }

@@ -1,6 +1,7 @@
 package com.mypill.domain.post.dto;
 
 import com.mypill.domain.category.entity.Category;
+import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.product.entity.Product;

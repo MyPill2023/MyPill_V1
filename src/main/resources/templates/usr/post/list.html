@@ -21,14 +21,16 @@
                                th:href="@{/usr/post/detail/{id}(id=${post.id})}" th:text="${post.title}"></a>
                         </div>
                         <div class="flex shrink-0 items-center gap-x-1">
-                            <a class="truncate pl-1 text-xs font-normal text-gray-700 hover:text-blue-500 dark:text-gray-300 dark:hover:text-blue-200 sm:text-sm">작성자</a>
+                            <a class="truncate pl-1 text-xs font-normal text-gray-700">
+                                작성자 :
+                            </a>
+                            <span th:text="${post.poster.name}"></span>
                             <div class="inline-flex items-center font-normal text-gray-700 dark:text-gray-300">
-                                <span class="mx-0.5 text-xs sm:text-sm">·</span>
                                 <span class="text-xs sm:text-sm">조회수</span>
                             </div>
                             <span class="text-xs text-gray-700 dark:text-gray-300 sm:text-sm">·</span>
                             <span class="text-xs text-gray-700 dark:text-gray-300 sm:text-sm"
-                                  th:text="${#temporals.format(post.createDate, 'yyyy.MM.dd HH:mm:ss')}"></span>
+                                  th:text="${#temporals.format(post.createDate, 'YY.MM.dd')}"></span>
                         </div>
                     </li>
                 </ul>
