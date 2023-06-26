@@ -20,9 +20,12 @@ public class Question extends BaseEntity {
 
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
 //    @OneToMany(mappedBy = "question", orphanRemoval = true)
 //    private List<Answer> answers; // 답변
+
     private Long answerCnt;     // 답변 수
 }

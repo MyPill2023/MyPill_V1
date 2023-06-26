@@ -35,6 +35,7 @@ public class QuestionController {
     }
 
     @GetMapping("/create")
+    @Operation(summary = "질문 등록 폼")
     public String create(Model model) {
         model.addAttribute("QuestionCreateRequest", new QuestionCreateRequest());
 
@@ -42,6 +43,7 @@ public class QuestionController {
     }
 
     @PostMapping("/create")
+    @Operation(summary = "질문 등록")
     public String create(@ModelAttribute QuestionCreateRequest req) {
         RsData<Question> createRsData = questionService.create(req);
 
