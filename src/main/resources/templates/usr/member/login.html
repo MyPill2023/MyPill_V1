@@ -22,7 +22,7 @@
 
                 if (form.username.value.length === 0) {
                     toastWarning("아이디를 입력해주세요.");
-                    form.name.focus();
+                    form.username.focus();
                     return;
                 }
 
@@ -33,7 +33,7 @@
                     form.password.focus();
                     return;
                 }
-
+                console.log("입성");
                 form.submit();
                 MemberLogin__submitDone = true;
             }
