@@ -1,18 +1,18 @@
-package com.mypill.domain.question.dto;
+package com.mypill.domain.post.dto;
 
-import com.mypill.domain.question.entity.Question;
+import com.mypill.domain.post.entity.Post;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class QuestionCreateRequest {
+public class PostCreateRequest {
 
     private String title;
     private String content;
-    private MultipartFile image;
+//    private MultipartFile image;
 
-    public Question toEntity() {
-        return Question.builder()
+    public Post toEntity() {
+        return Post.builder()
                 .title(title)
                 .content(content)
                 .answerCnt(0L)

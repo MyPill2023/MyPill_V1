@@ -1,4 +1,4 @@
-package com.mypill.domain.question.entity;
+package com.mypill.domain.post.entity;
 
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Builder
 @Getter
-public class Question extends BaseEntity {
+public class Post extends BaseEntity {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private Member member;      // 작성자
 

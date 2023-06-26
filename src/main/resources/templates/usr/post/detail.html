@@ -1,0 +1,53 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>메인</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col my-10 w-[32rem]">
+
+        <div class="flex flex-col gap-5 w-full max-w-md mb-10">
+            <div class="flex w-full">
+                <h1 class=" text-3xl font-bold" th:text="${post.title}"></h1>
+            </div>
+            <div class="flex w-full">
+                <span class="text-xl font-bold">
+                    내용 ㅇㅇㅇㅇ내용 ㅇㅇㅇㅇ내용 ㅇㅇㅇㅇ내용 ㅇㅇㅇㅇ내용 ㅇㅇㅇㅇ
+                </span>
+            </div>
+            <div class="flex justify-end w-full">
+                <span class="text-xl font-bold">
+<!--                      th:text="${post.member.username}">-->
+                    글쓴이
+                </span>
+            </div>
+            <div class="divider !my-2"></div>
+            <div class="card bg-base-100 border border-gray-200">
+                <div class="card-body">
+                    <h2 class="card-title mb-2">댓글</h2>
+                    <span>ㅇ11</span>
+                    <span>ㅇ12</span>
+                    <!--                    <div th:each="nutrient, loop : ${post.comments}">-->
+                    <!--                        <p th:text="${comment.content}"></p>-->
+                    <!--                    </div>-->
+                </div>
+            </div>
+
+            <a th:href="@{|/post/update/${post.id}|}"
+               class="btn btn-success btn-outline flex gap-1">
+                수정하기
+            </a>
+            <a class="btn btn-success btn-outline flex gap-1" href="javascript:;"
+               onclick="if ( confirm('게시글을 삭제하시겠습니까?') ) $(this).next().submit();">
+                삭제하기</a>
+            <form hidden th:action="@{|/post/delete/${post.id}|}" method="POST">
+                <input type="hidden" name="_method" value="delete">
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+
+</html>
