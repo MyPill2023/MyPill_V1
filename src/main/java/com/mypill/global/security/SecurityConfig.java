@@ -1,5 +1,6 @@
 package com.mypill.global.security;
 
+import com.mypill.global.security.OAuth2.CustomOAuth2AccessTokenResponseClient;
 import com.mypill.global.security.handler.CustomAuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomOAuth2AccessTokenResponseClient oAuth2AccessTokenResponseClient;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -31,6 +34,13 @@ public class SecurityConfig {
                                 .loginPage("/usr/member/login") // GET
                                 .loginProcessingUrl("/usr/member/login") // POST
                                 .successHandler(customAuthenticationSuccessHandler)
+                )
+                .oauth2Login(
+                        oauth2Login -> oauth2Login
+                                .loginPage("/usr/member/login")
+                                .tokenEndpoint(t -> t
+                                        .accessTokenResponseClient(oAuth2AccessTokenResponseClient)
+                                )
                 )
                 .logout(
                         logout -> logout

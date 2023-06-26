@@ -45,6 +45,28 @@ public class MemberService {
         return RsData.of("S-1", "회원가입 되었습니다.", savedMember);
     }
 
+    private RsData<Member> oauthJoin(String providerTypeCode, String username, String password, String name, String email) {
+        if (findByUsername(username).isPresent()) {
+            return RsData.of("F-1", "해당 아이디(%s)는 이미 사용중입니다.".formatted(username));
+        }
+
+        if (StringUtils.hasText(password)) {
+            password = passwordEncoder.encode(password);
+        }
+
+        Member member = Member.builder()
+                .providerTypeCode(providerTypeCode)
+                .username(username)
+                .name(name)
+                .password(passwordEncoder.encode(password))
+                .userType(1)
+                .email(email)
+                .build();
+
+        memberRepository.save(member);
+        return RsData.of("S-1", "회원가입이 완료되었습니다.", member);
+    }
+
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
     }
@@ -112,6 +134,15 @@ public class MemberService {
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    @Transactional
+    public RsData<Member> whenSocialLogin(String providerTypeCode, String username, String name, String email) {
+        Optional<Member> opMember = findByUsername(username);
+
+        return opMember.map(member -> RsData.of("S-2", "로그인 되었습니다.", member))
+                .orElseGet(() -> oauthJoin(providerTypeCode, username, "", name, email));
+
     }
 
     public boolean verifyWithWhiteList(Member member, String token) {

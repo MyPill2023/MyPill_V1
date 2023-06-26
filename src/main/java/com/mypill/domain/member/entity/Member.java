@@ -24,9 +24,9 @@ import java.util.Map;
 @NoArgsConstructor
 @SuperBuilder
 public class Member extends BaseEntity {
-
+    private String providerTypeCode; // 카카오로 가입한 회원인지, 네이버로 가입한 회원인지
     @NotNull
-    @Column(unique = true, length = 15)
+    @Column(unique = true)
     private String username;
     @NotNull
     @Column(length = 8)
