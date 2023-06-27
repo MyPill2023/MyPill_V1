@@ -1,19 +1,22 @@
 package com.mypill.domain.question.entity;
 
 import com.mypill.domain.category.entity.Category;
+import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-
-@ToString
-@Getter
-@Setter
 @Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
+@Builder
+@Getter
 @Table(name = "questions")
-public class Question {
+public class Question extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
@@ -25,6 +28,5 @@ public class Question {
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
-
 
 }

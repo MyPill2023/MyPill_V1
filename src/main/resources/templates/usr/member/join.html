@@ -2,11 +2,105 @@
 
 <head>
     <title>회원가입</title>
+    <style>
+        input:invalid {
+            border-color: red;
+        }
+
+        #btn-usernameCheck {
+            width: 15%;
+        }
+
+        #btn-emailCheck {
+            width: 15%;
+        }
+
+        .checkMsgF {
+            color: red;
+        }
+
+        .checkMsgT {
+            color: blue;
+        }
+
+    </style>
 </head>
 
 <body>
 <main layout:fragment="main">
     <script>
+        function usernameWrite() {
+            usernameChecked = false;
+        }
+
+        function emailWrite() {
+            emailChecked = false;
+        }
+
+        let validUsername;
+        let usernameChecked = false;
+        $(function () {
+            $("#btn-usernameCheck").click(function () {
+                validUsername = $("#username").val();
+                $.ajax({
+                    type: "get",
+                    async: false,
+                    url: "/usr/member/join/idCheck",
+                    data: {username: validUsername},
+                    success: function (data) {
+                        if (data === 1) {
+                            $("#userNameCheckMsg").text("아이디가 입력되지 않았습니다.");
+                            $("#userNameCheckMsg").addClass("checkMsgF");
+                            $("#userNameCheckMsg").removeClass("checkMsgT");
+                        } else if (data === 2) {
+                            $("#userNameCheckMsg").text("이미 사용중인 아이디입니다.");
+                            $("#userNameCheckMsg").addClass("checkMsgF");
+                            $("#userNameCheckMsg").removeClass("checkMsgT");
+                        } else {
+                            $("#userNameCheckMsg").text("사용 가능한 아이디입니다.");
+                            $("#userNameCheckMsg").addClass("checkMsgT");
+                            $("#userNameCheckMsg").removeClass("checkMsgF");
+                            usernameChecked = true;
+                        }
+                    }
+                })
+            });
+        });
+
+        let validEmail;
+        let emailChecked = false;
+        $(function () {
+            $("#btn-emailCheck").click(function () {
+                validEmail = $("#email").val();
+                $.ajax({
+                    type: "get",
+                    async: false,
+                    url: "/usr/member/join/emailCheck",
+                    data: {email: validEmail},
+                    success: function (data) {
+                        if (data === 1) {
+                            $("#emailCheckMsg").text("이메일이 입력되지 않았습니다.");
+                            $("#emailCheckMsg").addClass("checkMsgF");
+                            $("#emailCheckMsg").removeClass("checkMsgT");
+                        } else if (data === 2) {
+                            $("#emailCheckMsg").text("올바르지 않은 형식입니다.");
+                            $("#emailCheckMsg").addClass("checkMsgF");
+                            $("#emailCheckMsg").removeClass("checkMsgT");
+                        } else if (data === 3) {
+                            $("#emailCheckMsg").text("이미 사용중인 이메일 입니다.");
+                            $("#emailCheckMsg").addClass("checkMsgF");
+                            $("#emailCheckMsg").removeClass("checkMsgT");
+                        } else {
+                            $("#emailCheckMsg").text("사용 가능한 이메일 입니다.");
+                            $("#emailCheckMsg").addClass("checkMsgT");
+                            $("#emailCheckMsg").removeClass("checkMsgF");
+                            emailChecked = true;
+                        }
+                    }
+                })
+            });
+        });
+
         window.onload = function () {
             const radioButtons = document.querySelectorAll('input[name="option"]');
             for (let i = 0; i < radioButtons.length; i++) {
@@ -45,41 +139,80 @@
             userTypeInput.value = userType;
             form.appendChild(userTypeInput);
 
-            form.userId.value = form.userId.value.trim();
+            form.username.value = form.username.value.trim();
 
-            if (form.userId.value.length == 0) {
-                toastWarning("아이디를 입력해주세요.");
+            if (form.username.value !== validUsername || !usernameChecked) {
+                toastWarning("아이디 중복확인을 해주세요.");
                 form.username.focus();
                 return;
             }
+            form.name.value = form.name.value.trim();
 
-            form.password.value = form.password.value.trim();
+            const pw = form.password.value.trim();
+            const num = pw.search(/[0-9]/g);
+            const eng = pw.search(/[a-z]/ig);
 
-            if (form.password.value.length == 0) {
-                toastWarning("비밀번호를 입력해주세요.");
+            if (pw.length < 8 || pw.length > 12) {
+                toastWarning("비밀번호를 8자리 ~ 12자리로 입력해주세요.");
+                $("#passwordCheckMsg").text("8자리 ~ 12자리로 입력해주세요.");
                 form.password.focus();
                 return;
+            } else if (pw.search(/\s/) != -1) {
+                $("#passwordCheckMsg").text("공백 없이 입력해주세요.");
+                toastWarning("공백 없이 입력해주세요.");
+                form.password.focus();
+                return;
+            } else if (num < 0 || eng < 0) {
+                $("#passwordCheckMsg").text("영문, 숫자를 포함해야 합니다.");
+                toastWarning("영문, 숫자를 포함해야 합니다.");
+                form.password.focus();
+                return;
+            } else {
+                $("#passwordCheckMsg").text("");
             }
 
             form.password2.value = form.password2.value.trim();
-
-            if (form.password2.value != form.password.value) {
+            if (form.password2.value !== form.password.value) {
                 toastWarning("비밀번호가 일치하지 않습니다.");
-                form.password.focus();
+                $("#password2CheckMsg").text("일치하지 않습니다.");
+                form.password2.focus();
                 return;
             }
 
             form.email.value = form.email.value.trim();
-
-            if (form.email.value.length == 0) {
-                toastWarning("이메일을 입력해주세요.");
-                form.email.focus();
+            if (form.email.value !== validEmail || !emailChecked) {
+                toastWarning("이메일 중복확인을 해주세요.");
                 return;
             }
 
             form.submit();
             MemberJoin__submitDone = true;
         }
+
+        function enableInputEmailStyle(element) {
+            const regex = /^[a-zA-Z0-9@.]+$/;
+            const inputValue = element.value;
+            if (!regex.test(inputValue)) {
+                element.value = inputValue.replace(/[^a-zA-Z0-9@.]/g, '');
+            }
+        }
+
+        function enableInputKorean(element) {
+            const regex = /^[ㄱ-힣]+$/;
+            const inputValue = element.value;
+            if (!regex.test(inputValue)) {
+                element.value = inputValue.replace(/[^ㄱ-힣]/g, '');
+            }
+        }
+
+        function enableInputEnglishAndNumber(element) {
+            const regex = /^[a-zA-Z0-9]+$/;
+            const inputValue = element.value;
+            if (!regex.test(inputValue)) {
+                element.value = inputValue.replace(/[^a-zA-Z0-9]/g, '');
+            }
+        }
+
     </script>
 
     <div class="hero-content flex flex-col my-10">
@@ -89,7 +222,7 @@
 
         <div class="max-w-2xl w-full px-4">
 
-            <form th:action method="POST" class="flex flex-col gap-3" id="joinForm"
+            <form th:action method="POST" class="flex flex-col gap-3 flex-grow" id="joinForm"
                   onsubmit="MemberJoin__submit(this); return false;">
                 <span>회원 유형</span>
                 <div class="flex flex-row">
@@ -103,40 +236,70 @@
                     <div class="w-1/2">
                         <input type="radio" name="option" id="2" class="peer hidden" value="2"/>
                         <label for="2"
-                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">
+                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-red-500 peer-checked:font-bold peer-checked:text-white">
                             판매자 회원
                         </label>
                     </div>
                 </div>
                 <div class="form-control flex">
-                    <span>아이디</span>
-                    <input type="text" name="userId" placeholder="아이디를 입력하세요" class="input input-bordered"/>
+                    <div class="flex-row">
+                        <span>아이디</span>
+                        <span id="userNameCheckMsg"></span>
+                    </div>
+                    <div class="flex flex-row">
+                        <input type="text" id="username" maxlength="15" name="username" placeholder="아이디를 입력하세요"
+                               required pattern=".*\S.*" onkeydown="usernameWrite(this)"
+                               class="input input-bordered flex-grow mr-4"
+                               oninput="enableInputEnglishAndNumber(this)"/>
+                        <button type="button" id="btn-usernameCheck" class="btn btn-block" style="border: none;">
+                            <span>중복 확인</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-control">
-                    <span>이름</span>
-                    <input type="text" name="username" placeholder="실명을 입력하세요" class="input input-bordered"/>
+                        <span>이름</span>
+                    <input type="text" name="name" maxlength="8" placeholder="실명을 입력하세요"
+                           required pattern=".*\S.*"
+                           class="input input-bordered"
+                           oninput="enableInputKorean(this)"/>
                 </div>
                 <div class="form-control">
-                    <span>비밀번호</span>
-                    <input type="password" name="password" placeholder="비밀번호" class="input input-bordered"/>
+                    <div class="flex-row">
+                        <span>비밀번호</span>
+                        <span id="passwordCheckMsg" class="checkMsgF"></span>
+                    </div>
+                    <input type="password" name="password" maxlength="12" placeholder="비밀번호"
+                           required pattern=".*\S.*" class="input input-bordered"
+                           oninput="enableInputEnglishAndNumber(this)"/>
                 </div>
                 <div class="form-control">
-                    <span>비밀번호 확인</span>
-                    <input type="password" name="password2" placeholder="비밀번호 확인" class="input input-bordered"/>
+                    <div class="flex-row">
+                        <span>비밀번호 확인</span>
+                        <span id="password2CheckMsg" class="checkMsgF"></span>
+                    </div>
+                    <input type="password" name="password2" maxlength="12" placeholder="비밀번호 확인"
+                           required pattern=".*\S.*" class="input input-bordered"
+                           oninput="enableInputEnglishAndNumber(this)"/>
                 </div>
-                <div class="form-control">
-                    <span>이메일</span>
-                    <input type="text" name="email" placeholder="이메일 주소" class="input input-bordered"/>
+                <div class="form-control flex">
+                    <div class="flex-row">
+                        <span id="emailTitle">이메일</span>
+                        <span id="emailCheckMsg"></span>
+                    </div>
+                    <div class="flex flex-row ">
+                        <input type="text" id="email" name="email" maxlength="30" placeholder="이메일 주소"
+                               required pattern=".*\S.*" onkeydown="emailWrite(this)"
+                               class="input input-bordered flex-grow mr-4" oninput="enableInputEmailStyle(this)"/>
+                        <button type="button" id="btn-emailCheck" class="btn btn-block" style="border: none;">
+                            <span>중복 확인</span>
+                        </button>
+                    </div>
                 </div>
-                <!-- 일반 회원 / 판매 업체 선택 버튼 필요-->
-
-
                 <button id="btn-join" class="btn btn-block gap-1"
                         style="background-color: rgb(220 252 231); border: none;">
                     <span class="text-black">회원 가입</span>
                 </button>
             </form>
-
         </div>
     </div>
 </main>

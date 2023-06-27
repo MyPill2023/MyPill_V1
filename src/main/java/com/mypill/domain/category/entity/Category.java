@@ -1,17 +1,18 @@
 package com.mypill.domain.category.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mypill.domain.question.entity.Question;
+import com.mypill.domain.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 @Setter
 @Entity
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +26,7 @@ public class Category {
     @Column(name = "name", nullable = false)
     private String name;
 
+
     @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "category", orphanRemoval = true, cascade = CascadeType.ALL)
@@ -37,4 +39,6 @@ public class Category {
     }
 
 
+    @ManyToMany(mappedBy = "categories")
+    private List<Product> products = new ArrayList<>();
 }

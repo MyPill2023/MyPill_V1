@@ -1,5 +1,6 @@
 package com.mypill.global.rsData;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,15 +29,14 @@ public class RsData<T> {
         return of("F-1", "실패", data);
     }
 
+    @JsonIgnore
     public boolean isSuccess() {
         return resultCode.startsWith("S-");
     }
 
+    @JsonIgnore
     public boolean isFail() {
         return !isSuccess();
     }
 
-    public String getCode() {
-        return resultCode;
-    }
 }
