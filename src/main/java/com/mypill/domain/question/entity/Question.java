@@ -1,5 +1,6 @@
 package com.mypill.domain.question.entity;
 
+import com.mypill.domain.category.entity.Category;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,18 +15,18 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Builder
 @Getter
-public class Question extends BaseEntity {
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Member member;      // 작성자
+@Table(name = "questions")
+public class Question extends BaseEntity{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "question_id")
+    private Long id;
 
-    @Column(nullable = false)
-    private String title;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
-//    @OneToMany(mappedBy = "question", orphanRemoval = true)
-//    private List<Answer> answers; // 답변
-
-    private Long answerCnt;     // 답변 수
 }
