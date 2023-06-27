@@ -24,7 +24,7 @@ import java.util.Objects;
 @RequestMapping("/usr/post")
 @RequiredArgsConstructor
 @Controller
-@Tag(name = "QuestionController", description = "게시판")
+@Tag(name = "PostController", description = "게시판")
 public class PostController {
     private final PostService postService;
     private final Rq rq;

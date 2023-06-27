@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,6 @@ import java.util.List;
 public class Post extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
     private Member poster;
     @Column(nullable = false)
     private String title;
@@ -29,11 +29,12 @@ public class Post extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "comment_id")
-    private List<Comment> comments;
+    @OneToMany(mappedBy = "post")
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
 
-    public Long getAnswerCnt() {
+    public Long getCommentCnt() {
         return (long) this.comments.size();
     }
+
 }

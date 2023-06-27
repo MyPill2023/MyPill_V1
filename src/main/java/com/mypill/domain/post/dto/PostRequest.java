@@ -10,10 +10,4 @@ public class PostRequest {
     private String content;
 //    private MultipartFile image;
 
-    public Post toEntity() {
-        return Post.builder()
-                .title(title)
-                .content(content)
-                .build();
-    }
 }

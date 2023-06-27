@@ -16,7 +16,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @Builder
 public class Comment extends BaseEntity {
-
+    @ManyToOne
+    private Post post;
+    @Column(nullable = false)
+    private String name;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
 }
