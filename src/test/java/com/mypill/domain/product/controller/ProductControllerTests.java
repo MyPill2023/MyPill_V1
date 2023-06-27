@@ -47,7 +47,7 @@ public class ProductControllerTests {
     @Test
     @DisplayName("상품 등록 폼 처리")
     @WithUserDetails("user3")
-    void createProduct() throws Exception {
+    void createProductTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
                 .perform(post("/product/create")
@@ -73,7 +73,7 @@ public class ProductControllerTests {
     @Test
     @DisplayName("상품 수정 폼 처리 - 성공")
     @WithUserDetails("user3")
-    void updateProductSuccess() throws Exception {
+    void updateProductSuccessTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
                 .perform(post("/product/update/1")
@@ -103,7 +103,7 @@ public class ProductControllerTests {
     @Test
     @DisplayName("상품 수정 폼 처리 - 권한없음 실패")
     @WithUserDetails("user4")
-    void updateProductFail() throws Exception {
+    void updateProductFailTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
                 .perform(post("/product/update/1")
@@ -133,7 +133,7 @@ public class ProductControllerTests {
     @Test
     @DisplayName("상품 삭제 - 성공")
     @WithUserDetails("user3")
-    void deleteProductSuccess() throws Exception {
+    void deleteProductSuccessTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
                 .perform(post("/product/delete/1")
@@ -155,7 +155,7 @@ public class ProductControllerTests {
     @Test
     @DisplayName("상품 삭제 - 권한없음 실패")
     @WithUserDetails("user4")
-    void deleteProductFail() throws Exception {
+    void deleteProductFailTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
                 .perform(post("/product/delete/1")

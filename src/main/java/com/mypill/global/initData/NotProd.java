@@ -1,5 +1,7 @@
 package com.mypill.global.initData;
 
+import com.mypill.domain.cart.dto.request.CartProductRequest;
+import com.mypill.domain.cart.service.CartService;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
 import com.mypill.domain.nutrient.Service.NutrientService;
@@ -23,8 +25,15 @@ import static java.util.Arrays.asList;
 public class NotProd {
 
     @Bean
-    CommandLineRunner initData(MemberService memberService, PasswordEncoder passwordEncoder, ProductService productService,
-                               NutrientService nutrientService, CategoryService categoryService) {
+    CommandLineRunner initData(
+            MemberService memberService,
+            PasswordEncoder passwordEncoder,
+            ProductService productService,
+            NutrientService nutrientService,
+            CategoryService categoryService,
+            CartService cartService
+
+    ) {
         String password = passwordEncoder.encode("1234");
         return args -> {
             Member memberUser1 = memberService.join("user1", "김철수", "1234", "1", "cs@naver.com").getData();
@@ -38,7 +47,6 @@ public class NotProd {
             productService.create(new ProductRequest(3L, "테스트 상품3", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(4L, 3L), asList(3L, 4L)));
             productService.create(new ProductRequest(4L, "테스트 상품4", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(5L, 4L), asList(4L, 5L)));
             productService.create(new ProductRequest(4L, "테스트 상품5", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(6L, 5L), asList(5L, 6L)));
-
         };
     }
 }

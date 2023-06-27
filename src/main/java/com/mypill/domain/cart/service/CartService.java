@@ -60,7 +60,7 @@ public class CartService {
         CartProduct existProduct = findByCartIdAndProductId(cart.getId(), product.getId()).orElse(null);
         if(existProduct != null){
             existProduct.updateQuantity(existProduct.getQuantity() + request.getQuantity());
-            return RsData.of("S-1", "장바구니에 수량이 추가되었습니다.", existProduct);
+            return RsData.of("S-2", "장바구니에 수량이 추가되었습니다.", existProduct);
         }
 
         CartProduct cartProduct = CartProduct.of(cart, product, request.getQuantity());
@@ -72,7 +72,7 @@ public class CartService {
     @Transactional
     public RsData<CartProduct> updateQuantity(Long cartProductId, int newQuantity) {
         Cart cart = findByMemberId(rq.getMember().getId());
-        CartProduct existProduct = findById(cartProductId).orElse(null);
+        CartProduct existProduct = findCartProductById(cartProductId).orElse(null);
 
         if(existProduct == null){
             return RsData.of("F-1", "장바구니에 없는 상품입니다.", existProduct);
@@ -89,7 +89,7 @@ public class CartService {
 
     public RsData<CartProduct> softDeleteCartProduct(Long cartProductId) {
         Cart cart = findByMemberId(rq.getMember().getId());
-        CartProduct existProduct = findById(cartProductId).orElse(null);
+        CartProduct existProduct = findCartProductById(cartProductId).orElse(null);
 
         if(existProduct == null){
             return RsData.of("F-1", "장바구니에 없는 상품입니다.", existProduct);
@@ -115,7 +115,7 @@ public class CartService {
     public Optional<CartProduct> findByCartIdAndProductId(Long cartId, Long productId){
         return cartProductRepository.findByCartIdAndProductIdAndDeleteDateIsNull(cartId, productId);
     }
-    public Optional<CartProduct> findById(Long cartProductId){
+    public Optional<CartProduct> findCartProductById(Long cartProductId){
         return cartProductRepository.findById(cartProductId);
     }
 
