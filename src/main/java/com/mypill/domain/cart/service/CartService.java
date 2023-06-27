@@ -6,6 +6,7 @@ import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.repository.CartProductRepository;
 import com.mypill.domain.cart.repository.CartRepository;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.product.Service.ProductService;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rq.Rq;
@@ -14,17 +15,34 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
     private final CartProductRepository cartProductRepository;
     private final ProductService productService;
+    private final MemberService memberService;
     private final Rq rq;
 
+
+    public List<CartProduct> cartView() {
+
+        Cart cart = findByMemberId(rq.getMember().getId()).orElse(null);
+
+        if(cart == null){
+            return new ArrayList<>();
+        }
+
+        return cart.getCartProducts();
+    }
+
     @Transactional
-    public RsData<Cart> addProduct(CartProductRequest request) {
-        Cart cart = findByMemberId(rq.getMember().getId());
+    public RsData<CartProduct> addProduct(CartProductRequest request) {
+        Cart cart = findByMemberId(rq.getMember().getId()).orElse(null);
         Product product = productService.findById(request.getProductId()).orElse(null);
 
         if(product == null){
@@ -39,10 +57,10 @@ public class CartService {
         CartProduct cartProduct = CartProduct.of(cart, product, request.getQuantity());
         cartProductRepository.save(cartProduct);
 
-        return RsData.of("S-1", "장바구니에 추가되었습니다.");
+        return RsData.of("S-1", "장바구니에 추가되었습니다.", cartProduct);
     }
 
-    public Cart findByMemberId(Long MemberId){
+    public Optional<Cart> findByMemberId(Long MemberId){
         return cartRepository.findByMemberId(MemberId);
     }
 }
