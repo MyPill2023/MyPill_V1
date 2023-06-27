@@ -31,7 +31,7 @@ public class CartService {
 
     public List<CartProduct> cartView() {
 
-        Cart cart = findByMemberId(rq.getMember().getId()).orElse(null);
+        Cart cart = findByMemberId(rq.getMember().getId());
 
         if(cart == null){
             return new ArrayList<>();
@@ -42,7 +42,7 @@ public class CartService {
 
     @Transactional
     public RsData<CartProduct> addProduct(CartProductRequest request) {
-        Cart cart = findByMemberId(rq.getMember().getId()).orElse(null);
+        Cart cart = findByMemberId(rq.getMember().getId());
         Product product = productService.findById(request.getProductId()).orElse(null);
 
         if(product == null){
@@ -66,7 +66,21 @@ public class CartService {
         return RsData.of("S-1", "장바구니에 추가되었습니다.", cartProduct);
     }
 
-    public Optional<Cart> findByMemberId(Long MemberId){
+    @Transactional
+    public RsData<CartProduct> updateQuantity(Long cartProductId, int newQuantity) {
+        Cart cart = findByMemberId(rq.getMember().getId());
+        CartProduct existProduct = findByCartIdAndProductId(cart.getId(), cartProductId).orElse(null);
+
+        if(existProduct == null){
+            return RsData.of("F-1", "장바구니에 없는 상품입니다.", existProduct);
+        }
+
+        existProduct.updateQuantity(newQuantity);
+
+        return RsData.of("S-1", "수량이 수정되었습니다.", existProduct);
+    }
+
+    public Cart findByMemberId(Long MemberId){
         return cartRepository.findByMemberId(MemberId);
     }
     public Optional<CartProduct> findByCartIdAndProductId(Long cartId, Long productId){

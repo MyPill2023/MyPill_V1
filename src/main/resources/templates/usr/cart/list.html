@@ -7,41 +7,85 @@
 <body>
 <main layout:fragment="main">
     <div class="hero-content flex flex-col my-10 w-[32rem]">
-        <h1 class="text-4xl font-bold">
+        <h1 class="text-2xl font-bold">
             장바구니
         </h1>
 
-        <div class="flex flex-col gap-5 w-full max-w-md mb-10">
+        <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5">
 
-<!--            <div th:if="${cartProducts.size() == 0}"> 비어있음 </div>-->
             <div th:each="cartProduct, loop : ${cartProducts}">
-                <a th:href="@{|/product/detail/${cartProduct.product.id}|}"
-                   class="card bg-base-100 border border-gray-200 hover:bg-green-100">
-                    <div class="card-body">
-
-                        <div class="flex gap-5">
-                            <div class="border border-gray-200 p-10">
+                <div class="bg-base-100 border-b border-gray-200 p-5 pt-0">
+                    <div>
+                        <div class="flex justify-around gap-5">
+                            <div class="border border-gray-200 p-5">
                                 상품이미지
                             </div>
                             <div class="flex flex-col gap-3">
                                 <div class="flex flex-col gap-1">
-                                    <h3 class=" text-lg" th:text="${cartProduct.product.seller.name}"></h3>
-                                    <h1 th:text="${cartProduct.product.name}" class="text-2xl font-bold"></h1>
+                                    <h3 th:text="${cartProduct.product.seller.name}"></h3>
+                                    <a th:text="${cartProduct.product.name}" th:href="@{|/product/detail/${cartProduct.product.id}|}"
+                                       class="text-xl font-bold hover:text-green-300"></a>
                                 </div>
-                                <span class="text-xl font-bold"
-                                      th:text="${#numbers.formatInteger(cartProduct.product.price, 0, 'COMMA') + '원'}"></span>
-                                <span class="text-xl font-bold"
-                                      th:text="'수량' + ${cartProduct.quantity}"></span>
+                                <form th:action="@{|/cart/update|}" method="POST"  onsubmit="CartProductRequest__submit(this, event); return false;">
+                                    <div class="flex gap-3 justify-center items-center">
+                                        <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
+                                        <input type="number" id="quantity" name="newQuantity" min="1" th:value="${cartProduct.quantity}"
+                                               class="input input-bordered input-sm w-16" required>
+                                        <input type="hidden" name="cartProductId" th:value="${cartProduct.id}"/>
+                                        <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
+                                        <button class="badge badge-ghost badge-lg" type="submit" >수정</button>
+                                    </div>
+                                </form>
+                                <div class="flex justify-end">
+                                    <span class="text-lg font-bold"
+                                          th:text="${#numbers.formatInteger(cartProduct.product.price * cartProduct.quantity, 0, 'COMMA') + '원'}"></span>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
-
 
 
         </div>
     </div>
+
+
+
+    <script>
+        function increaseQuantity() {
+            var quantityInput = document.getElementById("quantity");
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity + 1;
+            quantityInput.value = newQuantity;
+        }
+
+        function decreaseQuantity() {
+            var quantityInput = document.getElementById("quantity");
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity - 1;
+            if (newQuantity < 1) {
+                newQuantity = 1;
+            }
+            quantityInput.value = newQuantity;
+        }
+
+        function CartProductRequest__submit(form, event) {
+            // 수량 선택 값 가져오기
+            var quantityInput = document.getElementById("quantity");
+            var quantity = parseInt(quantityInput.value);
+
+            // 유효성 검사: 수량이 1 이상인지 확인
+            if (quantity < 1) {
+                toastWarning("수량은 1 이상이어야 합니다.");
+                return;
+            }
+
+            form.submit();
+        }
+    </script>
+
 </main>
 </body>
 
