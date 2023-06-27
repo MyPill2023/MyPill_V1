@@ -30,4 +30,11 @@ public class CartProduct extends BaseEntity {
     @Column(nullable = false)
     private int quantity;
 
+    public static CartProduct of(Cart cart, Product product, int quantity){
+        return CartProduct.builder()
+                .cart(cart)
+                .product(product)
+                .quantity(quantity)
+                .build();
+    }
 }

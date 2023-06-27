@@ -18,9 +18,24 @@
                 <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"></h1>
             </div>
             <div class="flex justify-end w-full">
-                <span class="text-xl font-bold"
+                <span class="text-2xl font-bold"
                       th:text="${#numbers.formatInteger(productResponse.price, 0, 'COMMA') + '원'}"></span>
             </div>
+            <div class="divider !my-2"></div>
+            <form th:action="@{|/cart/add|}" method="POST"  onsubmit="CartProductRequest__submit(this, event); return false;">
+                <input type="hidden" id="productId" name="productId" th:value="${productResponse.id}">
+                <div class="flex justify-between items-center">
+                    <div class="flex gap-3 justify-center items-center">
+                        <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
+                        <label for="quantity">수량</label>
+                        <input type="number" id="quantity" name="quantity" min="1" value="1"
+                               class="input input-bordered  input-sm w-16" required>
+                        <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
+                    </div>
+                    <button class="btn " type="submit">장바구니 담기</button>
+                </div>
+
+            </form>
             <div class="divider !my-2"></div>
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
@@ -66,6 +81,39 @@
 
         </div>
     </div>
+
+    <script>
+        function increaseQuantity() {
+            var quantityInput = document.getElementById("quantity");
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity + 1;
+            quantityInput.value = newQuantity;
+        }
+
+        function decreaseQuantity() {
+            var quantityInput = document.getElementById("quantity");
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity - 1;
+            if (newQuantity < 1) {
+                newQuantity = 1;
+            }
+            quantityInput.value = newQuantity;
+        }
+
+        function CartProductRequest__submit(form, event) {
+            // 수량 선택 값 가져오기
+            var quantityInput = document.getElementById("quantity");
+            var quantity = parseInt(quantityInput.value);
+
+            // 유효성 검사: 수량이 1 이상인지 확인
+            if (quantity < 1) {
+                toastWarning("수량은 1 이상이어야 합니다.");
+                return;
+            }
+
+            form.submit();
+        }
+    </script>
 </main>
 </body>
 

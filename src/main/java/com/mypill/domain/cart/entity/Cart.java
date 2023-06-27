@@ -21,4 +21,11 @@ public class Cart extends BaseEntity {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartProduct> cartProducts = new ArrayList<>();
+
+    public static Cart createCart(Member member){
+        Cart cart = new Cart();
+        cart.member= member;
+
+        return cart;
+    }
 }
