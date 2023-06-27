@@ -17,6 +17,8 @@ import com.mypill.domain.member.service.MemberService;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 @Configuration
 public class NotProd {
 
@@ -31,17 +33,11 @@ public class NotProd {
             Member memberUser4 = memberService.join("user4", "김맹구", "1234", "2", "mk@naver.com").getData();
             Member memberUser5 = memberService.join("user5", "김훈이", "1234", "1", "hoon2@naver.com").getData();
 
-            List<Nutrient> nutrients = nutrientService.findAll();
-            nutrients = nutrients.subList(0, 2);
-
-            List<Category> categories = categoryService.findAll();
-            categories = categories.subList(0, 2);
-
-            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, nutrients, categories));
-            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, nutrients, categories));
-            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, nutrients, categories));
-            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, nutrients, categories));
-            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, nutrients, categories));
+            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)));
+            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)));
+            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)));
+            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)));
+            productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)));
 
         };
     }

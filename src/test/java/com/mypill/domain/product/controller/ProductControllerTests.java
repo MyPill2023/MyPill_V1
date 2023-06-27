@@ -43,25 +43,6 @@ public class ProductControllerTests {
     private MockMvc mvc;
     @Autowired
     private ProductService productService;
-    @Autowired
-    private NutrientService nutrientService;
-    @Autowired
-    private CategoryService categoryService;
-
-    private String getNutrientParam() {
-        return nutrientService.findAll().subList(0, 2).stream()
-                .map(Nutrient::getId)
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
-    }
-
-    private String getCategoriesParam() {
-        return categoryService.findAll().subList(0, 2).stream()
-                .map(Category::getId)
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
-
-    }
 
     @Test
     @DisplayName("상품 등록 폼 처리")
@@ -76,8 +57,8 @@ public class ProductControllerTests {
                         .param("description", "테스트설명1")
                         .param("price", "1000")
                         .param("stock", "10")
-                        .param("nutrients", getNutrientParam())
-                        .param("categories", getCategoriesParam())
+                        .param("nutrientIds", "1,2")
+                        .param("categoryIds", "1,2")
                 )
                 .andDo(print());
 
@@ -102,8 +83,8 @@ public class ProductControllerTests {
                         .param("description", "수정설명")
                         .param("price", "1000")
                         .param("stock", "10")
-                        .param("nutrients", getNutrientParam())
-                        .param("categories", getCategoriesParam())
+                        .param("nutrientIds", "1,2")
+                        .param("categoryIds", "1,2")
                 )
                 .andDo(print());
 
@@ -132,8 +113,8 @@ public class ProductControllerTests {
                         .param("description", "수정설명")
                         .param("price", "1000")
                         .param("stock", "10")
-                        .param("nutrients", getNutrientParam())
-                        .param("categories", getCategoriesParam())
+                        .param("nutrientIds", "1,2")
+                        .param("categoryIds", "1,2")
                 )
                 .andDo(print());
 

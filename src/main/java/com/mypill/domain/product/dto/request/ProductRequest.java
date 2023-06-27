@@ -23,7 +23,7 @@ public class ProductRequest {
     @NotNull(message = "제품의 재고를 입력해주세요.")
     private Long stock;
     @NotNull(message = "제품의 성분을 선택해주세요.")
-    private List<Nutrient> nutrients;
+    private List<Long> nutrientIds;
     @NotNull(message = "제품의 주요기능을 선택해주세요.")
-    private List<Category> categories;
+    private List<Long> categoryIds;
 }

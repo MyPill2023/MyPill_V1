@@ -34,8 +34,9 @@ public class ProductService {
     @Transactional
     public RsData<ProductResponse> create(ProductRequest request) {
 
-        List<Nutrient> nutrients = MappingNutrient(request.getNutrients());
-        List<Category> categories = MappingCategory(request.getCategories());
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
+        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
+
 
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
         Product product = Product.of(request, nutrients, categories, seller);
@@ -71,8 +72,8 @@ public class ProductService {
             return RsData.of("F-2", "수정 권한이 없습니다.");
         }
 
-        List<Nutrient> nutrients = MappingNutrient(request.getNutrients());
-        List<Category> categories = MappingCategory(request.getCategories());
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
+        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
         product.update(request, nutrients, categories);
 
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
@@ -116,16 +117,6 @@ public class ProductService {
         return productRepository.findByCategoriesIdAndDeleteDateIsNull(categoryId);
     }
 
-    private  List<Nutrient> MappingNutrient(List<Nutrient> nutrients){
-        return nutrientService.findByIdIn(nutrients.stream()
-                .map(Nutrient::getId)
-                .collect(Collectors.toList()));
-    }
-    private  List<Category> MappingCategory(List<Category> categories){
-        return categoryService.findByIdIn(categories.stream()
-                .map(Category::getId)
-                .collect(Collectors.toList()));
-    }
 
     private ProductResponse convertToResponse(Product product){
         return ProductResponse.of(product);
