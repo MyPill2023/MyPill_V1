@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/usr/survey")
@@ -36,9 +37,9 @@ public class SurveyController {
         Long categoryItemId = stepParam.getCategoryItemId();
 
         List<Question> questions = questionService.findByCategoryId(categoryItemId);
-        Category category = categoryService.findById(categoryItemId);
+        Optional<Category> category = categoryService.findById(categoryItemId);
         model.addAttribute("questions", questions);
-        model.addAttribute("category",category.getName());
+        model.addAttribute("category",category);
         model.addAttribute("stepParam", stepParam);
 
         return "usr/survey/step";

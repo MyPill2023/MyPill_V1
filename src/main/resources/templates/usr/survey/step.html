@@ -8,7 +8,7 @@
     <div class="hero-content flex flex-col justify-center my-10 ">
         <h1 class="text-3xl font-bold flex justify-center">건강 설문
         </h1>
-        <p><span th:style="${'font-size:17px; text-align: center'}" class="text-success font-bold" th:text="${category}">
+        <p><span th:style="${'font-size:17px; text-align: center'}" class="text-success font-bold" th:text="${category.get().name}">
         </span><span th:style="${'color: black; font-size:17px; text-align: center'}" >에 해당하는 것을</span></p>
         <span th:style="${'color: black; font-size:17px; text-align: center'}">모두 선택하세요
         </span>
