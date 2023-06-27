@@ -17,11 +17,10 @@
                 <div class="bg-base-100 border-b border-gray-200 p-5 pt-0">
                     <div>
                         <div class="flex justify-around gap-5">
-                            <div class="border border-gray-200 p-5">
-                                상품이미지
+                            <div class="border border-gray-200 w-2/6 p-5">
+                                이미지
                             </div>
-                            <div class="flex flex-col gap-3">
-
+                            <div class="flex flex-col gap-3 w-4/6">
                                 <div class="flex justify-between gap-1">
                                     <div class="flex flex-col gap-1">
                                         <h3 th:text="${cartProduct.product.seller.name}"></h3>
@@ -36,12 +35,12 @@
                                         <input type="hidden" name="cartProductId" th:value="${cartProduct.id}">
                                     </form>
                                 </div>
-                                <form th:action="@{|/cart/update|}" method="POST">
+                                <form th:action="@{|/cart/update|}" method="POST" class="mt-2">
                                     <div class="flex gap-3 justify-center items-center">
-                                        <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
-                                        <input type="number" id="quantity" name="newQuantity" min="1" th:value="${cartProduct.quantity}"
+                                        <button class="badge badge-ghost badge-lg" type="button" th:attr="onclick='decreaseQuantity(' + ${loop.index} + ');'" >-</button>
+                                        <input type="number" th:id="'quantity'+${loop.index}" name="newQuantity" min="1" th:value="${cartProduct.quantity}"
                                             class="input input-bordered input-sm w-16" required>
-                                        <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
+                                        <button class="badge badge-ghost badge-lg" type="button" th:attr="onclick='increaseQuantity(' + ${loop.index} + ');'">+</button>
                                         <input type="hidden" name="cartProductId" th:value="${cartProduct.id}"/>
                                         <button class="badge badge-ghost badge-lg" type="submit" >수정</button>
                                     </div>
@@ -63,37 +62,22 @@
     </div>
 
 
-
     <script>
-        function increaseQuantity() {
-            var quantityInput = document.getElementById("quantity");
+        function increaseQuantity(index) {
+            var quantityInput = document.getElementById("quantity" + index);
             var currentQuantity = parseInt(quantityInput.value);
             var newQuantity = currentQuantity + 1;
             quantityInput.value = newQuantity;
         }
 
-        function decreaseQuantity() {
-            var quantityInput = document.getElementById("quantity");
+        function decreaseQuantity(index) {
+            var quantityInput = document.getElementById("quantity" + index);
             var currentQuantity = parseInt(quantityInput.value);
             var newQuantity = currentQuantity - 1;
             if (newQuantity < 1) {
                 newQuantity = 1;
             }
             quantityInput.value = newQuantity;
-        }
-
-        function CartProductRequest__submit(form, event) {
-            // 수량 선택 값 가져오기
-            var quantityInput = document.getElementById("quantity");
-            var quantity = parseInt(quantityInput.value);
-
-            // 유효성 검사: 수량이 1 이상인지 확인
-            if (quantity < 1) {
-                toastWarning("수량은 1 이상이어야 합니다.");
-                return;
-            }
-
-            form.submit();
         }
     </script>
 
