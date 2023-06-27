@@ -3,10 +3,7 @@ package com.mypill.domain.question.entity;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -15,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Builder
 @Getter
+@Setter
 @Table(name = "questions")
 public class Question extends BaseEntity{
     @Id

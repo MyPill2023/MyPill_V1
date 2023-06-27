@@ -21,19 +21,15 @@ public class CategoryService {
     public List<Category> findAllByOrderByNameAsc(){
         return categoryRepository.findAllByOrderByNameAsc();
     }
-  
-    public Category findById (Long id){
-        Optional<Category> findCategory = categoryRepository.findById(id);
 
-        if (findCategory.isEmpty()) {
-            return null;
-        }
-        return findCategory.get();
-    }
     public List<Category> findByIdIn(List<Long> categoryIds) {
         return categoryRepository.findByIdIn(categoryIds);
     }
+
     public Optional<Category> findById(Long categoryId) {
+        if(categoryRepository.findById(categoryId).isEmpty()){
+            return Optional.empty();
+        }
         return categoryRepository.findById(categoryId);
     }
 }
