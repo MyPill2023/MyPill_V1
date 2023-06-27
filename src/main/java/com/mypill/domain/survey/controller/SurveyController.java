@@ -2,6 +2,7 @@ package com.mypill.domain.survey.controller;
 
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
+import com.mypill.domain.nutrient.entity.NutrientQuestion;
 import com.mypill.domain.question.entity.Question;
 import com.mypill.domain.question.service.QuestionService;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class SurveyController {
     }
 
     @GetMapping("/step")
-    public String step(Model model, @RequestParam Map<String, String> param, @RequestParam(defaultValue = "1") int stepNo) {
+    public String step(Model model, @RequestParam Map<String, String> param, @RequestParam(defaultValue = "1") Long stepNo) {
         StepParam stepParam = new StepParam(param, stepNo);
 
         Long categoryItemId = stepParam.getCategoryItemId();
@@ -47,10 +48,13 @@ public class SurveyController {
 
     @PostMapping("/complete")
     @ResponseBody
-    public StepParam complete(@RequestParam Map<String, String> param) {
-        StepParam stepParam = new StepParam(param, 1);
+    public String complete(Model model, @RequestParam Map<String, String> param) {
+        StepParam stepParam = new StepParam(param, 1L);
 
-        return stepParam;
+        Long[] questionId = stepParam.getQuestionIds();
+
+
+        return "usr/survey/complete";
     }
 }
 
@@ -58,45 +62,45 @@ public class SurveyController {
 @ToString
 class StepParam {
     private final Map<String, String> param;
-    private final int stepNo;
-    private final int[] categoryItemIds;
-    private final int[] questionIds;
+    private final Long stepNo;
+    private final Long[] categoryItemIds;
+    private final Long[] questionIds;
     private final boolean isFirst;
     private final boolean isLast;
 
-    public StepParam(Map<String, String> param, int stepNo) {
+    public StepParam (Map<String, String> param, Long stepNo) {
         this.param = param;
         this.stepNo = stepNo;
         categoryItemIds = param
                 .keySet()
                 .stream()
                 .filter(key -> key.startsWith("category_"))
-                .mapToInt(key -> Integer.parseInt(key.replace("category_", "")))
+                .map(key -> Long.parseLong(key.replace("category_", "")))
                 .sorted()
-                .toArray();
+                .toArray(Long[]::new);
 
         questionIds = param
                 .keySet()
                 .stream()
                 .filter(key -> key.startsWith("question_"))
-                .mapToInt(key -> Integer.parseInt(key.replace("question_", "")))
+                .map(key -> Long.parseLong(key.replace("question_", "")))
                 .sorted()
-                .toArray();
+                .toArray(Long[]::new);
 
-        isFirst = stepNo == 1;
+        isFirst = stepNo == 1L;
         isLast = stepNo == categoryItemIds.length;
     }
 
     public Long getCategoryItemId() {
-        return (long) categoryItemIds[stepNo - 1];
+        return categoryItemIds[stepNo.intValue() - 1];
     }
 
-    public int getNextStepNo() {
-        return stepNo + 1;
+    public Long getNextStepNo() {
+        return stepNo + 1L;
     }
 
-    public int getPrevStepNo() {
-        return stepNo - 1;
+    public Long getPrevStepNo() {
+        return stepNo - 1L;
     }
 
     public boolean isChecked(Long questionId) {

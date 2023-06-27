@@ -12,7 +12,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Builder
 @Getter
-@Setter
 @Table(name = "questions")
 public class Question extends BaseEntity{
     @Id
