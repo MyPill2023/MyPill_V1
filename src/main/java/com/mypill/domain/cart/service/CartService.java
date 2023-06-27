@@ -54,6 +54,12 @@ public class CartService {
             cartRepository.save(cart);
         }
 
+        CartProduct existProduct = findByCartIdAndProductId(cart.getId(), product.getId()).orElse(null);
+        if(existProduct != null){
+            existProduct.updateQuantity(existProduct.getQuantity() + request.getQuantity());
+            return RsData.of("S-1", "장바구니에 수량이 추가되었습니다.", existProduct);
+        }
+
         CartProduct cartProduct = CartProduct.of(cart, product, request.getQuantity());
         cartProductRepository.save(cartProduct);
 
@@ -62,6 +68,9 @@ public class CartService {
 
     public Optional<Cart> findByMemberId(Long MemberId){
         return cartRepository.findByMemberId(MemberId);
+    }
+    public Optional<CartProduct> findByCartIdAndProductId(Long cartId, Long productId){
+        return cartProductRepository.findByCartIdAndProductId(cartId, productId);
     }
 }
 

@@ -17,14 +17,11 @@ import lombok.experimental.SuperBuilder;
 public class CartProduct extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
     private Cart cart;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
     private Product product;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "order_id")
 //    private Order order;
 
     @Column(nullable = false)
@@ -36,5 +33,9 @@ public class CartProduct extends BaseEntity {
                 .product(product)
                 .quantity(quantity)
                 .build();
+    }
+
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
