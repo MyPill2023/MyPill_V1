@@ -1,6 +1,7 @@
 package com.mypill.domain.cart.controller;
 
 import com.mypill.domain.cart.dto.request.CartProductRequest;
+import com.mypill.domain.cart.dto.response.CartResponse;
 import com.mypill.domain.cart.entity.Cart;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
@@ -30,8 +31,8 @@ public class CartController {
     @GetMapping("")
     public String showCart(Model model){
 
-        List<CartProduct> cartProducts = cartService.cartView();
-        model.addAttribute("cartProducts", cartProducts);
+        CartResponse cartResponse =  cartService.cartView();
+        model.addAttribute("cartResponse",cartResponse);
 
         return "usr/cart/list";
     }

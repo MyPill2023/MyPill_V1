@@ -13,7 +13,7 @@
 
         <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5">
 
-            <div th:each="cartProduct, loop : ${cartProducts}">
+            <div th:each="cartProduct, loop : ${cartResponse.cartProducts}">
                 <div class="bg-base-100 border-b border-gray-200 p-5 pt-0">
                     <div>
                         <div class="flex justify-around gap-5">

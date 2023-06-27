@@ -1,6 +1,7 @@
 package com.mypill.domain.cart.service;
 
 import com.mypill.domain.cart.dto.request.CartProductRequest;
+import com.mypill.domain.cart.dto.response.CartResponse;
 import com.mypill.domain.cart.entity.Cart;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.repository.CartProductRepository;
@@ -31,18 +32,15 @@ public class CartService {
     private final Rq rq;
 
 
-    public List<CartProduct> cartView() {
+    public CartResponse cartView() {
 
         Cart cart = findByMemberId(rq.getMember().getId());
 
         if(cart == null){
-            return new ArrayList<>();
+            return new CartResponse();
         }
 
-        // 삭제되지 않은 것만 리턴
-        return cart.getCartProducts().stream()
-                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
-                .collect(Collectors.toList());
+        return CartResponse.of(cart);
     }
 
     @Transactional
