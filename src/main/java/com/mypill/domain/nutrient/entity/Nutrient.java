@@ -11,14 +11,18 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "nutrients")
 public class Nutrient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "nutrient_id")
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name="description", nullable = false, columnDefinition = "TEXT")
     private String description;
+
     @ManyToMany(mappedBy = "nutrients")
     private List<Product> products = new ArrayList<>();
+
 }
