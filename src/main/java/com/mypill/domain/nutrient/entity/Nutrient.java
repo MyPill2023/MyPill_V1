@@ -5,12 +5,16 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
+@Table(name = "nutrients")
 public class Nutrient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "nutrient_id")
     private Long id;
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name="description", nullable = false, columnDefinition = "TEXT")
     private String description;
+
+
 }
