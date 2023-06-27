@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Setter
 @Entity
 @Getter
 @Builder
@@ -33,11 +32,12 @@ public class Category {
     @Builder.Default
     private List<Question> questions = new ArrayList<>();
 
-    public void addQuestion(Question question) {
-        questions.add(question);
-        question.setCategory(this);
+    public Question Question (Question question) {
+        Category category = new Category();
+        return Question.builder()
+                .category(category)
+                .build();
     }
-
 
     @ManyToMany(mappedBy = "categories")
     private List<Product> products = new ArrayList<>();
