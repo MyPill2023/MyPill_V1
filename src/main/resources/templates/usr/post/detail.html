@@ -50,7 +50,7 @@
                     </div>
                     <div class="divider" style="margin-top:1px"></div>
                     <div class="flex w-full text-sm mt-2 whitespace-normal"
-                    style="word-wrap: break-word; word-break: break-all;">
+                         style="word-wrap: break-word; word-break: break-all;">
                         <span class="font-bold" th:text="${post.content}"></span>
                     </div>
                 </div>
@@ -64,21 +64,23 @@
             <div th:if="${post.getCommentCnt() == 0}">
                 등록된 댓글이 없습니다.
             </div>
-            <div th:each="comment : ${post.comments}">
+            <div th:each="comment : ${post.getAvailableComments()}">
                 <div class="flex justify-between items-center">
                     <div>
                         <i class="fa-regular fa-circle-user fa-xl ml-4"></i>
                         <span class="text-xl" th:text="${comment.post.poster.name}"></span>
                     </div>
                     <div>
-                        <a class="btn btn-success btn-outline flex gap-1 btn-xs">
+                        <a th:href="@{/usr/comment/update/{postId}/{commentId}(commentId=${comment.id}, postId=${post.id})}"
+                           class="btn btn-success btn-outline flex gap-1 btn-xs">
                             수정하기
                         </a>
-                        <a class="btn btn-success btn-outline flex gap-1 btn-xs">
+                        <a class="btn btn-success btn-outline flex gap-1 btn-xs" href="javascript:"
+                           onclick="if ( confirm('댓글을 삭제하시겠습니까?') ) $(this).next().submit();">
                             삭제하기</a>
-                        <form hidden th:action="@{/usr/post/delete/{id}(id=${post.id})}" method="POST">
-                            <input type="hidden" name="_method" value="delete">
-                        </form>
+                        <form hidden
+                              th:action="@{/usr/comment/delete/{postId}/{commentId}(commentId=${comment.id}, postId=${post.id})}"
+                              method="POST"></form>
                     </div>
                 </div>
                 <div class="card bg-base-100 border border-gray-200 mt-2">
@@ -88,7 +90,6 @@
                     </div>
                 </div>
             </div>
-
             <form id="CommentRequest" th:action="@{/usr/comment/create/{id}(id=${post.id})}" method="POST"
                   class="flex flex-col gap-4 w-full" onsubmit="CreateCommentForm__submit(this); return false;">
                 <div class="flex flex-col whitespace-normal">
@@ -99,7 +100,6 @@
                 </div>
                 <button type="submit" class="btn btn-accent">댓글 등록하기</button>
             </form>
-
         </div>
     </div>
 </main>

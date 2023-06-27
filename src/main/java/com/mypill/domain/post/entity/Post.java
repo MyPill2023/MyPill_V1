@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-@Builder
 public class Post extends BaseEntity {
 
     @ManyToOne
@@ -37,4 +36,9 @@ public class Post extends BaseEntity {
         return (long) this.comments.size();
     }
 
+    public List<Comment> getAvailableComments() {
+        return this.comments.stream()
+                .filter(x -> x.getDeleteDate() == null)
+                .toList();
+    }
 }
