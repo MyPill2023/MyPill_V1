@@ -14,7 +14,6 @@ public class PostRequest {
         return Post.builder()
                 .title(title)
                 .content(content)
-                .answerCnt(0L)
                 .build();
     }
 }

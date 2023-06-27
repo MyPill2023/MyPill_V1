@@ -6,7 +6,10 @@
 
 <body>
 <main layout:fragment="main">
-    <div class="hero-content flex flex-col my-4 w-[32rem]">
+    <div class="hero-content flex flex-col w-full">
+        <h1 class="text-4xl font-bold mb-4">
+            게시글 상세
+        </h1>
 
         <div class="flex flex-col gap-5 w-full max-w-md mb-10">
             <div class="flex justify-between items-center ml-4">
@@ -29,11 +32,11 @@
             </div>
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
-                    <div class="flex w-full">
-                        <span class="font-bold" th:text="${post.title}"></span>
+                    <div class="flex w-full whitespace-normal">
+                        <span class="font-bold" style="word-wrap: break-word;" th:text="${post.title}"></span>
                     </div>
                     <div class="divider" style="margin-top:1px"></div>
-                    <div class="flex w-full text-sm mt-2">
+                    <div class="flex w-full text-sm mt-2 whitespace-normal">
                         <span class="font-bold" th:text="${post.content}"></span>
                     </div>
                 </div>
@@ -61,7 +64,7 @@
                 </div>
             </div>
             <div class="card bg-base-100 border border-gray-200 mt-2">
-                <div class="card-body">
+                <div class="card-body whitespace-normal">
                     <span class="text-sm">111</span>
                     <!--                    <div th:each="nutrient, loop : ${post.comments}">-->
                     <!--                        <p th:text="${comment.content}"></p>-->
@@ -73,7 +76,7 @@
                 <span class="text-xl">답변자2</span>
             </div>
             <div class="card bg-base-100 border border-gray-200 mt-2">
-                <div class="card-body">
+                <div class="card-body whitespace-normal">
                     <span class="text-sm">222</span>
                     <!--                    <div th:each="nutrient, loop : ${post.comments}">-->
                     <!--                        <p th:text="${comment.content}"></p>-->

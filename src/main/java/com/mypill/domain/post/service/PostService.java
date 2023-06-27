@@ -31,7 +31,6 @@ public class PostService {
         Post newPost = Post.builder()
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
-                .answerCnt(0L)
                 .poster(member)
                 .build();
         postRepository.save(newPost);
@@ -59,7 +58,6 @@ public class PostService {
         post = post.toBuilder()
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
-                .answerCnt(post.getAnswerCnt())
                 .build();
         postRepository.save(post);
         return RsData.of("S-1", "게시글이 수정되었습니다.", post);

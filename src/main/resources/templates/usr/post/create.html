@@ -29,26 +29,24 @@
             form.submit();
         }
     </script>
-
-    <div class="hero-content flex flex-col my-10">
+    <div class="hero-content flex flex-col mb-10 w-full">
         <h1 class="text-4xl font-bold">
             게시글 등록하기
         </h1>
-
-        <form th:action method="POST" class="flex flex-col gap-4" onsubmit="CreateForm__submit(this); return false;">
+        <form th:action method="POST" class="flex flex-col gap-4 w-full"
+              onsubmit="CreateForm__submit(this); return false;">
             <div>
-                <label for="title" class="block text-gray-700 font-bold mb-2">제목</label>
-                <input type="text" id="title" name="title"
-                       class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+                <label for="title" class="block text-gray-700 font-bold mb-2 text-xl">제목</label>
+                <textarea type="text" id="title" name="title" placeholder="제목을 입력하세요."
+                          class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline
+                        whitespace-normal" rows="2"></textarea>
             </div>
-
-            <div class="flex flex-col">
-                <span class="text-gray-700 font-bold mb-2">내용</span>
+            <div class="flex flex-col whitespace-normal">
+                <span class="text-gray-700 font-bold mb-2 text-xl">내용</span>
                 <textarea id="content" name="content" placeholder="질문사항을 자세히 입력해주세요."
-                          class="shadow textarea-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
-        </textarea>
+                          class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
+                          style="height: 200px;"></textarea>
             </div>
-
             <button type="submit" class="btn btn-accent">등록</button>
         </form>
     </div>

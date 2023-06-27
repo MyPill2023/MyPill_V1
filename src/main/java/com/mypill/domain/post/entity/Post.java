@@ -1,14 +1,16 @@
 package com.mypill.domain.post.entity;
 
+import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,8 +29,11 @@ public class Post extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-//    @OneToMany(mappedBy = "post", orphanRemoval = true)
-//    private List<Answer> answers; // 답변
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "comment_id")
+    private List<Comment> comments;
 
-    private Long answerCnt;     // 답변 수
+    public Long getAnswerCnt() {
+        return (long) this.comments.size();
+    }
 }
