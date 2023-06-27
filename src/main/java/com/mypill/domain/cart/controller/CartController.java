@@ -38,7 +38,7 @@ public class CartController {
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/add")
-    public String addProductToCart(@Valid CartProductRequest request, Model model){
+    public String addCartProduct(@Valid CartProductRequest request, Model model){
         RsData<CartProduct> addRsData = cartService.addProduct(request);
 
         if(addRsData.isFail()){
@@ -60,5 +60,16 @@ public class CartController {
         return rq.redirectWithMsg("/cart", updateRsData);
     }
 
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @PostMapping("/delete")
+    public String softDeleteCartProduct(@RequestParam Long cartProductId){
+        RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(cartProductId);
+
+        if(deleteRsData.isFail()){
+            return rq.historyBack(deleteRsData);
+        }
+
+        return rq.redirectWithMsg("/cart", deleteRsData);
+    }
 
 }

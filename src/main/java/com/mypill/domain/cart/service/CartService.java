@@ -15,9 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +39,10 @@ public class CartService {
             return new ArrayList<>();
         }
 
-        return cart.getCartProducts();
+        // 삭제되지 않은 것만 리턴
+        return cart.getCartProducts().stream()
+                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -69,10 +74,14 @@ public class CartService {
     @Transactional
     public RsData<CartProduct> updateQuantity(Long cartProductId, int newQuantity) {
         Cart cart = findByMemberId(rq.getMember().getId());
-        CartProduct existProduct = findByCartIdAndProductId(cart.getId(), cartProductId).orElse(null);
+        CartProduct existProduct = findById(cartProductId).orElse(null);
 
         if(existProduct == null){
             return RsData.of("F-1", "장바구니에 없는 상품입니다.", existProduct);
+        }
+
+        if(!hasPermisson(cart, existProduct)){
+            return RsData.of("F-2", "수정 권한이 없습니다.", existProduct);
         }
 
         existProduct.updateQuantity(newQuantity);
@@ -80,11 +89,41 @@ public class CartService {
         return RsData.of("S-1", "수량이 수정되었습니다.", existProduct);
     }
 
+    public RsData<CartProduct> softDeleteCartProduct(Long cartProductId) {
+        Cart cart = findByMemberId(rq.getMember().getId());
+        CartProduct existProduct = findById(cartProductId).orElse(null);
+
+        if(existProduct == null){
+            return RsData.of("F-1", "장바구니에 없는 상품입니다.", existProduct);
+        }
+
+        if(!hasPermisson(cart, existProduct)){
+            return RsData.of("F-2", "삭제 권한이 없습니다.", existProduct);
+        }
+
+        if(existProduct.getDeleteDate() != null){
+            return RsData.of("F-3", "이미 삭제된 상품입니다.", existProduct);
+        }
+
+        existProduct = existProduct.toBuilder().deleteDate(LocalDateTime.now()).build();
+        cartProductRepository.save(existProduct);
+
+        return RsData.of("S-1", "장바구니에서 상품이 삭제되었습니다.", existProduct);
+    }
+
     public Cart findByMemberId(Long MemberId){
         return cartRepository.findByMemberId(MemberId);
     }
     public Optional<CartProduct> findByCartIdAndProductId(Long cartId, Long productId){
-        return cartProductRepository.findByCartIdAndProductId(cartId, productId);
+        return cartProductRepository.findByCartIdAndProductIdAndDeleteDateIsNull(cartId, productId);
+    }
+    public Optional<CartProduct> findById(Long cartProductId){
+        return cartProductRepository.findById(cartProductId);
+    }
+
+    // cartProduct가 현재 회원 cart의 product인지
+    private boolean hasPermisson(Cart cart, CartProduct cartProduct) {
+        return cartProduct.getCart().getId().equals(cart.getId());
     }
 }
 

@@ -26,11 +26,11 @@
                 <input type="hidden" id="productId" name="productId" th:value="${productResponse.id}">
                 <div class="flex justify-between items-center">
                     <div class="flex gap-3 justify-center items-center">
-                        <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
+                        <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
                         <label for="quantity">수량</label>
                         <input type="number" id="quantity" name="quantity" min="1" value="1"
-                               class="input input-bordered  input-sm w-16" required>
-                        <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
+                        class="input input-bordered  input-sm w-16" required>
+                        <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
                     </div>
                     <button class="btn " type="submit">장바구니 담기</button>
                 </div>
