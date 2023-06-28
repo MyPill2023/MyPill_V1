@@ -2,6 +2,10 @@
 
 <head>
     <title>메인</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="productId" th:content="${productResponse.id}"/>
+    <meta name="_isLiked" th:content="${productResponse.isLiked}"/>
 </head>
 
 <body>
@@ -17,19 +21,29 @@
                 <h3 class=" text-xl" th:text="${productResponse.seller.name}"></h3>
                 <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"></h1>
             </div>
-            <div class="flex justify-end w-full">
+            <div class="flex justify-between w-full items-center">
+                <div class="flex flex-col">
+                    <button id="like-button" class="heart-icon text-red-500 mr-1">
+                        <span th:if="${productResponse.isLiked}">💕</span>
+                        <span th:unless="${productResponse.isLiked}">🤍</span>
+                    </button>
+                    <span id="like-count"
+                          th:text="${productResponse.likedMembers == null ? 0 : productResponse.likedMembers.size}">
+                    </span>
+                </div>
                 <span class="text-2xl font-bold"
                       th:text="${#numbers.formatInteger(productResponse.price, 0, 'COMMA') + '원'}"></span>
             </div>
             <div class="divider !my-2"></div>
-            <form th:action="@{|/cart/add|}" method="POST"  onsubmit="CartProductRequest__submit(this, event); return false;">
+            <form th:action="@{|/cart/add|}" method="POST"
+                  onsubmit="CartProductRequest__submit(this, event); return false;">
                 <input type="hidden" id="productId" name="productId" th:value="${productResponse.id}">
                 <div class="flex justify-between items-center">
                     <div class="flex gap-3 justify-center items-center">
                         <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
                         <label for="quantity">수량</label>
                         <input type="number" id="quantity" name="quantity" min="1" value="1"
-                        class="input input-bordered  input-sm w-16" required>
+                               class="input input-bordered  input-sm w-16" required>
                         <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
                     </div>
                     <button class="btn " type="submit">장바구니 담기</button>
@@ -113,6 +127,49 @@
 
             form.submit();
         }
+
+        $(function () {
+            $("#like-button").click(function () {
+                let isLikedStr = $("meta[name='_isLiked']").attr("content");
+                let isLiked = isLikedStr === "true";
+                isLiked = !isLiked;
+                // 좋아요 상태에 따라 요청 URL 변경
+                let url = isLiked ? '/product/like/' : '/product/unlike/';
+
+                // 좋아요 수
+                let likeCount = parseInt($('#like-count').text());
+
+                let id = $("meta[name='productId']").attr("content");
+                $.ajax({
+                    type: 'post',
+                    url: url + id,
+                    headers: {
+                        'X-CSRF-TOKEN': $("meta[name='_csrf']").attr("content"),
+                        'X-CSRF-TOKEN-HEADER': $("meta[name='_csrf_header']").attr("content")
+                    },
+                    success: function (data) {
+                        if (data == 1) {
+                            toastWarning("로그인 후 사용 가능한 기능입니다.");
+                        }
+                        if (data == 2) {
+                            toastWarning("존재하지 않는 게시물입니다.");
+                        }
+                        if (data == 0) {
+                            $('#like-count').text(isLiked ? likeCount + 1 : likeCount - 1);
+                            // 좋아요 상태에 따라 버튼 아이콘 변경
+                            $('#like-button').html(isLiked ? '💕' : '🤍');
+                            var metaTag = document.querySelector('meta[name="_isLiked"]');
+                            metaTag.setAttribute('content', String(isLiked));
+                        }
+                    },
+                    error: function (error) {
+                        // 에러 처리
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
     </script>
 </main>
 </body>

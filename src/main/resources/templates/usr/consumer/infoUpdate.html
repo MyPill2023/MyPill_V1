@@ -1,7 +1,7 @@
 <html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>회원가입</title>
+    <title>회원 정보 변경</title>
     <style>
         input:invalid {
             border-color: red;
@@ -217,30 +217,13 @@
 
     <div class="hero-content flex flex-col mb-10">
         <h1 class="text-4xl font-bold">
-            회원가입
+            회원정보 변경
         </h1>
 
         <div class="max-w-2xl w-full px-4">
 
             <form th:action method="POST" class="flex flex-col gap-3 flex-grow" id="joinForm"
                   onsubmit="MemberJoin__submit(this); return false;">
-                <span>회원 유형</span>
-                <div class="flex flex-row">
-                    <div class="w-1/2">
-                        <input type="radio" name="option" id="1" class="peer hidden" value="1"/>
-                        <label for="1"
-                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">
-                            일반 회원
-                        </label>
-                    </div>
-                    <div class="w-1/2">
-                        <input type="radio" name="option" id="2" class="peer hidden" value="2"/>
-                        <label for="2"
-                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-red-500 peer-checked:font-bold peer-checked:text-white">
-                            판매자 회원
-                        </label>
-                    </div>
-                </div>
                 <div class="form-control flex">
                     <div class="flex-row">
                         <span>아이디</span>
@@ -257,7 +240,7 @@
                     </div>
                 </div>
                 <div class="form-control">
-                        <span>이름</span>
+                    <span>이름</span>
                     <input type="text" name="name" maxlength="8" placeholder="실명을 입력하세요"
                            required pattern=".*\S.*"
                            class="input input-bordered"
@@ -297,7 +280,11 @@
                 </div>
                 <button id="btn-join" class="btn btn-block gap-1"
                         style="background-color: rgb(220 252 231); border: none;">
-                    <span class="text-black">회원 가입</span>
+                    <span class="text-black">수정하기</span>
+                </button>
+                <button id="btn-cancel" class="btn btn-block gap-1"
+                        style="background-color: rgb(220 252 231); border: none;">
+                    <span class="text-black">취소</span>
                 </button>
             </form>
         </div>
