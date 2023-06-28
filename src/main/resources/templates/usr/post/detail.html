@@ -5,11 +5,11 @@
     <meta name="csrf-token" th:content="${_csrf.token}"> <!-- CSRF 토큰을 메타 태그로 포함 -->
     <script>
         function CreateCommentForm__submit(form) {
-            form.newComment.value = form.newComment.value.trim();
+            form.newContent.value = form.newContent.value.trim();
 
-            if (form.newComment.value.length === 0) {
+            if (form.newContent.value.length === 0) {
                 toastWarning("댓글 내용을 입력해주세요.");
-                form.newComment.focus();
+                form.newContent.focus();
                 return;
             }
             // 폼 발송
