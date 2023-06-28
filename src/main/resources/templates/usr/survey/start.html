@@ -1,0 +1,55 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>설문조사 시작하기</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col justify-center my-10 ">
+        <h1 class="text-3xl font-bold">건강 설문
+        </h1>
+        <span th:style="${'color: black; font-size:17px; text-align: center'}">불편함을 느끼거나</br>
+            관리가 필요한 것을 선택하세요</br>
+        </span>
+        <span th:style="${'font-size:17px; text-align:center'}" class="text-success font-bold">최대 3개까지 선택할 수 있습니다
+        </span>
+        <div class="flex justify-center items-center">
+            <form th:action="step" class="flex flex-col gap-4" onsubmit="surveyStartFormsubmit(this); return false;">
+                <input type="hidden" name="stepNo" value="1">
+
+                <div class="join join-vertical gap-4">
+                    <input th:each="categoryItem : ${categoryItems}" type="checkbox" th:name="|category_${categoryItem.id}|"
+                           th:aria-label="${categoryItem.name}" th:value="Y" class="btn btn-wide btn-outline bg-green-100"/>
+                </div>
+
+                <div>
+                    <button class="btn btn-block btn-success">전송</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function surveyStartFormsubmit(form) {
+            const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"]')).filter(
+                (checkbox) => checkbox.checked
+            );
+
+            if (checkboxes.length < 1) {
+                toastWarning("1개 이상을 선택해주세요.");
+                return;
+            }
+
+            if (checkboxes.length > 3) {
+                toastWarning("3개 이하로 선택해주세요.");
+                return;
+            }
+
+            form.submit();
+        }
+    </script>
+
+</main>
+</body>
+</html>
