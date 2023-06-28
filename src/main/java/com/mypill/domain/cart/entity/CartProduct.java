@@ -35,6 +35,11 @@ public class CartProduct extends BaseEntity {
                 .build();
     }
 
+    public void addCart(CartProduct cartProduct){
+        this.cart.getCartProducts().add(cartProduct);
+        this.cart.updateCart();
+    }
+
     public void updateQuantity(int quantity) {
         this.quantity = quantity;
         this.cart.updateCart();

@@ -66,9 +66,8 @@ public class CartService {
         }
 
         CartProduct cartProduct = CartProduct.of(cart, product, request.getQuantity());
+        cartProduct.addCart(cartProduct);
         cartProductRepository.save(cartProduct);
-        cart.updateCart();
-
 
         return RsData.of("S-1", "장바구니에 추가되었습니다.", cartProduct);
     }
