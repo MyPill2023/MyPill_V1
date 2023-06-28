@@ -1,0 +1,80 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <title>설문조사 시작하기</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col justify-center my-10 ">
+        <h1 class="text-3xl font-bold flex justify-center">건강 설문
+        </h1>
+        <p><span th:style="${'font-size:17px; text-align: center'}" class="text-success font-bold" th:text="${category.get().name}">
+        </span><span th:style="${'color: black; font-size:17px; text-align: center'}" >에 해당하는 것을</span></p>
+        <span th:style="${'color: black; font-size:17px; text-align: center'}">모두 선택하세요
+        </span>
+        <h2 class="text-md bg-green-100 font-bold flex justify-center"></h2>
+        <div class="flex justify-center items-center h-[35rem]">
+            <form name="stepForm" th:action="step" class="flex flex-col gap-4 px-4"
+                  onsubmit="surveyStepFormsubmit(this); return false;">
+                <input type="hidden" name="stepNo" th:origin-value="${stepParam.stepNo}" th:value="${stepParam.stepNo}"
+                       th:next="${stepParam.nextStepNo}"
+                       th:prev="${stepParam.prevStepNo}">
+
+                <input th:each="categoryItemId : ${stepParam.categoryItemIds}" type="hidden"
+                       th:name="|category_${categoryItemId}|" value="Y">
+                <input th:each="questionId : ${stepParam.questionIds}" type="hidden" th:name="|question_${questionId}|"
+                       value="Y">
+                <div class="join join-vertical gap-4">
+                    <input onchange="if ( this.checked == false ) $(document.stepForm).find('input[type=hidden][name=' + $(this).attr('name') + ']').remove();"
+                           th:each="question : ${questions}" type="checkbox" th:name="|question_${question.id}|"
+                           th:aria-label="${question.content}" th:value="Y" class="btn btn-wide btn-outline bg-green-100"
+                           th:checked="${stepParam.isChecked(question.id)}"/>
+                </div>
+
+                <div class="grid gap-2">
+                    <button onclick="document.stepForm.stepNo.value = document.stepForm.stepNo.getAttribute('prev')"
+                            th:unless="${stepParam.first}" class="btn btn-primary">이전([[${stepParam.prevStepNo}]]단계)
+                    </button>
+                    <button onclick="document.stepForm.stepNo.value = document.stepForm.stepNo.getAttribute('next')"
+                            th:unless="${stepParam.last}" class="btn btn-primary">다음([[${stepParam.nextStepNo}]]단계)
+                    </button>
+                    <button onclick="document.stepForm.stepNo.value = '0';" th:if="${stepParam.last}" class="btn btn-success">작성완료</button>
+                </div>
+            </form>
+        </div>
+
+        <form name="completeForm" th:action="complete" method="POST">
+
+        </form>
+    </div>
+
+    <script>
+        function surveyStepFormsubmit(form) {
+            if ( form.stepNo.value != '0' && parseInt(form.stepNo.value) < parseInt(form.stepNo.getAttribute('origin-value'))) {
+                form.submit();
+                return;
+            }
+
+            const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"]')).filter(
+                (checkbox) => checkbox.checked
+            );
+
+            if (checkboxes.length < 1) {
+                toastWarning("1개 이상을 선택해주세요.");
+                return;
+            }
+
+            if ( form.stepNo.value != '0' ) {
+                form.submit();
+                return;
+            }
+
+            form.method = "POST";
+            form.action = "complete";
+            $(form).append($(document.completeForm).find('input[type=hidden]'));
+            form.submit();
+        }
+    </script>
+</main>
+</body>
+</html>
