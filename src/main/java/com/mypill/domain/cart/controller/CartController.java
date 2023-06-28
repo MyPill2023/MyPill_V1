@@ -54,6 +54,10 @@ public class CartController {
     public String updateQuantity(@RequestParam Long cartProductId, @RequestParam Long newQuantity){
         RsData<CartProduct> updateRsData = cartService.updateQuantity(cartProductId, newQuantity);
 
+        if(updateRsData.getResultCode().equals("F-2")){
+            return rq.redirectWithMsg("/cart", updateRsData);
+        }
+
         if(updateRsData.isFail()){
             return rq.historyBack(updateRsData);
         }

@@ -25,10 +25,12 @@ public class Cart extends BaseEntity {
     private Long totalQuantity;
     private Long totalPrice;
 
+
     public static Cart createCart(Member member){
         Cart cart = new Cart();
         cart.member= member;
-
+        cart.totalQuantity = 0L;
+        cart.totalPrice = 0L;
         return cart;
     }
 

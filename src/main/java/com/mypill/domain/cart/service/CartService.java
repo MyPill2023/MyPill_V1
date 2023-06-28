@@ -31,17 +31,12 @@ public class CartService {
     private final MemberService memberService;
     private final Rq rq;
 
-
     @Transactional
     public CartResponse cartView() {
-
         Cart cart = findByMemberId(rq.getMember().getId());
-
         if(cart == null){
-            return new CartResponse();
+            cart = createCart(rq.getMember());
         }
-
-
         return CartResponse.of(cart);
     }
 
@@ -54,22 +49,41 @@ public class CartService {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
 
+        if(!checkStockAvailability(product.getStock(), request.getQuantity())){
+            return RsData.of("F-2", "선택한 수량이 재고보다 많습니다.");
+        }
+
         if(cart == null){
-            cart = Cart.createCart(rq.getMember());
-            cartRepository.save(cart);
+            cart = createCart(rq.getMember());
         }
 
-        CartProduct existProduct = findByCartIdAndProductId(cart.getId(), product.getId()).orElse(null);
-        if(existProduct != null){
-            existProduct.updateQuantity(existProduct.getQuantity() + request.getQuantity());
-            return RsData.of("S-2", "장바구니에 수량이 추가되었습니다.", existProduct);
-        }
+        CartProduct cartProduct = findOrCreateCartProduct(cart, product, request.getQuantity());
 
-        CartProduct cartProduct = CartProduct.of(cart, product, request.getQuantity());
-        cartProduct.addCart(cartProduct);
-        cartProductRepository.save(cartProduct);
+        if(cartProduct == null){
+            return RsData.of("F-2", "장바구니에 추가된 수량이 재고보다 많습니다.");
+        }
 
         return RsData.of("S-1", "장바구니에 추가되었습니다.", cartProduct);
+    }
+
+    private Cart createCart(Member member) {
+        Cart cart = Cart.createCart(member);
+        return cartRepository.save(cart);
+    }
+
+    private CartProduct findOrCreateCartProduct(Cart cart, Product product, Long quantity) {
+        CartProduct existingProduct = findByCartIdAndProductId(cart.getId(), product.getId()).orElse(null);
+
+        if (existingProduct != null) {
+            Long updatedQuantity = existingProduct.getQuantity() + quantity;
+            if (!checkStockAvailability(product.getStock(), updatedQuantity)) return null;
+            existingProduct.updateQuantity(updatedQuantity);
+            return existingProduct;
+        }
+
+        CartProduct newCartProduct = CartProduct.of(cart, product, quantity);
+        newCartProduct.addCart(newCartProduct);
+        return cartProductRepository.save(newCartProduct);
     }
 
     @Transactional
@@ -81,8 +95,14 @@ public class CartService {
             return RsData.of("F-1", "장바구니에 없는 상품입니다.", existProduct);
         }
 
+        Product product = productService.findById(existProduct.getId()).orElse(null);
+
+        if(!checkStockAvailability(product.getStock(), newQuantity)){
+            return RsData.of("F-2", "선택한 수량이 재고보다 많습니다.");
+        }
+
         if(!hasPermisson(cart, existProduct)){
-            return RsData.of("F-2", "수정 권한이 없습니다.", existProduct);
+            return RsData.of("F-3", "수정 권한이 없습니다.", existProduct);
         }
 
         existProduct.updateQuantity(newQuantity);
@@ -125,6 +145,11 @@ public class CartService {
     // cartProduct가 현재 회원 cart의 product인지
     private boolean hasPermisson(Cart cart, CartProduct cartProduct) {
         return cartProduct.getCart().getId().equals(cart.getId());
+    }
+
+
+    private boolean checkStockAvailability(Long stock, Long quantity){
+        return stock >= quantity;
     }
 
 }

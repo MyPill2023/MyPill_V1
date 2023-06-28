@@ -18,12 +18,10 @@ import java.util.stream.Collectors;
 public class CartResponse {
     Long id;
     List<CartProductResponse> cartProducts;
-
     Long totalQuantity;
     Long totalPrice;
 
     public static CartResponse of(Cart cart){
-
         return CartResponse.builder()
                 .id(cart.getId())
                 .cartProducts(cart.getCartProducts().stream()
