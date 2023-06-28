@@ -10,6 +10,6 @@ import lombok.Getter;
 public class CartProductRequest {
     private Long productId;
     @Min(value=1, message = "수량은 1개 이상이어야 합니다.")
-    private int quantity;
+    private Long quantity;
 
 }

@@ -51,7 +51,7 @@ public class CartController {
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/update")
-    public String updateQuantity(@RequestParam Long cartProductId, @RequestParam int newQuantity){
+    public String updateQuantity(@RequestParam Long cartProductId, @RequestParam Long newQuantity){
         RsData<CartProduct> updateRsData = cartService.updateQuantity(cartProductId, newQuantity);
 
         if(updateRsData.isFail()){

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class CartProductResponse {
     private Long id;
     private Product product;
-    private int quantity;
+    private Long quantity;
     private LocalDateTime deleteDate;
 
     public static CartProductResponse of(CartProduct cartProduct) {

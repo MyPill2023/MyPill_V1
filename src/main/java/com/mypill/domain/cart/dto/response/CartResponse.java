@@ -19,7 +19,7 @@ public class CartResponse {
     Long id;
     List<CartProductResponse> cartProducts;
 
-    int totalQuantity;
+    Long totalQuantity;
     Long totalPrice;
 
     public static CartResponse of(Cart cart){

@@ -73,7 +73,7 @@ public class CartService {
     }
 
     @Transactional
-    public RsData<CartProduct> updateQuantity(Long cartProductId, int newQuantity) {
+    public RsData<CartProduct> updateQuantity(Long cartProductId, Long newQuantity) {
         Cart cart = findByMemberId(rq.getMember().getId());
         CartProduct existProduct = findCartProductById(cartProductId).orElse(null);
 
@@ -126,5 +126,6 @@ public class CartService {
     private boolean hasPermisson(Cart cart, CartProduct cartProduct) {
         return cartProduct.getCart().getId().equals(cart.getId());
     }
+
 }
 

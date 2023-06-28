@@ -40,7 +40,7 @@ public class CartControllerTests {
     @BeforeEach
     @WithUserDetails("user1")
     void beforeEachTest() {
-        RsData<CartProduct> addRsData = cartService.addProduct(new CartProductRequest(1L, 1));
+        RsData<CartProduct> addRsData = cartService.addProduct(new CartProductRequest(1L, 1L));
         this.cartProductId = addRsData.getData().getId();
     }
 

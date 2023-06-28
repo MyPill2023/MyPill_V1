@@ -22,7 +22,7 @@ public class Cart extends BaseEntity {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartProduct> cartProducts = new ArrayList<>();
-    private int totalQuantity;
+    private Long totalQuantity;
     private Long totalPrice;
 
     public static Cart createCart(Member member){
@@ -35,7 +35,7 @@ public class Cart extends BaseEntity {
     public void updateCart() {
         this.totalQuantity = cartProducts.stream()
                 .filter(cartProduct -> cartProduct.getDeleteDate() == null)
-                .mapToInt(CartProduct::getQuantity)
+                .mapToLong(CartProduct::getQuantity)
                 .sum();
 
         this.totalPrice = cartProducts.stream()
