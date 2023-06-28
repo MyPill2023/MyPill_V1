@@ -13,7 +13,7 @@
                 $('#contentCount').html("(" + $(this).val().length + " / 1000)");
 
                 if ($(this).val().length > 1000) {
-                    toastWarning("내용은 최대 500자까지 작성 가능합니다.");
+                    toastWarning("내용은 최대 1000자까지 작성 가능합니다.");
                     $(this).val($(this).val().substring(0, 1000));
                     $('#contentCount').html("(1000 / 1000)");
                 }

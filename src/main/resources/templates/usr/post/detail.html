@@ -4,6 +4,18 @@
     <title>메인</title>
     <meta name="csrf-token" th:content="${_csrf.token}"> <!-- CSRF 토큰을 메타 태그로 포함 -->
     <script>
+        $(document).ready(function () {
+            $('#newContent').on('keyup', function () {
+                $('#newContentCount').html("(" + $(this).val().length + " / 1000)");
+
+                if ($(this).val().length > 1000) {
+                    toastWarning("댓글은 최대 1000자까지 작성 가능합니다.");
+                    $(this).val($(this).val().substring(0, 1000));
+                    $('#newContentCount').html("(1000 / 1000)");
+                }
+            });
+        });
+
         function CreateCommentForm__submit(form) {
             form.newContent.value = form.newContent.value.trim();
 
@@ -34,6 +46,18 @@
             // 댓글 내용을 보여주는 부분을 숨기고 수정 폼을 보여줌
             commentContentElement.style.display = 'none';
             commentEditFormElement.style.display = 'block';
+
+            $(document).ready(function () {
+                $('#commentEdit-' + commentId).on('keyup', function () {
+                    $('#commentEditCount-' + commentId).html("(" + $(this).val().length + " / 1000)");
+
+                    if ($(this).val().length > 1000) {
+                        toastWarning("댓글은 최대 1000자까지 작성 가능합니다.");
+                        $(this).val($(this).val().substring(0, 1000));
+                        $('#commentEditCount-' + commentId).html("(1000 / 1000)");
+                    }
+                });
+            });
         }
 
         function saveComment(button, commentId) {
@@ -160,10 +184,15 @@
                               th:text="${comment.content}"></span>
                         <div th:id="'commentEditForm-' + ${comment.id}" class="comment-edit-form"
                              style="display: none;">
-                            <textarea
-                                    class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
-                                    th:id="'commentEdit-' + ${comment.id}" name="commentEdit"
-                                    style="height: 100px;"></textarea>
+                            <div class="relative">
+                                <textarea
+                                        class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
+                                        th:id="'commentEdit-' + ${comment.id}" name="commentEdit"
+                                        style="height: 100px;"></textarea>
+                                <div th:id="'commentEditCount-' + ${comment.id}" class="absolute right-5 bottom-5">
+                                    (0/1000)
+                                </div>
+                            </div>
                             <button class="btn btn-success"
                                     th:attr="onclick='saveComment(this, ' + ${comment.id} + ');'">저장
                             </button>
@@ -175,12 +204,16 @@
                 </div>
             </div>
             <form id="CommentRequest" th:action="@{/usr/comment/create/{id}(id=${post.id})}" method="POST"
-                  class="flex flex-col gap-4 w-full" onsubmit="CreateCommentForm__submit(this); return false;">
-                <div class="flex flex-col whitespace-normal">
-                    <label class="mb-2 ml-2">새 댓글 작성하기</label>
-                    <textarea type="text" id="newContent" name="newContent" placeholder="댓글을 입력해주세요."
+                  class="flex flex-col gap-4 w-full whitespace-normal"
+                  onsubmit="CreateCommentForm__submit(this); return false;">
+                <label class="block text-gray-700 text-xl font-bold mb-2" for="newContent">
+                    새 댓글 작성하기
+                </label>
+                <div class="relative">
+                    <textarea id="newContent" name="newContent" placeholder="댓글을 입력해주세요." value="newContent"
                               class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
-                              style="height: 200px;" value="newContent"></textarea>
+                              style="height: 200px;"></textarea>
+                    <div id="newContentCount" class="absolute right-5 bottom-5">(0 / 1000)</div>
                 </div>
                 <button type="submit" class="btn btn-accent">댓글 등록하기</button>
             </form>
