@@ -7,6 +7,28 @@
 
 </head>
 <body>
-
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col justify-center my-10 ">
+        <h1 class="text-3xl font-bold">건강 설문 결과
+        </h1>
+        <p><span th:style="${'font-size:17px; text-align: center'}" class="text-success font-bold">고객
+        </span><span th:style="${'color: black; font-size:17px; text-align: center'}" >님의 건강 설문 결과</span></p>
+        <span th:style="${'color: black; font-size:17px; text-align: center'}">필요한 영양소입니다
+        </span>
+        <div class="flex justify-center items-center" th:each="nutrient:${nutrientAnswers}">
+            <div tabindex="0" class="collapse collapse-open border border-base-300 bg-base-200">
+                <div class="collapse-title text-xl font-medium" th:text="${nutrient.name}">
+                    I have collapse-open class
+                </div>
+                <div class="collapse-content" th:text="${nutrient.description}">
+                    <p>abindex="0" attribute is necessary to make the div focusablet</p>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button class="btn btn-block btn-success">영양제 구매 바로가기</button>
+        </div>
+    </div>
+</main>
 </body>
 </html>

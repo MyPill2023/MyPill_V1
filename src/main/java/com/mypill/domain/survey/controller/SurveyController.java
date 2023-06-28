@@ -49,7 +49,7 @@ public class SurveyController {
         return "usr/survey/step";
     }
 
-    @PostMapping("/complete")
+    @GetMapping("/complete")
     public String complete(Model model, @RequestParam Map<String, String> param) {
         StepParam stepParam = new StepParam(param, 1L);
 
@@ -63,21 +63,13 @@ public class SurveyController {
             }
         }
 
-        List<List<String>> nutrientAnswers = new ArrayList<>();
+        List<Nutrient> nutrientAnswers = new ArrayList<>();
         for (Long id : answers) {
             Optional<Nutrient> nutrient = nutrientService.findById(id);
 
             if (nutrient.isPresent()){
-                List<String> nutrientData = new ArrayList<>();
-                String name = nutrient.get().getName();
-                String description = nutrient.get().getDescription();
-                nutrientData.add(name);
-                nutrientData.add(description);
-                nutrientAnswers.add(nutrientData);
+                nutrientAnswers.add(nutrient.get());
             }
-        }
-        for (List<String> d: nutrientAnswers){
-            System.out.println(d);
         }
 
         model.addAttribute("nutrientAnswers",nutrientAnswers);
