@@ -1,0 +1,104 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>메인</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col my-10 w-[32rem]">
+        <h1 class="text-2xl font-bold">
+            장바구니
+        </h1>
+
+        <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5">
+
+            <div th:if="${cartResponse.totalQuantity == 0}" class="text-center">
+                장바구니가 비어있습니다.
+            </div>
+
+            <div th:if="${cartResponse.totalQuantity != 0}">
+                <div th:each="cartProduct, loop : ${cartResponse.cartProducts}">
+                    <div class="bg-base-100 border-b border-gray-200 p-5 ">
+                        <div>
+                            <div class="flex justify-around gap-5">
+                                <div class="border border-gray-200 w-2/6 p-5">
+                                    이미지
+                                </div>
+                                <div class="flex flex-col gap-3 w-4/6">
+                                    <div class="flex justify-between gap-1">
+                                        <div class="flex flex-col gap-1">
+                                            <h3 th:text="${cartProduct.product.seller.name}"></h3>
+                                            <a th:text="${cartProduct.product.name}" th:href="@{|/product/detail/${cartProduct.product.id}|}"
+                                               class="text-xl font-bold hover:text-green-300"></a>
+                                        </div>
+                                        <a href="javascript:;"
+                                           onclick="if ( confirm('상품을 장바구니에서 삭제하시겠습니까?') ) $(this).next().submit();">
+                                            <svg viewBox="0 0 1024 1024" fill="#000000" class="icon h-8 w-8" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M512 897.6c-108 0-209.6-42.4-285.6-118.4-76-76-118.4-177.6-118.4-285.6 0-108 42.4-209.6 118.4-285.6 76-76 177.6-118.4 285.6-118.4 108 0 209.6 42.4 285.6 118.4 157.6 157.6 157.6 413.6 0 571.2-76 76-177.6 118.4-285.6 118.4z m0-760c-95.2 0-184.8 36.8-252 104-67.2 67.2-104 156.8-104 252s36.8 184.8 104 252c67.2 67.2 156.8 104 252 104 95.2 0 184.8-36.8 252-104 139.2-139.2 139.2-364.8 0-504-67.2-67.2-156.8-104-252-104z" fill=""></path><path d="M707.872 329.392L348.096 689.16l-31.68-31.68 359.776-359.768z" fill=""></path><path d="M328 340.8l32-31.2 348 348-32 32z" fill=""></path></g></svg>
+                                        </a>
+                                        <form th:action="@{|/cart/delete|}" method="POST" class="hidden">
+                                            <input type="hidden" name="cartProductId" th:value="${cartProduct.id}">
+                                        </form>
+                                    </div>
+                                    <form th:action="@{|/cart/update|}" method="POST" class="mt-2">
+                                        <div class="flex gap-3 justify-center items-center">
+                                            <button class="badge badge-ghost badge-lg" type="button" th:attr="onclick='decreaseQuantity(' + ${loop.index} + ');'" >-</button>
+                                            <input type="number" th:id="'quantity'+${loop.index}" name="newQuantity" min="1" th:value="${cartProduct.quantity}"
+                                                   class="input input-bordered input-sm w-16" required>
+                                            <button class="badge badge-ghost badge-lg" type="button" th:attr="onclick='increaseQuantity(' + ${loop.index} + ');'">+</button>
+                                            <input type="hidden" name="cartProductId" th:value="${cartProduct.id}"/>
+                                            <button class="badge badge-ghost badge-lg" type="submit" >수정</button>
+                                        </div>
+                                    </form>
+
+                                    <div class="flex justify-end">
+                                    <span class="text-lg font-bold"
+                                          th:text="${#numbers.formatInteger(cartProduct.product.price * cartProduct.quantity, 0, 'COMMA') + '원'}"></span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2 mt-10">
+                    <div class="flex justify-between">
+                        <span class="text-lg fond-bold">총 주문 수량</span>
+                        <span class="text-lg fond-bold" th:text="${cartResponse.totalQuantity} + '개'"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-lg fond-bold">총 주문 금액</span>
+                        <span class="text-lg fond-bold" th:text="${#numbers.formatInteger(cartResponse.totalPrice, 0, 'COMMA') + '원'}"></span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        function increaseQuantity(index) {
+            var quantityInput = document.getElementById("quantity" + index);
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity + 1;
+            quantityInput.value = newQuantity;
+        }
+
+        function decreaseQuantity(index) {
+            var quantityInput = document.getElementById("quantity" + index);
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity - 1;
+            if (newQuantity < 1) {
+                newQuantity = 1;
+            }
+            quantityInput.value = newQuantity;
+        }
+    </script>
+
+</main>
+</body>
+
+</html>

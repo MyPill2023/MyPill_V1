@@ -44,7 +44,7 @@
                 </select>
                 <button type="button" class="btn btn-sm" onclick="addSelectedNutrient()">성분 추가하기</button>
                 <ul id="selectedNutrientList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3"></ul>
-                <input type="hidden" id="nutrients" name="nutrients" value="">
+                <input type="hidden" id="nutrientIds" name="nutrientIds" value="">
             </div>
             <div class="form-control">
                 <label class="block text-gray-700 font-bold mb-2">주요 기능</label>
@@ -56,9 +56,8 @@
                 </select>
                 <button type="button" class="btn btn-sm" onclick="addSelectedCategory()">성분 추가하기</button>
                 <ul id="selectedCategoryList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3"></ul>
-                <input type="hidden" id="categories" name="categories" value="">
+                <input type="hidden" id="categoryIds" name="categoryIds" value="">
             </div>
-
             <button type="submit" class="btn btn-accent">
                 상품 등록
             </button>
@@ -124,7 +123,7 @@
                 nutrientsList.push(listItemValue);
             }
 
-            var nutrientsInput = document.getElementById("nutrients");
+            var nutrientsInput = document.getElementById("nutrientIds");
             nutrientsInput.value = nutrientsList.join(",");
         }
 
@@ -187,7 +186,7 @@
 
             console.log(categoryList);
 
-            var categoriesInput = document.getElementById("categories");
+            var categoriesInput = document.getElementById("categoryIds");
             categoriesInput.value = categoryList.join(",");
         }
 

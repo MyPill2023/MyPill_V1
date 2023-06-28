@@ -8,7 +8,7 @@
 <body>
 <main layout:fragment="main">
     <div class="hero-content flex flex-col my-10 2 w-[32rem] max-w-lg">
-        <div class="w-full flex flex-col justify-center gap-5 mb-20">
+        <div class="w-full max-w-md flex flex-col justify-center gap-5 mb-20">
 
             <div id="accordion-collapse" data-accordion="collapse">
                 <h2 id="accordion-collapse-heading-1">
@@ -76,25 +76,26 @@
             <h1 class="text-2xl font-bold text-center my-5" th:text="${title}">
             </h1>
 
-            <div th:each="product, loop : ${products}">
-                <a th:href="@{|/product/detail/${product.id}|}"
-                   class="card bg-base-100 border border-gray-200 hover:bg-green-100">
-                    <div class="card-body">
+            <div th:each="product, loop : ${products}"
+                 class="bg-base-100 border-b border-gray-200 p-10 pt-5">
+                <a th:href="@{|/product/detail/${product.id}|}">
 
-                        <div class="flex gap-5">
-                            <div class="border border-gray-200 p-10">
-                                상품이미지
+                        <div class="flex justify-around gap-5">
+                            <div class="border border-gray-200 w-2/6 p-5">
+                                이미지
                             </div>
-                            <div class="flex flex-col gap-3">
+                            <div class="flex flex-col gap-3 w-4/6">
                                 <div class="flex flex-col gap-1">
-                                    <h3 class=" text-lg" th:text="${product.seller.name}"></h3>
-                                    <h1 th:text="${product.name}" class="text-2xl font-bold"></h1>
+                                    <h3 th:text="${product.seller.name}"></h3>
+                                    <h1 th:text="${product.name}" class="text-xl font-bold"></h1>
                                 </div>
-                                <span class="text-xl font-bold"
-                                      th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
+                                <div class="flex justify-end">
+                                    <span class="text-lg font-bold"
+                                          th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+
                 </a>
             </div>
 
