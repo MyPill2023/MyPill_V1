@@ -22,6 +22,8 @@
                         <form style="display: none" name="logoutForm" method="POST" th:action="@{/usr/member/logout}"
                               hidden></form>
                         <a th:if="${@rq.isSeller()}" href="/product/create">상품 등록</a>
+                        <a th:if="${@rq.login}" href="/usr/post/create">게시글 작성</a>
+                        <a th:if="${@rq.login}" href="/usr/post/list">게시글 목록</a>
                     </li>
 
                 </ul>
@@ -94,8 +96,8 @@
                 </g>
             </svg>
         </button>
-        <button class="flex flex-col items-center justify-center cursor-pointer"
-                onclick="location.href='/question/list'" style="flex-basis: 20%;">
+        <a href="/usr/post/list" class="flex flex-col items-center justify-center cursor-pointer"
+           style="flex-basis: 20%;">
             <svg class="h-8 w-8 p-0.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -107,8 +109,7 @@
                 </g>
             </svg>
             <span class="btm-nav-label text-[10px]">질문게시판</span>
-        </button>
-
+        </a>
         <a href="/" class="flex flex-col items-center justify-center cursor-pointer" style="flex-basis: 20%;">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 p-0.5" fill="none" viewBox="0 0 24 24"
                  stroke="currentColor">
@@ -164,10 +165,6 @@
         </button>
     </div>
 </div>
-<script th:inline="javascript">
-    if (params.msg) {
-        toastNotice(params.msg[0]);
-    }
 
 <script th:inline="javascript">
     if (params.msg) {
