@@ -110,7 +110,7 @@
             </div>
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
-                    <div class="flex w-full whitespace-normal"
+                    <div class="flex w-full whitespace-normal text-xl"
                          style="word-wrap: break-word; word-break: break-all;">
                         <span class="font-bold" style="white-space: pre-wrap;"
                               th:text="${post.title}"></span>
@@ -128,7 +128,7 @@
                 <span class="text-2xl">답변</span>
             </div>
             <div class="divider !my-1"></div>
-            <div th:if="${post.getCommentCnt() == 0}">
+            <div th:if="${post.getCommentCnt() == 0}" class="text-2xl">
                 등록된 댓글이 없습니다.
             </div>
             <div th:each="comment : ${post.getAvailableComments()}">

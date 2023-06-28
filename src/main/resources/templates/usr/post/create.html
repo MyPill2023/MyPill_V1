@@ -8,11 +8,28 @@
 <main layout:fragment="main">
 
     <script>
+        $(document).ready(function () {
+            $('#content').on('keyup', function () {
+                $('#contentCount').html("(" + $(this).val().length + " / 1000)");
+
+                if ($(this).val().length > 1000) {
+                    toastWarning("내용은 최대 500자까지 작성 가능합니다.");
+                    $(this).val($(this).val().substring(0, 1000));
+                    $('#contentCount').html("(1000 / 1000)");
+                }
+            });
+        });
+
         function CreateForm__submit(form) {
             form.title.value = form.title.value.trim();
 
             if (form.title.value.length === 0) {
                 toastWarning("제목을 입력해주세요.");
+                form.title.focus();
+                return;
+            }
+            if (form.title.value.length > 50) {
+                toastWarning("제목은 최대 50자까지 작성 가능합니다.");
                 form.title.focus();
                 return;
             }
@@ -42,10 +59,15 @@
                         whitespace-normal" rows="2"></textarea>
             </div>
             <div class="flex flex-col whitespace-normal">
-                <span class="text-gray-700 font-bold mb-2 text-xl">내용</span>
-                <textarea id="content" name="content" placeholder="질문사항을 자세히 입력해주세요."
+                <label class="block text-gray-700 text-xl font-bold mb-2" for="content">
+                    내용
+                </label>
+                <div class="relative">
+                    <textarea id="content" name="content" placeholder="질문사항을 자세히 입력해주세요."
                           class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
                           style="height: 200px;"></textarea>
+                    <div id="contentCount" class="absolute right-5 bottom-5">(0 / 1000)</div>
+                </div>
             </div>
             <button type="submit" class="btn btn-accent">등록</button>
         </form>
