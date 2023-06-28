@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     public List<Post> getList() {
-        return postRepository.findAllByOrderByCreateDateDesc();
+        return postRepository.findByDeleteDateIsNullOrderByCreateDateDesc();
     }
 
     @Transactional
@@ -72,8 +73,10 @@ public class PostService {
         if (post.getPoster().getId() != member.getId()) {
             return RsData.of("F-2", "작성자만 삭제가 가능합니다.");
         }
-        postRepository.deleteById(postId);
-
+        post = post.toBuilder()
+                .deleteDate(LocalDateTime.now())
+                .build();
+        postRepository.save(post);
         return RsData.of("S-1", "게시글이 삭제되었습니다.");
     }
 

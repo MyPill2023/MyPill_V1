@@ -1,7 +1,6 @@
 package com.mypill.domain.post.controller;
 
 import com.mypill.domain.post.dto.PostRequest;
-import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import com.mypill.global.rq.Rq;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-import java.util.Objects;
 
 @RequestMapping("/usr/post")
 @RequiredArgsConstructor
@@ -48,9 +46,6 @@ public class PostController {
     @PostMapping("/create")
     @Operation(summary = "게시글 등록")
     public String create(@Valid PostRequest postRequest) {
-        if (rq.isLogout()) {
-            return rq.historyBack("로그인 후 이용 가능합니다.");
-        }
         RsData<Post> createRsData = postService.create(postRequest, rq.getMember());
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData.getMsg());
@@ -65,6 +60,9 @@ public class PostController {
         if (post == null) {
             return rq.historyBack("존재하지 않는 게시글입니다.");
         }
+        if (post.getDeleteDate() != null) {
+            return rq.historyBack("삭제된 게시글입니다.");
+        }
         model.addAttribute("post", post);
         return "usr/post/detail";
     }
@@ -73,9 +71,6 @@ public class PostController {
     @GetMapping("/update/{postId}")
     @Operation(summary = "게시글 수정 폼")
     public String update(@PathVariable Long postId, Model model) {
-        if (rq.isLogout()) {
-            return rq.historyBack("로그인 후 이용 가능합니다.");
-        }
         Post post = postService.findById(postId).orElse(null);
         if (post == null) {
             return rq.historyBack("존재하지 않는 게시글입니다.");
@@ -91,9 +86,6 @@ public class PostController {
     @PostMapping("/update/{postId}")
     @Operation(summary = "게시글 수정")
     public String update(@PathVariable Long postId, @Valid PostRequest postRequest) {
-        if (rq.isLogout()) {
-            return rq.historyBack("로그인 후 이용 가능합니다.");
-        }
         RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember());
         if (updateRsData.isFail()) {
             return rq.historyBack(updateRsData.getMsg());
@@ -105,9 +97,6 @@ public class PostController {
     @PostMapping("/delete/{postId}")
     @Operation(summary = "게시글 삭제")
     public String delete(@PathVariable Long postId) {
-        if (rq.isLogout()) {
-            return rq.historyBack("로그인 후 이용 가능합니다.");
-        }
         RsData<Post> deleteRsData = postService.delete(postId, rq.getMember());
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData.getMsg());
