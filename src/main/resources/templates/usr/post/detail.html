@@ -35,6 +35,7 @@
 <main layout:fragment="main">
     <script>
         function editComment(button, commentId) {
+
             const commentContentElement = document.getElementById('commentContent-' + commentId);
             const commentEditFormElement = document.getElementById('commentEditForm-' + commentId);
 
@@ -98,10 +99,9 @@
             });
         }
 
-        function cancelEditComment(commentId) {
+        function cancelEditComment(button, commentId) {
             const commentContentElement = document.getElementById('commentContent-' + commentId);
             const commentEditFormElement = document.getElementById('commentEditForm-' + commentId);
-
             // 수정 취소 시, 댓글 내용 보여주는 부분을 숨기고 수정 폼을 숨김
             commentContentElement.style.display = 'block';
             commentEditFormElement.style.display = 'none';
@@ -119,7 +119,7 @@
                     <span class="text-xl" th:text="${post.poster.name}"></span>
                     <span th:text="${#temporals.format(post.createDate, 'yy.MM.dd')}"></span>
                 </div>
-                <div>
+                <div th:if="${post.poster.id}==${@rq.member.id}">
                     <a th:href="@{/usr/post/update/{id}(id=${post.id})}"
                        class="btn btn-success btn-outline flex gap-1 btn-xs">
                         수정하기
@@ -159,10 +159,10 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <i class="fa-regular fa-circle-user fa-xl ml-4"></i>
-                        <span class="text-xl" th:text="${comment.post.poster.name}"></span>
+                        <span class="text-xl" th:text="${comment.writer.name}"></span>
                         <span th:text="${#temporals.format(comment.modifyDate, 'yy.MM.dd')}"></span>
                     </div>
-                    <div>
+                    <div th:if="${comment.writer.id}==${@rq.member.id}">
                         <button class="btn btn-success btn-outline flex gap-1 btn-xs"
                                 th:attr="onclick='editComment(this, ' + ${comment.id} + ');'">
                             수정하기
