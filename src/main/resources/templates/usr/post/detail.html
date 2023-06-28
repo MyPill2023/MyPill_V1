@@ -2,6 +2,7 @@
 
 <head>
     <title>메인</title>
+    <meta name="csrf-token" th:content="${_csrf.token}"> <!-- CSRF 토큰을 메타 태그로 포함 -->
     <script>
         function CreateCommentForm__submit(form) {
             form.newComment.value = form.newComment.value.trim();
@@ -14,11 +15,74 @@
             // 폼 발송
             form.submit();
         }
+
     </script>
 </head>
 
 <body>
 <main layout:fragment="main">
+    <script>
+        function editComment(button, commentId) {
+            const commentContentElement = document.getElementById('commentContent-' + commentId);
+            const commentEditFormElement = document.getElementById('commentEditForm-' + commentId);
+
+            // 기존 댓글 내용을 가져와서 수정 폼에 설정
+            const commentContent = commentContentElement.innerText;
+            const commentEditInput = commentEditFormElement.querySelector('textarea');
+            commentEditInput.value = commentContent;
+
+            // 댓글 내용을 보여주는 부분을 숨기고 수정 폼을 보여줌
+            commentContentElement.style.display = 'none';
+            commentEditFormElement.style.display = 'block';
+        }
+
+        function saveComment(button, commentId) {
+            const commentEditFormElement = document.getElementById('commentEditForm-' + commentId);
+            const commentEditInput = commentEditFormElement.querySelector('textarea');
+            const newContent = commentEditInput.value;
+            const responseCode = undefined;
+            const errorMsg = undefined;
+
+            const url = '/usr/comment/update/' + commentId;
+            const csrfToken = $('meta[name=csrf-token]').attr('content'); // 메타 태그에서 CSRF 토큰 가져오기
+
+            // Ajax 요청을 사용하여 댓글 수정 API 호출
+            $.ajax({
+                type: 'post',
+                url: url,
+                headers: {'X-CSRF-TOKEN': csrfToken}, // 요청 헤더에 CSRF 토큰 추가},
+                data: {
+                    newContent: newContent,
+                    responseCode: responseCode,
+                    errorMsg: errorMsg
+                },
+                success: function (data) {
+                    // 요청 결과를 받아와서 동적으로 댓글 내용 업데이트
+                    if (data.responseCode === "0") {
+                        const commentContentElement = document.getElementById('commentContent-' + commentId);
+                        commentContentElement.innerText = data.newContent;
+                        commentContentElement.style.display = 'block';
+                        commentEditFormElement.style.display = 'none';
+                        console.log("success");
+                    } else {
+                        toastWarning(data.errorMsg);
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        function cancelEditComment(commentId) {
+            const commentContentElement = document.getElementById('commentContent-' + commentId);
+            const commentEditFormElement = document.getElementById('commentEditForm-' + commentId);
+
+            // 수정 취소 시, 댓글 내용 보여주는 부분을 숨기고 수정 폼을 숨김
+            commentContentElement.style.display = 'block';
+            commentEditFormElement.style.display = 'none';
+        }
+    </script>
     <div class="hero-content flex flex-col w-full">
         <h1 class="text-4xl font-bold mb-4">
             게시글 상세
@@ -29,6 +93,7 @@
                 <div>
                     <i class="fa-solid fa-circle-user fa-xl"></i>
                     <span class="text-xl" th:text="${post.poster.name}"></span>
+                    <span th:text="${#temporals.format(post.createDate, 'yy.MM.dd')}"></span>
                 </div>
                 <div>
                     <a th:href="@{/usr/post/update/{id}(id=${post.id})}"
@@ -45,8 +110,9 @@
             </div>
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
-                    <div class="flex w-full whitespace-normal">
-                        <span class="font-bold" style="word-wrap: break-word;" th:text="${post.title}"></span>
+                    <div class="flex w-full whitespace-normal"
+                         style="word-wrap: break-word; word-break: break-all;">
+                        <span class="font-bold" th:text="${post.title}"></span>
                     </div>
                     <div class="divider" style="margin-top:1px"></div>
                     <div class="flex w-full text-sm mt-2 whitespace-normal"
@@ -55,7 +121,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex-row mt-4">
                 <i class="fa-regular fa-comment-dots fa-2xl"></i>
                 <span class="text-2xl">답변</span>
@@ -69,12 +134,13 @@
                     <div>
                         <i class="fa-regular fa-circle-user fa-xl ml-4"></i>
                         <span class="text-xl" th:text="${comment.post.poster.name}"></span>
+                        <span th:text="${#temporals.format(comment.modifyDate, 'yy.MM.dd')}"></span>
                     </div>
                     <div>
-                        <a th:href="@{/usr/comment/update/{postId}/{commentId}(commentId=${comment.id}, postId=${post.id})}"
-                           class="btn btn-success btn-outline flex gap-1 btn-xs">
+                        <button class="btn btn-success btn-outline flex gap-1 btn-xs"
+                                th:attr="onclick='editComment(this, ' + ${comment.id} + ');'">
                             수정하기
-                        </a>
+                        </button>
                         <a class="btn btn-success btn-outline flex gap-1 btn-xs" href="javascript:"
                            onclick="if ( confirm('댓글을 삭제하시겠습니까?') ) $(this).next().submit();">
                             삭제하기</a>
@@ -86,7 +152,21 @@
                 <div class="card bg-base-100 border border-gray-200 mt-2">
                     <div class="card-body whitespace-normal"
                          style="word-wrap: break-word; word-break: break-all;">
-                        <span class="text-sm" th:text="${comment.content}"></span>
+                        <span class="text-sm" th:id="'commentContent-' + ${comment.id}"
+                              th:text="${comment.content}"></span>
+                        <div th:id="'commentEditForm-' + ${comment.id}" class="comment-edit-form"
+                             style="display: none;">
+                            <textarea
+                                    class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
+                                    th:id="'commentEdit-' + ${comment.id}" name="commentEdit"
+                                    style="height: 100px;"></textarea>
+                            <button class="btn btn-success"
+                                    th:attr="onclick='saveComment(this, ' + ${comment.id} + ');'">저장
+                            </button>
+                            <button class="btn btn-danger"
+                                    th:attr="onclick='cancelEditComment(this, ' + ${comment.id} + ');'">취소
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,9 +174,9 @@
                   class="flex flex-col gap-4 w-full" onsubmit="CreateCommentForm__submit(this); return false;">
                 <div class="flex flex-col whitespace-normal">
                     <label class="mb-2 ml-2">새 댓글 작성하기</label>
-                    <textarea type="text" id="newComment" name="newComment" placeholder="댓글을 입력해주세요."
+                    <textarea type="text" id="newContent" name="newContent" placeholder="댓글을 입력해주세요."
                               class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
-                              style="height: 200px;" value="newComment"></textarea>
+                              style="height: 200px;" value="newContent"></textarea>
                 </div>
                 <button type="submit" class="btn btn-accent">댓글 등록하기</button>
             </form>

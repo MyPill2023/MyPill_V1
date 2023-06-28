@@ -1,6 +1,7 @@
 package com.mypill.domain.comment.service;
 
 import com.mypill.domain.comment.dto.CommentRequest;
+import com.mypill.domain.comment.dto.CommentResponse;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.repository.CommentRepository;
 import com.mypill.domain.member.entity.Member;
@@ -30,23 +31,33 @@ public class CommentService {
         Comment comment = Comment.builder()
                 .post(post)
                 .writer(member)
-                .content(commentRequest.getNewComment())
+                .content(commentRequest.getNewContent())
                 .build();
         commentRepository.save(comment);
         return RsData.of("S-1", "댓글 등록이 완료되었습니다.", comment);
     }
 
-    public RsData<Comment> delete(Member member, String commentIdStr) {
-        if (commentIdStr == null) {
-            return RsData.of("F-1", "존재하지 않는 댓글입니다.");
-        }
-        Long commentId = Long.parseLong(commentIdStr);
+    public CommentResponse update(CommentRequest commentRequest, Member member, Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
+        String newComment = commentRequest.getNewContent();
         if (comment == null) {
-            return RsData.of("F-2", "존재하지 않는 댓글입니다.");
+            new CommentResponse("1", "존재하지 않는 댓글입니다.", newComment);
         }
         if (!Objects.equals(comment.getWriter().getId(), member.getId())) {
-            return RsData.of("F-3", "본인 댓글만 삭제할 수 있습니다.");
+            return new CommentResponse("2", "본인 댓글만 수정할 수 있습니다.", newComment);
+        }
+        comment.update(newComment);
+        commentRepository.save(comment);
+        return new CommentResponse("0", "성공", newComment);
+    }
+
+    public RsData<Comment> delete(Member member, Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment == null) {
+            return RsData.of("F-1", "존재하지 않는 댓글입니다.");
+        }
+        if (!Objects.equals(comment.getWriter().getId(), member.getId())) {
+            return RsData.of("F-2", "본인 댓글만 삭제할 수 있습니다.");
         }
         comment = comment.toBuilder()
                 .deleteDate(LocalDateTime.now())
@@ -55,12 +66,3 @@ public class CommentService {
         return RsData.of("S-1", "댓글 삭제가 완료되었습니다.", comment);
     }
 }
-/*
- Product product = findById(productId).orElse(null);
-
-
-        product = product.toBuilder().deleteDate(LocalDateTime.now()).build();
-        productRepository.save(product);
-
-        return RsData.of("S-1", "상품 삭제가 완료되었습니다.", product);
- */
