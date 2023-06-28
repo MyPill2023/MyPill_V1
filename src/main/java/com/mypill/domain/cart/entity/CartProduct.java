@@ -37,5 +37,12 @@ public class CartProduct extends BaseEntity {
 
     public void updateQuantity(int quantity) {
         this.quantity = quantity;
+        this.cart.updateCart();
+    }
+
+    @Override
+    public void softDelete() {
+        super.softDelete();
+        cart.updateCart();
     }
 }

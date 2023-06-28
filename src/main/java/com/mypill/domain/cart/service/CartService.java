@@ -32,6 +32,7 @@ public class CartService {
     private final Rq rq;
 
 
+    @Transactional
     public CartResponse cartView() {
 
         Cart cart = findByMemberId(rq.getMember().getId());
@@ -39,6 +40,7 @@ public class CartService {
         if(cart == null){
             return new CartResponse();
         }
+
 
         return CartResponse.of(cart);
     }
@@ -65,6 +67,8 @@ public class CartService {
 
         CartProduct cartProduct = CartProduct.of(cart, product, request.getQuantity());
         cartProductRepository.save(cartProduct);
+        cart.updateCart();
+
 
         return RsData.of("S-1", "장바구니에 추가되었습니다.", cartProduct);
     }
@@ -87,6 +91,7 @@ public class CartService {
         return RsData.of("S-1", "수량이 수정되었습니다.", existProduct);
     }
 
+    @Transactional
     public RsData<CartProduct> softDeleteCartProduct(Long cartProductId) {
         Cart cart = findByMemberId(rq.getMember().getId());
         CartProduct existProduct = findCartProductById(cartProductId).orElse(null);
@@ -103,8 +108,7 @@ public class CartService {
             return RsData.of("F-3", "이미 삭제된 상품입니다.", existProduct);
         }
 
-        existProduct = existProduct.toBuilder().deleteDate(LocalDateTime.now()).build();
-        cartProductRepository.save(existProduct);
+        existProduct.softDelete();
 
         return RsData.of("S-1", "장바구니에서 상품이 삭제되었습니다.", existProduct);
     }

@@ -19,6 +19,9 @@ public class CartResponse {
     Long id;
     List<CartProductResponse> cartProducts;
 
+    int totalQuantity;
+    Long totalPrice;
+
     public static CartResponse of(Cart cart){
 
         return CartResponse.builder()
@@ -27,6 +30,8 @@ public class CartResponse {
                         .filter(cartProduct -> cartProduct.getDeleteDate() == null)
                         .map(CartProductResponse::of)
                         .collect(Collectors.toList()))
+                .totalQuantity(cart.getTotalQuantity())
+                .totalPrice(cart.getTotalPrice())
                 .build();
     }
 

@@ -5,9 +5,11 @@ import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.Hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -20,15 +22,26 @@ public class Cart extends BaseEntity {
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartProduct> cartProducts = new ArrayList<>();
-
-    private int totalCount;
-    private int totalPrice;
+    private int totalQuantity;
+    private Long totalPrice;
 
     public static Cart createCart(Member member){
         Cart cart = new Cart();
         cart.member= member;
 
         return cart;
+    }
+
+    public void updateCart() {
+        this.totalQuantity = cartProducts.stream()
+                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
+                .mapToInt(CartProduct::getQuantity)
+                .sum();
+
+        this.totalPrice = cartProducts.stream()
+                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
+                .mapToLong(cartProduct -> cartProduct.getQuantity() * cartProduct.getProduct().getPrice())
+                .sum();
     }
 
 }
