@@ -2,16 +2,21 @@ package com.mypill.domain.survey.controller;
 
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
+import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.nutrient.Service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.question.entity.NutrientQuestion;
 import com.mypill.domain.question.entity.Question;
 import com.mypill.domain.question.service.NutrientQuestionService;
 import com.mypill.domain.question.service.QuestionService;
+import com.mypill.global.rq.Rq;
+import com.mypill.global.rsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +30,24 @@ public class SurveyController {
     private final QuestionService questionService;
     private final NutrientQuestionService nutrientQuestionService;
     private final NutrientService nutrientService;
+    private final MemberService memberService;
+    private final Rq rq;
+
+    @GetMapping("/guide")
+    public String guide(Model model) {
+
+        return "usr/survey/guide";
+    }
 
     @GetMapping("/start")
     public String start(Model model) {
+        if (rq.isLogin()) {
+            Member member = rq.getMember();
+            if (!member.getAnswers().isEmpty()){
+                RsData<Member> memberRsData = memberService.surveyDelete(member);
+                return rq.redirectWithMsg("/usr/survey/start", memberRsData);
+            }
+        }
         List<Category> categoryItems = categoryService.findAll();
         model.addAttribute("categoryItems", categoryItems);
 
@@ -48,7 +68,7 @@ public class SurveyController {
 
         return "usr/survey/step";
     }
-
+    @Transactional
     @GetMapping("/complete")
     public String complete(Model model, @RequestParam Map<String, String> param) {
         StepParam stepParam = new StepParam(param, 1L);
@@ -58,18 +78,21 @@ public class SurveyController {
         for (Long id : questionIds) {
             List<NutrientQuestion> nutrients = nutrientQuestionService.findByNutrientId(id);
 
-            for (NutrientQuestion nutirent : nutrients){
-                answers.add(nutirent.getId());
+            for (NutrientQuestion nutrient : nutrients){
+                answers.add(nutrient.getId());
             }
+        }
+
+        if (rq.isLogin()) {
+            Member member = rq.getMember();
+            member.getAnswers().addAll(answers);
         }
 
         List<Nutrient> nutrientAnswers = new ArrayList<>();
         for (Long id : answers) {
             Optional<Nutrient> nutrient = nutrientService.findById(id);
 
-            if (nutrient.isPresent()){
-                nutrientAnswers.add(nutrient.get());
-            }
+            nutrient.ifPresent(nutrientAnswers::add);
         }
 
         model.addAttribute("nutrientAnswers",nutrientAnswers);

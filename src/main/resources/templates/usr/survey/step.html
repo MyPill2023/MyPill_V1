@@ -64,6 +64,11 @@
                 return;
             }
 
+            if (checkboxes.length > 3) {
+                toastWarning("3개 이하로 선택해주세요.");
+                return;
+            }
+
             if ( form.stepNo.value != '0' ) {
                 form.submit();
                 return;

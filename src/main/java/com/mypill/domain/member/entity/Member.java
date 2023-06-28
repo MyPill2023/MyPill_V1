@@ -1,10 +1,10 @@
 package com.mypill.domain.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.global.base.entitiy.BaseEntity;
 import com.mypill.global.util.Ut;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,10 +13,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Getter
@@ -76,4 +73,10 @@ public class Member extends BaseEntity {
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
+
+    @ElementCollection
+    @CollectionTable(name = "member_answers",
+            joinColumns = @JoinColumn(name = "member_id"))
+    @Column(name = "answer_id")
+    private Set<Long> answers = new HashSet<>();
 }

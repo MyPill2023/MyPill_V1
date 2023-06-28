@@ -148,4 +148,10 @@ public class MemberService {
     public boolean verifyWithWhiteList(Member member, String token) {
         return member.getAccessToken().equals(token);
     }
+
+    @Transactional
+    public RsData<Member> surveyDelete(Member member){
+        member.getAnswers().clear();
+        return RsData.of("S-1","설문이 초기화 되었습니다");
+    }
 }
