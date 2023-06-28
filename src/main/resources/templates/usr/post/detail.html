@@ -112,12 +112,14 @@
                 <div class="card-body">
                     <div class="flex w-full whitespace-normal"
                          style="word-wrap: break-word; word-break: break-all;">
-                        <span class="font-bold" th:text="${post.title}"></span>
+                        <span class="font-bold" style="white-space: pre-wrap;"
+                              th:text="${post.title}"></span>
                     </div>
                     <div class="divider" style="margin-top:1px"></div>
                     <div class="flex w-full text-sm mt-2 whitespace-normal"
                          style="word-wrap: break-word; word-break: break-all;">
-                        <span class="font-bold" th:text="${post.content}"></span>
+                        <span style="white-space: pre-wrap;"
+                              th:text="${post.content}"></span>
                     </div>
                 </div>
             </div>
@@ -152,7 +154,9 @@
                 <div class="card bg-base-100 border border-gray-200 mt-2">
                     <div class="card-body whitespace-normal"
                          style="word-wrap: break-word; word-break: break-all;">
-                        <span class="text-sm" th:id="'commentContent-' + ${comment.id}"
+                        <span class="text-sm"
+                              style="white-space: pre-wrap;"
+                              th:id="'commentContent-' + ${comment.id}"
                               th:text="${comment.content}"></span>
                         <div th:id="'commentEditForm-' + ${comment.id}" class="comment-edit-form"
                              style="display: none;">
