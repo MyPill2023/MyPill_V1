@@ -1,6 +1,6 @@
-package com.mypill.domain.nutrient.entity;
+package com.mypill.domain.question.entity;
 
-import com.mypill.domain.question.entity.Question;
+import com.mypill.domain.nutrient.entity.Nutrient;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

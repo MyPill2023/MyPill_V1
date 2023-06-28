@@ -2,8 +2,11 @@ package com.mypill.domain.survey.controller;
 
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
-import com.mypill.domain.nutrient.entity.NutrientQuestion;
+import com.mypill.domain.nutrient.Service.NutrientService;
+import com.mypill.domain.nutrient.entity.Nutrient;
+import com.mypill.domain.question.entity.NutrientQuestion;
 import com.mypill.domain.question.entity.Question;
+import com.mypill.domain.question.service.NutrientQuestionService;
 import com.mypill.domain.question.service.QuestionService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/usr/survey")
@@ -22,6 +23,8 @@ import java.util.Optional;
 public class SurveyController {
     private final CategoryService categoryService;
     private final QuestionService questionService;
+    private final NutrientQuestionService nutrientQuestionService;
+    private final NutrientService nutrientService;
 
     @GetMapping("/start")
     public String start(Model model) {
@@ -47,12 +50,37 @@ public class SurveyController {
     }
 
     @PostMapping("/complete")
-    @ResponseBody
     public String complete(Model model, @RequestParam Map<String, String> param) {
         StepParam stepParam = new StepParam(param, 1L);
 
-        Long[] questionId = stepParam.getQuestionIds();
+        Long[] questionIds = stepParam.getQuestionIds();
+        Set<Long> answers = new HashSet<>();
+        for (Long id : questionIds) {
+            List<NutrientQuestion> nutrients = nutrientQuestionService.findByNutrientId(id);
 
+            for (NutrientQuestion nutirent : nutrients){
+                answers.add(nutirent.getId());
+            }
+        }
+
+        List<List<String>> nutrientAnswers = new ArrayList<>();
+        for (Long id : answers) {
+            Optional<Nutrient> nutrient = nutrientService.findById(id);
+
+            if (nutrient.isPresent()){
+                List<String> nutrientData = new ArrayList<>();
+                String name = nutrient.get().getName();
+                String description = nutrient.get().getDescription();
+                nutrientData.add(name);
+                nutrientData.add(description);
+                nutrientAnswers.add(nutrientData);
+            }
+        }
+        for (List<String> d: nutrientAnswers){
+            System.out.println(d);
+        }
+
+        model.addAttribute("nutrientAnswers",nutrientAnswers);
 
         return "usr/survey/complete";
     }
