@@ -6,7 +6,6 @@ import com.mypill.domain.consumer.service.ConsumerService;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import com.mypill.global.rq.Rq;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -28,21 +27,13 @@ public class ConsumerController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPage")
     public String showMyPage() {
-
         return "usr/consumer/myPage";
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/infoUpdate")
-    public String updateInfo() {
-
-        return "usr/consumer/infoUpdate";
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/likeList")
-    public String likeList() {
-        return "usr/consumer/likeList";
+    @GetMapping("/myLikes")
+    public String myLikes() {
+        return "usr/consumer/myLikes";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -53,5 +44,11 @@ public class ConsumerController {
         model.addAttribute("posts", posts);
         model.addAttribute("comments", comments);
         return "usr/consumer/myPost";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/mySchedule")
+    public String mySchedule() {
+        return "usr/consumer/mySchedule";
     }
 }

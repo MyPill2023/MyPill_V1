@@ -57,7 +57,6 @@ public class Product extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "member_id")
     )
     private List<Member> likedMembers = new ArrayList<>();
-    //이미지
 
     public static Product of(ProductRequest requestDto, List<Nutrient> nutrients, List<Category> categories,
                              Member seller, List<Member> likedMembers) {
