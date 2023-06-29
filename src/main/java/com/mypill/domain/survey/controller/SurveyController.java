@@ -10,8 +10,10 @@ import com.mypill.domain.question.entity.NutrientQuestion;
 import com.mypill.domain.question.entity.Question;
 import com.mypill.domain.question.service.NutrientQuestionService;
 import com.mypill.domain.question.service.QuestionService;
+import com.mypill.domain.survey.service.SurveyService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -32,14 +34,17 @@ public class SurveyController {
     private final NutrientService nutrientService;
     private final MemberService memberService;
     private final Rq rq;
+    private final SurveyService surveyService;
 
     @GetMapping("/guide")
+    @Operation(summary = "설문 가이드 폼")
     public String guide(Model model) {
 
         return "usr/survey/guide";
     }
 
     @GetMapping("/start")
+    @Operation(summary = "설문 시작 폼")
     public String start(Model model) {
         if (rq.isLogin()) {
             Member member = rq.getMember();
@@ -54,11 +59,20 @@ public class SurveyController {
         return "usr/survey/start";
     }
 
-    @GetMapping("/step")
-    public String step(Model model, @RequestParam Map<String, String> param, @RequestParam(defaultValue = "1") Long stepNo) {
-        StepParam stepParam = new StepParam(param, stepNo);
 
+    @GetMapping("/step")
+    @Operation(summary = "설문 질문 폼")
+    public String step(Model model, @RequestParam Map<String, String> param, @RequestParam(defaultValue = "1") Long stepNo) {
+
+
+        StepParam stepParam = new StepParam(param, stepNo);
         Long categoryItemId = stepParam.getCategoryItemId();
+
+        RsData<String> startSurveyRsData = surveyService.validStartSurvey(stepParam.getCategoryItemIds());
+
+        if (startSurveyRsData.isFail()){
+            return "redirect:/usr/survey/start";
+        }
 
         List<Question> questions = questionService.findByCategoryId(categoryItemId);
         Optional<Category> category = categoryService.findById(categoryItemId);
@@ -68,12 +82,21 @@ public class SurveyController {
 
         return "usr/survey/step";
     }
+
     @Transactional
     @GetMapping("/complete")
+    @Operation(summary = "설문 결과 폼")
     public String complete(Model model, @RequestParam Map<String, String> param) {
         StepParam stepParam = new StepParam(param, 1L);
 
         Long[] questionIds = stepParam.getQuestionIds();
+
+        RsData<String> completeSurveyRsData = surveyService.validCompleteSurvey(questionIds);
+
+        if (completeSurveyRsData.isFail()){
+            return "redirect:/usr/survey/step";
+        }
+
         Set<Long> answers = new HashSet<>();
         for (Long id : questionIds) {
             List<NutrientQuestion> nutrients = nutrientQuestionService.findByNutrientId(id);
