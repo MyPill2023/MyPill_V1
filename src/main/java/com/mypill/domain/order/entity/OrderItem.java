@@ -26,9 +26,6 @@ public class OrderItem extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     private Product product;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-
     private LocalDateTime payDate;
 
     @Column(nullable = false)
@@ -45,5 +42,9 @@ public class OrderItem extends BaseEntity {
         this.price = product.getPrice();
         this.quantity = quantity;
         this.totalPrice = this.price * this.quantity;
+    }
+
+    public void connectOrder(Order order) {
+        this.order = order;
     }
 }

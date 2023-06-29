@@ -3,6 +3,7 @@ package com.mypill.domain.order.service;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.repository.OrderItemRepository;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,13 +46,12 @@ public class OrderService {
 
     @Transactional
     public Order create(Member member, List<OrderItem> orderItems) {
-        Order order = Order
-                .builder()
-                .member(member)
-                .build();
+
+        Order order = new Order(member);
 
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
+            orderItem.connectOrder(order);
         }
 
         order.makeName();
@@ -58,5 +59,9 @@ public class OrderService {
         orderRepository.save(order);
 
         return order;
+    }
+
+    public Optional<Order> findById(Long orderId) {
+        return orderRepository.findById(orderId);
     }
 }
