@@ -37,6 +37,7 @@ public class OrderService {
         }
 
         List<OrderItem> orderItems = cartProducts.stream()
+                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
                 .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
                 .toList();
 

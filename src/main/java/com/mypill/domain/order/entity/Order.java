@@ -2,6 +2,7 @@ package com.mypill.domain.order.entity;
 
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.global.AppConfig;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -55,9 +56,10 @@ public class Order extends BaseEntity {
     public void makeName() {
         StringBuilder sb = new StringBuilder();
         String productName = orderItems.get(0).getProduct().getName();
+        int maxOrderNameLength = AppConfig.getMaxOrderNameLength();
 
-        if (productName.length() > 10) {
-            sb.append(productName.substring(0, 11));
+        if (productName.length() > maxOrderNameLength) {
+            sb.append(productName.substring(0, maxOrderNameLength + 1));
             sb.append("...");
         } else {
             sb.append(productName);
