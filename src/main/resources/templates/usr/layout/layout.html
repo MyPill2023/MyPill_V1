@@ -22,6 +22,12 @@
                         <form style="display: none" name="logoutForm" method="POST" th:action="@{/usr/member/logout}"
                               hidden></form>
                         <a th:if="${@rq.isSeller()}" href="/product/create">상품 등록</a>
+                        <a th:if="${@rq.login}" href="/usr/post/create">게시글 작성</a>
+                        <a th:if="${@rq.login}" href="/usr/post/list">게시글 목록</a>
+                        <a th:if="${@rq.login}" href="/usr/consumer/myPage">구매자 마이페이지</a>
+                        <a th:if="${@rq.login}" href="/usr/consumer/likeList">좋아요 목록</a>
+                        <a th:if="${@rq.login}" href="/usr/consumer/myPost">내가 쓴 게시글</a>
+                        <a th:if="${@rq.login}" href="/usr/consumer/mySchedule">복약 관리</a>
                     </li>
 
                 </ul>
@@ -42,17 +48,14 @@
                 // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
                 const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
             </script>
-            <button class="btn btn-ghost btn-circle">
+<!--            장바구니-->
+            <a href="/cart" class="btn btn-ghost btn-circle">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
-            </button>
-            <script>
-                // 타임리프 문법(파라미터, ? 뒤에 입력된 매개변수들)
-                const params = JSON.parse('[( ${@rq.paramsJsonStr} )]');
-            </script>
+            </a>
             <button class="btn btn-ghost btn-circle">
                 <div class="indicator">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -97,8 +100,9 @@
                 </g>
             </svg>
         </button>
-        <button class="flex flex-col items-center justify-center cursor-pointer"
-                onclick="location.href='/question/list'" style="flex-basis: 20%;">
+        <a href="/usr/post/list" class="flex flex-col items-center justify-center cursor-pointer"
+           style="flex-basis: 20%;">
+
             <svg class="h-8 w-8 p-0.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -110,8 +114,7 @@
                 </g>
             </svg>
             <span class="btm-nav-label text-[10px]">질문게시판</span>
-        </button>
-
+        </a>
         <a href="/" class="flex flex-col items-center justify-center cursor-pointer" style="flex-basis: 20%;">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 p-0.5" fill="none" viewBox="0 0 24 24"
                  stroke="currentColor">
@@ -145,7 +148,8 @@
             </svg>
             <span class="btm-nav-label text-[11px]">영양제 구매</span>
         </a>
-        <button class="flex flex-col items-center justify-center cursor-pointer" style="flex-basis: 20%;">
+        <a href="/usr/consumer/myPage" class="flex flex-col items-center justify-center cursor-pointer"
+           style="flex-basis: 20%;">
             <svg class="h-8 w-8 p-1" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg"
                  fill="#000000">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -164,13 +168,9 @@
                 </g>
             </svg>
             <span class="btm-nav-label text-[11px]">마이페이지</span>
-        </button>
+        </a>
     </div>
 </div>
-<script th:inline="javascript">
-    if (params.msg) {
-        toastNotice(params.msg[0]);
-    }
 
 <script th:inline="javascript">
     if (params.msg) {

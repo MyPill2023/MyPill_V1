@@ -2,6 +2,10 @@
 
 <head>
     <title>메인</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="productId" th:content="${productResponse.id}"/>
+    <meta name="_isLiked" th:content="${productResponse.isLiked}"/>
 </head>
 
 <body>
@@ -15,12 +19,46 @@
 
             <div class="flex flex-col justify-start w-full gap-2">
                 <h3 class=" text-xl" th:text="${productResponse.seller.name}"></h3>
-                <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"></h1>
+                <div class="flex flex-row justify-between">
+                    <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"></h1>
+                    <div class="flex flex-row items-center">
+                        <button id="like-button" class="heart-icon mr-1">
+                            <i th:if="${productResponse.isLiked}" class="fa-solid fa-heart" style="color: #FF0000;"></i>
+                            <i th:unless="${productResponse.isLiked}" class="fa-solid fa-heart"
+                               style="color: #C0C0C0;"></i>
+                        </button>
+                        <div id="like-count">
+                            <span class="text-xl" style="color:#FF0000;" th:if="${productResponse.isLiked}"
+                                  th:text="${productResponse.likedMembers == null ? 0 : productResponse.likedMembers.size}">
+                            </span>
+                            <span class="text-xl" style="color:black;" th:unless="${productResponse.isLiked}"
+                                  th:text="${productResponse.likedMembers == null ? 0 : productResponse.likedMembers.size}">
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-            <div class="flex justify-end w-full">
-                <span class="text-xl font-bold"
+            <div class="flex justify-end w-full items-center">
+                <span class="text-2xl font-bold"
                       th:text="${#numbers.formatInteger(productResponse.price, 0, 'COMMA') + '원'}"></span>
             </div>
+            <div class="divider !my-2"></div>
+            <form th:action="@{|/cart/add|}" method="POST"
+                  onsubmit="CartProductRequest__submit(this, event); return false;">
+                <input type="hidden" id="productId" name="productId" th:value="${productResponse.id}">
+                <div class="flex justify-between items-center">
+                    <div class="flex gap-3 justify-center items-center">
+                        <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
+                        <label for="quantity">수량</label>
+                        <input type="number" id="quantity" name="quantity" min="1" value="1"
+                               class="input input-bordered  input-sm w-16" required>
+                        <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
+                    </div>
+                    <button class="btn " type="submit">장바구니 담기</button>
+                </div>
+
+            </form>
             <div class="divider !my-2"></div>
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
@@ -66,6 +104,92 @@
 
         </div>
     </div>
+
+    <script>
+        function increaseQuantity() {
+            var quantityInput = document.getElementById("quantity");
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity + 1;
+            quantityInput.value = newQuantity;
+        }
+
+        function decreaseQuantity() {
+            var quantityInput = document.getElementById("quantity");
+            var currentQuantity = parseInt(quantityInput.value);
+            var newQuantity = currentQuantity - 1;
+            if (newQuantity < 1) {
+                newQuantity = 1;
+            }
+            quantityInput.value = newQuantity;
+        }
+
+        function CartProductRequest__submit(form, event) {
+            // 수량 선택 값 가져오기
+            var quantityInput = document.getElementById("quantity");
+            var quantity = parseInt(quantityInput.value);
+
+            // 유효성 검사: 수량이 1 이상인지 확인
+            if (quantity < 1) {
+                toastWarning("수량은 1 이상이어야 합니다.");
+                return;
+            }
+
+            form.submit();
+        }
+
+        $(function () {
+            $("#like-button").click(function () {
+                let isLikedStr = $("meta[name='_isLiked']").attr("content");
+                console.log(isLikedStr);
+                let isLiked = isLikedStr === "true";
+                isLiked = !isLiked;
+                // 좋아요 상태에 따라 요청 URL 변경
+                let url = isLiked ? '/product/like/' : '/product/unlike/';
+
+                // 좋아요 수
+                let likeCount = parseInt($('#like-count').text());
+
+                let id = $("meta[name='productId']").attr("content");
+                $.ajax({
+                    type: 'post',
+                    url: url + id,
+                    headers: {
+                        'X-CSRF-TOKEN': $("meta[name='_csrf']").attr("content"),
+                        'X-CSRF-TOKEN-HEADER': $("meta[name='_csrf_header']").attr("content")
+                    },
+                    success: function (data) {
+                        if (data == 1) {
+                            toastWarning("로그인 후 사용 가능한 기능입니다.");
+                        }
+                        if (data == 2) {
+                            toastWarning("존재하지 않는 게시물입니다.");
+                        }
+                        if (data == 0) {
+                            $('#like-count span').text(isLiked ? likeCount + 1 : likeCount - 1);
+                            if (isLiked) {
+                                $('#like-count span').css('color', '#FF0000');
+                            } else {
+                                $('#like-count span').css('color', 'black');
+                            }
+                            // 좋아요 상태에 따라 버튼 아이콘 변경
+                            if (isLiked) {
+                                $('#like-button').html(`<i class="fa-solid fa-heart" style="color: #FF0000;"></i>`);
+                            } else {
+                                $('#like-button').html(`<i class="fa-solid fa-heart" style="color: #C0C0C0;"></i>`);
+                            }
+                            var metaTag = document.querySelector('meta[name="_isLiked"]');
+                            metaTag.setAttribute('content', String(isLiked));
+                        }
+                    },
+                    error: function (error) {
+                        // 에러 처리
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
+    </script>
 </main>
 </body>
 

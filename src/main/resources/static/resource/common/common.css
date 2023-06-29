@@ -14,3 +14,7 @@ html > body {
 html > body .label-text {
     font-size: 1rem;
 }
+
+.toast-top-right {
+    top: 75px;
+}

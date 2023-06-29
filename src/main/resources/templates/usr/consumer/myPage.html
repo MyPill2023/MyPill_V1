@@ -1,0 +1,143 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>마이페이지</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+
+    <div class="hero-content flex flex-col mb-10 w-full">
+        <div class="flex flex-row items-center">
+            <i class="fa-solid fa-circle-user fa-2xl mr-2"></i>
+            <h1 class="text-4xl font-bold">
+                가입 정보
+            </h1>
+        </div>
+        <div class="max-w-2xl w-full px-4">
+
+            <form th:action method="POST" class="flex flex-col gap-3 flex-grow" id="joinForm"
+                  onsubmit="MemberJoin__submit(this); return false;">
+                <div class="form-control flex">
+                    <div class="flex-row">
+                        <span class="text-xl">회원 유형</span>
+                    </div>
+                    <div class="card bg-base-100 border border-gray-200 mt-2">
+                        <div class="card-body whitespace-normal"
+                             style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
+                            <span class="text-sm">일반 회원</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-control flex">
+                    <div class="flex flex-row justify-between items-center">
+                        <span class="text-xl mr-4">아이디</span>
+                        <button class="btn btn-success btn-outline flex gap-1 btn-xs"
+                                th:attr="onclick='editComment(this, ' + ${@rq.member.id} + ');'">
+                            수정하기
+                        </button>
+                        <!--                        <form hidden-->
+                        <!--                              th:action="@{/usr/comment/delete/{postId}/{commentId}(commentId=${comment.id}, postId=${post.id})}"-->
+                        <!--                              method="POST"></form>-->
+                    </div>
+                    <div class="card bg-base-100 border border-gray-200 mt-2">
+                        <div class="card-body whitespace-normal"
+                             style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
+                                <span class="text-sm" th:id="'commentContent-' + ${@rq.member.id}"
+                                      th:text="${@rq.member.username}">
+                                </span>
+                            <div th:id="'commentEditForm-' + ${@rq.member.id}" class="comment-edit-form"
+                                 style="display: none;">
+                                <div class="relative">
+                                <textarea
+                                        class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
+                                        th:id="'commentEdit-' + ${@rq.member.id}" name="commentEdit"
+                                        style="height: 100px;"></textarea>
+                                </div>
+                                <button class="btn btn-success"
+                                        th:attr="onclick='saveComment(this, ' + ${@rq.member.id} + ');'">저장
+                                </button>
+                                <button class="btn btn-danger"
+                                        th:attr="onclick='cancelEditComment(this, ' + ${@rq.member.id} + ');'">취소
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-control flex">
+                    <div class="flex flex-row justify-between items-center">
+                        <span class="text-xl mr-4">이름</span>
+                        <button class="btn btn-success btn-outline flex gap-1 btn-xs"
+                                th:attr="onclick='editComment(this, ' + ${@rq.member.id} + ');'">
+                            수정하기
+                        </button>
+                        <!--                        <form hidden-->
+                        <!--                              th:action="@{/usr/comment/delete/{postId}/{commentId}(commentId=${comment.id}, postId=${post.id})}"-->
+                        <!--                              method="POST"></form>-->
+                    </div>
+                    <div class="card bg-base-100 border border-gray-200 mt-2">
+                        <div class="card-body whitespace-normal"
+                             style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
+                                <span class="text-sm" th:id="'commentContent-' + ${@rq.member.id}"
+                                      th:text="${@rq.member.name}">
+                                </span>
+                            <div th:id="'commentEditForm-' + ${@rq.member.id}" class="comment-edit-form"
+                                 style="display: none;">
+                                <div class="relative">
+                                <textarea
+                                        class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
+                                        th:id="'commentEdit-' + ${@rq.member.id}" name="commentEdit"
+                                        style="height: 100px;"></textarea>
+                                </div>
+                                <button class="btn btn-success"
+                                        th:attr="onclick='saveComment(this, ' + ${@rq.member.id} + ');'">저장
+                                </button>
+                                <button class="btn btn-danger"
+                                        th:attr="onclick='cancelEditComment(this, ' + ${@rq.member.id} + ');'">취소
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-control flex">
+                    <div class="flex flex-row justify-between items-center">
+                        <span class="text-xl mr-4">이메일</span>
+                        <button class="btn btn-success btn-outline flex gap-1 btn-xs"
+                                th:attr="onclick='editComment(this, ' + ${@rq.member.id} + ');'">
+                            수정하기
+                        </button>
+                        <!--                        <form hidden-->
+                        <!--                              th:action="@{/usr/comment/delete/{postId}/{commentId}(commentId=${comment.id}, postId=${post.id})}"-->
+                        <!--                              method="POST"></form>-->
+                    </div>
+                    <div class="card bg-base-100 border border-gray-200 mt-2">
+                        <div class="card-body whitespace-normal"
+                             style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
+                                <span class="text-sm" th:id="'commentContent-' + ${@rq.member.id}"
+                                      th:text="${@rq.member.email}">
+                                </span>
+                            <div th:id="'commentEditForm-' + ${@rq.member.id}" class="comment-edit-form"
+                                 style="display: none;">
+                                <div class="relative">
+                                <textarea
+                                        class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
+                                        th:id="'commentEdit-' + ${@rq.member.id}" name="commentEdit"
+                                        style="height: 100px;"></textarea>
+                                </div>
+                                <button class="btn btn-success"
+                                        th:attr="onclick='saveComment(this, ' + ${@rq.member.id} + ');'">저장
+                                </button>
+                                <button class="btn btn-danger"
+                                        th:attr="onclick='cancelEditComment(this, ' + ${@rq.member.id} + ');'">취소
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+
+</html>

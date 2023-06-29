@@ -3,6 +3,7 @@ package com.mypill.domain.member.service;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
+import com.mypill.domain.product.entity.Product;
 import com.mypill.global.security.jwt.JwtProvider;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
@@ -149,9 +150,17 @@ public class MemberService {
         return member.getAccessToken().equals(token);
     }
 
+    public void whenAfterLike(Member member, Product product) {
+        member.like(product);
+    }
+
+    public void whenAfterUnlike(Member member, Product product) {
+        member.unLike(product);
+    }
+  
     @Transactional
     public RsData<Member> surveyDelete(Member member){
-        member.getSurveyNutrients().clear();
-        return RsData.of("S-1","설문이 초기화 되었습니다");
+       member.getSurveyNutrients().clear();
+       return RsData.of("S-1","설문이 초기화 되었습니다");
     }
 }

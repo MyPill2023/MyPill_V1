@@ -10,13 +10,17 @@ import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
+import com.mypill.global.event.EventAfterLike;
+import com.mypill.global.event.EventAfterUnlike;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,32 +34,35 @@ public class ProductService {
     private final CategoryService categoryService;
     private final MemberService memberService;
     private final Rq rq;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     public RsData<ProductResponse> create(ProductRequest request) {
 
-        List<Nutrient> nutrients = MappingNutrient(request.getNutrients());
-        List<Category> categories = MappingCategory(request.getCategories());
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
+        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
+
 
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
-        Product product = Product.of(request, nutrients, categories, seller);
+        Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
 
         productRepository.save(product);
-
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", ProductResponse.of(product));
     }
 
-    public RsData<ProductResponse> get(Long productId){
+    public RsData<ProductResponse> get(Long productId) {
         Product product = findById(productId).orElse(null);
 
-        if(product == null){
+        if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
-
-        return RsData.of("S-1", "존재하는 상품입니다.", ProductResponse.of(product));
+        if (rq.isLogin() && product.getLikedMembers().contains(rq.getMember())) {
+            return RsData.of("S-1", "존재하는 상품입니다.", ProductResponse.of(product, true));
+        }
+        return RsData.of("S-1", "존재하는 상품입니다.", ProductResponse.of(product, false));
     }
 
-    public List<ProductResponse> getAllProduct(List<Product> products){
+    public List<ProductResponse> getAllProduct(List<Product> products) {
         return products.stream().map(this::convertToResponse).collect(Collectors.toList());
     }
 
@@ -63,16 +70,16 @@ public class ProductService {
     public RsData<Product> update(Long productId, ProductRequest request) {
 
         Product product = findById(productId).orElse(null);
-        if(product == null){
+        if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
 
-        if(!hasPermisson(product.getSeller().getId())){
+        if (!hasPermission(product.getSeller().getId())) {
             return RsData.of("F-2", "수정 권한이 없습니다.");
         }
 
-        List<Nutrient> nutrients = MappingNutrient(request.getNutrients());
-        List<Category> categories = MappingCategory(request.getCategories());
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
+        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
         product.update(request, nutrients, categories);
 
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
@@ -82,11 +89,11 @@ public class ProductService {
     public RsData<Product> delete(Long productId) {
 
         Product product = findById(productId).orElse(null);
-        if(product == null){
+        if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
 
-        if(!hasPermisson(product.getSeller().getId())){
+        if (!hasPermission(product.getSeller().getId())) {
             return RsData.of("F-2", "삭제 권한이 없습니다.");
         }
 
@@ -96,7 +103,7 @@ public class ProductService {
         return RsData.of("S-1", "상품 삭제가 완료되었습니다.", product);
     }
 
-    public Optional<Product> findById(Long productId){
+    public Optional<Product> findById(Long productId) {
         return productRepository.findById(productId);
     }
 
@@ -116,22 +123,42 @@ public class ProductService {
         return productRepository.findByCategoriesIdAndDeleteDateIsNull(categoryId);
     }
 
-    private  List<Nutrient> MappingNutrient(List<Nutrient> nutrients){
-        return nutrientService.findByIdIn(nutrients.stream()
-                .map(Nutrient::getId)
-                .collect(Collectors.toList()));
-    }
-    private  List<Category> MappingCategory(List<Category> categories){
-        return categoryService.findByIdIn(categories.stream()
-                .map(Category::getId)
-                .collect(Collectors.toList()));
-    }
 
-    private ProductResponse convertToResponse(Product product){
+    private ProductResponse convertToResponse(Product product) {
         return ProductResponse.of(product);
     }
 
-    private boolean hasPermisson(Long sellerId) {
+    private boolean hasPermission(Long sellerId) {
         return sellerId.equals(rq.getMember().getId());
+    }
+
+    @Transactional
+    public int like(Member member, Long productId) {
+        if (member == null) {
+            return 1;
+        }
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product == null) {
+            return 2;
+        }
+        product.addLikedMember(member);
+        productRepository.save(product);
+        publisher.publishEvent(new EventAfterLike(this, member, product));
+        return 0;
+    }
+
+    @Transactional
+    public int unlike(Member member, Long productId) {
+        if (member == null) {
+            return 1;
+        }
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product == null) {
+            return 2;
+        }
+        product.deleteLikedMember(member);
+        productRepository.save(product);
+        publisher.publishEvent(new EventAfterUnlike(this, member, product));
+        return 0;
     }
 }

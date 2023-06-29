@@ -11,6 +11,7 @@ import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/create")
     @Operation(summary = "상품 등록 폼")
-    public String showCreate(Model model){
+    public String showCreate(Model model) {
 
         populateModel(model);
 
@@ -46,7 +47,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/create")
     @Operation(summary = "상품 등록")
-    public String create(@Valid ProductRequest productRequest){
+    public String create(@Valid ProductRequest productRequest) {
 
         RsData<ProductResponse> createRsData = productService.create(productRequest);
 
@@ -55,7 +56,7 @@ public class ProductController {
 
     @GetMapping("/detail/{productId}")
     @Operation(summary = "상품 상세")
-    public String showProduct(@PathVariable Long productId, Model model){
+    public String showProduct(@PathVariable Long productId, Model model) {
 
         model.addAttribute("productResponse", productService.get(productId).getData());
 
@@ -64,7 +65,7 @@ public class ProductController {
 
     @GetMapping("/list/all")
     @Operation(summary = "상품 전체 목록")
-    public String list(Model model){
+    public String list(Model model) {
         List<Product> products = productService.findNotDeleted();
         model.addAttribute("products", productService.getAllProduct(products));
         model.addAttribute("title", "전체보기");
@@ -76,7 +77,7 @@ public class ProductController {
 
     @GetMapping("/list/nutrient/{nutrientId}")
     @Operation(summary = "영양 성분별 상품 목록")
-    public String listByNutrition(@PathVariable Long nutrientId, Model model){
+    public String listByNutrition(@PathVariable Long nutrientId, Model model) {
         List<Product> products = productService.findByNutrientsId(nutrientId);
         model.addAttribute("products", productService.getAllProduct(products));
 
@@ -91,7 +92,7 @@ public class ProductController {
 
     @GetMapping("/list/category/{categorytId}")
     @Operation(summary = "주요 기능별 상품 목록")
-    public String listByCategory(@PathVariable Long categorytId, Model model){
+    public String listByCategory(@PathVariable Long categorytId, Model model) {
         List<Product> products = productService.findByCategoriesId(categorytId);
         model.addAttribute("products", productService.getAllProduct(products));
 
@@ -107,7 +108,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/update/{productId}")
     @Operation(summary = "상품 수정 폼")
-    public String updateBefore(@PathVariable Long productId, Model model){
+    public String updateBefore(@PathVariable Long productId, Model model) {
 
         ProductResponse response = productService.get(productId).getData();
         model.addAttribute("product", response);
@@ -120,7 +121,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/update/{productId}")
     @Operation(summary = "상품 수정")
-    public String update(@PathVariable Long productId, @Valid ProductRequest productRequest){
+    public String update(@PathVariable Long productId, @Valid ProductRequest productRequest) {
 
         RsData<Product> updateRsData = productService.update(productId, productRequest);
 
@@ -130,7 +131,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/delete/{productId}")
     @Operation(summary = "상품 삭제")
-    public String delete(@PathVariable Long productId){
+    public String delete(@PathVariable Long productId) {
 
         RsData<Product> deleteRsData = productService.delete(productId);
 
@@ -143,6 +144,18 @@ public class ProductController {
 
         model.addAttribute("nutrients", nutrients);
         model.addAttribute("categories", categories);
+    }
+
+    @ResponseBody
+    @PostMapping("/like/{id}")
+    public Integer likeArticle(@PathVariable("id") Long id) {
+        return productService.like(rq.getMember(), id);
+    }
+
+    @ResponseBody
+    @PostMapping("/unlike/{id}")
+    public Integer unlikeArticle(@PathVariable("id") Long id) {
+        return productService.unlike(rq.getMember(), id);
     }
 
 }

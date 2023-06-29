@@ -1,0 +1,80 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>질문 등록</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+
+    <script>
+        $(document).ready(function () {
+            $('#content').on('keyup', function () {
+                $('#contentCount').html("(" + $(this).val().length + " / 1000)");
+
+                if ($(this).val().length > 1000) {
+                    toastWarning("내용은 최대 500자까지 작성 가능합니다.");
+                    $(this).val($(this).val().substring(0, 1000));
+                    $('#contentCount').html("(1000 / 1000)");
+                }
+            });
+        });
+
+        function CreateForm__submit(form) {
+            form.title.value = form.title.value.trim();
+
+            if (form.title.value.length === 0) {
+                toastWarning("제목을 입력해주세요.");
+                form.title.focus();
+                return;
+            }
+            if (form.title.value.length > 50) {
+                toastWarning("제목은 최대 50자까지 작성 가능합니다.");
+                form.title.focus();
+                return;
+            }
+
+
+            form.content.value = form.content.value.trim();
+
+            if (form.content.value.length === 0) {
+                toastWarning("내용을 입력해주세요.");
+                form.content.focus();
+                return;
+            }
+
+            // 폼 발송
+            form.submit();
+        }
+    </script>
+    <div class="hero-content flex flex-col mb-10 w-full">
+        <h1 class="text-4xl font-bold">
+            게시글 수정하기
+        </h1>
+        <form th:action method="POST" th:object="${post}" class="flex flex-col gap-4 w-full"
+              onsubmit="CreateForm__submit(this); return false;">
+            <div>
+                <label for="title" class="block text-gray-700 font-bold mb-2 text-xl">제목</label>
+                <textarea type="text" id="title" name="title" placeholder="제목을 입력하세요."
+                          th:field="*{title}"
+                          class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline
+                        whitespace-normal" rows="2"></textarea>
+            </div>
+            <div class="flex flex-col whitespace-normal">
+                <label class="block text-gray-700 text-xl font-bold mb-2" for="content">
+                    내용
+                </label>
+                <div class="relative">
+                    <textarea id="content" name="content" placeholder="질문사항을 자세히 입력해주세요."
+                              class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
+                              th:field="*{content}" style="height: 200px;"></textarea>
+                    <div id="contentCount" class="absolute right-5 bottom-5" th:text="'(' + *{content.length()} + '/1000)'"></div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-accent">등록</button>
+        </form>
+    </div>
+</main>
+</body>
+
+</html>
