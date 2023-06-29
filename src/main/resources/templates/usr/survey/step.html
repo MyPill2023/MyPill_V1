@@ -43,7 +43,7 @@
             </form>
         </div>
 
-        <form name="completeForm" th:action="complete" method="POST">
+        <form name="completeForm" th:action="complete" method="GET">
 
         </form>
     </div>
@@ -64,12 +64,17 @@
                 return;
             }
 
+            if (checkboxes.length > 3) {
+                toastWarning("3개 이하로 선택해주세요.");
+                return;
+            }
+
             if ( form.stepNo.value != '0' ) {
                 form.submit();
                 return;
             }
 
-            form.method = "POST";
+            form.method = "GET";
             form.action = "complete";
             $(form).append($(document.completeForm).find('input[type=hidden]'));
             form.submit();
