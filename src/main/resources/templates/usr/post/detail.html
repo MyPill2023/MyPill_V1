@@ -118,9 +118,7 @@
                     <i class="fa-solid fa-circle-user fa-xl"></i>
                     <span class="text-xl" style="word-wrap: break-word; word-break: break-all;"
                           th:text="${#strings.length(post.poster.name) >= 2 ?
-                           post.poster.name.substring(0, 1) +
-                            '*' +
-                           post.poster.name.substring(2) : post.poster.name}">
+                           post.poster.name.substring(0, 1) + '*' + post.poster.name.substring(2) : post.poster.name}">
                     </span>
                 </div>
                 <div class="flex justify-between items-center ml-4">
@@ -167,9 +165,7 @@
                     <i class="fa-regular fa-circle-user fa-xl"></i>
                     <span class="text-xl" style="word-wrap: break-word; word-break: break-all;"
                           th:text="${#strings.length(comment.writer.name) >= 2 ?
-                           comment.writer.name.substring(0, 1) +
-                            '*' +
-                           comment.writer.name.substring(2) : comment.writer.name}">
+                           comment.writer.name.substring(0, 1) + '*' + comment.writer.name.substring(2) : comment.writer.name}">
                     </span>
                 </div>
                 <div class="flex justify-between items-center ml-4">
@@ -227,7 +223,13 @@
                               style="height: 200px;"></textarea>
                     <div id="newContentCount" class="absolute right-5 bottom-5">(0 / 1000)</div>
                 </div>
-                <button type="submit" class="btn btn-accent">댓글 등록하기</button>
+                <div class="flex flex-row justify-end">
+                    <button type="submit" class="btn btn-success btn-outline">댓글 등록하기</button>
+                    <a href="/usr/post/list" class="btn btn-success btn-outline flex gap-1 h-full ml-4">
+                        목록
+                    </a>
+                </div>
+
             </form>
         </div>
     </div>

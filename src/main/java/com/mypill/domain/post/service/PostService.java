@@ -91,4 +91,14 @@ public class PostService {
     public Optional<Post> findById(Long postId) {
         return postRepository.findById(postId);
     }
+
+    @Transactional
+    public List<Post> searchTitle(String keyword) {
+        return postRepository.findByTitleContaining(keyword);
+    }
+
+    @Transactional
+    public List<Post> searchContent(String keyword) {
+        return postRepository.findByContentContaining(keyword);
+    }
 }

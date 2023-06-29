@@ -30,7 +30,7 @@
                     <a th:text="${post.title}" th:href="@{/usr/post/detail/{id}(id=${post.id})}"></a>
                     <span class="text-danger small ms-2">
 <!--                          th:if="${#lists.size(post.answerList) > 0}"-->
-<!--                          th:text="${#lists.size(post.answerList)}">-->
+                        <!--                          th:text="${#lists.size(post.answerList)}">-->
                     </span>
                 </td>
                 <td th:text="${#strings.length(post.poster.name) >= 2 ?
@@ -41,6 +41,29 @@
             </tr>
             </tbody>
         </table>
+        <div class="flex flex-row justify-between">
+            <form th:action="@{/usr/post/search}" method="POST" class="flex flex-row">
+                <div class="flex border border-gray-300" style="border-right:none;">
+                    <label for="searchType"></label>
+                    <select id="searchType" name="searchType" class="h-full text-sm"
+                            style="border-radius:0;">
+                        <option value="title">제목</option>
+                        <option value="content">내용</option>
+                    </select>
+                    <label for="keyword"></label>
+                    <input type="text" id="keyword" name="keyword" minlength="2" maxlength="10" required
+                           class="h-full border-0 pl-2 text-sm" style="border-radius:0;">
+                </div>
+                <button type="submit" class="btn btn-success btn-outline flex gap-1 btn-xl"
+                        style="border-radius:0;">
+                    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+                </button>
+            </form>
+            <a href="/usr/post/create" class="btn btn-success btn-outline flex gap-1 h-full ml-4"
+               style="border-radius:0;">
+                글쓰기
+            </a>
+        </div>
     </div>
 </main>
 </body>

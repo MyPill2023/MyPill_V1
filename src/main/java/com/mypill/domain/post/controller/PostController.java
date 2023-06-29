@@ -12,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -102,5 +99,18 @@ public class PostController {
             return rq.historyBack(deleteRsData.getMsg());
         }
         return rq.redirectWithMsg("/usr/post/list", deleteRsData);
+    }
+
+    @PostMapping("/search")
+    public String search(String keyword, String searchType, Model model) {
+        List<Post> posts = null;
+        if (searchType.equals("title")) {
+            posts = postService.searchTitle(keyword);
+        }
+        if (searchType.equals("content")) {
+            posts = postService.searchContent(keyword);
+        }
+        model.addAttribute("posts", posts);
+        return "usr/post/list";
     }
 }
