@@ -74,9 +74,10 @@ public class Member extends BaseEntity {
         this.accessToken = accessToken;
     }
 
-    @ElementCollection
-    @CollectionTable(name = "member_answers",
-            joinColumns = @JoinColumn(name = "member_id"))
-    @Column(name = "answer_id")
-    private Set<Long> answers = new HashSet<>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "member_nutrients",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "nutrient_id")
+    )
+    private List<Nutrient> surveyNutrients = new ArrayList<>();
 }

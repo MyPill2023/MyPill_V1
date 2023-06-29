@@ -151,7 +151,7 @@ public class MemberService {
 
     @Transactional
     public RsData<Member> surveyDelete(Member member){
-        member.getAnswers().clear();
+        member.getSurveyNutrients().clear();
         return RsData.of("S-1","설문이 초기화 되었습니다");
     }
 }

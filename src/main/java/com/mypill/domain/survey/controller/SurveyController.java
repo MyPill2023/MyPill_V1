@@ -43,7 +43,7 @@ public class SurveyController {
     public String start(Model model) {
         if (rq.isLogin()) {
             Member member = rq.getMember();
-            if (!member.getAnswers().isEmpty()){
+            if (!member.getSurveyNutrients().isEmpty()){
                 RsData<Member> memberRsData = memberService.surveyDelete(member);
                 return rq.redirectWithMsg("/usr/survey/start", memberRsData);
             }
@@ -83,16 +83,19 @@ public class SurveyController {
             }
         }
 
-        if (rq.isLogin()) {
-            Member member = rq.getMember();
-            member.getAnswers().addAll(answers);
-        }
+
 
         List<Nutrient> nutrientAnswers = new ArrayList<>();
         for (Long id : answers) {
             Optional<Nutrient> nutrient = nutrientService.findById(id);
 
             nutrient.ifPresent(nutrientAnswers::add);
+        }
+
+
+        if (rq.isLogin()) {
+            Member member = rq.getMember();
+            member.getSurveyNutrients().addAll(nutrientAnswers);
         }
 
         model.addAttribute("nutrientAnswers",nutrientAnswers);
