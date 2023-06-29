@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -64,5 +65,10 @@ public class CommentService {
                 .build();
         commentRepository.save(comment);
         return RsData.of("S-1", "댓글 삭제가 완료되었습니다.", comment);
+    }
+
+    @Transactional
+    public List<Comment> getList(Member member) {
+        return commentRepository.findByWriter(member);
     }
 }

@@ -20,8 +20,14 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
 
+    @Transactional
     public List<Post> getList() {
         return postRepository.findByDeleteDateIsNullOrderByCreateDateDesc();
+    }
+
+    @Transactional
+    public List<Post> getList(Member member) {
+        return postRepository.findByPoster(member);
     }
 
     @Transactional
@@ -38,6 +44,7 @@ public class PostService {
         return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
     }
 
+    @Transactional
     public RsData<PostResponse> get(Long postId) {
         Post post = postRepository.findById(postId).orElse(null);
         if (post == null) {
@@ -80,6 +87,7 @@ public class PostService {
         return RsData.of("S-1", "게시글이 삭제되었습니다.");
     }
 
+    @Transactional
     public Optional<Post> findById(Long postId) {
         return postRepository.findById(postId);
     }
