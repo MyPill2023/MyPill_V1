@@ -36,15 +36,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = "";
         String name = "";
         if (providerTypeCode.equals("NAVER")) {
+            providerTypeCode = "N";
             Map<String, String> map = (Map<String, String>) oAuth2User.getAttributes().get("response");
             email = map.get("email");
             name = map.get("name");
             oauthId = map.get("id");
+        } else if (providerTypeCode.equals("KAKAO")) {
+            providerTypeCode = "K";
+            oauthId = oAuth2User.getName();
+            name = "이름 미등록";
         } else {
             oauthId = oAuth2User.getName();
         }
 
-        String username = providerTypeCode + "__%s".formatted(oauthId);
+        String username = providerTypeCode + "@%s".formatted(oauthId);
 
         Member member = memberService.whenSocialLogin(providerTypeCode, username, name, email).getData();
 
