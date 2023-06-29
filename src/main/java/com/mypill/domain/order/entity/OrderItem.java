@@ -40,4 +40,10 @@ public class OrderItem extends BaseEntity {
     @Column(nullable = false)
     private Long quantity;
 
+    public OrderItem(Product product, Long quantity){
+        this.product = product;
+        this.price = product.getPrice();
+        this.quantity = quantity;
+        this.totalPrice = this.price * this.quantity;
+    }
 }
