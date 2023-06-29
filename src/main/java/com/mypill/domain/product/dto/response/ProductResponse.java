@@ -24,6 +24,8 @@ public class ProductResponse {
     private Long stock;
     private List<Nutrient> nutrients = new ArrayList<>();
     private List<Category> categories = new ArrayList<>();
+    private List<Member> likedMembers = new ArrayList<>();
+    private boolean isLiked;
 
     public static ProductResponse of(Product product) {
         return ProductResponse.builder()
@@ -35,7 +37,22 @@ public class ProductResponse {
                 .stock(product.getStock())
                 .nutrients(product.getNutrients())
                 .categories(product.getCategories())
+                .likedMembers(product.getLikedMembers())
                 .build();
     }
 
+    public static ProductResponse of(Product product, boolean isLikedInput) {
+        return ProductResponse.builder()
+                .id(product.getId())
+                .seller(product.getSeller())
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .stock(product.getStock())
+                .nutrients(product.getNutrients())
+                .categories(product.getCategories())
+                .likedMembers(product.getLikedMembers())
+                .isLiked(isLikedInput)
+                .build();
+    }
 }

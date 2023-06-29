@@ -50,9 +50,16 @@ public class Product extends BaseEntity {
     )
     private List<Category> categories = new ArrayList<>();
 
-    //이미지
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "product_member",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "member_id")
+    )
+    private List<Member> likedMembers = new ArrayList<>();
 
-    public static Product of(ProductRequest requestDto, List<Nutrient> nutrients, List<Category> categories, Member seller) {
+    public static Product of(ProductRequest requestDto, List<Nutrient> nutrients, List<Category> categories,
+                             Member seller, List<Member> likedMembers) {
         return Product.builder()
                 .name(requestDto.getName())
                 .description(requestDto.getDescription())
@@ -61,6 +68,7 @@ public class Product extends BaseEntity {
                 .seller(seller)
                 .nutrients(nutrients)
                 .categories(categories)
+                .likedMembers(likedMembers)
                 .build();
     }
 
@@ -71,5 +79,24 @@ public class Product extends BaseEntity {
         this.stock = requestDto.getStock();
         this.nutrients = nutrients;
         this.categories = categories;
+    }
+
+    public Long getLikedCount() {
+        if (likedMembers == null) {
+            return 0L;
+        }
+        return (long) likedMembers.size();
+    }
+
+    public void addLikedMember(Member member) {
+        if (!this.likedMembers.contains(member)) {
+            this.likedMembers.add(member);
+        }
+    }
+
+    public void deleteLikedMember(Member member) {
+        if (this.likedMembers.contains(member)) {
+            this.likedMembers.remove(member);
+        }
     }
 }

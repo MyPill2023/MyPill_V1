@@ -1,0 +1,32 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>설문조사 안내사항</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+  <div class="hero-content flex flex-col justify-center my-10 w-full ">
+    <h1 class="text-2xl text-center font-bold ">맞춤 영양소를 추천받을</br> 방법을 선택해주세요
+    </h1>
+    <span th:style="${'font-size:17px; text-align:center'}" class="text-black font-bold">
+        </span>
+
+      <a th:if="${@rq.login}" href="/usr/survey/start" tabindex="0" class="collapse collapse-open border border-success bg-base-100">
+        <div class="collapse-title text-xl font-medium font-bold" >회원으로 진행</div>
+            <div class="collapse-content">결과가 저장 됩니다!</div>
+      </a>
+      <a th:if="${@rq.logout}" href="/usr/member/login" tabindex="0" class="collapse collapse-open border border-success bg-base-100">
+          <div  class="collapse-title text-xl font-medium font-bold">회원으로 진행</div>
+            <div class="collapse-content">결과가 저장 됩니다!</div>
+      </a>
+      <a th:if="${@rq.logout}" href="/usr/survey/start" tabindex="0" class="collapse collapse-open border border-success bg-base-100">
+          <div class="collapse-title text-xl font-medium font-bold" >비회원으로 진행</div>
+          <div class="collapse-content">결과가 저장되지 않습니다!</div>
+      </a>
+  </div>
+
+</main>
+</body>
+</html>
