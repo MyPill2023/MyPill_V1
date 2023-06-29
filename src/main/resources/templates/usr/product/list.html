@@ -2,7 +2,7 @@
 
 <head>
     <title>메인</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.6/flowbite.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.6/flowbite.min.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -13,8 +13,8 @@
             <div id="accordion-collapse" data-accordion="collapse">
                 <h2 id="accordion-collapse-heading-1">
                     <a th:href="@{|/product/list/all|}"
-                            class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-                            >
+                       class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    >
                         <span>전체보기</span>
                     </a>
                 </h2>
@@ -62,10 +62,10 @@
                     <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700">
                         <div class="grid grid-cols-2 gap-4">
                             <div th:each="category, loop : ${categories}">
-                                <a  th:href="@{|/product/list/category/${category.id}|}"
-                                    th:class="${category.name == title ? 'badge badge-accent badge-outline badge-lg hover:bg-green-100' :
+                                <a th:href="@{|/product/list/category/${category.id}|}"
+                                   th:class="${category.name == title ? 'badge badge-accent badge-outline badge-lg hover:bg-green-100' :
                                    'badge badge-ghost badge-lg hover:bg-green-100'}"
-                                    th:text="${category.name}"></a>
+                                   th:text="${category.name}"></a>
                             </div>
                         </div>
                     </div>
@@ -80,25 +80,28 @@
                  class="bg-base-100 border-b border-gray-200 p-10 pt-5">
                 <a th:href="@{|/product/detail/${product.id}|}">
 
-                        <div class="flex justify-around gap-5">
-                            <div class="border border-gray-200 w-2/6 p-5">
-                                이미지
+                    <div class="flex justify-around gap-5">
+                        <div class="border border-gray-200 w-2/6 p-5">
+                            이미지
+                        </div>
+                        <div class="flex flex-col gap-3 w-4/6">
+                            <div class="flex flex-col gap-1">
+                                <h3 th:text="${product.seller.name}"></h3>
+                                <h1 th:text="${product.name}" class="text-xl font-bold"></h1>
                             </div>
-                            <div class="flex flex-col gap-3 w-4/6">
-                                <div class="flex flex-col gap-1">
-                                    <h3 th:text="${product.seller.name}"></h3>
-                                    <h1 th:text="${product.name}" class="text-xl font-bold"></h1>
+                            <div class="flex justify-between items-center">
+                                <div class="items-center">
+                                    <i class="fa-solid fa-heart" style="color: #FF0000;"></i>
+                                    <span th:text="${product.likedMembers.size()}"></span>
                                 </div>
-                                <div class="flex justify-end">
-                                    <span class="text-lg font-bold"
-                                          th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
-                                </div>
+                                <span class="text-lg font-bold"
+                                      th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
                             </div>
                         </div>
+                    </div>
 
                 </a>
             </div>
-
 
 
         </div>
