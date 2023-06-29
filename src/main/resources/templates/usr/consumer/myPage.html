@@ -2,11 +2,82 @@
 
 <head>
     <title>마이페이지</title>
+    <meta name="csrf-token" th:content="${_csrf.token}"> <!-- CSRF 토큰을 메타 태그로 포함 -->
 </head>
 
 <body>
 <main layout:fragment="main">
+    <script>
+        function editName() {
 
+            const nameElement = document.getElementById('name');
+            const nameEditFormElement = document.getElementById('nameEditForm');
+
+            // 기존 댓글 내용을 가져와서 수정 폼에 설정
+            const name = nameElement.innerText;
+            const nameEditInput = nameEditFormElement.querySelector('textarea');
+            nameEditInput.value = name;
+
+            // 댓글 내용을 보여주는 부분을 숨기고 수정 폼을 보여줌
+            nameElement.style.display = 'none';
+            nameEditFormElement.style.display = 'block';
+
+            $(document).ready(function () {
+                $('#nameEdit').on('keyup', function () {
+                    if ($(this).val().length > 5) {
+                        toastWarning("이름은 최대 5자까지 가능합니다.");
+                        $(this).val($(this).val().substring(0, 5));
+                    }
+                });
+            });
+        }
+
+        function saveName() {
+            const nameEditFormElement = document.getElementById('nameEditForm');
+            const nameEditInput = nameEditFormElement.querySelector('textarea');
+            const newName = nameEditInput.value;
+            if (newName.length < 2) {
+                toastWarning("이름은 최소 2자 이상이어야 합니다.");
+                return;
+            }
+
+            const url = '/usr/consumer/name/update';
+            const csrfToken = $('meta[name=csrf-token]').attr('content'); // 메타 태그에서 CSRF 토큰 가져오기
+
+            // Ajax 요청을 사용하여 댓글 수정 API 호출
+            $.ajax({
+                type: 'post',
+                url: url,
+                headers: {'X-CSRF-TOKEN': csrfToken}, // 요청 헤더에 CSRF 토큰 추가},
+                data: {
+                    newName: newName,
+                },
+                success: function (data) {
+                    // 요청 결과를 받아와서 동적으로 댓글 내용 업데이트
+                    if (data === "success") {
+                        const nameElement = document.getElementById('name');
+                        nameElement.innerText = newName;
+                        nameElement.style.display = 'block';
+                        nameEditFormElement.style.display = 'none';
+                        console.log("success");
+                    } else {
+                        toastWarning(data.errorMsg);
+                    }
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        function cancelEditName() {
+            const nameElement = document.getElementById('name');
+            const nameEditFormElement = document.getElementById('nameEditForm');
+            // 수정 취소 시, 댓글 내용 보여주는 부분을 숨기고 수정 폼을 숨김
+            nameElement.style.display = 'block';
+            nameEditFormElement.style.display = 'none';
+        }
+    </script>
     <div class="hero-content flex flex-col mb-10 w-full">
         <div class="flex flex-row items-center">
             <i class="fa-solid fa-circle-user fa-2xl mr-2"></i>
@@ -15,80 +86,73 @@
             </h1>
         </div>
         <div class="max-w-2xl w-full px-4">
+            <div class="form-control flex">
+                <div class="flex-row">
+                    <span class="text-xl">회원 유형</span>
+                </div>
+                <div class="card bg-base-100 border border-gray-200 mt-2">
+                    <div class="card-body whitespace-normal"
+                         style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
+                        <span class="text-sm">일반 회원</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-control flex">
+                <div class="flex flex-row justify-between items-center">
+                    <span class="text-xl mr-4">아이디</span>
+                </div>
+                <div class="card bg-base-100 border border-gray-200 mt-2">
+                    <div class="card-body whitespace-normal"
+                         style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
+                        <span class="text-sm" th:text="${@rq.member.username}">
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-            <form th:action method="POST" class="flex flex-col gap-3 flex-grow" id="joinForm"
-                  onsubmit="MemberJoin__submit(this); return false;">
-                <div class="form-control flex">
-                    <div class="flex-row">
-                        <span class="text-xl">회원 유형</span>
-                    </div>
-                    <div class="card bg-base-100 border border-gray-200 mt-2">
-                        <div class="card-body whitespace-normal"
-                             style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
-                            <span class="text-sm">일반 회원</span>
-                        </div>
-                    </div>
+
+            <div class="form-control flex">
+                <div class="flex flex-row justify-between items-center">
+                    <span class="text-xl mr-4">이름</span>
+                    <button class="btn btn-success btn-outline flex gap-1 btn-xs"
+                            onclick="editName(this);">
+                        수정하기
+                    </button>
                 </div>
-                <div class="form-control flex">
-                    <div class="flex flex-row justify-between items-center">
-                        <span class="text-xl mr-4">아이디</span>
-                    </div>
-                    <div class="card bg-base-100 border border-gray-200 mt-2">
-                        <div class="card-body whitespace-normal"
-                             style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
-                                <span class="text-sm" th:text="${@rq.member.username}">
-                                </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-control flex">
-                    <div class="flex flex-row justify-between items-center">
-                        <span class="text-xl mr-4">이름</span>
-                        <button class="btn btn-success btn-outline flex gap-1 btn-xs"
-                                th:attr="onclick='editComment(this, ' + ${@rq.member.id} + ');'">
-                            수정하기
-                        </button>
-                        <!--                        <form hidden-->
-                        <!--                              th:action="@{/usr/comment/delete/{postId}/{commentId}(commentId=${comment.id}, postId=${post.id})}"-->
-                        <!--                              method="POST"></form>-->
-                    </div>
-                    <div class="card bg-base-100 border border-gray-200 mt-2">
-                        <div class="card-body whitespace-normal"
-                             style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
-                                <span class="text-sm" th:id="'commentContent-' + ${@rq.member.id}"
-                                      th:text="${@rq.member.name}">
-                                </span>
-                            <div th:id="'commentEditForm-' + ${@rq.member.id}" class="comment-edit-form"
-                                 style="display: none;">
-                                <div class="relative">
+                <div class="card bg-base-100 border border-gray-200 mt-2">
+                    <div class="card-body whitespace-normal"
+                         style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
+                        <span class="text-sm" id="name"
+                              th:text="${@rq.member.name}">
+                        </span>
+                        <div id="nameEditForm" class="comment-edit-form" style="display: none;">
+                            <div class="relative">
                                 <textarea
                                         class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
-                                        th:id="'commentEdit-' + ${@rq.member.id}" name="commentEdit"
-                                        style="height: 100px;"></textarea>
-                                </div>
-                                <button class="btn btn-success"
-                                        th:attr="onclick='saveComment(this, ' + ${@rq.member.id} + ');'">저장
-                                </button>
-                                <button class="btn btn-danger"
-                                        th:attr="onclick='cancelEditComment(this, ' + ${@rq.member.id} + ');'">취소
-                                </button>
+                                        id="nameEdit" name="nameEdit" minlength="2"></textarea>
                             </div>
+                            <button class="btn btn-success"
+                                    onclick="saveName(this)">저장
+                            </button>
+                            <button class="btn btn-danger"
+                                    onclick="cancelEditName(this)">취소
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="form-control flex">
-                    <div class="flex flex-row justify-between items-center">
-                        <span class="text-xl mr-4">이메일</span>
-                    </div>
-                    <div class="card bg-base-100 border border-gray-200 mt-2">
-                        <div class="card-body whitespace-normal"
-                             style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
-                                <span class="text-sm" th:text="${@rq.member.email}">
-                                </span>
-                        </div>
+            </div>
+            <div class="form-control flex">
+                <div class="flex flex-row justify-between items-center">
+                    <span class="text-xl mr-4">이메일</span>
+                </div>
+                <div class="card bg-base-100 border border-gray-200 mt-2">
+                    <div class="card-body whitespace-normal"
+                         style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
+                        <span class="text-sm" th:text="${@rq.member.email}">
+                        </span>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </main>

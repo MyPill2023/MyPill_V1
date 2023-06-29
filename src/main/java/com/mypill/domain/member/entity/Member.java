@@ -97,4 +97,8 @@ public class Member extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "nutrient_id")
     )
     private List<Nutrient> surveyNutrients = new ArrayList<>();
+
+    public void updateName(String newName) {
+        this.name = newName;
+    }
 }
