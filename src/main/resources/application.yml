@@ -57,3 +57,10 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+custom:
+  survey:
+    startMaxLength: 3
+    startMinLength : 1
+    completeMaxLength : 9 #최대 질문값이 3(카테고리최대값)*3(질문선택최대값) = 9
+    completeMinLength : 1
+

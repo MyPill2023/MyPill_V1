@@ -92,4 +92,37 @@ public class AppConfig {
         return new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
+    @Getter
+    private static int startMaxLength;
+
+    @Value("${custom.survey.startMaxLength}")
+    public void setStartMaxLength(int startMaxLength) {
+        AppConfig.startMaxLength = startMaxLength;
+    }
+
+    @Getter
+    private static int startMinLength;
+
+    @Value("${custom.survey.startMinLength}")
+    public void setStartMinLength(int startMinLength) {
+        AppConfig.startMinLength = startMinLength;
+    }
+
+    @Getter
+    private static int completeMaxLength;
+
+    @Value("${custom.survey.completeMaxLength}")
+    public void setCompleteMaxLength(int completeMaxLength) {
+        AppConfig.completeMaxLength = completeMaxLength;
+    }
+
+    @Getter
+    private static int completeMinLength;
+
+    @Value("${custom.survey.completeMinLength}")
+    public void setCompleteMinLength(int completeMinLength) {
+        AppConfig.completeMinLength = completeMinLength;
+    }
+
+
 }
