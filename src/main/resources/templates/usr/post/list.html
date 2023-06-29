@@ -33,7 +33,10 @@
 <!--                          th:text="${#lists.size(post.answerList)}">-->
                     </span>
                 </td>
-                <td th:text="${post.poster.username}"></td>
+                <td th:text="${#strings.length(post.poster.name) >= 2 ?
+                           post.poster.name.substring(0, 1) +
+                            '*' +
+                           post.poster.name.substring(2) : post.poster.name}"></td>
                 <td th:text="${#temporals.format(post.createDate, 'MM/dd')}"></td>
             </tr>
             </tbody>
