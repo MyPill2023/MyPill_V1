@@ -42,9 +42,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             name = map.get("name");
             oauthId = map.get("id");
         } else if (providerTypeCode.equals("KAKAO")) {
+            Map<String, Object> attributes = oAuth2User.getAttributes();
+            Map<String, String> properties = (Map<String, String>) attributes.get("properties");
+            name = properties.get("nickname");
+            Map<String, String> kakaoAccount = (Map<String, String>) attributes.get("kakao_account");
+            email = kakaoAccount.get("email");
+
             providerTypeCode = "K";
             oauthId = oAuth2User.getName();
-            name = "이름 미등록";
+
         } else {
             oauthId = oAuth2User.getName();
         }
