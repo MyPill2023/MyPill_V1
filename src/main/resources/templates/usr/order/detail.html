@@ -1,7 +1,7 @@
 <html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>주문</title>
+    <title>주문 상세</title>
     <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
 
@@ -9,9 +9,10 @@
 <main layout:fragment="main">
     <div class="hero-content flex flex-col my-10 w-[32rem]">
         <h1 class="text-2xl font-bold">
-            주문완료
+            주문 상세
         </h1>
 
+        <div class="text-lg" th:text="'주문번호 : ' + ${orderResponse.orderNumber}"></div>
         <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5">
             <div class="text-lg" th:text="${orderResponse.name}"></div>
             <div th:each="orderItem, loop : ${orderResponse.orderItems}">
@@ -37,7 +38,7 @@
                 </div>
             </div>
 
-
+        </div>
     </div>
 
 

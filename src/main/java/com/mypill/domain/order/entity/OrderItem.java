@@ -22,21 +22,14 @@ public class OrderItem extends BaseEntity {
 
     @ManyToOne(fetch = LAZY)
     private Order order;
-
     @ManyToOne(fetch = LAZY)
     private Product product;
-
-    private LocalDateTime payDate;
-
     @Column(nullable = false)
     private Long totalPrice;
-
     @Column(nullable = false)
     private Long price;
-
     @Column(nullable = false)
     private Long quantity;
-
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
@@ -49,6 +42,10 @@ public class OrderItem extends BaseEntity {
 
     public void connectOrder(Order order) {
         this.order = order;
+    }
+
+    public void updateStatus(OrderStatus status){
+        this.status = status;
     }
 
     public void setPaymentDone() {

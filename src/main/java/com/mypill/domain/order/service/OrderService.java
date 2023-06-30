@@ -6,13 +6,16 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
+import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.repository.OrderItemRepository;
 import com.mypill.domain.order.repository.OrderRepository;
+import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,14 +24,30 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
+
     private final OrderItemRepository orderItemRepository;
     private final CartService cartService;
+    private final Rq rq;
+
+    public RsData<OrderResponse> showOrderForm(Long orderId) {
+        Order order = findById(orderId).orElse(null);
+        if(order == null){
+            return RsData.of("F-1", "존재하지 않는 주문입니다.");
+        }
+        if(!order.getBuyer().getId().equals(rq.getMember().getId())){
+            return RsData.of("F-2", "다른 회원의 주문에 접근할 수 없습니다.");
+        }
+        if(order.getPayDate() != null){
+            return RsData.of("F-3", "이미 결제된 주문입니다.");
+        }
+
+        return  RsData.of("S-1", OrderResponse.of(order));
+    }
 
     @Transactional
-    public RsData<Order> createFromCart(Member member) {
-        List<CartProduct> cartProducts = cartService.findByMemberId(member.getId()).getCartProducts();
+    public RsData<Order> createFromCart(Member buyer) {
+        List<CartProduct> cartProducts = cartService.findByMemberId(buyer.getId()).getCartProducts();
 
         for(CartProduct cartProduct : cartProducts){
             if(cartProduct.getQuantity() > cartProduct.getProduct().getStock()){
@@ -41,33 +60,35 @@ public class OrderService {
                 .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
                 .toList();
 
-        Order order = create(member, orderItems);
+        Order order = create(buyer, orderItems);
         return RsData.of("S-1", "주문이 생성되었습니다.", order);
     }
 
     @Transactional
-    public Order create(Member member, List<OrderItem> orderItems) {
+    public Order create(Member buyer, List<OrderItem> orderItems) {
 
-        Order order = new Order(member);
+        Order order = new Order(buyer);
 
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
             orderItem.connectOrder(order);
+            orderItem.updateStatus(OrderStatus.BEFORE);
         }
 
         order.makeName();
-
         orderRepository.save(order);
 
         return order;
     }
 
     @Transactional
-    public void payByTossPayments(Order order) {
+    public void payByTossPayments(Order order,  LocalDateTime payDate, String orderId) {
 
-        //TODO : 체크 로직
+        order.setPaymentDone(payDate, orderId);
+        for (OrderItem orderItem : order.getOrderItems()) {
+            orderItem.updateStatus(OrderStatus.ORDERED);
+        }
 
-        order.setPaymentDone();
         orderRepository.save(order);
     }
 
