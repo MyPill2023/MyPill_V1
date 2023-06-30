@@ -2,7 +2,6 @@ package com.mypill.domain.consumer.controller;
 
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
-import com.mypill.domain.consumer.service.ConsumerService;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
@@ -28,9 +27,14 @@ public class ConsumerController {
     private final Rq rq;
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myPage")
-    public String showMyPage() {
-        return "usr/consumer/myPage";
+    @GetMapping("/main")
+    public String main() {
+        return "usr/consumer/main";
+    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myInfo")
+    public String myInfo() {
+        return "usr/consumer/myInfo";
     }
 
     @PreAuthorize("isAuthenticated()")
