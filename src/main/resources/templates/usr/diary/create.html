@@ -1,0 +1,83 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>영양제 등록하기</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+
+    <div class="hero-content flex flex-col justify-center my-10 w-full ">
+        <h1 class="text-2xl text-center font-bold "> 나의 영양제 관리 🗒️
+        </h1>
+
+        <form th:action method="POST" class="flex flex-col gap-4" onsubmit="myPillRequestDto__submit(this, event); return false;">
+            <input type="hidden" id="id" name="id" th:value="${@rq.member.id}">
+            <div>
+                <label for="name" class="block text-gray-700 font-bold mb-2">영양제명</label>
+                <input type="text" id="name" name="name" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+            </div>
+
+            <div class="mb-4">
+                <div class="form-control">
+                    <label class="block text-gray-700 font-bold mb-2">복용 시간</label>
+                    <select id="selectedTime" name="time" class="select select-accent">
+                        <option disabled selected>복용 시간</option>
+                        <option name="time" value="1">아침</option>
+                        <option name="time" value="2">점심</option>
+                        <option name="time" value="3">저녁</option>
+                        <option name="time" value="4">자기전</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label for="type" class="block text-gray-700 font-bold mb-2">영양제명</label>
+                <input type="text" id="type" name="type" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+            </div>
+
+            <div class="flex flex-col">
+                <span class="text-gray-700 font-bold mb-2">메모</span>
+                <textarea id="memo" name="memo" placeholder="영양제에 대한 메모를 해주시면 됩니다"
+                          class="shadow textarea-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+
+
+            <button type="submit" class="btn btn-accent">
+                영양제 등록하기
+            </button>
+        </form>
+    </div>
+
+
+    <script>
+
+        function myPillRequestDto__submit(form, event) {
+            form.name.value = form.name.value.trim();
+
+            if (form.name.value.length === 0) {
+                toastWarning("영양제명을 입력해주세요.");
+                form.name.focus();
+                return;
+            }
+
+            form.time.value = form.time.value.trim();
+
+            if (form.time.value.length === 0) {
+                toastWarning("섭취 시간을 입력해주세요.");
+                form.time.focus();
+                return;
+            }
+
+            // 폼 제출을 막음
+            event.preventDefault();
+
+            // 폼 발송
+            form.submit();
+        }
+    </script>
+
+
+</main>
+</body>
+</html>
