@@ -38,8 +38,47 @@
             </tr>
             </tbody>
         </table>
+        <div class="pagination">
+            <ul class="flex justify-center">
+                <li>
+                    <a th:if="${page.hasPrevious()} and ${page.number != 0}"
+                       th:href="@{/usr/post/list(pageNumber=0, pageSize=${page.size})}"
+                       class="text-blue-500 hover:text-blue-700 mr-4">
+                        First
+                    </a>
+                </li>
+                <li th:if="${page.hasPrevious()}">
+                    <a th:href="@{/usr/post/list(pageNumber=${page.number - 1}, pageSize=${page.size})}"
+                       class="text-blue-500 hover:text-blue-700 mr-4">
+                        Previous
+                    </a>
+                </li>
+                <li th:each="pageNum : ${#numbers.sequence(0, page.totalPages - 1)}"
+                    th:class="${page.totalPages > 1 and pageNum >= page.number - 2 and pageNum <= page.number + 2} ? 'mr-4' : ''">
+                    <a th:if="${page.totalPages > 1 and pageNum >= page.number - 2 and pageNum <= page.number + 2}"
+                       th:href="@{/usr/post/list(pageNumber=${pageNum}, pageSize=${page.size})}"
+                       class="text-blue-500 hover:text-blue-700 font-bold"
+                       th:class="${pageNum == page.number ? 'text-blue-700' : ''}">
+                        <span th:text="${pageNum + 1}"></span>
+                    </a>
+                </li>
+                <li th:if="${page.hasNext()}">
+                    <a th:href="@{/usr/post/list(pageNumber=${page.number + 1}, pageSize=${page.size})}"
+                       class="text-blue-500 hover:text-blue-700">
+                        Next
+                    </a>
+                </li>
+                <li>
+                    <a th:if="${page.hasNext()} and ${page.number != page.totalPages - 1}"
+                       th:href="@{/usr/post/list(pageNumber=${page.totalPages - 1}, pageSize=${page.size})}"
+                       class="text-blue-500 hover:text-blue-700 ml-4">
+                        Last
+                    </a>
+                </li>
+            </ul>
+        </div>
         <div class="flex flex-row justify-between">
-            <form th:action="@{/usr/post/search}" method="POST" class="flex flex-row">
+            <form th:action="@{/usr/post/list}" class="flex flex-row">
                 <div class="flex border border-gray-300" style="border-right:none;">
                     <label for="searchType"></label>
                     <select id="searchType" name="searchType" class="h-full text-sm"

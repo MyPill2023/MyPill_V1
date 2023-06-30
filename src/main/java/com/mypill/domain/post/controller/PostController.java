@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,8 +27,13 @@ public class PostController {
 
     @GetMapping("/list")
     @Operation(summary = "게시글 목록")
-    public String showList(Model model) {
-        List<Post> posts = postService.getList();
+    public String showList(String keyword, String searchType,
+                           @RequestParam(defaultValue = "0") int pageNumber,
+                           @RequestParam(defaultValue = "10") int pageSize,
+                           Model model) {
+        Page<Post> pageResult = postService.getPosts(keyword, searchType, pageNumber, pageSize);
+        List<Post> posts = pageResult.getContent();
+        model.addAttribute("page", pageResult);
         model.addAttribute("posts", posts);
         return "usr/post/list";
     }
@@ -99,18 +105,5 @@ public class PostController {
             return rq.historyBack(deleteRsData.getMsg());
         }
         return rq.redirectWithMsg("/usr/post/list", deleteRsData);
-    }
-
-    @PostMapping("/search")
-    public String search(String keyword, String searchType, Model model) {
-        List<Post> posts = null;
-        if (searchType.equals("title")) {
-            posts = postService.searchTitle(keyword);
-        }
-        if (searchType.equals("content")) {
-            posts = postService.searchContent(keyword);
-        }
-        model.addAttribute("posts", posts);
-        return "usr/post/list";
     }
 }

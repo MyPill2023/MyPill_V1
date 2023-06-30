@@ -5,9 +5,11 @@ import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
-import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,14 @@ public class PostService {
     @Transactional
     public List<Post> getList() {
         return postRepository.findByDeleteDateIsNullOrderByCreateDateDesc();
+    }
+
+    @Transactional
+    public Page<Post> getPostList(Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        pageable = PageRequest.of(page, 10);
+        return postRepository.findAll(pageable);
+//        return postRepository.findAllByDeleteDateIsNull(pageable);
     }
 
     @Transactional
@@ -92,13 +102,28 @@ public class PostService {
         return postRepository.findById(postId);
     }
 
-    @Transactional
-    public List<Post> searchTitle(String keyword) {
-        return postRepository.findByTitleContaining(keyword);
+    public Page<Post> getPosts(String keyword, String searchType, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        if (keyword == null || searchType == null) {
+            return postRepository.findByDeleteDateIsNullOrderByIdDesc(pageable);
+        }
+        if (searchType.equals("title")) {
+            return searchTitle(keyword, pageable);
+        }
+        if (searchType.equals("content")) {
+            return searchContent(keyword, pageable);
+        }
+        return postRepository.findByDeleteDateIsNullOrderByIdDesc(pageable);
     }
 
     @Transactional
-    public List<Post> searchContent(String keyword) {
-        return postRepository.findByContentContaining(keyword);
+    public Page<Post> searchTitle(String keyword, Pageable pageable) {
+        return postRepository.findByTitleContainingAndDeleteDateIsNullOrderByIdDesc(keyword, pageable);
     }
+
+    @Transactional
+    public Page<Post> searchContent(String keyword, Pageable pageable) {
+        return postRepository.findByContentContainingAndDeleteDateIsNullOrderByIdDesc(keyword, pageable);
+    }
+
 }
