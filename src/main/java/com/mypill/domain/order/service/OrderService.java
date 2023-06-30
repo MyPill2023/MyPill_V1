@@ -87,8 +87,12 @@ public class OrderService {
     public void payByTossPayments(Order order,  LocalDateTime payDate, String orderId) {
 
         order.setPaymentDone(payDate, orderId);
-        order.getOrderItems().forEach(orderItem -> orderItem.updateStatus(OrderStatus.ORDERED));
-        order.getCartProducts().forEach(CartProduct::softDelete);
+        order.getOrderItems()
+                .forEach(orderItem -> {
+                    orderItem.updateStatus(OrderStatus.ORDERED);
+                    orderItem.getProduct().updateStockByOrder(orderItem.getQuantity()); // 재고 업데이트
+                });
+        order.getCartProducts().forEach(CartProduct::softDelete); // 장바구니에서 삭제
 
         orderRepository.save(order);
     }
