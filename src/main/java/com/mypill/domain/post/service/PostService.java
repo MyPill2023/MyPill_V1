@@ -28,14 +28,6 @@ public class PostService {
     }
 
     @Transactional
-    public Page<Post> getPostList(Pageable pageable) {
-        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 10);
-        return postRepository.findAll(pageable);
-//        return postRepository.findAllByDeleteDateIsNull(pageable);
-    }
-
-    @Transactional
     public List<Post> getList(Member member) {
         return postRepository.findByPoster(member);
     }
@@ -97,7 +89,6 @@ public class PostService {
         return RsData.of("S-1", "게시글이 삭제되었습니다.");
     }
 
-    @Transactional
     public Optional<Post> findById(Long postId) {
         return postRepository.findById(postId);
     }
@@ -116,12 +107,10 @@ public class PostService {
         return postRepository.findByDeleteDateIsNullOrderByIdDesc(pageable);
     }
 
-    @Transactional
     public Page<Post> searchTitle(String keyword, Pageable pageable) {
         return postRepository.findByTitleContainingAndDeleteDateIsNullOrderByIdDesc(keyword, pageable);
     }
 
-    @Transactional
     public Page<Post> searchContent(String keyword, Pageable pageable) {
         return postRepository.findByContentContainingAndDeleteDateIsNullOrderByIdDesc(keyword, pageable);
     }

@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -148,14 +149,19 @@ public class ProductController {
 
     @ResponseBody
     @PostMapping("/like/{id}")
-    public Integer likeArticle(@PathVariable("id") Long id) {
+    public Integer likeProduct(@PathVariable("id") Long id) {
         return productService.like(rq.getMember(), id);
     }
 
     @ResponseBody
     @PostMapping("/unlike/{id}")
-    public Integer unlikeArticle(@PathVariable("id") Long id) {
+    public Integer unlikeProduct(@PathVariable("id") Long id) {
         return productService.unlike(rq.getMember(), id);
     }
 
+    @GetMapping("/unlike/{id}")
+    public String unlike(@PathVariable("id") Long id) {
+        productService.unlike(rq.getMember(), id);
+        return rq.redirectWithMsg("/usr/consumer/myLikes","관심 상품이 삭제되었습니다.");
+    }
 }
