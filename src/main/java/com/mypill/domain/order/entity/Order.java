@@ -39,7 +39,6 @@ public class Order extends BaseEntity {
     private Long totalPrice;
 
     private LocalDateTime payDate;
-    private String paymentOrderId;
 
     public Order(Member buyer) {
         this.buyer = buyer;
@@ -51,6 +50,12 @@ public class Order extends BaseEntity {
     public void addOrderItem(OrderItem orderItem){
         this.orderItems.add(orderItem);
         this.totalPrice += orderItem.getTotalPrice();
+        orderItem.connectOrder(this);
+    }
+
+    public void addCartProduct(CartProduct cartProduct){
+        cartProducts.add(cartProduct);
+        cartProduct.connectOrder(this);
     }
 
     public void makeName() {

@@ -30,7 +30,7 @@ public class OrderService {
     private final CartService cartService;
     private final Rq rq;
 
-    public RsData<OrderResponse> showOrderForm(Long orderId) {
+    public RsData<OrderResponse> getOrderForm(Long orderId) {
         Order order = findById(orderId).orElse(null);
         if(order == null){
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
@@ -61,6 +61,9 @@ public class OrderService {
                 .toList();
 
         Order order = create(buyer, orderItems);
+        for(CartProduct cartProduct : cartProducts){
+            order.addCartProduct(cartProduct);
+        }
         return RsData.of("S-1", "주문이 생성되었습니다.", order);
     }
 
@@ -71,7 +74,6 @@ public class OrderService {
 
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
-            orderItem.connectOrder(order);
             orderItem.updateStatus(OrderStatus.BEFORE);
         }
 
@@ -85,11 +87,22 @@ public class OrderService {
     public void payByTossPayments(Order order,  LocalDateTime payDate, String orderId) {
 
         order.setPaymentDone(payDate, orderId);
-        for (OrderItem orderItem : order.getOrderItems()) {
-            orderItem.updateStatus(OrderStatus.ORDERED);
-        }
+        order.getOrderItems().forEach(orderItem -> orderItem.updateStatus(OrderStatus.ORDERED));
+        order.getCartProducts().forEach(CartProduct::softDelete);
 
         orderRepository.save(order);
+    }
+
+    public RsData<OrderResponse> getOrderDetail(Long orderId) {
+        Order order = findById(orderId).orElse(null);
+        if(order == null || order.getPayDate() == null){
+            return RsData.of("F-1", "존재하지 않는 주문입니다.");
+        }
+        if(!order.getBuyer().getId().equals(rq.getMember().getId())){
+            return RsData.of("F-2", "다른 회원의 주문에 접근할 수 없습니다.");
+        }
+
+        return  RsData.of("S-1", OrderResponse.of(order));
     }
 
     public Optional<Order> findById(Long orderId) {

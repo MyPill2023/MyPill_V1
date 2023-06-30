@@ -40,8 +40,8 @@ public class OrderController {
 
     @GetMapping("/form/{orderId}")
     @PreAuthorize("hasAuthority('MEMBER')")
-    public String showOrderForm(@PathVariable Long orderId, Model model) {
-        RsData<OrderResponse> rsData = orderService.showOrderForm(orderId);
+    public String getOrderForm(@PathVariable Long orderId, Model model) {
+        RsData<OrderResponse> rsData = orderService.getOrderForm(orderId);
         if(rsData.isFail()){
             return rq.historyBack(rsData);
         }
@@ -65,15 +65,13 @@ public class OrderController {
 
     @GetMapping("/detail/{orderId}")
     @PreAuthorize("hasAuthority('MEMBER')")
-    public String showOrder(@PathVariable Long orderId, Model model) {
+    public String getOrderDetail(@PathVariable Long orderId, Model model) {
 
-        Order order = orderService.findById(orderId).orElse(null);
-
-        if(order == null){
-            rq.historyBack("비었어요");
+        RsData<OrderResponse> rsData = orderService.getOrderDetail(orderId);
+        if(rsData.isFail()){
+            return rq.historyBack(rsData);
         }
-
-        model.addAttribute("orderResponse", OrderResponse.of(order));
+        model.addAttribute("orderResponse", rsData.getData());
 
         return "usr/order/detail";
     }

@@ -8,6 +8,7 @@ import com.mypill.domain.cart.repository.CartProductRepository;
 import com.mypill.domain.cart.repository.CartRepository;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
+import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.product.Service.ProductService;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rq.Rq;
@@ -130,6 +131,12 @@ public class CartService {
         existProduct.softDelete();
 
         return RsData.of("S-1", "장바구니에서 상품이 삭제되었습니다.", existProduct);
+    }
+
+    @Transactional
+    public void deleteCartProductsByOrder(Order order) {
+        List<CartProduct> cartProducts = order.getCartProducts();
+        cartProducts.forEach(CartProduct::softDelete);
     }
 
     public Cart findByMemberId(Long MemberId){
