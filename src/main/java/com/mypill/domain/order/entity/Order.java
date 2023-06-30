@@ -32,12 +32,10 @@ public class Order extends BaseEntity {
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-
     @Column(nullable = false)
     private Long totalPrice;
 
+    private boolean isPaid;
 
 
     public Order(Member member) {
@@ -49,7 +47,6 @@ public class Order extends BaseEntity {
 
     public void addOrderItem(OrderItem orderItem){
         this.orderItems.add(orderItem);
-        this.status = OrderStatus.BEFORE;
         this.totalPrice += orderItem.getTotalPrice();
     }
 
@@ -70,5 +67,13 @@ public class Order extends BaseEntity {
         }
 
         this.name = sb.toString();
+    }
+
+    public void setPaymentDone() {
+        for (OrderItem orderItem : orderItems) {
+            orderItem.setPaymentDone();
+        }
+
+        isPaid = true;
     }
 }

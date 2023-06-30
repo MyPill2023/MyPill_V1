@@ -62,6 +62,15 @@ public class OrderService {
         return order;
     }
 
+    @Transactional
+    public void payByTossPayments(Order order) {
+
+        //TODO : 체크 로직
+
+        order.setPaymentDone();
+        orderRepository.save(order);
+    }
+
     public Optional<Order> findById(Long orderId) {
         return orderRepository.findById(orderId);
     }

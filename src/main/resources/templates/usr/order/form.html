@@ -2,6 +2,7 @@
 
 <head>
     <title>주문</title>
+    <script src="https://js.tosspayments.com/v1/payment"></script>
 </head>
 
 <body>
@@ -39,14 +40,37 @@
             <div class="flex flex-col gap-2 mt-10">
                 <div class="flex justify-between">
                     <span class="text-lg font-bold">총 주문 금액</span>
-                    <span class="text-lg font-bold"
+                    <span class="text-lg font-bold" id="totalPrice" th:value="${orderResponse.totalPrice}"
                           th:text="${#numbers.formatInteger(orderResponse.totalPrice, 0, 'COMMA') + '원'}"></span>
                 </div>
             </div>
 
+            <button id="payment-button" class="btn btn-lg">토스 페이먼츠로 결제하기</button>
         </div>
 
     </div>
+    <script th:inline="javascript">
+
+        var clientKey = 'test_ck_LBa5PzR0Arn52WnNaBoVvmYnNeDM'
+        var tossPayments = TossPayments(clientKey)
+
+        var button = document.getElementById('payment-button') // 결제하기 버튼
+        var amount = /*[[${orderResponse.totalPrice}]]*/null
+        var orderId = /*[[${orderResponse.orderId}]]*/null
+        var orderName = /*[[${orderResponse.name}]]*/null
+        console.log("어마운트" + amount)
+
+        button.addEventListener('click', function () {
+            tossPayments.requestPayment('카드', {
+                amount: amount,
+                orderId: orderId + "_" + (Math.random() + "").substring(2),
+                orderName: orderName,
+                customerName: '박토스',
+                successUrl: window.location.origin + "/order/" + orderId + "/success",
+                failUrl:  window.location.origin + "/order/" + orderId + "/fail"
+            })
+        })
+    </script>
 
 </main>
 </body>

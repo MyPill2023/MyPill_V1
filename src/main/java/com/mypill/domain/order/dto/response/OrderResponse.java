@@ -13,12 +13,14 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderResponse {
 
+    private Long orderId;
     private String name;
     private List<OrderItem> orderItems;
     private Long totalPrice;
 
     public static OrderResponse of(Order order){
         return OrderResponse.builder()
+                .orderId(order.getId())
                 .name(order.getName())
                 .orderItems(order.getOrderItems())
                 .totalPrice(order.getTotalPrice())

@@ -37,6 +37,9 @@ public class OrderItem extends BaseEntity {
     @Column(nullable = false)
     private Long quantity;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
     public OrderItem(Product product, Long quantity){
         this.product = product;
         this.price = product.getPrice();
@@ -46,5 +49,9 @@ public class OrderItem extends BaseEntity {
 
     public void connectOrder(Order order) {
         this.order = order;
+    }
+
+    public void setPaymentDone() {
+        status = OrderStatus.ORDERED;
     }
 }
