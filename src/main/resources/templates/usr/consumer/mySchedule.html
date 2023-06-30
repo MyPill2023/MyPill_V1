@@ -6,10 +6,37 @@
 
 <body>
 <main layout:fragment="main">
-    <div class="hero-content flex flex-col my-10 2 w-[32rem] max-w-lg">
-        <h1>마음대로 수정하세요! 페이지 다 지우셔도 됩니다.</h1>
+    <div class="hero-content flex flex-col justify-center my-10 w-full ">
+        <h1 class="text-2xl text-center font-bold "> 나의 복약관리💊
+        </h1>
+        <span th:style="${'font-size:17px; text-align:center'}" class="text-black font-bold">
+        </span>
+
+        <a href="/usr/consumer/myManagement" class="btn btn-accent">영양제 추가하기
+        </a>
+        <form>
+            <input type='date' id='currentDate'/>
+        </form>
+
+        <script>
+            document.getElementById('currentDate').value = new Date().toISOString().substring(0, 10);
+        </script>
+
+        <div>
+            <ul class="steps steps-vertical">
+                <li class="step step-primary">Register</li>
+                <li class="step step-primary">Choose plan</li>
+                <li class="step">Purchase</li>
+                <li class="step">Receive Product</li>
+            </ul>
+
+
+
+        </div>
+
+
     </div>
+
 </main>
 </body>
-
 </html>
