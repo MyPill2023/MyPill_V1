@@ -135,7 +135,7 @@ public class ProductController {
 
         RsData<Product> deleteRsData = productService.delete(productId);
 
-        return rq.redirectWithMsg("/product/list", deleteRsData);
+        return rq.redirectWithMsg("/product/list/all", deleteRsData);
     }
 
     private void populateModel(Model model) {

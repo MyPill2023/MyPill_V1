@@ -124,5 +124,10 @@ public class AppConfig {
         AppConfig.completeMinLength = completeMinLength;
     }
 
-
+    @Getter
+    private static int maxOrderNameLength;
+    @Value("${custom.order.maxOrderNameLength}")
+    private void setMaxOrderName(int maxOrderNameLength) {
+        AppConfig.maxOrderNameLength = maxOrderNameLength;
+    }
 }
