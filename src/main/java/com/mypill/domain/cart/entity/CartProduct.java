@@ -51,4 +51,8 @@ public class CartProduct extends BaseEntity {
         super.softDelete();
         cart.updateCart();
     }
+
+    public void connectOrder(Order order) {
+        this.order = order;
+    }
 }

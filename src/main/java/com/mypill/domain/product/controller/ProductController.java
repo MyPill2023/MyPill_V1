@@ -66,7 +66,9 @@ public class ProductController {
     @GetMapping("/list/all")
     @Operation(summary = "상품 전체 목록")
     public String list(Model model) {
-        List<Product> products = productService.findNotDeleted();
+        List<Product> products = productService.findNotDeleted().stream()
+                .filter(product -> product.getStock() > 0)
+                .toList();
         model.addAttribute("products", productService.getAllProduct(products));
         model.addAttribute("title", "전체보기");
 
@@ -78,7 +80,9 @@ public class ProductController {
     @GetMapping("/list/nutrient/{nutrientId}")
     @Operation(summary = "영양 성분별 상품 목록")
     public String listByNutrition(@PathVariable Long nutrientId, Model model) {
-        List<Product> products = productService.findByNutrientsId(nutrientId);
+        List<Product> products = productService.findByNutrientsId(nutrientId).stream()
+                .filter(product -> product.getStock() > 0)
+                .toList();
         model.addAttribute("products", productService.getAllProduct(products));
 
         nutrientService.findById(nutrientId).ifPresent(nutrient -> {
@@ -93,7 +97,9 @@ public class ProductController {
     @GetMapping("/list/category/{categorytId}")
     @Operation(summary = "주요 기능별 상품 목록")
     public String listByCategory(@PathVariable Long categorytId, Model model) {
-        List<Product> products = productService.findByCategoriesId(categorytId);
+        List<Product> products = productService.findByCategoriesId(categorytId).stream()
+                .filter(product -> product.getStock() > 0)
+                .toList();
         model.addAttribute("products", productService.getAllProduct(products));
 
         categoryService.findById(categorytId).ifPresent(category -> {

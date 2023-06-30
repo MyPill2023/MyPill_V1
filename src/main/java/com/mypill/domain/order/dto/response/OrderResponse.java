@@ -14,14 +14,18 @@ import java.util.List;
 public class OrderResponse {
 
     private Long orderId;
+    private String orderNumber;
     private String name;
+    private String buyerName;
     private List<OrderItem> orderItems;
     private Long totalPrice;
 
     public static OrderResponse of(Order order){
         return OrderResponse.builder()
                 .orderId(order.getId())
+                .orderNumber(order.getOrderNumber())
                 .name(order.getName())
+                .buyerName(order.getBuyer().getName())
                 .orderItems(order.getOrderItems())
                 .totalPrice(order.getTotalPrice())
                 .build();

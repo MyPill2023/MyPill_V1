@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +20,12 @@ import java.util.List;
 @Table(name = "orders")
 public class Order extends BaseEntity {
 
+    private String orderNumber;
+
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    private Member buyer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @Builder.Default
@@ -35,11 +38,10 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private Long totalPrice;
 
-    private boolean isPaid;
+    private LocalDateTime payDate;
 
-
-    public Order(Member member) {
-        this.member = member;
+    public Order(Member buyer) {
+        this.buyer = buyer;
         this.cartProducts = new ArrayList<>();
         this.orderItems = new ArrayList<>();
         this.totalPrice = 0L;
@@ -48,6 +50,12 @@ public class Order extends BaseEntity {
     public void addOrderItem(OrderItem orderItem){
         this.orderItems.add(orderItem);
         this.totalPrice += orderItem.getTotalPrice();
+        orderItem.connectOrder(this);
+    }
+
+    public void addCartProduct(CartProduct cartProduct){
+        cartProducts.add(cartProduct);
+        cartProduct.connectOrder(this);
     }
 
     public void makeName() {
@@ -69,11 +77,11 @@ public class Order extends BaseEntity {
         this.name = sb.toString();
     }
 
-    public void setPaymentDone() {
+    public void setPaymentDone(LocalDateTime payDate, String orderId) {
         for (OrderItem orderItem : orderItems) {
             orderItem.setPaymentDone();
         }
-
-        isPaid = true;
+        this.payDate = payDate;
+        this.orderNumber = orderId;
     }
 }

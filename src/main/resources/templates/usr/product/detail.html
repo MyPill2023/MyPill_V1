@@ -55,7 +55,10 @@
                                class="input input-bordered  input-sm w-16" required>
                         <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
                     </div>
-                    <button class="btn " type="submit">장바구니 담기</button>
+                    <button class="btn" type="submit" th:disabled="${productResponse.stock < 1}">장바구니 담기</button>
+                </div>
+                <div class="flex justify-end mt-5" th:if="${productResponse.stock < 1}">
+                    <span class="text-red-300">해당 상품은 품절되었습니다.</span>
                 </div>
 
             </form>

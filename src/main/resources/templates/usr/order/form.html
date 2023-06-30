@@ -58,6 +58,7 @@
         var amount = /*[[${orderResponse.totalPrice}]]*/null
         var orderId = /*[[${orderResponse.orderId}]]*/null
         var orderName = /*[[${orderResponse.name}]]*/null
+        var customerName = /*[[${orderResponse.buyerName}]]*/null
         console.log("어마운트" + amount)
 
         button.addEventListener('click', function () {
@@ -65,7 +66,7 @@
                 amount: amount,
                 orderId: orderId + "_" + (Math.random() + "").substring(2),
                 orderName: orderName,
-                customerName: '박토스',
+                customerName: customerName,
                 successUrl: window.location.origin + "/order/" + orderId + "/success",
                 failUrl:  window.location.origin + "/order/" + orderId + "/fail"
             })
