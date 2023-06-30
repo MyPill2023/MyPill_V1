@@ -6,6 +6,7 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.service.OrderService;
+import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import com.mypill.global.util.Ut;
@@ -62,8 +63,20 @@ public class OrderController {
     }
 
 
-    @Value("${custom.toss_payment.secretKey}")
-    private String toss_sk;
+    @GetMapping("/detail/{orderId}")
+    @PreAuthorize("hasAuthority('MEMBER')")
+    public String showOrder(@PathVariable Long orderId, Model model) {
+
+        Order order = orderService.findById(orderId).orElse(null);
+
+        if(order == null){
+            rq.historyBack("비었어요");
+        }
+
+        model.addAttribute("orderResponse", OrderResponse.of(order));
+
+        return "usr/order/detail";
+    }
 
     @RequestMapping("/{id}/success")
     public String confirmPayment(
@@ -88,7 +101,7 @@ public class OrderController {
         //TODO : 재고체크과정 필요?
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((toss_sk + ":").getBytes()));
+        headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((AppConfig.getTossPaymentSecretKey() + ":").getBytes()));
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, String> payloadMap = new HashMap<>();
@@ -109,29 +122,16 @@ public class OrderController {
             return rq.redirectWithMsg("/order/detail/%s".formatted(order.getId()), "주문이 완료되었습니다.");
         } else {
             JsonNode failNode = responseEntity.getBody();
+            model.addAttribute("orderNumber", orderId);
             model.addAttribute("message", failNode.get("message").asText());
             model.addAttribute("code", failNode.get("code").asText());
             return rq.historyBack("결제 실패");
         }
     }
 
-    @GetMapping("/detail/{orderId}")
-    @PreAuthorize("hasAuthority('MEMBER')")
-    public String showOrder(@PathVariable Long orderId, Model model) {
-
-        Order order = orderService.findById(orderId).orElse(null);
-
-        if(order == null){
-            rq.historyBack("비었어요");
-        }
-
-        model.addAttribute("orderResponse", OrderResponse.of(order));
-
-        return "usr/order/detail";
-    }
-
     @RequestMapping("/{id}/fail")
-    public String failPayment(@RequestParam String message, @RequestParam String code, Model model) {
+    public String failPayment(@RequestParam String message, @RequestParam String code, @RequestParam String orderNumber, Model model) {
+        model.addAttribute("orderNumber", orderNumber);
         model.addAttribute("message", message);
         model.addAttribute("code", code);
         return "order/fail";

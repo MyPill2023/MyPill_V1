@@ -130,4 +130,12 @@ public class AppConfig {
     private void setMaxOrderName(int maxOrderNameLength) {
         AppConfig.maxOrderNameLength = maxOrderNameLength;
     }
+
+    @Getter
+    private static String tossPaymentSecretKey;
+
+    @Value("${custom.toss_payment.secretKey}")
+    private void setTossPaymentSecretKey(String tossPaymentSecretKey) {
+        AppConfig.tossPaymentSecretKey = tossPaymentSecretKey;
+    }
 }
