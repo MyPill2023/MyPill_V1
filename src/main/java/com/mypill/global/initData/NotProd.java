@@ -56,8 +56,8 @@ public class NotProd {
             Address address = addressService.create(addressRequest).getData();
             Order order1 = orderService.createFromProduct(memberUser1, 1L, 3L).getData();
             Order order2 = orderService.createFromProduct(memberUser1, 2L, 3L).getData();
-            orderService.payByTossPayments(order1, LocalDateTime.now(), "1_0001", addressRequest);
-            orderService.payByTossPayments(order2, LocalDateTime.now(), "2_0002", addressRequest);
+            orderService.payByTossPayments(order1, LocalDateTime.now(), "1_0001", 1L);
+            orderService.payByTossPayments(order2, LocalDateTime.now(), "2_0002", 1L);
         };
     }
 }

@@ -3,6 +3,8 @@ package com.mypill.domain.order.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mypill.domain.address.dto.request.AddressRequest;
+import com.mypill.domain.address.entity.Address;
+import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
@@ -27,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static javax.crypto.Cipher.SECRET_KEY;
@@ -38,6 +41,7 @@ import static javax.crypto.Cipher.SECRET_KEY;
 public class OrderController {
 
     private final OrderService orderService;
+    private final AddressService addressService;
     private final Rq rq;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
@@ -50,6 +54,10 @@ public class OrderController {
             return rq.historyBack(rsData);
         }
         model.addAttribute("orderResponse", rsData.getData());
+
+        List<Address> addresses = addressService.findByMemberId(rq.getMember().getId());
+        model.addAttribute("addresses", addresses);
+
         return "usr/order/form";
     }
 
@@ -65,7 +73,6 @@ public class OrderController {
 
         return rq.redirectWithMsg("/order/form/%s".formatted(orderRsData.getData().getId()), orderRsData);
     }
-
 
     @GetMapping("/detail/{orderId}")
     @PreAuthorize("hasAuthority('MEMBER')")
@@ -86,7 +93,7 @@ public class OrderController {
             @RequestParam String paymentKey,
             @RequestParam String orderId,
             @RequestParam Long amount,
-            @RequestParam("addressRequest") String addressRequest,
+            @RequestParam("addressId") String addressId,
             Model model) throws Exception {
 
         Order order = orderService.findById(id).get();
@@ -120,9 +127,7 @@ public class OrderController {
             String requestedAt = responseEntity.getBody().get("requestedAt").asText();
             LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
-
-            AddressRequest decodedAddressRequest = objectMapper.readValue(addressRequest, AddressRequest.class);
-            orderService.payByTossPayments(order, payDate, orderId, decodedAddressRequest);
+            orderService.payByTossPayments(order, payDate, orderId, Long.parseLong(addressId));
 
             return rq.redirectWithMsg("/order/detail/%s".formatted(order.getId()), "주문이 완료되었습니다.");
         } else {

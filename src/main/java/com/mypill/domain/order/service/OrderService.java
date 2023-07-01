@@ -104,10 +104,10 @@ public class OrderService {
     }
 
     @Transactional
-    public void payByTossPayments(Order order, LocalDateTime payDate, String orderId, AddressRequest addressRequest) {
+    public void payByTossPayments(Order order, LocalDateTime payDate, String orderId, Long addressId) {
 
         order.setPaymentDone(payDate, orderId);
-        Address address = addressService.create(addressRequest).getData();
+        Address address = addressService.findById(addressId).orElse(null);
         order.addAddress(address);
         order.getOrderItems()
                 .forEach(orderItem -> {

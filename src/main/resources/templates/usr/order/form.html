@@ -13,7 +13,10 @@
         </h1>
 
         <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5">
-            <div class="text-lg" th:text="${orderResponse.name}"></div>
+            <div class="flex items-center gap-3 mt-10">
+                <span class="text-lg font-bold ">주문 상품 목록</span>
+                <span class="text-sm text-gray-400">상품과 개수를 확인해주세요</span>
+            </div>
             <div th:each="orderItem, loop : ${orderResponse.orderItems}">
                 <div class="bg-base-100 border-b border-gray-200 p-5 ">
                     <div class="flex justify-around gap-5">
@@ -37,34 +40,38 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-2 mt-10">
-                <div class="flex justify-between">
-                    <span class="text-lg font-bold">총 주문 금액</span>
-                    <span class="text-lg font-bold" id="totalPrice" th:value="${orderResponse.totalPrice}"
-                          th:text="${#numbers.formatInteger(orderResponse.totalPrice, 0, 'COMMA') + '원'}"></span>
+            <div class="flex flex-col gap-5 my-10">
+                <span class="text-lg font-bold">배송지 선택</span>
+                <div class="flex gap-3 ">
+                    <select name="AddressSelect" id="AddressSelect" class="select select-bordered w-2/3" onchange="displaySelectedAddress()">
+                        <option disabled selected>배송지 선택</option>
+                        <option th:each="address, loop : ${addresses}" th:value="${address.id}" th:text="${address.name}"></option>
+                    </select>
+                    <a th:href="@{/usr/buyer/myAddress/create}" class="btn w-1/3">배송지 추가하기</a>
+                </div>
+
+                <div class="flex flex-col hidden" id="selectedAddress">
+                    <span class="hidden" id="addressId"></span>
+                    <div class="flex gap-3 items-center mb-2">
+                        <span id="addressName"></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="w-1/4 text-gray-400">받으시는 분</span>
+                        <span id="addressReceiverName"></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="w-1/4 text-gray-400">연락처</span>
+                        <span id="addressPhoneNumber"></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="w-1/4 text-gray-400">배송지</span>
+                        <span class="w-3/4" id="addressAddress">
+                </span>
+                    </div>
                 </div>
             </div>
-            <form class="flex flex-col gap-2" id="addressRequest">
-                <h3 class="text-lg font-bold mb-2 mt-10">배송 정보 입력</h3>
-                <div class="flex items-center">
-                    <span class="w-1/3">수령인 이름</span>
-                    <input class="input input-bordered w-2/3" id="receiverName" name="receiverName" type="text" placeholder="수령인 이름">
-                </div>
-                <div class="flex items-center">
-                    <span class="w-1/3">수령인 전화번호</span>
-                    <input class="input input-bordered w-2/3" id="phoneNumber" name="phoneNumber" type="text" placeholder="-제외 숫자만 입력해주세요">
-                </div>
-                <div class="mt-2 mb-1">배송지 주소</div>
-                <div class="flex gap-2">
-                    <input class="input input-bordered w-1/3" type="text" id="postCode" name="postCode" placeholder="우편번호" readonly>
-                    <input class="btn" type="button" onclick="execDaumPostcode()" value="우편번호 찾기">
-                </div>
-                <input class="input input-bordered" type="text" id="address" name="address" placeholder="주소" readonly>
-                <input class="input input-bordered" type="text" id="detailAddress" name="detailAddress" placeholder="상세주소">
-            </form>
 
-
-            <button id="payment-button" class="btn btn-lg btn-info">토스 페이먼츠로 결제하기</button>
+            <button id="payment-button" class="btn btn-lg btn-info mt-5" th:text="${#numbers.formatInteger(orderResponse.totalPrice, 0, 'COMMA') + '원 결제하기'}"></button>
         </div>
 
     </div>
@@ -80,105 +87,48 @@
         var customerName = /*[[${orderResponse.buyerName}]]*/null
 
         button.addEventListener('click', function () {
-            if (AddressRequest__submit(document.getElementById('addressRequest'))) {
+            var addressId = document.getElementById('addressId').innerText;
 
-                var addressRequest = {
-                    memberId : /*[[${@rq.member.id}]]*/null,
-                    receiverName: document.getElementById('receiverName').value,
-                    address: document.getElementById('address').value,
-                    detailAddress: document.getElementById('detailAddress').value,
-                    postCode: document.getElementById('postCode').value,
-                    phoneNumber: document.getElementById('phoneNumber').value,
-                    isDefault: false
-                };
-
-                var encodedAddressRequest = encodeURIComponent(JSON.stringify(addressRequest));
-
-
+            if (addressId) {
                 tossPayments.requestPayment('카드', {
                     amount: amount,
                     orderId: orderId + "_" + (Math.random() + "").substring(2),
                     orderName: orderName,
                     customerName: customerName,
-                    addressRequest : addressRequest,
-                    successUrl: window.location.origin + "/order/" + orderId + "/success?addressRequest=" + encodedAddressRequest,
+                    successUrl: window.location.origin + "/order/" + orderId + "/success?addressId=" + addressId,
                     failUrl:  window.location.origin + "/order/" + orderId + "/fail"
                 });
-
+            }else {
+                toastWarning("배송지를 선택해주세요.");
             }
         })
 
-        function AddressRequest__submit(form){
-            // var address = document.getElementById('address').value;
-            // var detailAddress = document.getElementById('detailAddress').value;
-            // var postcode = document.getElementById('postCode').value;
-            // var phoneNumber = document.getElementById('phoneNumber').value;
-            // var receiverName = document.getElementById('receiverName').value;
-
-            form.receiverName.value = form.receiverName.value.trim();
-
-            if (form.receiverName.value.length === 0) {
-                toastWarning("수령인 이름을 입력해주세요");
-                form.receiverName.focus();
-                return false;
-            }
-
-            form.phoneNumber.value = form.phoneNumber.value.trim();
-
-            if (form.phoneNumber.value.length === 0) {
-                toastWarning("수령인 전화번호를 입력해주세요");
-                form.phoneNumber.focus();
-                return false;
-            }
-
-            form.postCode.value = form.postCode.value.trim();
-
-            if (form.postCode.value.length === 0) {
-                toastWarning("우편번호를 입력해주세요");
-                form.postCode.focus();
-                return false;
-            }
-
-            form.address.value = form.address.value.trim();
-
-            if (form.address.value.length === 0) {
-                toastWarning("주소를 입력해주세요");
-                form.address.focus();
-                return false;
-            }
-
-            form.detailAddress.value = form.detailAddress.value.trim();
-
-            if (form.detailAddress.value.length === 0) {
-                toastWarning("상세주소를 입력해주세요");
-                form.detailAddress.focus();
-                return false;
-            }
-
-            return true;
-        }
     </script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script>
-        function execDaumPostcode() {
-            new daum.Postcode({
-                oncomplete: function(data) {
+        function displaySelectedAddress() {
 
-                    var addr = ''; // 주소 변수
+            var addressId = document.getElementById("AddressSelect").value;
 
-                    if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-                        addr = data.roadAddress;
-                    } else { // 사용자가 지번 주소를 선택했을 경우(J)
-                        addr = data.jibunAddress;
-                    }
+            $.ajax({
+                url: '/usr/buyer/myAddress/getAddressDetails',
+                type: 'GET',
+                data: { addressId: addressId },
+                success: function(response) {
+                    var address = response;
 
-                    document.getElementById('postCode').value = data.zonecode;
-                    document.getElementById("address").value = addr;
-
-                    // 커서를 상세주소 필드로 이동
-                    document.getElementById("detailAddress").focus();
+                    document.getElementById("addressId").innerText = address.id;
+                    document.getElementById("addressName").innerText = address.name;
+                    document.getElementById("addressReceiverName").innerText = address.receiverName;
+                    document.getElementById("addressPhoneNumber").innerText = address.phoneNumber;
+                    document.getElementById("addressAddress").innerText
+                        = "(" + address.postCode + ") " + address.address + " " + address.detailAddress;
+                    document.getElementById("selectedAddress").style.display = "block";
+                },
+                error: function(error) {
+                    toastWarning(error);
                 }
-            }).open();
+            });
         }
     </script>
 

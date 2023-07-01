@@ -9,13 +9,12 @@ import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -83,5 +82,16 @@ public class AddressController {
         RsData<Address> deleteRsData = addressService.softDelete(rsData.getData());
 
         return rq.redirectWithMsg("/usr/buyer/myAddress", deleteRsData);
+    }
+
+    // 주문에서 배송지 선택 시 세부정보 가져오기
+    @GetMapping("/getAddressDetails")
+    @ResponseBody
+    public ResponseEntity<?> getAddressDetails(@RequestParam Long addressId) {
+        Address address = addressService.findById(addressId).orElse(null);
+        if (address == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("배송지를 찾을 수 없습니다.");
+        }
+        return ResponseEntity.ok().body(AddressResponse.of(address));
     }
 }
