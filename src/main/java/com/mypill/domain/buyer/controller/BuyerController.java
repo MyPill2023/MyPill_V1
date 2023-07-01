@@ -3,6 +3,10 @@ package com.mypill.domain.buyer.controller;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.member.service.MemberService;
+import com.mypill.domain.order.dto.response.OrderListResponse;
+import com.mypill.domain.order.dto.response.OrderResponse;
+import com.mypill.domain.order.entity.Order;
+import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import com.mypill.global.rq.Rq;
@@ -24,6 +28,7 @@ public class BuyerController {
     private final MemberService memberService;
     private final PostService postService;
     private final CommentService commentService;
+    private final OrderService orderService;
     private final Rq rq;
 
     @PreAuthorize("isAuthenticated()")
@@ -64,6 +69,17 @@ public class BuyerController {
     @GetMapping("/mySchedule")
     public String mySchedule() {
         return "usr/buyer/mySchedule";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myOrder")
+    public String myOrder(Model model) {
+
+        List<Order> orders = orderService.findByBuyerId(rq.getMember().getId());
+        List<OrderListResponse> orderListResponses = orders.stream().map(OrderListResponse::of).toList();
+        model.addAttribute("orders", orderListResponses);
+
+        return "usr/buyer/myOrder";
     }
 
     @PreAuthorize("isAuthenticated()")
