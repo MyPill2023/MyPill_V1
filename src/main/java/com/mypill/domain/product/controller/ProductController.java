@@ -168,6 +168,6 @@ public class ProductController {
     @GetMapping("/unlike/{id}")
     public String unlike(@PathVariable("id") Long id) {
         productService.unlike(rq.getMember(), id);
-        return rq.redirectWithMsg("/usr/consumer/myLikes","관심 상품이 삭제되었습니다.");
+        return rq.redirectWithMsg("/usr/buyer/myLikes","관심 상품이 삭제되었습니다.");
     }
 }

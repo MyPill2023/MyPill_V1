@@ -170,4 +170,13 @@ public class MemberService {
         memberRepository.save(member);
         return "success";
     }
+
+    @Transactional
+    public RsData deleteAccount(Member member) {
+        if (member == null) {
+            return RsData.of("F-1","로그인이 필요한 서비스입니다.");
+        }
+        memberRepository.delete(member);
+        return RsData.of("S-1","회원 탈퇴가 완료되었습니다.");
+    }
 }
