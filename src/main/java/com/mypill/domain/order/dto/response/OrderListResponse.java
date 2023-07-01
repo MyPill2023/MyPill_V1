@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 public class OrderListResponse {

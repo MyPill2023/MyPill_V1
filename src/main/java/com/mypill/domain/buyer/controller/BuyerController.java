@@ -1,5 +1,8 @@
 package com.mypill.domain.buyer.controller;
 
+import com.mypill.domain.address.dto.response.AddressResponse;
+import com.mypill.domain.address.entity.Address;
+import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.member.service.MemberService;
@@ -29,6 +32,7 @@ public class BuyerController {
     private final PostService postService;
     private final CommentService commentService;
     private final OrderService orderService;
+    private final AddressService addressService;
     private final Rq rq;
 
     @PreAuthorize("isAuthenticated()")
@@ -80,6 +84,19 @@ public class BuyerController {
         model.addAttribute("orders", orderListResponses);
 
         return "usr/buyer/myOrder";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myAddress")
+    public String myAddress(Model model) {
+
+        List<Address> addresses = addressService.findByMemberId(rq.getMember().getId());
+        List<AddressResponse> addressResponses = addresses.stream()
+                .filter(address -> address.getDeleteDate() == null)
+                .map(AddressResponse::of).toList();
+        model.addAttribute("addresses",addressResponses);
+
+        return "usr/buyer/myAddress";
     }
 
     @PreAuthorize("isAuthenticated()")

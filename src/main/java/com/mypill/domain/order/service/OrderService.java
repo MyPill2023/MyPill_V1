@@ -107,7 +107,7 @@ public class OrderService {
     public void payByTossPayments(Order order, LocalDateTime payDate, String orderId, AddressRequest addressRequest) {
 
         order.setPaymentDone(payDate, orderId);
-        Address address = addressService.addAddress(addressRequest);
+        Address address = addressService.create(addressRequest);
         order.addAddress(address);
         order.getOrderItems()
                 .forEach(orderItem -> {

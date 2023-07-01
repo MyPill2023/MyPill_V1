@@ -19,6 +19,7 @@ public class Address extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+    private String name;
     @Column(nullable = false)
     private String receiverName;
     @Column(nullable = false)
@@ -35,6 +36,7 @@ public class Address extends BaseEntity {
     public static Address of(Member member, AddressRequest addressRequest){
         return Address.builder()
                 .member(member)
+                .name(addressRequest.getName())
                 .receiverName(addressRequest.getReceiverName())
                 .address(addressRequest.getAddress())
                 .detailAddress(addressRequest.getDetailAddress())

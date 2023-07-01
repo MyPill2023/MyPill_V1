@@ -9,6 +9,8 @@ import com.mypill.global.rq.Rq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AddressService {
@@ -16,10 +18,14 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final Rq rq;
 
-    public Address addAddress(AddressRequest addressRequest){
+    public Address create(AddressRequest addressRequest){
         Member member = memberService.findById(addressRequest.getMemberId()).orElse(null);
         Address address = Address.of(member, addressRequest);
         addressRepository.save(address);
         return address;
+    }
+
+    public List<Address> findByMemberId(Long memberId){
+        return addressRepository.findByMemberId(memberId);
     }
 }

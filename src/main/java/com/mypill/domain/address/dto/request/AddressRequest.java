@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-@Getter
 @AllArgsConstructor
 public class AddressRequest {
     private Long memberId;
+    private String name;
     @NotBlank(message = "수령인 이름을 입력해주세요.")
     private String receiverName;
     @NotBlank(message = "배송지 주소를 입력해주세요.")

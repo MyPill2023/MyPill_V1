@@ -51,11 +51,13 @@ public class NotProd {
             productService.create(new ProductRequest(4L, "테스트 상품4", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(5L, 4L), asList(4L, 5L)));
             productService.create(new ProductRequest(4L, "테스트 상품5", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(6L, 5L), asList(5L, 6L)));
 
-            Address address = addressService.addAddress(new AddressRequest(1L, "김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", false));
+            AddressRequest addressRequest = new AddressRequest(1L, "집","김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", false);
+
+            Address address = addressService.create(addressRequest);
             Order order1 = orderService.createFromProduct(memberUser1, 1L, 3L).getData();
             Order order2 = orderService.createFromProduct(memberUser1, 2L, 3L).getData();
-            orderService.payByTossPayments(order1, LocalDateTime.now(), "1_0001", new AddressRequest(1L, "김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", false));
-            orderService.payByTossPayments(order2, LocalDateTime.now(), "2_0002", new AddressRequest(1L, "김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", false));
+            orderService.payByTossPayments(order1, LocalDateTime.now(), "1_0001", addressRequest);
+            orderService.payByTossPayments(order2, LocalDateTime.now(), "2_0002", addressRequest);
         };
     }
 }
