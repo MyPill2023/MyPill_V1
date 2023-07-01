@@ -4,6 +4,7 @@ import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.dto.response.AddressResponse;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
+import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import jakarta.validation.Valid;
@@ -27,15 +28,21 @@ public class AddressController {
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/create")
     public String createForm(){
+
+        if(!addressService.checkCanCreate(rq.getMember().getId())){
+            return rq.historyBack("배송지는 최대 "+ AppConfig.getMaxAddressCount() +"개 까지 등록 가능합니다.");
+        }
+
         return "usr/address/create";
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/create")
     public String create(@Valid AddressRequest addressRequest){
-
         RsData<Address> createRsData = addressService.create(addressRequest);
-
+        if(createRsData.isFail()){
+            return rq.historyBack(createRsData);
+        }
         return rq.redirectWithMsg("/usr/buyer/myAddress", createRsData);
     }
 

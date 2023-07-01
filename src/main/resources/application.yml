@@ -65,3 +65,5 @@ custom:
     completeMinLength : 1
   order:
     maxOrderNameLength : 20
+  address:
+    maxAddressCount : 5

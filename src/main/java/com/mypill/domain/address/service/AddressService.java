@@ -5,6 +5,7 @@ import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.repository.AddressRepository;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
+import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,11 @@ public class AddressService {
     @Transactional
     public RsData<Address> create(AddressRequest addressRequest){
         Member member = memberService.findById(addressRequest.getMemberId()).orElse(null);
+
+        if(!checkCanCreate(member.getId())){
+            return RsData.of("F-1", "배송지는 최대 "+ AppConfig.getMaxAddressCount() +"개 까지 등록 가능합니다.");
+        }
+
         Address address = Address.of(member, addressRequest);
         setDefaultNameIfEmpty(address, addressRequest);
         addressRepository.save(address);
@@ -77,6 +83,13 @@ public class AddressService {
 
     public Optional<Address> findById(Long addressId){
         return addressRepository.findById(addressId);
+    }
+
+    public boolean checkCanCreate(Long memberId){
+        return countAddressesByMemberId(memberId) < AppConfig.getMaxAddressCount();
+    }
+    private int countAddressesByMemberId(Long memberId) {
+        return addressRepository.countByMemberIdAndDeleteDateIsNull(memberId);
     }
 
     private void setDefaultNameIfEmpty(Address address, AddressRequest addressRequest) {
