@@ -2,6 +2,7 @@ package com.mypill.domain.order.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
@@ -10,6 +11,7 @@ import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import com.mypill.global.util.Ut;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
 
+import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -82,6 +86,7 @@ public class OrderController {
             @RequestParam String paymentKey,
             @RequestParam String orderId,
             @RequestParam Long amount,
+            @RequestParam("addressRequest") String addressRequest,
             Model model) throws Exception {
 
         Order order = orderService.findById(id).get();
@@ -115,7 +120,9 @@ public class OrderController {
             String requestedAt = responseEntity.getBody().get("requestedAt").asText();
             LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
-            orderService.payByTossPayments(order, payDate, orderId);
+
+            AddressRequest decodedAddressRequest = objectMapper.readValue(addressRequest, AddressRequest.class);
+            orderService.payByTossPayments(order, payDate, orderId, decodedAddressRequest);
 
             return rq.redirectWithMsg("/order/detail/%s".formatted(order.getId()), "주문이 완료되었습니다.");
         } else {
