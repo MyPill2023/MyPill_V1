@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         else{
             errorMessage = "알 수 없는 오류가 발생했습니다.";
         }
-        errorMessage = URLEncoder.encode(errorMessage, "UTF-8");//한글 인코딩 깨지는 문제 방지
+        errorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);//한글 인코딩 깨지는 문제 방지
         setDefaultFailureUrl("/usr/member/loginFail?error=true&exception=" + errorMessage);
         super.onAuthenticationFailure(request, response, exception);
     }

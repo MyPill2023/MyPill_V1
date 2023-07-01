@@ -35,4 +35,9 @@ public class SellerController {
         return "usr/seller/myInfo";
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/certificate")
+    public String certificate() {
+        return "usr/seller/certificate";
+    }
 }
