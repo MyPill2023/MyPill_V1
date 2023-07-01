@@ -58,7 +58,7 @@ public class AddressService {
     public RsData<Address> update(Address address, AddressRequest addressRequest) {
 
         address.updateAddress(addressRequest);
-        if(addressRequest.getIsDefault() != null){
+        if(addressRequest.isDefault()){
             List<Address> myAddresses = findByMemberId(rq.getMember().getId());
             myAddresses.stream()
                     .filter(myAddress -> myAddress.getDeleteDate() == null)

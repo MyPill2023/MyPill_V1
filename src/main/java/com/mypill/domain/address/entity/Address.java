@@ -31,7 +31,7 @@ public class Address extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
-    private Boolean isDefault;
+    private boolean isDefault;
 
     public static Address of(Member member, AddressRequest addressRequest){
         return Address.builder()
@@ -42,7 +42,7 @@ public class Address extends BaseEntity {
                 .detailAddress(addressRequest.getDetailAddress())
                 .postCode(addressRequest.getPostCode())
                 .phoneNumber(addressRequest.getPhoneNumber())
-                .isDefault(addressRequest.getIsDefault())
+                .isDefault(addressRequest.isDefault())
                 .build();
     }
 

@@ -3,6 +3,7 @@ package com.mypill.domain.order.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mypill.domain.address.dto.request.AddressRequest;
+import com.mypill.domain.address.dto.response.AddressResponse;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.member.entity.Member;
@@ -27,10 +28,7 @@ import org.springframework.web.util.UriUtils;
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static javax.crypto.Cipher.SECRET_KEY;
 
@@ -55,8 +53,16 @@ public class OrderController {
         }
         model.addAttribute("orderResponse", rsData.getData());
 
-        List<Address> addresses = addressService.findByMemberId(rq.getMember().getId());
+        List<AddressResponse> addresses = addressService.findByMemberId(rq.getMember().getId()).stream()
+                .filter(address -> address.getDeleteDate() == null)
+                .map(AddressResponse::of)
+                .toList();
+        AddressResponse defaultAddress = addresses.stream()
+                .filter(AddressResponse::isDefault)
+                .findFirst().orElse(null);
+
         model.addAttribute("addresses", addresses);
+        model.addAttribute("defaultAddress", defaultAddress);
 
         return "usr/order/form";
     }

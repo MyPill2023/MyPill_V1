@@ -18,7 +18,7 @@ public class AddressResponse {
     private String detailAddress;
     private String postCode;
     private String phoneNumber;
-    private Boolean isDefault;
+    private boolean isDefault;
 
     public static AddressResponse of(Address address){
         return AddressResponse.builder()
@@ -29,7 +29,7 @@ public class AddressResponse {
                 .detailAddress(address.getDetailAddress())
                 .postCode(address.getPostCode())
                 .phoneNumber(address.getPhoneNumber())
-                .isDefault(address.getIsDefault())
+                .isDefault(address.isDefault())
                 .build();
     }
 }

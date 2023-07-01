@@ -115,7 +115,7 @@ public class Member extends BaseEntity {
 
     public Optional<Address> getDefaultAddress() {
         return addresses.stream()
-                .filter(Address::getIsDefault)
+                .filter(Address::isDefault)
                 .findFirst();
     }
 }

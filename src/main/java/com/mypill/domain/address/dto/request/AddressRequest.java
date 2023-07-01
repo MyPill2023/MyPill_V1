@@ -22,5 +22,5 @@ public class AddressRequest {
     @NotBlank(message = "수령인 전화번호는 필수입니다")
     private String phoneNumber;
     @JsonProperty("isDefault")
-    private Boolean isDefault;
+    private boolean isDefault;
 }
