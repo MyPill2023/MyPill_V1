@@ -1,6 +1,7 @@
 package com.mypill.global.security;
 
 import com.mypill.global.security.OAuth2.CustomOAuth2AccessTokenResponseClient;
+import com.mypill.global.security.handler.CustomAuthenticationFailureHandler;
 import com.mypill.global.security.handler.CustomAuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final CustomOAuth2AccessTokenResponseClient oAuth2AccessTokenResponseClient;
 
     @Bean
@@ -32,6 +34,7 @@ public class SecurityConfig {
                         formLogin -> formLogin
                                 .loginPage("/usr/member/login") // GET
                                 .loginProcessingUrl("/usr/member/login") // POST
+                                .failureHandler(customAuthenticationFailureHandler)
                                 .successHandler(customAuthenticationSuccessHandler)
                 )
                 .oauth2Login(

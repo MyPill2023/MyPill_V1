@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -32,6 +33,13 @@ public class MemberController {
             request.getSession().setAttribute("prevPage", uri);
         }
         return "usr/member/login";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/loginFail")
+    public String loginFail(@RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "exception", required = false) String exception) {
+        return rq.historyBack(exception);
     }
 
     @PreAuthorize("isAnonymous()")
