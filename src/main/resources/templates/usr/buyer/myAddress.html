@@ -15,12 +15,12 @@
             <div th:each="address, loop : ${addresses}">
                 <div class="bg-base-100 border-b border-gray-200 p-5 pt-1">
                     <div class="flex flex-col">
-                        <div class="flex gap-3 items-center mb-2">
+                        <div class="flex gap-3 items-center justify-between mb-2">
                             <span class="text-lg font-bold" th:text="${address.name}"></span>
                             <span th:if="${address.isDefault == true}" class="badge badge-ghost">기본배송지</span>
                         </div>
                         <div class="flex gap-2">
-                            <span class="w-1/4 text-gray-400">받으시는 분</span>
+                            <span class="w-1/4 text-gray-400">수령인</span>
                             <span th:text="${address.receiverName}"></span>
                         </div>
                         <div class="flex gap-2">

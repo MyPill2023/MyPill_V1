@@ -12,11 +12,11 @@
       배송지 수정
     </h1>
 
-    <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5">
+    <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5 px-5">
       <form th:action method="POST" class="flex flex-col gap-2" onsubmit="AddressRequest__submit(this); return false;">
         <input type="hidden" id="memberId" name="memberId" th:value="${@rq.member.id}">
         <div class="flex items-center">
-          <span class="w-1/3">받으시는 분</span>
+          <span class="w-1/3">수령인</span>
           <input class="input input-bordered w-2/3" id="receiverName" name="receiverName" type="text" th:value="${address.receiverName}">
         </div>
         <div class="flex items-center">
@@ -54,7 +54,7 @@
       form.receiverName.value = form.receiverName.value.trim();
 
       if (form.receiverName.value.length === 0) {
-        toastWarning("받으시는 분 성함을 입력해주세요");
+        toastWarning("수령인 성함을 입력해주세요");
         form.receiverName.focus();
         return;
       }
