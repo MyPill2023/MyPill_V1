@@ -1,4 +1,4 @@
-package com.mypill.domain.consumer.controller;
+package com.mypill.domain.buyer.controller;
 
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
@@ -19,28 +19,29 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/usr/consumer")
-public class ConsumerController {
+@RequestMapping("/usr/buyer")
+public class BuyerController {
     private final MemberService memberService;
     private final PostService postService;
     private final CommentService commentService;
     private final Rq rq;
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/main")
-    public String main() {
-        return "usr/consumer/main";
+    @GetMapping("/myPage")
+    public String myPage() {
+        return "usr/buyer/myPage";
     }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myInfo")
     public String myInfo() {
-        return "usr/consumer/myInfo";
+        return "usr/buyer/myInfo";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myLikes")
     public String myLikes() {
-        return "usr/consumer/myLikes";
+        return "usr/buyer/myLikes";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -48,20 +49,21 @@ public class ConsumerController {
     public String myPosts(Model model) {
         List<Post> posts = postService.getList(rq.getMember());
         model.addAttribute("posts", posts);
-        return "usr/consumer/myPosts";
+        return "usr/buyer/myPosts";
     }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myComments")
     public String myComments(Model model) {
         List<Comment> comments = commentService.getList(rq.getMember());
         model.addAttribute("comments", comments);
-        return "usr/consumer/myComments";
+        return "usr/buyer/myComments";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/mySchedule")
     public String mySchedule() {
-        return "usr/consumer/mySchedule";
+        return "usr/buyer/mySchedule";
     }
 
     @PreAuthorize("isAuthenticated()")

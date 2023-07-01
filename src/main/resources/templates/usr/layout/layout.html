@@ -22,7 +22,7 @@
                         <form style="display: none" name="logoutForm" method="POST" th:action="@{/usr/member/logout}"
                               hidden></form>
                         <a th:if="${@rq.isSeller()}" href="/product/create">상품 등록</a>
-                        <a th:if="${@rq.login}" href="/usr/consumer/mySchedule">복약 관리</a>
+                        <a th:if="${@rq.login}" href="/usr/buyer/mySchedule">복약 관리</a>
                     </li>
 
                 </ul>
@@ -131,7 +131,7 @@
             </svg>
             <span class="btm-nav-label text-[11px]">영양제 구매</span>
         </a>
-        <a href="/usr/consumer/main" class="flex flex-col items-center justify-center cursor-pointer"
+        <a href="/myPage" class="flex flex-col items-center justify-center cursor-pointer"
            style="flex-basis: 20%;">
             <svg class="h-8 w-8 p-1" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg"
                  fill="#000000">
