@@ -11,6 +11,7 @@ import lombok.Getter;
 @Builder
 public class AddressResponse {
 
+    private Long id;
     private String name;
     private String receiverName;
     private String address;
@@ -21,6 +22,7 @@ public class AddressResponse {
 
     public static AddressResponse of(Address address){
         return AddressResponse.builder()
+                .id(address.getId())
                 .name(address.getName())
                 .receiverName(address.getReceiverName())
                 .address(address.getAddress())

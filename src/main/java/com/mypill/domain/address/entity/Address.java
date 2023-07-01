@@ -46,4 +46,21 @@ public class Address extends BaseEntity {
                 .build();
     }
 
+    public void updateAddress(AddressRequest addressRequest){
+        this.name = addressRequest.getName();
+        this.receiverName = addressRequest.getReceiverName();
+        this.address = addressRequest.getAddress();
+        this.detailAddress = addressRequest.getDetailAddress();
+        this.postCode = addressRequest.getPostCode();
+        this.phoneNumber = addressRequest.getPhoneNumber();
+    }
+
+    public void changeDefaultTrue(){
+        this.isDefault = true;
+    }
+
+    public void changeDefaultFalse(){
+        this.isDefault = false;
+    }
+
 }
