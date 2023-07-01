@@ -43,6 +43,7 @@ public class NotProd {
             Member memberUser3 = memberService.join("user3", "김짱구", "1234", "2", "zzang@naver.com").getData();
             Member memberUser4 = memberService.join("user4", "김맹구", "1234", "2", "mk@naver.com").getData();
             Member memberUser5 = memberService.join("user5", "김훈이", "1234", "1", "hoon2@naver.com").getData();
+            Member memberUser6 = memberService.join("user6", "김멋사", "1234", "3", "ll@naver.com").getData();
 
             productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)));
             productService.create(new ProductRequest(3L, "프로바이오틱스 글루코사민 루테인 170mg x 60캡슐", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(3L, 2L), asList(2L, 3L)));
