@@ -32,6 +32,7 @@ public class AddressService {
 
         Address address = Address.of(member, addressRequest);
         setDefaultNameIfEmpty(address, addressRequest);
+        changeDefaultStatus(address, addressRequest);
         addressRepository.save(address);
         return RsData.of("S-1", "배송지가 추가되었습니다", address);
     }
@@ -58,14 +59,8 @@ public class AddressService {
     public RsData<Address> update(Address address, AddressRequest addressRequest) {
 
         address.updateAddress(addressRequest);
-        if(addressRequest.isDefault()){
-            List<Address> myAddresses = findByMemberId(rq.getMember().getId());
-            myAddresses.stream()
-                    .filter(myAddress -> myAddress.getDeleteDate() == null)
-                    .forEach(Address::changeDefaultFalse);
-            address.changeDefaultTrue();
-        }
         setDefaultNameIfEmpty(address, addressRequest);
+        changeDefaultStatus(address, addressRequest);
 
         return RsData.of("S-1" ,"배송지 수정이 완료되었습니다.", address);
     }
@@ -95,6 +90,18 @@ public class AddressService {
     private void setDefaultNameIfEmpty(Address address, AddressRequest addressRequest) {
         if (addressRequest.getName().trim().isEmpty()) {
             address.setDefaultName();
+        }
+    }
+
+    private void changeDefaultStatus(Address address, AddressRequest addressRequest){
+        if(addressRequest.isDefault()){
+            List<Address> myAddresses = findByMemberId(addressRequest.getMemberId());
+            myAddresses.stream()
+                    .filter(myAddress -> myAddress.getDeleteDate() == null)
+                    .forEach(Address::changeDefaultFalse);
+            address.changeDefaultTrue();
+        }else {
+            address.changeDefaultFalse();
         }
     }
 }
