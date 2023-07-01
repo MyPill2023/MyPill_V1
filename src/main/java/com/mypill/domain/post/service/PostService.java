@@ -5,9 +5,11 @@ import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
-import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,8 +89,30 @@ public class PostService {
         return RsData.of("S-1", "게시글이 삭제되었습니다.");
     }
 
-    @Transactional
     public Optional<Post> findById(Long postId) {
         return postRepository.findById(postId);
     }
+
+    public Page<Post> getPosts(String keyword, String searchType, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        if (keyword == null || searchType == null) {
+            return postRepository.findByDeleteDateIsNullOrderByIdDesc(pageable);
+        }
+        if (searchType.equals("title")) {
+            return searchTitle(keyword, pageable);
+        }
+        if (searchType.equals("content")) {
+            return searchContent(keyword, pageable);
+        }
+        return postRepository.findByDeleteDateIsNullOrderByIdDesc(pageable);
+    }
+
+    public Page<Post> searchTitle(String keyword, Pageable pageable) {
+        return postRepository.findByTitleContainingAndDeleteDateIsNullOrderByIdDesc(keyword, pageable);
+    }
+
+    public Page<Post> searchContent(String keyword, Pageable pageable) {
+        return postRepository.findByContentContainingAndDeleteDateIsNullOrderByIdDesc(keyword, pageable);
+    }
+
 }

@@ -36,15 +36,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = "";
         String name = "";
         if (providerTypeCode.equals("NAVER")) {
+            providerTypeCode = "N";
             Map<String, String> map = (Map<String, String>) oAuth2User.getAttributes().get("response");
             email = map.get("email");
             name = map.get("name");
             oauthId = map.get("id");
+        } else if (providerTypeCode.equals("KAKAO")) {
+            Map<String, Object> attributes = oAuth2User.getAttributes();
+            Map<String, String> properties = (Map<String, String>) attributes.get("properties");
+            name = properties.get("nickname");
+            Map<String, String> kakaoAccount = (Map<String, String>) attributes.get("kakao_account");
+            email = kakaoAccount.get("email");
+
+            providerTypeCode = "K";
+            oauthId = oAuth2User.getName();
+
         } else {
             oauthId = oAuth2User.getName();
         }
 
-        String username = providerTypeCode + "__%s".formatted(oauthId);
+        String username = providerTypeCode + "@%s".formatted(oauthId);
 
         Member member = memberService.whenSocialLogin(providerTypeCode, username, name, email).getData();
 

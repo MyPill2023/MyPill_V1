@@ -157,10 +157,17 @@ public class MemberService {
     public void whenAfterUnlike(Member member, Product product) {
         member.unLike(product);
     }
-  
+
     @Transactional
-    public RsData<Member> surveyDelete(Member member){
-       member.getSurveyNutrients().clear();
-       return RsData.of("S-1","설문이 초기화 되었습니다");
+    public RsData<Member> surveyDelete(Member member) {
+        member.getSurveyNutrients().clear();
+        return RsData.of("S-1", "설문이 초기화 되었습니다");
+    }
+
+    @Transactional
+    public String nameUpdate(Member member, String newName) {
+        member.updateName(newName);
+        memberRepository.save(member);
+        return "success";
     }
 }

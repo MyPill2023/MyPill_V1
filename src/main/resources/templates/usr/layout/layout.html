@@ -22,11 +22,6 @@
                         <form style="display: none" name="logoutForm" method="POST" th:action="@{/usr/member/logout}"
                               hidden></form>
                         <a th:if="${@rq.isSeller()}" href="/product/create">상품 등록</a>
-                        <a th:if="${@rq.login}" href="/usr/post/create">게시글 작성</a>
-                        <a th:if="${@rq.login}" href="/usr/post/list">게시글 목록</a>
-                        <a th:if="${@rq.login}" href="/usr/consumer/myPage">구매자 마이페이지</a>
-                        <a th:if="${@rq.login}" href="/usr/consumer/likeList">좋아요 목록</a>
-                        <a th:if="${@rq.login}" href="/usr/consumer/myPost">내가 쓴 게시글</a>
                         <a th:if="${@rq.login}" href="/usr/consumer/mySchedule">복약 관리</a>
                     </li>
 
@@ -88,18 +83,6 @@
             </svg>
             <span class="btm-nav-label text-[11px]">건강설문</span>
         </a>
-        <button class="flex flex-col items-center justify-center cursor-pointer" style="flex-basis: 20%;">
-            <svg class="h-8 w-8 p-0.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000">
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                <g id="SVGRepo_iconCarrier">
-                    <g>
-                        <path fill="none" d="M0 0h24v24H0z"></path>
-                        <path d="M5.455 15L1 18.5V3a1 1 0 0 1 1-1h15a1 1 0 0 1 1 1v12H5.455zm-.692-2H16V4H3v10.385L4.763 13zM8 17h10.237L20 18.385V8h1a1 1 0 0 1 1 1v13.5L17.545 19H9a1 1 0 0 1-1-1v-1z"></path>
-                    </g>
-                </g>
-            </svg>
-        </button>
         <a href="/usr/post/list" class="flex flex-col items-center justify-center cursor-pointer"
            style="flex-basis: 20%;">
 
@@ -148,7 +131,7 @@
             </svg>
             <span class="btm-nav-label text-[11px]">영양제 구매</span>
         </a>
-        <a href="/usr/consumer/myPage" class="flex flex-col items-center justify-center cursor-pointer"
+        <a href="/usr/consumer/main" class="flex flex-col items-center justify-center cursor-pointer"
            style="flex-basis: 20%;">
             <svg class="h-8 w-8 p-1" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg"
                  fill="#000000">
