@@ -52,11 +52,18 @@ public class Member extends BaseEntity {
         if (isSeller()) {
             authorities.add(new SimpleGrantedAuthority("SELLER"));
         }
+        if (isWaiter()) {
+            authorities.add(new SimpleGrantedAuthority("WAITER"));
+        }
         return authorities;
     }
 
     public boolean isSeller() {
         return userType.equals(2);
+    }
+
+    public boolean isWaiter() {
+        return userType.equals(3);
     }
 
     public Map<String, Object> toClaims() {

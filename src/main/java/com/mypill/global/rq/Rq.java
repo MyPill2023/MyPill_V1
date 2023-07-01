@@ -82,6 +82,12 @@ public class Rq {
         return getMember().isSeller();
     }
 
+    public boolean isWaiter() {
+        if (isLogout()) return false;
+
+        return getMember().isWaiter();
+    }
+
     public boolean isRefererAdminPage() {
         SavedRequest savedRequest = (SavedRequest) session.getAttribute("SPRING_SECURITY_SAVED_REQUEST");
 
