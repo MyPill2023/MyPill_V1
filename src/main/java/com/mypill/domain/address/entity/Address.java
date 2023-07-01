@@ -55,6 +55,10 @@ public class Address extends BaseEntity {
         this.phoneNumber = addressRequest.getPhoneNumber();
     }
 
+    public void setDefaultName(){
+        this.name = this.receiverName + "의 배송지";
+    }
+
     public void changeDefaultTrue(){
         this.isDefault = true;
     }
@@ -63,4 +67,8 @@ public class Address extends BaseEntity {
         this.isDefault = false;
     }
 
+    @Override
+    public void softDelete() {
+        super.softDelete();
+    }
 }

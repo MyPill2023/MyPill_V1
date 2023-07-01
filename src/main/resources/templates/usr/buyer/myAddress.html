@@ -16,8 +16,8 @@
                 <div class="bg-base-100 border-b border-gray-200 p-5 pt-1">
                     <div class="flex flex-col">
                         <div class="flex gap-3 items-center mb-2">
-                          <span class="text-lg font-bold" th:text="${address.name}"></span>
-                          <span th:if="${address.isDefault == true}" class="badge badge-ghost">기본배송지</span>
+                            <span class="text-lg font-bold" th:text="${address.name}"></span>
+                            <span th:if="${address.isDefault == true}" class="badge badge-ghost">기본배송지</span>
                         </div>
                         <div class="flex gap-2">
                             <span class="w-1/4 text-gray-400">받으시는 분</span>
@@ -34,10 +34,16 @@
                         </span>
                         </div>
                     </div>
-                  <div class="flex justify-end gap-2 mt-2">
-                    <a th:href="@{|/usr/buyer/myAddress/update/${address.id}|}" class="btn btn-sm">수정</a>
-                    <button class="btn btn-sm">삭제</button>
-                  </div>
+                    <div class="flex justify-end gap-2 mt-2">
+                        <a th:href="@{|/usr/buyer/myAddress/update/${address.id}|}" class="btn btn-sm">수정</a>
+                        <a class="btn btn-sm" href="javascript:;"
+                           onclick="if ( confirm('배송지를 삭제하시겠습니까?') ) $(this).next().submit();">
+                            삭제</a>
+                        <form hidden th:action="@{|/usr/buyer/myAddress/delete/${address.id}|}" method="POST">
+                            <input type="hidden" name="_method" value="delete">
+                        </form>
+
+                    </div>
                 </div>
             </div>
             <div class="flex justify-center mt-5">

@@ -64,4 +64,17 @@ public class AddressController {
 
         return rq.redirectWithMsg("/usr/buyer/myAddress", updateRsData);
     }
+
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @PostMapping("/delete/{addressId}")
+    public String update(@PathVariable Long addressId){
+
+        RsData<Address> rsData = addressService.get(addressId);
+        if(rsData.isFail()){
+            return rq.historyBack(rsData);
+        }
+        RsData<Address> deleteRsData = addressService.softDelete(rsData.getData());
+
+        return rq.redirectWithMsg("/usr/buyer/myAddress", deleteRsData);
+    }
 }

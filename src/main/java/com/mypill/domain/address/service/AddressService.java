@@ -25,6 +25,7 @@ public class AddressService {
     public RsData<Address> create(AddressRequest addressRequest){
         Member member = memberService.findById(addressRequest.getMemberId()).orElse(null);
         Address address = Address.of(member, addressRequest);
+        setDefaultNameIfEmpty(address, addressRequest);
         addressRepository.save(address);
         return RsData.of("S-1", "배송지가 추가되었습니다", address);
     }
@@ -58,9 +59,17 @@ public class AddressService {
                     .forEach(Address::changeDefaultFalse);
             address.changeDefaultTrue();
         }
+        setDefaultNameIfEmpty(address, addressRequest);
 
         return RsData.of("S-1" ,"배송지 수정이 완료되었습니다.", address);
     }
+
+    @Transactional
+    public RsData<Address> softDelete(Address address) {
+        address.softDelete();
+        return RsData.of("S-1" ,"배송지가 삭제되었습니다.", address);
+    }
+
 
     public List<Address> findByMemberId(Long memberId){
         return addressRepository.findByMemberId(memberId);
@@ -68,5 +77,11 @@ public class AddressService {
 
     public Optional<Address> findById(Long addressId){
         return addressRepository.findById(addressId);
+    }
+
+    private void setDefaultNameIfEmpty(Address address, AddressRequest addressRequest) {
+        if (addressRequest.getName().trim().isEmpty()) {
+            address.setDefaultName();
+        }
     }
 }
