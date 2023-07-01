@@ -1,41 +1,50 @@
 <html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
 
 <head>
-  <title>나의 배송지 관리</title>
+    <title>나의 배송지 관리</title>
 </head>
 
 <body>
 <main layout:fragment="main">
-  <div class="hero-content flex flex-col my-10 w-[32rem]">
-    <h1 class="text-2xl font-bold">
-      나의 배송지 관리
-    </h1>
+    <div class="hero-content flex flex-col my-10 w-[32rem]">
+        <h1 class="text-2xl font-bold">
+            나의 배송지 관리
+        </h1>
 
-    <div class="flex flex-col w-full max-w-md mb-10 mt-5">
-      <div th:each="address, loop : ${addresses}">
-          <div class="bg-base-100 border-b border-gray-200 p-5 ">
-            <div class="flex flex-col gap-2">
-              <h3 class="text-lg font-bold mb-2 mt-10" th:text="${address.name}"></h3>
-              <div class="flex gap-2">
-                <span class="w-1/4 text-gray-400">받으시는 분</span>
-                <span th:text="${address.receiverName}"></span>
-              </div>
-              <div class="flex gap-2">
-                <span class="w-1/4 text-gray-400">연락처</span>
-                <span th:text="${address.phoneNumber}"></span>
-              </div>
-              <div class="flex gap-2">
-                <span class="w-1/4 text-gray-400">배송지</span>
-                <span class="w-3/4"
-                      th:text="'(' + ${address.postCode} + ') ' + ${address.address} + ' ' + ${address.detailAddress}">
+        <div class="flex flex-col w-full max-w-md mb-10 mt-5 gap-6">
+            <div th:each="address, loop : ${addresses}">
+                <div class="bg-base-100 border-b border-gray-200 p-5 pt-1">
+                    <div class="flex flex-col">
+                        <div class="flex gap-3 items-center mb-2">
+                          <span class="text-lg font-bold" th:text="${address.name}"></span>
+                          <span th:if="${address.isDefault == true}" class="badge badge-ghost">기본배송지</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="w-1/4 text-gray-400">받으시는 분</span>
+                            <span th:text="${address.receiverName}"></span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="w-1/4 text-gray-400">연락처</span>
+                            <span th:text="${address.phoneNumber}"></span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="w-1/4 text-gray-400">배송지</span>
+                            <span class="w-3/4"
+                                  th:text="'(' + ${address.postCode} + ') ' + ${address.address} + ' ' + ${address.detailAddress}">
                         </span>
-              </div>
+                        </div>
+                    </div>
+                  <div class="flex justify-end gap-2 mt-2">
+                    <button class="btn btn-sm">수정</button>
+                    <button class="btn btn-sm">삭제</button>
+                  </div>
+                </div>
             </div>
-          </div>
-
-      </div>
+            <div class="flex justify-center mt-5">
+                <a th:href="@{/usr/buyer/myAddress/create}" class="btn w-1/2">배송지 추가하기</a>
+            </div>
+        </div>
     </div>
-  </div>
 
 
 </main>
