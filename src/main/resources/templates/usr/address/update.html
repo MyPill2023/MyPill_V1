@@ -1,0 +1,132 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>배송지 수정</title>
+  <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+
+<body>
+<main layout:fragment="main">
+  <div class="hero-content flex flex-col my-10 w-[32rem]">
+    <h1 class="text-2xl font-bold">
+      배송지 수정
+    </h1>
+
+    <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5 px-5">
+      <form th:action method="POST" class="flex flex-col gap-2" onsubmit="AddressRequest__submit(this); return false;">
+        <input type="hidden" id="memberId" name="memberId" th:value="${@rq.member.id}">
+        <div class="flex items-center">
+          <span class="w-1/3">수령인</span>
+          <input class="input input-bordered w-2/3" id="receiverName" name="receiverName" type="text" th:value="${address.receiverName}">
+        </div>
+        <div class="flex items-center">
+          <span class="w-1/3">연락처</span>
+          <input class="input input-bordered w-2/3" id="phoneNumber" name="phoneNumber" type="text" th:value="${address.phoneNumber}">
+        </div>
+        <div class="flex items-center">
+          <span class="w-1/3">배송지 이름</span>
+          <input class="input input-bordered w-2/3" id="name" name="name" type="text" th:value="${address.name}">
+        </div>
+        <div class="my-2">배송지 주소</div>
+        <div class="flex gap-2">
+          <input class="input input-bordered w-1/3" type="text" id="postCode" name="postCode" th:value="${address.postCode}" readonly>
+          <input class="btn" type="button" onclick="execDaumPostcode()" value="우편번호 찾기">
+        </div>
+        <input class="input input-bordered" type="text" id="address" name="address" th:value="${address.address}" readonly>
+        <input class="input input-bordered" type="text" id="detailAddress" name="detailAddress" th:value="${address.detailAddress}">
+        <div class="my-2">
+          <label class="cursor-pointer label w-1/2">
+            <span class="label-text">기본 배송지로 등록</span>
+            <input type="checkbox" class="checkbox checkbox-success" name="isDefault" th:checked="${address.isDefault == true}" />
+          </label>
+        </div>
+        <div class="form-control mt-5">
+          <button type="submit" class="btn btn-success" name="isDefault">등록하기</button>
+        </div>
+      </form>
+
+    </div>
+
+  </div>
+  <script >
+    function AddressRequest__submit(form){
+
+      form.receiverName.value = form.receiverName.value.trim();
+
+      if (form.receiverName.value.length === 0) {
+        toastWarning("수령인 성함을 입력해주세요");
+        form.receiverName.focus();
+        return;
+      }
+
+      form.phoneNumber.value = form.phoneNumber.value.trim();
+
+      if (form.phoneNumber.value.length === 0) {
+        toastWarning("연락처를 입력해주세요");
+        form.phoneNumber.focus();
+        return;
+      }
+
+      form.postCode.value = form.postCode.value.trim();
+
+      if (form.postCode.value.length === 0) {
+        toastWarning("우편번호를 입력해주세요");
+        form.postCode.focus();
+        return;
+      }
+
+      form.address.value = form.address.value.trim();
+
+      if (form.address.value.length === 0) {
+        toastWarning("주소를 입력해주세요");
+        form.address.focus();
+        return;
+      }
+
+      form.detailAddress.value = form.detailAddress.value.trim();
+
+      if (form.detailAddress.value.length === 0) {
+        toastWarning("상세주소를 입력해주세요");
+        form.detailAddress.focus();
+        return;
+      }
+
+      if (!form.isDefault.checked) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'isDefault';
+        input.value = 'false';
+        form.appendChild(input);
+      }
+
+      form.submit();
+    }
+  </script>
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script>
+    function execDaumPostcode() {
+      new daum.Postcode({
+        oncomplete: function(data) {
+
+          var addr = ''; // 주소 변수
+
+          if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+            addr = data.roadAddress;
+          } else { // 사용자가 지번 주소를 선택했을 경우(J)
+            addr = data.jibunAddress;
+          }
+
+          document.getElementById('postCode').value = data.zonecode;
+          document.getElementById("address").value = addr;
+
+          // 커서를 상세주소 필드로 이동
+          document.getElementById("detailAddress").focus();
+        }
+      }).open();
+    }
+  </script>
+
+</main>
+</body>
+
+</html>

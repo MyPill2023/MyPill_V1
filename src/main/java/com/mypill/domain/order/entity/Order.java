@@ -1,6 +1,7 @@
 package com.mypill.domain.order.entity;
 
 import com.mypill.domain.cart.entity.CartProduct;
+import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.AppConfig;
 import com.mypill.global.base.entitiy.BaseEntity;
@@ -39,6 +40,9 @@ public class Order extends BaseEntity {
     private Long totalPrice;
 
     private LocalDateTime payDate;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Address deliveryAddress;
 
     public Order(Member buyer) {
         this.buyer = buyer;
@@ -83,5 +87,9 @@ public class Order extends BaseEntity {
         }
         this.payDate = payDate;
         this.orderNumber = orderId;
+    }
+
+    public void addAddress(Address address){
+        this.deliveryAddress = address;
     }
 }

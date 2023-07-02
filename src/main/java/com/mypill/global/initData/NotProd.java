@@ -1,11 +1,15 @@
 package com.mypill.global.initData;
 
-import com.mypill.domain.cart.dto.request.CartProductRequest;
+import com.mypill.domain.address.dto.request.AddressRequest;
+import com.mypill.domain.address.entity.Address;
+import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.cart.service.CartService;
-import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
+import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.nutrient.Service.NutrientService;
-import com.mypill.domain.nutrient.entity.Nutrient;
+import com.mypill.domain.order.entity.Order;
+import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.product.Service.ProductService;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import org.springframework.boot.CommandLineRunner;
@@ -14,11 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.member.service.MemberService;
-
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDateTime;
 
 import static java.util.Arrays.asList;
 
@@ -33,7 +33,9 @@ public class NotProd {
             ProductService productService,
             NutrientService nutrientService,
             CategoryService categoryService,
-            CartService cartService
+            CartService cartService,
+            AddressService addressService,
+            OrderService orderService
 
     ) {
         String password = passwordEncoder.encode("1234");
@@ -50,6 +52,16 @@ public class NotProd {
             productService.create(new ProductRequest(3L, "테스트 상품3", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(4L, 3L), asList(3L, 4L)));
             productService.create(new ProductRequest(4L, "테스트 상품4", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(5L, 4L), asList(4L, 5L)));
             productService.create(new ProductRequest(4L, "테스트 상품5", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(6L, 5L), asList(5L, 6L)));
+
+            AddressRequest addressRequest1 = new AddressRequest(1L, "집","김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", true);
+            AddressRequest addressRequest2 = new AddressRequest(1L, "집2","김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", false);
+            Address address1 = addressService.create(addressRequest1).getData();
+            Address address2 = addressService.create(addressRequest2).getData();
+
+            Order order1 = orderService.createFromProduct(memberUser1, 1L, 3L).getData();
+            Order order2 = orderService.createFromProduct(memberUser1, 2L, 3L).getData();
+            orderService.payByTossPayments(order1, LocalDateTime.now(), "1_0001", 1L);
+            orderService.payByTossPayments(order2, LocalDateTime.now(), "2_0002", 1L);
         };
     }
 }

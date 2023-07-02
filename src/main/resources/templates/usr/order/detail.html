@@ -12,30 +12,65 @@
             주문 상세
         </h1>
 
-        <div class="text-lg" th:text="'주문번호 : ' + ${orderResponse.orderNumber}"></div>
-        <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5">
-            <div class="text-lg" th:text="${orderResponse.name}"></div>
-            <div th:each="orderItem, loop : ${orderResponse.orderItems}">
-                <div class="bg-base-100 border-b border-gray-200 p-5 ">
-                    <div class="flex justify-around gap-5">
-                        <div class="border border-gray-200 w-2/6 p-5">
-                            이미지
-                        </div>
-                        <div class="flex flex-col gap-3 w-4/6">
-                            <div class="flex flex-col gap-1">
-                                <h3 th:text="${orderItem.product.seller.name}"></h3>
-                                <a th:text="${orderItem.product.name}"
-                                   class="text-xl font-bold "></a>
+        <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5 px-5">
+            <div class="flex gap-2">
+                <span class="text-lg font-bold">주문 번호</span>
+                <span class="text-lg underline" th:text="${orderResponse.orderNumber}"></span>
+            </div>
+            <div class="flex flex-col gap-2">
+                <span class="text-lg font-bold">주문내역</span>
+                <div th:each="orderItem, loop : ${orderResponse.orderItems}">
+                    <div class="bg-base-100 border-b border-gray-200 p-5 ">
+                        <div class="flex justify-around gap-5">
+                            <div class="border border-gray-200 w-2/6 p-5">
+                                이미지
                             </div>
-                            <div class="flex gap-3 justify-between">
-                                <span class="text-lg" th:text="${orderItem.quantity} + '개'"></span>
-                                <span class="text-lg"
-                                      th:text="${#numbers.formatInteger(orderItem.product.price * orderItem.quantity, 0, 'COMMA') + '원'}"></span>
+                            <div class="flex flex-col gap-3 w-4/6">
+                                <div class="flex flex-col gap-1">
+                                    <h3 th:text="${orderItem.product.seller.name}"></h3>
+                                    <a th:text="${orderItem.product.name}"
+                                       class="font-bold "></a>
+                                </div>
+                                <div class="flex gap-3 justify-between">
+                                    <span class="text-lg" th:text="${orderItem.quantity} + '개'"></span>
+                                    <span class="text-lg"
+                                          th:text="${#numbers.formatInteger(orderItem.product.price * orderItem.quantity, 0, 'COMMA') + '원'}"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
+
+            </div>
+            <div class="flex flex-col gap-2">
+                <h3 class="text-lg font-bold mb-2 mt-10">배송 정보</h3>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">수령인</span>
+                    <span th:text="${orderResponse.deliveryAddress.receiverName}"></span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">연락처</span>
+                    <span th:text="${orderResponse.deliveryAddress.phoneNumber}"></span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">배송지</span>
+                    <span class="w-3/4"
+                          th:text="'(' + ${orderResponse.deliveryAddress.postCode} + ') ' + ${orderResponse.deliveryAddress.address} + ' ' + ${orderResponse.deliveryAddress.detailAddress}">
+                        </span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <h3 class="text-lg font-bold mb-2 mt-10">결제 정보</h3>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">결제 수단</span>
+                    <span ></span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">결제 금액</span>
+                    <span</span>
+                </div>
+
             </div>
 
         </div>
