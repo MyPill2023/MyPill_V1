@@ -57,10 +57,15 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Address> addresses;
 
-    private boolean businessCertificated;
+    private boolean brnoCertificated;
+    private boolean nBrnoCertificated;
 
-    public void businessCertificate() {
-        this.businessCertificated = true;
+    public void brnoCertificate() {
+        this.brnoCertificated = true;
+    }
+
+    public void nBrnoCertificate() {
+        this.nBrnoCertificated = true;
     }
 
     public List<GrantedAuthority> getGrantedAuthorities() {

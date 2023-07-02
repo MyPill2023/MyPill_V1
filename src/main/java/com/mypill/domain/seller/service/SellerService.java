@@ -13,11 +13,21 @@ public class SellerService {
     private final MemberRepository memberRepository;
 
     public RsData certificateBRNO(String brno, Member member) {
-        boolean isQualifiedBrno = certificationService.isQualifiedBusiness(brno);
-        if (!isQualifiedBrno) {
+        boolean brnoCertificated = certificationService.brnoCertificated(brno);
+        if (!brnoCertificated) {
             return RsData.of("F-1", "인증에 실패했습니다.");
         }
-        member.businessCertificate();
+        member.brnoCertificate();
+        memberRepository.save(member);
+        return RsData.of("S-1", "인증에 성공했습니다.");
+    }
+
+    public RsData certificateNBRNO(String nBrno, Member member) {
+        boolean nBrnoCertificated = certificationService.nBrnoCertificated(nBrno);
+        if (!nBrnoCertificated) {
+            return RsData.of("F-1", "인증에 실패했습니다.");
+        }
+        member.nBrnoCertificate();
         memberRepository.save(member);
         return RsData.of("S-1", "인증에 성공했습니다.");
     }

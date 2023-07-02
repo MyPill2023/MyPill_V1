@@ -37,9 +37,18 @@ public class SellerController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/certificate")
-    public String certificate(@RequestParam("brno") String brno) {
+    @PostMapping("/brnoCertificate")
+    public String brnoCertificate(@RequestParam("brno") String brno) {
         RsData rsData = sellerService.certificateBRNO(brno, rq.getMember());
+        if (rsData.isFail()) {
+            rq.historyBack(rsData.getMsg());
+        }
+        return rq.redirectWithMsg("/usr/seller/certificate", rsData);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/nBrnoCertificate")
+    public String nBrnoCertificate(@RequestParam("nBrno") String nBrno) {
+        RsData rsData = sellerService.certificateNBRNO(nBrno, rq.getMember());
         if (rsData.isFail()) {
             rq.historyBack(rsData.getMsg());
         }
