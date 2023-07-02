@@ -43,11 +43,11 @@ public class AppConfig {
 //        cancelAvailableSeconds = Integer.valueOf(value);
 //    }
 //
-//    @Value("${spring.profiles.active:}")
-//    public void setActiveProfile(String value) {
-//        activeProfile = value;
-//    }
-//
+    @Value("${spring.profiles.active:}")
+    public void setActiveProfile(String value) {
+        activeProfile = value;
+    }
+
     @Value("${custom.site.name}")
     public void setSiteName(String siteName) {
         AppConfig.siteName = siteName;

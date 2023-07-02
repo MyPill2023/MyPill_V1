@@ -57,7 +57,7 @@ public class MemberService {
                 log.info("이메일 인증 메일 발송 실패");
             }
         });
-        return RsData.of("S-1", "회원가입 되었습니다.", savedMember);
+        return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
     }
 
     private RsData<Member> oauthJoin(String providerTypeCode, String username, String password, String name, String email) {
