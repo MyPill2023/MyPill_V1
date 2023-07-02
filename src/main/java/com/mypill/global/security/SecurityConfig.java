@@ -34,8 +34,8 @@ public class SecurityConfig {
                         formLogin -> formLogin
                                 .loginPage("/usr/member/login") // GET
                                 .loginProcessingUrl("/usr/member/login") // POST
-                                .failureHandler(customAuthenticationFailureHandler)
                                 .successHandler(customAuthenticationSuccessHandler)
+                                .failureHandler(customAuthenticationFailureHandler)
                 )
                 .oauth2Login(
                         oauth2Login -> oauth2Login
