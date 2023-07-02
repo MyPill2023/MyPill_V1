@@ -21,19 +21,21 @@
             <div class="mb-4">
                 <div class="form-control">
                     <label class="block text-gray-700 font-bold mb-2">복용 시간</label>
-                    <select id="selectedTime" name="time" class="select select-accent">
+                    <select id="time" name="time" class="select select-accent">
                         <option disabled selected>복용 시간</option>
-                        <option name="time" value="1">아침</option>
-                        <option name="time" value="2">점심</option>
-                        <option name="time" value="3">저녁</option>
-                        <option name="time" value="4">자기전</option>
+                        <option value="morning">아침</option>
+                        <option value="lunch">점심</option>
+                        <option value="dinner">저녁</option>
+                        <option value="bedtime">자기전</option>
                     </select>
                 </div>
             </div>
 
+
             <div>
-                <label for="type" class="block text-gray-700 font-bold mb-2">영양제명</label>
-                <input type="text" id="type" name="type" class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+                <label for="type" class="block text-gray-70`0 font-bold mb-2">카테고리</label>
+                <input type="text" id="type" name="type" placeholder="ex) 눈, 위, 간..."
+                       class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
             </div>
 
             <div class="flex flex-col">
