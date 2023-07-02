@@ -1,5 +1,6 @@
 spring:
   profiles:
+    active: dev
     include: secret
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
@@ -45,6 +46,17 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: '${custom.mail.username}'
+    password: '${custom.mail.password}'
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 logging:
   level:
     root: INFO
@@ -60,8 +72,8 @@ server:
 custom:
   survey:
     startMaxLength: 3
-    startMinLength : 1
-    completeMaxLength : 9 #최대 질문값이 3(카테고리최대값)*3(질문선택최대값) = 9
-    completeMinLength : 1
+    startMinLength: 1
+    completeMaxLength: 9 #최대 질문값이 3(카테고리최대값)*3(질문선택최대값) = 9
+    completeMinLength: 1
   order:
-    maxOrderNameLength : 10
+    maxOrderNameLength: 10

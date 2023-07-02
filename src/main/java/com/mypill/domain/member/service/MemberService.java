@@ -1,5 +1,6 @@
 package com.mypill.domain.member.service;
 
+import com.mypill.domain.emailVerification.service.EmailVerificationService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
@@ -7,6 +8,7 @@ import com.mypill.domain.product.entity.Product;
 import com.mypill.global.security.jwt.JwtProvider;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,15 +19,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final EmailVerificationService emailVerificationService;
+
 
     @Transactional
     public RsData<Member> join(String username, String name, String password, String userTypeStr, String email) {
@@ -43,6 +49,14 @@ public class MemberService {
                 .build();
         Member savedMember = memberRepository.save(member);
 
+//        CompletableFuture<RsData<Long>> sendRsFuture = emailVerificationService.send(member);
+//        sendRsFuture.whenComplete((sendRs, throwable) -> {
+//            if (sendRs.isSuccess()) {
+//                log.info("이메일 인증 메일 발송 성공");
+//            } else {
+//                log.info("이메일 인증 메일 발송 실패");
+//            }
+//        });
         return RsData.of("S-1", "회원가입 되었습니다.", savedMember);
     }
 
@@ -174,9 +188,24 @@ public class MemberService {
     @Transactional
     public RsData deleteAccount(Member member) {
         if (member == null) {
-            return RsData.of("F-1","로그인이 필요한 서비스입니다.");
+            return RsData.of("F-1", "로그인이 필요한 서비스입니다.");
         }
         memberRepository.delete(member);
-        return RsData.of("S-1","회원 탈퇴가 완료되었습니다.");
+        return RsData.of("S-1", "회원 탈퇴가 완료되었습니다.");
+    }
+
+    @Transactional
+    public RsData verifyEmail(Long id, String verificationCode) {
+        RsData verifyVerificationCodeRs = emailVerificationService.verifyVerificationCode(id, verificationCode);
+
+        if (verifyVerificationCodeRs.isSuccess() == false) {
+            return verifyVerificationCodeRs;
+        }
+
+        Member member = memberRepository.findById(id).get();
+        member.setEmailVerified(true);
+
+        return RsData.of("S-1", "이메일인증이 완료되었습니다.");
+
     }
 }
