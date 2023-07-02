@@ -137,4 +137,7 @@ public class OrderService {
     public List<Order> findByBuyerId(Long buyerId) {
         return orderRepository.findByBuyerId(buyerId);
     }
+    public List<Order> findBySellerId(Long sellerId) {
+        return orderRepository.findBySellerId(sellerId);
+    }
 }
