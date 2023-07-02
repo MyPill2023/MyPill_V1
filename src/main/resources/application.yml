@@ -1,11 +1,7 @@
 spring:
   profiles:
+    active: dev
     include: secret
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: 'jdbc:mariadb://127.0.0.1:3306/${custom.dev_db.dbName}?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true&serverTimezone=Asia/Seoul'
-    username: '${custom.dev_db.username}'
-    password: '${custom.dev_db.password}'
   security:
     oauth2:
       client:
@@ -45,6 +41,17 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: '${custom.mail.username}'
+    password: '${custom.mail.password}'
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 logging:
   level:
     root: INFO

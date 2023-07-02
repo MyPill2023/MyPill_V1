@@ -13,12 +13,10 @@
             const nameElement = document.getElementById('name');
             const nameEditFormElement = document.getElementById('nameEditForm');
 
-            // 기존 댓글 내용을 가져와서 수정 폼에 설정
             const name = nameElement.innerText;
             const nameEditInput = nameEditFormElement.querySelector('textarea');
             nameEditInput.value = name;
 
-            // 댓글 내용을 보여주는 부분을 숨기고 수정 폼을 보여줌
             nameElement.style.display = 'none';
             nameEditFormElement.style.display = 'block';
 
@@ -151,6 +149,15 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="flex flex-row gap-4 justify-between">
+            <a href="/usr/member/deleteAccount" class="btn btn-accent flex-grow-0 flex-shrink-0 w-4/6"
+               onclick="return confirm('정말로 회원을 탈퇴하시겠습니까?')">
+                회원 탈퇴
+            </a>
+            <a href="javascript:history.back()" class="btn btn-success btn-outline">
+                돌아가기
+            </a>
         </div>
     </div>
 </main>

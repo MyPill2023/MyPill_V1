@@ -146,4 +146,12 @@ public class Rq {
     public String getPassword() {
         return (String) this.session.getAttribute("password");
     }
+
+    public HttpSession getSession() {
+        return this.session;
+    }
+
+    public void invalidateSession() {
+        this.session.invalidate();
+    }
 }

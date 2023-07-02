@@ -2,6 +2,7 @@ package com.mypill.global.security.service;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.repository.MemberRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
+    private final HttpSession session;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

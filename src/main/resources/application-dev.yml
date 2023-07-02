@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: 'jdbc:mariadb://127.0.0.1:3306/${custom.dev_db.dbName}?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true&serverTimezone=Asia/Seoul'
+    username: '${custom.dev_db.username}'
+    password: '${custom.dev_db.password}'

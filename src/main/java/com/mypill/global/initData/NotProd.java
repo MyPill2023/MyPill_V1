@@ -15,6 +15,7 @@ import com.mypill.domain.product.dto.request.ProductRequest;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import static java.util.Arrays.asList;
 
 @Configuration
+@Profile({"dev", "test"})
 public class NotProd {
 
     @Bean
@@ -38,12 +40,12 @@ public class NotProd {
     ) {
         String password = passwordEncoder.encode("1234");
         return args -> {
-            Member memberUser1 = memberService.join("user1", "김철수", "1234", "1", "cs@naver.com").getData();
-            Member memberUser2 = memberService.join("user2", "김영희", "1234", "1", "yh@naver.com").getData();
-            Member memberUser3 = memberService.join("user3", "김짱구", "1234", "2", "zzang@naver.com").getData();
-            Member memberUser4 = memberService.join("user4", "김맹구", "1234", "2", "mk@naver.com").getData();
-            Member memberUser5 = memberService.join("user5", "김훈이", "1234", "1", "hoon2@naver.com").getData();
-            Member memberUser6 = memberService.join("user6", "김멋사", "1234", "3", "ll@naver.com").getData();
+            Member memberUser1 = memberService.join("user1", "김철수", "1234", "1", "cs@test.com").getData();
+            Member memberUser2 = memberService.join("user2", "김영희", "1234", "1", "yh@test.com").getData();
+            Member memberUser3 = memberService.join("user3", "김짱구", "1234", "2", "zzang@test.com").getData();
+            Member memberUser4 = memberService.join("user4", "김맹구", "1234", "2", "mk@test.com").getData();
+            Member memberUser5 = memberService.join("user5", "김훈이", "1234", "1", "hoon2@test.com").getData();
+            Member memberUser6 = memberService.join("user6", "김멋사", "1234", "3", "ll@test.com").getData();
 
             productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)));
             productService.create(new ProductRequest(3L, "프로바이오틱스 글루코사민 루테인 170mg x 60캡슐", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(3L, 2L), asList(2L, 3L)));
