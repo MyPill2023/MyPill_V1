@@ -49,14 +49,14 @@ public class MemberService {
                 .build();
         Member savedMember = memberRepository.save(member);
 
-//        CompletableFuture<RsData<Long>> sendRsFuture = emailVerificationService.send(member);
-//        sendRsFuture.whenComplete((sendRs, throwable) -> {
-//            if (sendRs.isSuccess()) {
-//                log.info("이메일 인증 메일 발송 성공");
-//            } else {
-//                log.info("이메일 인증 메일 발송 실패");
-//            }
-//        });
+        CompletableFuture<RsData<Long>> sendRsFuture = emailVerificationService.send(member);
+        sendRsFuture.whenComplete((sendRs, throwable) -> {
+            if (sendRs.isSuccess()) {
+                log.info("이메일 인증 메일 발송 성공");
+            } else {
+                log.info("이메일 인증 메일 발송 실패");
+            }
+        });
         return RsData.of("S-1", "회원가입 되었습니다.", savedMember);
     }
 
