@@ -6,31 +6,27 @@ import com.mypill.domain.order.entity.OrderItem;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderResponse {
+public class OrderListResponse {
 
     private Long orderId;
     private String orderNumber;
     private String name;
-    private String buyerName;
-    private List<OrderItem> orderItems;
     private Long totalPrice;
-    private Address deliveryAddress;
+    private LocalDateTime payDate;
 
-    public static OrderResponse of(Order order){
-        return OrderResponse.builder()
+    public static OrderListResponse of(Order order){
+        return OrderListResponse.builder()
                 .orderId(order.getId())
                 .orderNumber(order.getOrderNumber())
                 .name(order.getName())
-                .buyerName(order.getBuyer().getName())
-                .orderItems(order.getOrderItems())
                 .totalPrice(order.getTotalPrice())
-                .deliveryAddress(order.getDeliveryAddress())
+                .payDate(order.getPayDate())
                 .build();
     }
 

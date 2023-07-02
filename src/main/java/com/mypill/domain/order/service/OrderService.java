@@ -1,5 +1,8 @@
 package com.mypill.domain.order.service;
 
+import com.mypill.domain.address.dto.request.AddressRequest;
+import com.mypill.domain.address.entity.Address;
+import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.domain.member.entity.Member;
@@ -9,6 +12,8 @@ import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.repository.OrderItemRepository;
 import com.mypill.domain.order.repository.OrderRepository;
+import com.mypill.domain.product.Service.ProductService;
+import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +33,8 @@ public class OrderService {
 
     private final OrderItemRepository orderItemRepository;
     private final CartService cartService;
+    private final AddressService addressService;
+    private final ProductService productService;
     private final Rq rq;
 
     public RsData<OrderResponse> getOrderForm(Long orderId) {
@@ -67,6 +74,19 @@ public class OrderService {
         return RsData.of("S-1", "주문이 생성되었습니다.", order);
     }
 
+
+    // 임시 NotProd용
+    @Transactional
+    public RsData<Order> createFromProduct(Member buyer, Long productId, Long quantity) {
+        Product product = productService.findById(productId).orElse(null);
+
+        List<OrderItem> orderItems = new ArrayList<>();
+        orderItems.add(new OrderItem(product, quantity));
+
+        Order order = create(buyer, orderItems);
+        return RsData.of("S-1", "주문이 생성되었습니다.", order);
+    }
+
     @Transactional
     public Order create(Member buyer, List<OrderItem> orderItems) {
 
@@ -84,9 +104,11 @@ public class OrderService {
     }
 
     @Transactional
-    public void payByTossPayments(Order order,  LocalDateTime payDate, String orderId) {
+    public void payByTossPayments(Order order, LocalDateTime payDate, String orderId, Long addressId) {
 
         order.setPaymentDone(payDate, orderId);
+        Address address = addressService.findById(addressId).orElse(null);
+        order.addAddress(address);
         order.getOrderItems()
                 .forEach(orderItem -> {
                     orderItem.updateStatus(OrderStatus.ORDERED);
@@ -111,5 +133,8 @@ public class OrderService {
 
     public Optional<Order> findById(Long orderId) {
         return orderRepository.findById(orderId);
+    }
+    public List<Order> findByBuyerId(Long buyerId) {
+        return orderRepository.findByBuyerId(buyerId);
     }
 }

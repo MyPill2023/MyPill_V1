@@ -2,6 +2,10 @@ package com.mypill.domain.order.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mypill.domain.address.dto.request.AddressRequest;
+import com.mypill.domain.address.dto.response.AddressResponse;
+import com.mypill.domain.address.entity.Address;
+import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
@@ -10,6 +14,7 @@ import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import com.mypill.global.util.Ut;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -18,12 +23,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
 
+import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static javax.crypto.Cipher.SECRET_KEY;
 
@@ -34,6 +39,7 @@ import static javax.crypto.Cipher.SECRET_KEY;
 public class OrderController {
 
     private final OrderService orderService;
+    private final AddressService addressService;
     private final Rq rq;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
@@ -46,6 +52,18 @@ public class OrderController {
             return rq.historyBack(rsData);
         }
         model.addAttribute("orderResponse", rsData.getData());
+
+        List<AddressResponse> addresses = addressService.findByMemberId(rq.getMember().getId()).stream()
+                .filter(address -> address.getDeleteDate() == null)
+                .map(AddressResponse::of)
+                .toList();
+        AddressResponse defaultAddress = addresses.stream()
+                .filter(AddressResponse::isDefault)
+                .findFirst().orElse(null);
+
+        model.addAttribute("addresses", addresses);
+        model.addAttribute("defaultAddress", defaultAddress);
+
         return "usr/order/form";
     }
 
@@ -61,7 +79,6 @@ public class OrderController {
 
         return rq.redirectWithMsg("/order/form/%s".formatted(orderRsData.getData().getId()), orderRsData);
     }
-
 
     @GetMapping("/detail/{orderId}")
     @PreAuthorize("hasAuthority('MEMBER')")
@@ -82,6 +99,7 @@ public class OrderController {
             @RequestParam String paymentKey,
             @RequestParam String orderId,
             @RequestParam Long amount,
+            @RequestParam("addressId") String addressId,
             Model model) throws Exception {
 
         Order order = orderService.findById(id).get();
@@ -115,7 +133,7 @@ public class OrderController {
             String requestedAt = responseEntity.getBody().get("requestedAt").asText();
             LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
-            orderService.payByTossPayments(order, payDate, orderId);
+            orderService.payByTossPayments(order, payDate, orderId, Long.parseLong(addressId));
 
             return rq.redirectWithMsg("/order/detail/%s".formatted(order.getId()), "주문이 완료되었습니다.");
         } else {

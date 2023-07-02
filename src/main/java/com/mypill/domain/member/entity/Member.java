@@ -2,6 +2,7 @@ package com.mypill.domain.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mypill.domain.nutrient.entity.Nutrient;
+import com.mypill.domain.address.entity.Address;
 import jakarta.persistence.*;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.base.entitiy.BaseEntity;
@@ -45,6 +46,16 @@ public class Member extends BaseEntity {
     private String providerTypeCode; // 카카오로 가입한 회원인지, 네이버로 가입한 회원인지
     @ManyToMany(mappedBy = "likedMembers")
     private List<Product> likedProducts = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "member_nutrients",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "nutrient_id")
+    )
+    private List<Nutrient> surveyNutrients = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Address> addresses;
+
 
     public List<GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -98,14 +109,13 @@ public class Member extends BaseEntity {
         this.accessToken = accessToken;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "member_nutrients",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "nutrient_id")
-    )
-    private List<Nutrient> surveyNutrients = new ArrayList<>();
-
     public void updateName(String newName) {
         this.name = newName;
+    }
+
+    public Optional<Address> getDefaultAddress() {
+        return addresses.stream()
+                .filter(Address::isDefault)
+                .findFirst();
     }
 }

@@ -130,6 +130,12 @@ public class AppConfig {
     private void setMaxOrderName(int maxOrderNameLength) {
         AppConfig.maxOrderNameLength = maxOrderNameLength;
     }
+    @Getter
+    private static int maxAddressCount;
+    @Value("${custom.address.maxAddressCount}")
+    private void setMaxAddressCount(int maxAddressCount) {
+        AppConfig.maxAddressCount = maxAddressCount;
+    }
 
     @Getter
     private static String tossPaymentSecretKey;

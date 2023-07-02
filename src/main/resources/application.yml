@@ -64,4 +64,6 @@ custom:
     completeMaxLength : 9 #최대 질문값이 3(카테고리최대값)*3(질문선택최대값) = 9
     completeMinLength : 1
   order:
-    maxOrderNameLength : 10
+    maxOrderNameLength : 20
+  address:
+    maxAddressCount : 5
