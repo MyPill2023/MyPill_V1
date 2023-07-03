@@ -1,4 +1,4 @@
-package com.mypill.global.security.OAuth2;
+package com.mypill.global.security.oauth2;
 
 import java.util.Collection;
 import java.util.Map;

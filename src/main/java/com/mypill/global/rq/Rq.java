@@ -130,7 +130,7 @@ public class Rq {
     }
 
     // 메세지에 ttl 적용
-    private String msgWithTtl(String msg) {
+    private static String msgWithTtl(String msg) {
         return Ut.url.encode(msg) + ";ttl=" + new Date().getTime();
     }
 
@@ -153,5 +153,9 @@ public class Rq {
 
     public void invalidateSession() {
         this.session.invalidate();
+    }
+
+    public static String urlWithErrorMsg(String url, String errorMsg) {
+        return Ut.url.modifyQueryParam(url, "errorMsg", msgWithTtl(errorMsg));
     }
 }

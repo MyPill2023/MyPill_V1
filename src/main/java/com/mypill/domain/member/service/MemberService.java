@@ -5,7 +5,6 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.product.entity.Product;
-import com.mypill.global.security.jwt.JwtProvider;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,6 @@ import java.util.regex.Pattern;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
     private final EmailVerificationService emailVerificationService;
 
 
@@ -90,33 +88,6 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
-    // JWT 를 위한 user 객체 생성
-    public void forceAuthentication(Member member) {
-        User user = new User(member.getUsername(), "", member.getGrantedAuthorities());
-
-        UsernamePasswordAuthenticationToken authentication =
-                UsernamePasswordAuthenticationToken.authenticated(
-                        user,
-                        null,
-                        member.getGrantedAuthorities()
-                );
-
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
-    }
-
-    @Transactional
-    public String genAccessToken(Member member) {
-        String accessToken = member.getAccessToken();
-
-        if (!StringUtils.hasLength(accessToken)) {
-            accessToken = jwtProvider.generateAccessToken(member.getAccessTokenClaims(), 60L * 60 * 24 * 365 * 100);
-            member.setAccessToken(accessToken);
-        }
-
-        return accessToken;
-    }
 
     public int idValidation(String username) {
         if (username.equals("")) {
@@ -206,6 +177,13 @@ public class MemberService {
         member.setEmailVerified(true);
 
         return RsData.of("S-1", "이메일인증이 완료되었습니다.");
+    }
 
+    public boolean hasEmailVerified(String username) {
+        Member member = memberRepository.findByUsername(username).orElse(null);
+        if (member == null) {
+            return false;
+        }
+        return member.getEmailVerified();
     }
 }

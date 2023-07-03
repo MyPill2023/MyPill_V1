@@ -1,6 +1,6 @@
 package com.mypill.global.security;
 
-import com.mypill.global.security.OAuth2.CustomOAuth2AccessTokenResponseClient;
+import com.mypill.global.security.oauth2.CustomOAuth2AccessTokenResponseClient;
 import com.mypill.global.security.handler.CustomAuthenticationFailureHandler;
 import com.mypill.global.security.handler.CustomAuthenticationSuccessHandler;
 import com.mypill.global.security.service.CustomUserDetailsService;
