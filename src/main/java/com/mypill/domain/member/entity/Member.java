@@ -57,6 +57,16 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Address> addresses;
 
+    private boolean brnoCertificated;
+    private boolean nBrnoCertificated;
+
+    public void brnoCertificate() {
+        this.brnoCertificated = true;
+    }
+
+    public void nBrnoCertificate() {
+        this.nBrnoCertificated = true;
+    }
 
     public List<GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -116,6 +126,10 @@ public class Member extends BaseEntity {
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    public void updateUserType() {
+        this.userType = 2;
     }
 
     public Optional<Address> getDefaultAddress() {
