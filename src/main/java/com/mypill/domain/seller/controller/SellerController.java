@@ -1,21 +1,25 @@
 package com.mypill.domain.seller.controller;
 
+import com.mypill.domain.order.dto.response.OrderListResponse;
+import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.seller.service.SellerService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/usr/seller")
 public class SellerController {
     private final SellerService sellerService;
+
+    private final OrderService orderService;
     private final Rq rq;
 
     @PreAuthorize("isAuthenticated()")
@@ -31,6 +35,14 @@ public class SellerController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping("/order")
+    public String orderManagement(Model model) {
+        List<OrderListResponse> orderResponses = orderService.findBySellerId(rq.getMember().getId())
+                .stream().map(OrderListResponse::of).toList();
+        model.addAttribute("orders", orderResponses);
+        return "usr/seller/orderList";
+    }
+
     @GetMapping("/certificate")
     public String certificate() {
         return "usr/seller/certificate";

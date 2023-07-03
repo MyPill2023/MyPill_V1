@@ -3,6 +3,7 @@ package com.mypill.domain.order.dto.response;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
+import com.mypill.domain.order.entity.OrderStatus;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -18,7 +19,7 @@ public class OrderResponse {
     private String orderNumber;
     private String name;
     private String buyerName;
-    private List<OrderItem> orderItems;
+    private List<OrderItemResponse> orderItems;
     private Long totalPrice;
     private Address deliveryAddress;
 
@@ -28,7 +29,7 @@ public class OrderResponse {
                 .orderNumber(order.getOrderNumber())
                 .name(order.getName())
                 .buyerName(order.getBuyer().getName())
-                .orderItems(order.getOrderItems())
+                .orderItems(order.getOrderItems().stream().map(OrderItemResponse::of).toList())
                 .totalPrice(order.getTotalPrice())
                 .deliveryAddress(order.getDeliveryAddress())
                 .build();

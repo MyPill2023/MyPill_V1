@@ -119,22 +119,74 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public RsData<OrderResponse> getOrderDetail(Long orderId) {
+    // 결제 완료된 주문을 조회
+    public RsData<Order> getOrderDetail(Long orderId) {
         Order order = findById(orderId).orElse(null);
-        if(order == null || order.getPayDate() == null){
+        if (!isOrderValid(order)) {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
-        if(!order.getBuyer().getId().equals(rq.getMember().getId())){
-            return RsData.of("F-2", "다른 회원의 주문에 접근할 수 없습니다.");
+
+        Member member = rq.getMember();
+        if(member.getUserType() == 1){
+            if (!isOrderAccessibleByBuyer(order, rq.getMember())) {
+                return RsData.of("F-2", "접근 권한이 없습니다.");
+            }
         }
 
-        return  RsData.of("S-1", OrderResponse.of(order));
+        return RsData.of("S-1", order);
+    }
+
+    // 판매자가 자신의 상품이 포함된 주문을 조회
+    public RsData<List<OrderItem>> getOrderBySeller(Order order){
+
+        Long sellerId = rq.getMember().getId();
+        List<OrderItem> filteredOrderItems = order.getOrderItems().stream()
+                .filter(orderItem -> orderItem.getProduct().getSeller().getId().equals(sellerId))
+                .toList();
+
+        if(filteredOrderItems.size() == 0){
+            return RsData.of("F-2", "접근 권한이 없습니다");
+        }
+
+        return RsData.of("S-1", "접근 가능한 주문입니다.", filteredOrderItems);
+    }
+
+    private boolean isOrderValid(Order order) {
+        return order != null && order.getPayDate() != null;
+    }
+
+    private boolean isOrderAccessibleByBuyer(Order order, Member member) {
+        return order.getBuyer().getId().equals(member.getId());
+    }
+
+    @Transactional
+    public RsData<OrderItem> updateOrderStatus(Long orderItemId, String newStatus) {
+        OrderItem orderItem = findOrderItemById(orderItemId).orElse(null);
+        if(orderItem == null){
+            return RsData.of("F-1", "존재하지 않는 주문 상품입니다.");
+        }
+
+        OrderStatus status = OrderStatus.findByValue(newStatus);
+        System.out.println(newStatus);
+        if (status == null) {
+            return RsData.of("F-2", "유효하지 않은 주문 상태입니다.");
+        }
+
+        orderItem.updateStatus(status);
+        return RsData.of("S-1", "주문 상태가 변경되었습니다.");
     }
 
     public Optional<Order> findById(Long orderId) {
         return orderRepository.findById(orderId);
     }
+    public Optional<OrderItem> findOrderItemById(Long id) {
+        return orderItemRepository.findById(id);
+    }
     public List<Order> findByBuyerId(Long buyerId) {
         return orderRepository.findByBuyerId(buyerId);
     }
+    public List<Order> findBySellerId(Long sellerId) {
+        return orderRepository.findBySellerId(sellerId);
+    }
+
 }
