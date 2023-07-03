@@ -37,8 +37,7 @@ public class MemberController {
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/loginFail")
-    public String loginFail(@RequestParam(value = "error", required = false) String error,
-                            @RequestParam(value = "exception", required = false) String exception) {
+    public String loginFail(@RequestParam(value = "exception", required = false) String exception) {
         return rq.historyBack(exception);
     }
 

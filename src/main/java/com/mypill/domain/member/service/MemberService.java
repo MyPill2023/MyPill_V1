@@ -6,12 +6,9 @@ import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +26,23 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
+
+
+    //NotProd 용 메소드, 개발 끝나면 삭제 예정
+    @Transactional
+    public RsData<Member> join(String username, String name, String password, String userTypeStr, String email, boolean emailVerified) {
+        Integer userType = Integer.parseInt(userTypeStr);
+        Member member = Member.builder()
+                .username(username)
+                .name(name)
+                .password(passwordEncoder.encode(password))
+                .email(email)
+                .userType(userType)
+                .emailVerified(emailVerified)
+                .build();
+        Member savedMember = memberRepository.save(member);
+        return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
+    }
 
 
     @Transactional
@@ -131,10 +145,6 @@ public class MemberService {
 
     }
 
-    public boolean verifyWithWhiteList(Member member, String token) {
-        return member.getAccessToken().equals(token);
-    }
-
     public void whenAfterLike(Member member, Product product) {
         member.like(product);
     }
@@ -161,7 +171,8 @@ public class MemberService {
         if (member == null) {
             return RsData.of("F-1", "로그인이 필요한 서비스입니다.");
         }
-        memberRepository.delete(member);
+        member.softDelete();
+        memberRepository.save(member);
         return RsData.of("S-1", "회원 탈퇴가 완료되었습니다.");
     }
 
@@ -177,13 +188,5 @@ public class MemberService {
         member.setEmailVerified(true);
 
         return RsData.of("S-1", "이메일인증이 완료되었습니다.");
-    }
-
-    public boolean hasEmailVerified(String username) {
-        Member member = memberRepository.findByUsername(username).orElse(null);
-        if (member == null) {
-            return false;
-        }
-        return member.getEmailVerified();
     }
 }

@@ -40,11 +40,9 @@ public class Member extends BaseEntity {
     @NotNull
     @Column(unique = true, length = 30)
     private String email;
-    @Column(columnDefinition = "TEXT")
-    private String accessToken;
     @Column
     private String providerTypeCode; // 카카오로 가입한 회원인지, 네이버로 가입한 회원인지
-
+    @Column
     private boolean emailVerified;
     @ManyToMany(mappedBy = "likedMembers")
     private List<Product> likedProducts = new ArrayList<>();
@@ -89,22 +87,6 @@ public class Member extends BaseEntity {
         return userType.equals(3);
     }
 
-    public Map<String, Object> toClaims() {
-        return Map.of(
-                "id", getId(),
-                "username", getUsername()
-        );
-    }
-
-    @JsonIgnore
-    public Map<String, Object> getAccessTokenClaims() {
-        return Ut.mapOf(
-                "id", getId(),
-                "createDate", getCreateDate(),
-                "username", getUsername()
-        );
-    }
-
     public void like(Product product) {
         if (!likedProducts.contains(product)) {
             likedProducts.add(product);
@@ -115,10 +97,6 @@ public class Member extends BaseEntity {
         if (likedProducts.contains(product)) {
             likedProducts.remove(product);
         }
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
     }
 
     public void updateName(String newName) {
@@ -132,7 +110,8 @@ public class Member extends BaseEntity {
     public void updateUserType() {
         this.userType = 2;
     }
-    public boolean getEmailVerified(){
+
+    public boolean getEmailVerified() {
         return this.emailVerified;
     }
 
