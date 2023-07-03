@@ -23,12 +23,12 @@
                     <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"></h1>
                     <div class="flex flex-row items-center">
                         <button id="like-button" class="heart-icon mr-1">
-                            <i th:if="${productResponse.isLiked}" class="fa-solid fa-heart" style="color: #FF0000;"></i>
+                            <i th:if="${productResponse.isLiked}" class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
                             <i th:unless="${productResponse.isLiked}" class="fa-solid fa-heart"
                                style="color: #C0C0C0;"></i>
                         </button>
                         <div id="like-count">
-                            <span class="text-xl" style="color:#FF0000;" th:if="${productResponse.isLiked}"
+                            <span class="text-xl" style="color:#ffb0b0;" th:if="${productResponse.isLiked}"
                                   th:text="${productResponse.likedMembers == null ? 0 : productResponse.likedMembers.size}">
                             </span>
                             <span class="text-xl" style="color:black;" th:unless="${productResponse.isLiked}"
@@ -176,7 +176,7 @@
                             }
                             // 좋아요 상태에 따라 버튼 아이콘 변경
                             if (isLiked) {
-                                $('#like-button').html(`<i class="fa-solid fa-heart" style="color: #FF0000;"></i>`);
+                                $('#like-button').html(`<i class="fa-solid fa-heart" style="color: #ffb0b0;"></i>`);
                             } else {
                                 $('#like-button').html(`<i class="fa-solid fa-heart" style="color: #C0C0C0;"></i>`);
                             }

@@ -17,7 +17,7 @@
                 <a th:href="@{|/product/detail/${product.id}|}">
                     <div class="flex justify-end">
                         <a th:href="@{/product/unlike/{id}(id=${product.id})}"
-                           class="btn btn-success btn-outline flex gap-1 btn-xs"
+                           class="btn btn-outline flex gap-1 btn-xs"
                            onclick="return confirm('상품을 삭제하시겠습니까?')">
                             삭제하기
                         </a>
@@ -33,10 +33,10 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <div class="items-center">
-                                    <i class="fa-solid fa-heart" style="color: #FF0000;"></i>
+                                    <i class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
                                     <span th:text="${product.likedMembers.size()}"></span>
                                 </div>
-                                <span class="text-lg font-bold"
+                                <span class="font-bold"
                                       th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
                             </div>
                         </div>
