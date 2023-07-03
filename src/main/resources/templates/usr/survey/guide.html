@@ -8,23 +8,22 @@
 <body>
 <main layout:fragment="main">
   <div class="hero-content flex flex-col justify-center my-10 w-full ">
-    <h1 class="text-2xl text-center font-bold ">맞춤 영양소를 추천받을</br> 방법을 선택해주세요
-    </h1>
-    <span th:style="${'font-size:17px; text-align:center'}" class="text-black font-bold">
-        </span>
+    <div class="flex flex-col justify-center">
+        <h1 class="text-2xl text-center font-bold text-center mb-5">건강 설문</h1>
+        <span class="text-center">맞춤 영양소 추천</span>
+        <span class="text-center">건강 설문 진행 방식을 선택해주세요</span>
+    </div>
+      <div class="w-full max-w-md flex flex-col justify-center gap-5 mb-20 mt-5 px-5">
+          <a href="/usr/member/login" tabindex="0" class="flex flex-col justify-center items-center gap-3 p-5 rounded-lg bg-gray-100 hover:bg-gray-200">
+              <span class="text-xl font-bold">로그인하고 회원으로 진행하기</span>
+              <span>설문 결과가 저장 됩니다!</span>
+          </a>
+          <a href="/usr/survey/start" tabindex="0" class="flex flex-col justify-center items-center gap-3  p-5 rounded-lg bg-gray-100 hover:bg-gray-200">
+              <span class="text-xl font-bold">비회원으로 진행하기</span>
+              <span >설문 결과가 저장되지 않습니다!</span>
+          </a>
+      </div>
 
-      <a th:if="${@rq.login}" href="/usr/survey/start" tabindex="0" class="collapse collapse-open border border-success bg-base-100">
-        <div class="collapse-title text-xl font-medium font-bold" >회원으로 진행</div>
-            <div class="collapse-content">결과가 저장 됩니다!</div>
-      </a>
-      <a th:if="${@rq.logout}" href="/usr/member/login" tabindex="0" class="collapse collapse-open border border-success bg-base-100">
-          <div  class="collapse-title text-xl font-medium font-bold">회원으로 진행</div>
-            <div class="collapse-content">결과가 저장 됩니다!</div>
-      </a>
-      <a th:if="${@rq.logout}" href="/usr/survey/start" tabindex="0" class="collapse collapse-open border border-success bg-base-100">
-          <div class="collapse-title text-xl font-medium font-bold" >비회원으로 진행</div>
-          <div class="collapse-content">결과가 저장되지 않습니다!</div>
-      </a>
   </div>
 
 </main>
