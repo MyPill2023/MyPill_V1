@@ -44,6 +44,7 @@ public class Member extends BaseEntity {
     private String accessToken;
     @Column
     private String providerTypeCode; // 카카오로 가입한 회원인지, 네이버로 가입한 회원인지
+
     private boolean emailVerified;
     @ManyToMany(mappedBy = "likedMembers")
     private List<Product> likedProducts = new ArrayList<>();
@@ -130,6 +131,9 @@ public class Member extends BaseEntity {
 
     public void updateUserType() {
         this.userType = 2;
+    }
+    public boolean getEmailVerified(){
+        return this.emailVerified;
     }
 
     public Optional<Address> getDefaultAddress() {
