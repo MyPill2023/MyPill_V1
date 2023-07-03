@@ -87,14 +87,18 @@
         </div>
         <div class="max-w-2xl w-full px-4 mt-4">
             <div class="form-control flex">
-                <div class="flex-row">
+                <div class="flex flex-row justify-between items-center">
                     <span class="text-xl">회원 유형</span>
+                    <a href="/usr/seller/certificate" class="btn btn-success btn-outline flex gap-1 btn-xs"
+                       onclick="return confirm('판매 업체 인증 페이지로 이동하시겠습니까?')">
+                        판매 업체 인증하기
+                    </a>
                 </div>
                 <div class="card bg-base-100 border border-gray-200 mt-2">
                     <div class="card-body whitespace-normal"
                          style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
-                        <span th:if="${@rq.isSeller()}">판매 회원 (인증 완료)</span>
-                        <span th:if="${@rq.isWaiter()}">판매 회원 (미인증)</span>
+                        <span th:if="${@rq.isSeller()}">판매자 회원 (인증 완료)</span>
+                        <span th:if="${@rq.isWaiter()}">판매자 회원 (미인증)</span>
                     </div>
                 </div>
             </div>
@@ -113,8 +117,8 @@
             <div class="form-control flex mt-4">
                 <div class="flex flex-row justify-between items-center">
                     <span class="text-xl mr-4">이름</span>
-                    <button class="btn btn-success btn-outline flex gap-1 btn-xs"
-                            onclick="editName(this);">
+                    <button href=""
+                            class="btn btn-success btn-outline flex gap-1 btn-xs">
                         수정하기
                     </button>
                 </div>

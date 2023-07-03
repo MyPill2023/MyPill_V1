@@ -4,12 +4,18 @@ import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.form.JoinForm;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;
+import com.mypill.global.rsData.RsData;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,6 +33,13 @@ public class MemberController {
             request.getSession().setAttribute("prevPage", uri);
         }
         return "usr/member/login";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/loginFail")
+    public String loginFail(@RequestParam(value = "error", required = false) String error,
+                            @RequestParam(value = "exception", required = false) String exception) {
+        return rq.historyBack(exception);
     }
 
     @PreAuthorize("isAnonymous()")
@@ -57,5 +70,17 @@ public class MemberController {
     @GetMapping("/join/emailCheck")
     public int emailCheck(String email) {
         return memberService.emailValidation(email);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/deleteAccount")
+    public void deleteAccount(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        RsData rsData = memberService.deleteAccount(rq.getMember());
+        if (rsData.isFail()) {
+            rq.historyBack(rsData.getMsg());
+        }
+        SecurityContextHolder.clearContext();
+        request.getSession().invalidate();
+        response.sendRedirect("/");
     }
 }
