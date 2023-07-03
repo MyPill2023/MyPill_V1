@@ -76,6 +76,10 @@ public class MemberService {
         if (findByUsername(username).isPresent()) {
             return RsData.of("F-1", "해당 아이디(%s)는 이미 사용중입니다.".formatted(username));
         }
+        Optional<Member> opMember = memberRepository.findByEmail(email);
+        if (opMember.isPresent()) {
+            return RsData.of("F-2", "해당 이메일은 이미 사용중입니다.");
+        }
 
         if (StringUtils.hasText(password)) {
             password = passwordEncoder.encode(password);
