@@ -6,47 +6,45 @@
 
 <body>
 <main layout:fragment="main">
-    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
+    <div class="hero-content flex flex-col w-[32rem] max-w-lg mt-5">
         <div class="flex flex-col items-center justify-center">
-            <h1 class="text-4xl font-bold mb-4">판매업체 인증</h1>
+            <h1 class="text-2xl font-bold mb-4">판매업체 인증</h1>
             <span>모든 인증이 완료된 후 상품 등록이 가능합니다.</span>
         </div>
-        <div class="flex flex-col bg-base-100 pt-5 w-full justify-between items-center gap-5">
-            <div class="flex-row">
-                <span class="text-xl">통신판매 사업자 인증</span>
-            </div>
-            <div class="card bg-base-100 border border-gray-200 p-5 w-full">
+        <div class="flex flex-col gap-5 px-5 mt-10 w-full">
+            <span class="text-xl">1. 통신판매 사업자 인증</span>
+            <div class="flex flex-col bg-base-100   gap-2">
                 <th:block th:if="${@rq.member.isBrnoCertificated}">
                     <span class="text-blue-500">인증이 완료된 항목입니다.</span>
                 </th:block>
                 <th:block th:unless="${@rq.member.isBrnoCertificated}">
-                    <form th:action="@{/usr/seller/brnoCertificate}" method="POST" class="flex flex-col gap-3 flex-grow">
-                        <span>통신판매 사업자번호를 입력하세요</span>
-                        <input type="text" name="brno" placeholder="사업자 등록번호"
-                               class="input input-bordered"/>
-                        <button class="btn btn-primary hover:bg-gray-300" type="submit">
+                    <span>통신판매 사업자번호를 입력하세요</span>
+                    <form th:action="@{/usr/seller/brnoCertificate}" method="POST" class="flex gap-3 flex-grow">
+                        <input type="text" name="brno" placeholder="숫자만 입력해주세요"
+                               class="input input-bordered w-3/4"/>
+                        <button class="btn btn-accent hover:bg-gray-300 " type="submit">
                             제출
                         </button>
                     </form>
                 </th:block>
             </div>
-            <div class="flex-row">
-                <span class="text-xl">건강기능식품 판매업체 인증</span>
-            </div>
-            <div class="card bg-base-100 border border-gray-200 p-5 w-full">
-                <th:block th:if="${@rq.member.isNBrnoCertificated}">
-                    <span class="text-blue-500">인증이 완료된 항목입니다.</span>
-                </th:block>
-                <th:block th:unless="${@rq.member.isNBrnoCertificated}">
-                    <form th:action="@{/usr/seller/nBrnoCertificate}" method="POST" class="flex flex-col gap-3 flex-grow">
+        </div>
+        <div class="flex flex-col gap-5 px-5 mt-10 w-full">
+            <span class="text-xl">2. 건강기능식품 판매업체 인증</span>
+            <div class="flex flex-col bg-base-100  gap-2">
+                    <th:block th:if="${@rq.member.isNBrnoCertificated}">
+                        <span class="text-blue-500">인증이 완료된 항목입니다.</span>
+                    </th:block>
+                    <th:block th:unless="${@rq.member.isNBrnoCertificated}">
                         <span>건강기능식품 판매업 인허가번호를 입력하세요</span>
-                        <input type="text" name="nBrno" placeholder="인허가번호"
-                               class="input input-bordered"/>
-                        <button class="btn btn-primary hover:bg-gray-300" type="submit">
-                            제출
-                        </button>
-                    </form>
-                </th:block>
+                        <form th:action="@{/usr/seller/nBrnoCertificate}" method="POST" class="flex gap-3 flex-grow">
+                            <input type="text" name="nBrno" placeholder="숫자만 입력해주세요"
+                                   class="input input-bordered w-3/4"/>
+                            <button class="btn btn-accent hover:bg-gray-300" type="submit">
+                                제출
+                            </button>
+                        </form>
+                    </th:block>
             </div>
         </div>
     </div>

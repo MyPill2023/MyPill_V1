@@ -89,12 +89,12 @@
             </div>
 
             <div sec:authorize="isAuthenticated()">
-                <div th:if="${productResponse.seller.id == @rq.member.id}">
+                <div th:if="${productResponse.seller.id == @rq.member.id}" class="flex justify-end gap-3">
                     <a th:href="@{|/product/update/${productResponse.id}|}"
-                       class="btn btn-success btn-outline flex gap-1">
+                       class="btn flex gap-1">
                         수정하기
                     </a>
-                    <a class="btn btn-success btn-outline flex gap-1"
+                    <a class="btn flex gap-1"
                        href="javascript:;"
                        onclick="if ( confirm('상품을 삭제하시겠습니까?') ) $(this).next().submit();">
                         삭제하기</a>
