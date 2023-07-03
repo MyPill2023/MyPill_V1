@@ -41,7 +41,7 @@
                 return;
             }
 
-            const url = '/usr/consumer/name/update';
+            const url = '/usr/member/name/update';
             const csrfToken = $('meta[name=csrf-token]').attr('content'); // 메타 태그에서 CSRF 토큰 가져오기
 
             // Ajax 요청을 사용하여 댓글 수정 API 호출
@@ -124,8 +124,8 @@
             <div class="form-control flex mt-4">
                 <div class="flex flex-row justify-between items-center">
                     <span class="text-xl mr-4">이름</span>
-                    <button href=""
-                            class="btn btn-outline flex gap-1 btn-xs">
+                    <button class="btn btn-outline flex gap-1 btn-xs"
+                            onclick="editName(this);">
                         수정하기
                     </button>
                 </div>
