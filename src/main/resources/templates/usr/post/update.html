@@ -47,11 +47,11 @@
             form.submit();
         }
     </script>
-    <div class="hero-content flex flex-col mb-10 w-full">
-        <h1 class="text-4xl font-bold">
-            게시글 수정하기
+    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
+        <h1 class="text-2xl font-bold">
+            질문 수정
         </h1>
-        <form th:action method="POST" th:object="${post}" class="flex flex-col gap-4 w-full"
+        <form th:action method="POST" th:object="${post}" class="flex flex-col gap-4 w-full px-5"
               onsubmit="CreateForm__submit(this); return false;">
             <div>
                 <label for="title" class="block text-gray-700 font-bold mb-2 text-xl">제목</label>
@@ -71,7 +71,7 @@
                     <div id="contentCount" class="absolute right-5 bottom-5" th:text="'(' + *{content.length()} + '/1000)'"></div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-accent">등록</button>
+            <button type="submit" class="btn btn-success">수정완료</button>
         </form>
     </div>
 </main>
