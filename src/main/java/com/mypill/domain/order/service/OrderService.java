@@ -45,7 +45,7 @@ public class OrderService {
         if(!order.getBuyer().getId().equals(rq.getMember().getId())){
             return RsData.of("F-2", "다른 회원의 주문에 접근할 수 없습니다.");
         }
-        if(order.getPayDate() != null){
+        if(order.getPayment() != null){
             return RsData.of("F-3", "이미 결제된 주문입니다.");
         }
 
@@ -104,9 +104,9 @@ public class OrderService {
     }
 
     @Transactional
-    public void payByTossPayments(Order order, LocalDateTime payDate, String orderId, Long addressId) {
+    public void payByTossPayments(Order order, String orderId, Long addressId) {
 
-        order.setPaymentDone(payDate, orderId);
+        order.setPaymentDone(orderId);
         Address address = addressService.findById(addressId).orElse(null);
         order.addAddress(address);
         order.getOrderItems()
@@ -116,6 +116,13 @@ public class OrderService {
                 });
         order.getCartProducts().forEach(CartProduct::softDelete); // 장바구니에서 삭제
 
+
+        orderRepository.save(order);
+    }
+
+    @Transactional
+    public void updatePayment(Order order, String method, Long totalAmount, LocalDateTime payDate, String status){
+        order.updatePayment(method, totalAmount, payDate, status);
         orderRepository.save(order);
     }
 
@@ -152,7 +159,7 @@ public class OrderService {
     }
 
     private boolean isOrderValid(Order order) {
-        return order != null && order.getPayDate() != null;
+        return order != null && order.getPayment() != null;
     }
 
     private boolean isOrderAccessibleByBuyer(Order order, Member member) {
