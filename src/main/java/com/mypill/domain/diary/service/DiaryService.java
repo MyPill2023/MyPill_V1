@@ -19,11 +19,11 @@ public class DiaryService {
 
     private final DiaryRepository diaryRepository;
 
-    @Transactional
+
     public List<Diary> getList () {
         return diaryRepository.findByDeleteDateIsNullOrderByCreateDateDesc();
     }
-    @Transactional
+
     public List<Diary> getList(Member member) {
         return diaryRepository.findByMember(member);
     }
@@ -44,9 +44,6 @@ public class DiaryService {
         diaryRepository.save(newDiary);
         return RsData.of("S-1","영양제 등록이 완료되었습니다.", newDiary);
     }
-
-
-
 
     public Optional<Diary> findById (Long diaryId) {
         return diaryRepository.findById(diaryId);

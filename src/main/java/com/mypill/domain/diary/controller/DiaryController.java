@@ -29,7 +29,7 @@ public class DiaryController {
     private final Rq rq;
 
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/create")
     @Operation(summary = "영양제 등록 폼")
     public String create() {
@@ -37,7 +37,7 @@ public class DiaryController {
         return "usr/diary/create";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/create")
     @Operation(summary = "영양제 등록")
     public String create(@Valid DiaryRequest diaryRequest) {
@@ -50,7 +50,7 @@ public class DiaryController {
 
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/list")
     @Operation(summary = "영양제 목록")
     public String showList(Model model) {
@@ -59,7 +59,7 @@ public class DiaryController {
         return "usr/diary/list";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/detail/{diaryId}")
     @Operation(summary = "영양제 정보 상세")
     public String showDetail(@PathVariable Long diaryId, Model model) {
