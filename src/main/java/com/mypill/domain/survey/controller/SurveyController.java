@@ -39,7 +39,9 @@ public class SurveyController {
     @GetMapping("/guide")
     @Operation(summary = "설문 가이드 폼")
     public String guide(Model model) {
-
+        if(rq.isLogin()){
+            return "redirect:/usr/survey/start";
+        }
         return "usr/survey/guide";
     }
 

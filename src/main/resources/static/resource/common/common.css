@@ -18,3 +18,12 @@ html > body .label-text {
 .toast-top-right {
     top: 75px;
 }
+
+
+.checkMsgF {
+    color: red;
+}
+
+.checkMsgT {
+    color: blue;
+}

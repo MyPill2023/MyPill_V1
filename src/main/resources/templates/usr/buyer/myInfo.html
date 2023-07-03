@@ -76,10 +76,10 @@
             nameEditFormElement.style.display = 'none';
         }
     </script>
-    <div class="hero-content flex flex-col mb-10 w-full">
+    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
         <div class="flex flex-row items-center">
-            <i class="fa-solid fa-circle-user fa-2xl mr-2"></i>
-            <h1 class="text-4xl font-bold">
+            <i class="fa-solid fa-circle-user fa-xl mr-2"></i>
+            <h1 class="text-2xl font-bold">
                 회원 정보
             </h1>
         </div>
@@ -110,7 +110,7 @@
             <div class="form-control flex mt-4">
                 <div class="flex flex-row justify-between items-center">
                     <span class="text-xl mr-4">이름</span>
-                    <button class="btn btn-success btn-outline flex gap-1 btn-xs"
+                    <button class="btn btn-outline flex gap-1 btn-xs"
                             onclick="editName(this);">
                         수정하기
                     </button>
@@ -150,12 +150,12 @@
                 </div>
             </div>
         </div>
-        <div class="flex flex-row gap-4 justify-between">
-            <a href="/usr/member/deleteAccount" class="btn btn-accent flex-grow-0 flex-shrink-0 w-4/6"
+        <div class="flex flex-row gap-4 justify-between mt-5">
+            <a href="/usr/member/deleteAccount" class="btn flex-grow-0 flex-shrink-0"
                onclick="return confirm('정말로 회원을 탈퇴하시겠습니까?')">
                 회원 탈퇴
             </a>
-            <a href="javascript:history.back()" class="btn btn-success btn-outline">
+            <a href="javascript:history.back()" class="btn">
                 돌아가기
             </a>
         </div>
