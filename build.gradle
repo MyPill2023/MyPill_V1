@@ -57,8 +57,16 @@ dependencies {
     //Oauth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+
+    //QueryDsl
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
     //메일
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 
 }
 
