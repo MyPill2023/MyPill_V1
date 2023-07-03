@@ -22,7 +22,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom{
                 .join(order.orderItems, orderItem)
                 .join(orderItem.product, product)
                 .where(product.seller.id.eq(sellerId)
-                        .and(order.payDate.isNotNull()))
+                        .and(order.payment.isNotNull()))
                 .fetch();
     }
 }

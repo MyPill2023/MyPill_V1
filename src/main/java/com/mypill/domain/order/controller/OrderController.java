@@ -2,9 +2,7 @@ package com.mypill.domain.order.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.dto.response.AddressResponse;
-import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.order.dto.response.OrderItemResponse;
@@ -16,24 +14,17 @@ import com.mypill.domain.order.service.OrderService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
-import com.mypill.global.util.Ut;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriUtils;
 
-import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-import static javax.crypto.Cipher.SECRET_KEY;
 
 
 @Controller
@@ -51,7 +42,7 @@ public class OrderController {
     @PreAuthorize("hasAuthority('MEMBER')")
     public String getOrderForm(@PathVariable Long orderId, Model model) {
         RsData<OrderResponse> rsData = orderService.getOrderForm(orderId);
-        if(rsData.isFail()){
+        if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
         model.addAttribute("orderResponse", rsData.getData());
@@ -76,7 +67,7 @@ public class OrderController {
         Member buyer = rq.getMember();
         RsData<Order> orderRsData = orderService.createFromCart(buyer);
 
-        if(orderRsData.isFail()){
+        if (orderRsData.isFail()) {
             return rq.historyBack(orderRsData);
         }
 
@@ -88,7 +79,7 @@ public class OrderController {
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
 
         RsData<Order> rsData = orderService.getOrderDetail(orderId);
-        if(rsData.isFail()){
+        if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
         model.addAttribute("orderResponse", OrderResponse.of(rsData.getData()));
@@ -133,10 +124,9 @@ public class OrderController {
                 "https://api.tosspayments.com/v1/payments/" + paymentKey, request, JsonNode.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            String requestedAt = responseEntity.getBody().get("requestedAt").asText();
-            LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
-            orderService.payByTossPayments(order, payDate, orderId, Long.parseLong(addressId));
+            orderService.payByTossPayments(order, orderId, Long.parseLong(addressId));
+            extractMessageFromResponse(responseEntity, order);
 
             return rq.redirectWithMsg("/order/detail/%s".formatted(order.getId()), "주문이 완료되었습니다.");
         } else {
@@ -146,6 +136,19 @@ public class OrderController {
             model.addAttribute("code", failNode.get("code").asText());
             return rq.historyBack("결제 실패");
         }
+    }
+
+    private void extractMessageFromResponse(ResponseEntity<JsonNode> responseEntity, Order order) {
+        JsonNode body = responseEntity.getBody();
+
+        String requestedAt = body.get("requestedAt").asText();
+        LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
+        String method = body.get("method").asText();
+        Long totalAmount = body.get("totalAmount").asLong();
+        String status = body.get("status").asText();
+
+        orderService.updatePayment(order, method, totalAmount, payDate, status);
     }
 
     @RequestMapping("/{id}/fail")
@@ -162,13 +165,13 @@ public class OrderController {
     public String management(@PathVariable Long orderId, Model model) {
 
         RsData<Order> rsData = orderService.getOrderDetail(orderId);
-        if(rsData.isFail()){
+        if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
 
         Order order = rsData.getData();
 
-        List<OrderItemResponse> orderItemResponses =  order.getOrderItems().stream()
+        List<OrderItemResponse> orderItemResponses = order.getOrderItems().stream()
                 .filter(orderItem -> orderItem.getProduct().getSeller().getId().equals(rq.getMember().getId()))
                 .map(OrderItemResponse::of)
                 .toList();
@@ -190,10 +193,10 @@ public class OrderController {
                                     Model model) {
 
         RsData<OrderItem> updateRsData = orderService.updateOrderStatus(orderItemId, newStatus);
-        if(updateRsData.isFail()){
+        if (updateRsData.isFail()) {
             rq.historyBack(updateRsData);
         }
-        return rq.redirectWithMsg("/order/management/%s".formatted(orderId),updateRsData);
+        return rq.redirectWithMsg("/order/management/%s".formatted(orderId), updateRsData);
     }
 
 }

@@ -39,7 +39,8 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private Long totalPrice;
 
-    private LocalDateTime payDate;
+    @Embedded
+    private Payment payment;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Address deliveryAddress;
@@ -81,13 +82,17 @@ public class Order extends BaseEntity {
         this.name = sb.toString();
     }
 
-    public void setPaymentDone(LocalDateTime payDate, String orderId) {
+    public void setPaymentDone(String orderId) {
         for (OrderItem orderItem : orderItems) {
             orderItem.setPaymentDone();
         }
-        this.payDate = payDate;
         this.orderNumber = orderId;
     }
+
+    public void updatePayment(String method, Long totalAmount, LocalDateTime payDate, String status) {
+        this.payment = new Payment(method, totalAmount, status, payDate);
+    }
+
 
     public void addAddress(Address address){
         this.deliveryAddress = address;

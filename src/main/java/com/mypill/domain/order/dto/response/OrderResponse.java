@@ -4,6 +4,7 @@ import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
+import com.mypill.domain.order.entity.Payment;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -22,6 +23,7 @@ public class OrderResponse {
     private List<OrderItemResponse> orderItems;
     private Long totalPrice;
     private Address deliveryAddress;
+    private Payment payment;
 
     public static OrderResponse of(Order order){
         return OrderResponse.builder()
@@ -32,6 +34,7 @@ public class OrderResponse {
                 .orderItems(order.getOrderItems().stream().map(OrderItemResponse::of).toList())
                 .totalPrice(order.getTotalPrice())
                 .deliveryAddress(order.getDeliveryAddress())
+                .payment(order.getPayment())
                 .build();
     }
 

@@ -66,14 +66,17 @@
             <div class="flex flex-col gap-2">
                 <h3 class="text-lg font-bold mb-2 mt-10">결제 정보</h3>
                 <div class="flex gap-2">
-                    <span class="w-1/4 text-gray-400">결제 수단</span>
-                    <span ></span>
+                    <span class="w-1/4 text-gray-400">결제일시</span>
+                    <span th:text="${#temporals.format(orderResponse.payment.payDate, 'yyyy-MM-dd HH:mm')}"></span>
                 </div>
                 <div class="flex gap-2">
-                    <span class="w-1/4 text-gray-400">결제 금액</span>
-                    <span</span>
+                    <span class="w-1/4 text-gray-400">결제수단</span>
+                    <span th:text="${orderResponse.payment.method}"></span>
                 </div>
-
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">결제금액</span>
+                    <span th:text="${#numbers.formatInteger(orderResponse.payment.totalAmount, 0, 'COMMA') + '원'}"></span>
+                </div>
             </div>
 
         </div>
