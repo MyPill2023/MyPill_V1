@@ -7,8 +7,11 @@ import com.mypill.domain.address.dto.response.AddressResponse;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.order.dto.response.OrderItemResponse;
 import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
+import com.mypill.domain.order.entity.OrderItem;
+import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
@@ -67,9 +70,9 @@ public class OrderController {
         return "usr/order/form";
     }
 
-    @PostMapping("/makeOrder")
+    @PostMapping("/create")
     @PreAuthorize("hasAuthority('MEMBER')")
-    public String makeOrder() {
+    public String create() {
         Member buyer = rq.getMember();
         RsData<Order> orderRsData = orderService.createFromCart(buyer);
 
@@ -81,14 +84,14 @@ public class OrderController {
     }
 
     @GetMapping("/detail/{orderId}")
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("isAuthenticated()")
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
 
-        RsData<OrderResponse> rsData = orderService.getOrderDetail(orderId);
+        RsData<Order> rsData = orderService.getOrderDetail(orderId);
         if(rsData.isFail()){
             return rq.historyBack(rsData);
         }
-        model.addAttribute("orderResponse", rsData.getData());
+        model.addAttribute("orderResponse", OrderResponse.of(rsData.getData()));
 
         return "usr/order/detail";
     }
@@ -151,6 +154,46 @@ public class OrderController {
         model.addAttribute("message", message);
         model.addAttribute("code", code);
         return "order/fail";
+    }
+
+
+    @GetMapping("/management/{orderId}")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public String management(@PathVariable Long orderId, Model model) {
+
+        RsData<Order> rsData = orderService.getOrderDetail(orderId);
+        if(rsData.isFail()){
+            return rq.historyBack(rsData);
+        }
+
+        Order order = rsData.getData();
+
+        List<OrderItemResponse> orderItemResponses =  order.getOrderItems().stream()
+                .filter(orderItem -> orderItem.getProduct().getSeller().getId().equals(rq.getMember().getId()))
+                .map(OrderItemResponse::of)
+                .toList();
+
+        model.addAttribute("order", OrderResponse.of(order));
+        model.addAttribute("orderItems", orderItemResponses);
+
+        List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.values());
+        model.addAttribute("orderStatuses", orderStatuses);
+
+        return "usr/order/management";
+    }
+
+    @PostMapping("/update/status/{orderItemId}")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public String updateOrderStatus(@PathVariable Long orderItemId,
+                                    @RequestParam Long orderId,
+                                    @RequestParam String newStatus,
+                                    Model model) {
+
+        RsData<OrderItem> updateRsData = orderService.updateOrderStatus(orderItemId, newStatus);
+        if(updateRsData.isFail()){
+            rq.historyBack(updateRsData);
+        }
+        return rq.redirectWithMsg("/order/management/%s".formatted(orderId),updateRsData);
     }
 
 }

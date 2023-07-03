@@ -47,7 +47,7 @@ public class SellerController {
         List<OrderListResponse> orderResponses = orderService.findBySellerId(rq.getMember().getId())
                 .stream().map(OrderListResponse::of).toList();
         model.addAttribute("orders", orderResponses);
-        return "usr/seller/orderManagement";
+        return "usr/seller/orderList";
     }
 
 }
