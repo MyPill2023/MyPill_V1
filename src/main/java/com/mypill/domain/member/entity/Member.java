@@ -128,6 +128,10 @@ public class Member extends BaseEntity {
         this.emailVerified = emailVerified;
     }
 
+    public void updateUserType() {
+        this.userType = 2;
+    }
+
     public Optional<Address> getDefaultAddress() {
         return addresses.stream()
                 .filter(Address::isDefault)

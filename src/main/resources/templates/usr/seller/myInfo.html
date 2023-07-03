@@ -89,7 +89,8 @@
             <div class="form-control flex">
                 <div class="flex flex-row justify-between items-center">
                     <span class="text-xl">회원 유형</span>
-                    <a href="/usr/seller/certificate" class="btn btn-success btn-outline flex gap-1 btn-xs"
+                    <a th:if="${@rq.isWaiter()}" href="/usr/seller/certificate"
+                       class="btn btn-success btn-outline flex gap-1 btn-xs"
                        onclick="return confirm('판매 업체 인증 페이지로 이동하시겠습니까?')">
                         판매 업체 인증하기
                     </a>
@@ -97,8 +98,14 @@
                 <div class="card bg-base-100 border border-gray-200 mt-2">
                     <div class="card-body whitespace-normal"
                          style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
-                        <span th:if="${@rq.isSeller()}">판매자 회원 (인증 완료)</span>
-                        <span th:if="${@rq.isWaiter()}">판매자 회원 (미인증)</span>
+                        <div th:if="${@rq.isSeller()}" class="flex flex-row">
+                            <span>판매자 회원</span>
+                            <span class="text-blue-500"> (인증 완료)</span>
+                        </div>
+                        <div th:if="${@rq.isWaiter()}" class="flex flex-row">
+                            <span>판매자 회원</span>
+                            <span class="text-red-500"> (미인증)</span>
+                        </div>
                     </div>
                 </div>
             </div>

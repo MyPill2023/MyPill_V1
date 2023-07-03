@@ -18,6 +18,8 @@ public class SellerService {
             return RsData.of("F-1", "인증에 실패했습니다.");
         }
         member.brnoCertificate();
+        updateUserType(member);
+
         memberRepository.save(member);
         return RsData.of("S-1", "인증에 성공했습니다.");
     }
@@ -28,7 +30,13 @@ public class SellerService {
             return RsData.of("F-1", "인증에 실패했습니다.");
         }
         member.nBrnoCertificate();
+        updateUserType(member);
         memberRepository.save(member);
         return RsData.of("S-1", "인증에 성공했습니다.");
+    }
+    private void updateUserType(Member member){
+        if(member.isBrnoCertificated()&&member.isNBrnoCertificated()){
+            member.updateUserType();
+        }
     }
 }

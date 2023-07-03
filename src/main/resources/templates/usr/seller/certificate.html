@@ -12,10 +12,12 @@
             <span>모든 인증이 완료된 후 상품 등록이 가능합니다.</span>
         </div>
         <div class="flex flex-col bg-base-100 pt-5 w-full justify-between items-center gap-5">
-            <span>통신판매 사업자 인증</span>
-            <div class="card bg-base-100 border border-gray-200 p-5">
+            <div class="flex-row">
+                <span class="text-xl">통신판매 사업자 인증</span>
+            </div>
+            <div class="card bg-base-100 border border-gray-200 p-5 w-full">
                 <th:block th:if="${@rq.member.isBrnoCertificated}">
-                    <span>인증 완료</span>
+                    <span class="text-blue-500">인증이 완료된 항목입니다.</span>
                 </th:block>
                 <th:block th:unless="${@rq.member.isBrnoCertificated}">
                     <form th:action="@{/usr/seller/brnoCertificate}" method="POST" class="flex flex-col gap-3 flex-grow">
@@ -28,10 +30,12 @@
                     </form>
                 </th:block>
             </div>
-            <span>건강기능식품 판매업체 인증</span>
-            <div class="card bg-base-100 border border-gray-200 p-5">
+            <div class="flex-row">
+                <span class="text-xl">건강기능식품 판매업체 인증</span>
+            </div>
+            <div class="card bg-base-100 border border-gray-200 p-5 w-full">
                 <th:block th:if="${@rq.member.isNBrnoCertificated}">
-                    <span>인증 완료</span>
+                    <span class="text-blue-500">인증이 완료된 항목입니다.</span>
                 </th:block>
                 <th:block th:unless="${@rq.member.isNBrnoCertificated}">
                     <form th:action="@{/usr/seller/nBrnoCertificate}" method="POST" class="flex flex-col gap-3 flex-grow">
