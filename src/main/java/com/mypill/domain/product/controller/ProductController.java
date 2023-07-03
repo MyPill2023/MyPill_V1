@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +67,9 @@ public class ProductController {
     @GetMapping("/list/all")
     @Operation(summary = "상품 전체 목록")
     public String list(Model model) {
-        List<Product> products = productService.findNotDeleted();
+        List<Product> products = productService.findNotDeleted().stream()
+                .filter(product -> product.getStock() > 0)
+                .toList();
         model.addAttribute("products", productService.getAllProduct(products));
         model.addAttribute("title", "전체보기");
 
@@ -78,7 +81,9 @@ public class ProductController {
     @GetMapping("/list/nutrient/{nutrientId}")
     @Operation(summary = "영양 성분별 상품 목록")
     public String listByNutrition(@PathVariable Long nutrientId, Model model) {
-        List<Product> products = productService.findByNutrientsId(nutrientId);
+        List<Product> products = productService.findByNutrientsId(nutrientId).stream()
+                .filter(product -> product.getStock() > 0)
+                .toList();
         model.addAttribute("products", productService.getAllProduct(products));
 
         nutrientService.findById(nutrientId).ifPresent(nutrient -> {
@@ -93,7 +98,9 @@ public class ProductController {
     @GetMapping("/list/category/{categorytId}")
     @Operation(summary = "주요 기능별 상품 목록")
     public String listByCategory(@PathVariable Long categorytId, Model model) {
-        List<Product> products = productService.findByCategoriesId(categorytId);
+        List<Product> products = productService.findByCategoriesId(categorytId).stream()
+                .filter(product -> product.getStock() > 0)
+                .toList();
         model.addAttribute("products", productService.getAllProduct(products));
 
         categoryService.findById(categorytId).ifPresent(category -> {
@@ -135,7 +142,7 @@ public class ProductController {
 
         RsData<Product> deleteRsData = productService.delete(productId);
 
-        return rq.redirectWithMsg("/product/list", deleteRsData);
+        return rq.redirectWithMsg("/product/list/all", deleteRsData);
     }
 
     private void populateModel(Model model) {
@@ -148,14 +155,19 @@ public class ProductController {
 
     @ResponseBody
     @PostMapping("/like/{id}")
-    public Integer likeArticle(@PathVariable("id") Long id) {
+    public Integer likeProduct(@PathVariable("id") Long id) {
         return productService.like(rq.getMember(), id);
     }
 
     @ResponseBody
     @PostMapping("/unlike/{id}")
-    public Integer unlikeArticle(@PathVariable("id") Long id) {
+    public Integer unlikeProduct(@PathVariable("id") Long id) {
         return productService.unlike(rq.getMember(), id);
     }
 
+    @GetMapping("/unlike/{id}")
+    public String unlike(@PathVariable("id") Long id) {
+        productService.unlike(rq.getMember(), id);
+        return rq.redirectWithMsg("/usr/buyer/myLikes","관심 상품이 삭제되었습니다.");
+    }
 }

@@ -1,0 +1,139 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>주문</title>
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col my-10 w-[32rem]">
+        <h1 class="text-2xl font-bold">
+            주문
+        </h1>
+
+        <div class="flex flex-col gap-5 w-full max-w-md mb-10 px-5">
+            <div class="flex items-center gap-3 mt-10">
+                <span class="text-lg font-bold ">주문 상품 목록</span>
+                <span class="text-sm text-gray-400">상품과 개수를 확인해주세요</span>
+            </div>
+            <div th:each="orderItem, loop : ${orderResponse.orderItems}">
+                <div class="bg-base-100 border-b border-gray-200 p-5 ">
+                    <div class="flex justify-around gap-5">
+                        <div class="border border-gray-200 w-2/6 p-5">
+                            이미지
+                        </div>
+                        <div class="flex flex-col gap-3 w-4/6">
+                            <div class="flex flex-col gap-1">
+                                <h3 th:text="${orderItem.product.seller.name}"></h3>
+                                <a th:text="${orderItem.product.name}"
+                                   class="font-bold"></a>
+                            </div>
+                            <div class="flex gap-3 justify-between">
+                                <span class="text-lg" th:text="${orderItem.quantity} + '개'"></span>
+                                <span class="text-lg"
+                                      th:text="${#numbers.formatInteger(orderItem.product.price * orderItem.quantity, 0, 'COMMA') + '원'}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-5 my-10">
+                <span class="text-lg font-bold">배송지 선택</span>
+                <div class="flex gap-3 ">
+                    <select name="AddressSelect" id="AddressSelect" class="select select-bordered w-2/3" onchange="displaySelectedAddress()">
+                        <option disabled selected>배송지 선택</option>
+                        <option th:each="address, loop : ${addresses}" th:value="${address.id}" th:text="${address.name}"
+                                th:selected="${address.isDefault}"></option>
+                    </select>
+                    <a th:href="@{/usr/buyer/myAddress/create}" class="btn w-1/3">배송지 추가하기</a>
+                </div>
+
+                <div class="flex flex-col px-2" id="selectedAddress"  th:classappend="${defaultAddress != null ? '' : 'hidden'}">
+                    <span class="hidden" id="addressId" th:text="${defaultAddress != null ? defaultAddress.id : ''}"></span>
+                    <div class="flex gap-3 items-center mb-2">
+                        <span id="addressName" th:text="${defaultAddress != null ? defaultAddress.name : ''}"></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="w-1/4 text-gray-400">수령인</span>
+                        <span id="addressReceiverName" th:text="${defaultAddress != null ? defaultAddress.receiverName : ''}"></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="w-1/4 text-gray-400">연락처</span>
+                        <span id="addressPhoneNumber" th:text="${defaultAddress != null ? defaultAddress.phoneNumber : ''}"></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="w-1/4 text-gray-400">배송지</span>
+                        <span class="w-3/4" id="addressAddress" th:text="${defaultAddress != null ?
+                        '(' + defaultAddress.postCode + ') ' + defaultAddress.address + ' ' + defaultAddress.detailAddress : ''}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <button id="payment-button" class="btn btn-lg btn-info mt-5" th:text="${#numbers.formatInteger(orderResponse.totalPrice, 0, 'COMMA') + '원 결제하기'}"></button>
+        </div>
+
+    </div>
+    <script th:inline="javascript">
+
+        var clientKey = 'test_ck_LBa5PzR0Arn52WnNaBoVvmYnNeDM'
+        var tossPayments = TossPayments(clientKey)
+
+        var button = document.getElementById('payment-button') // 결제하기 버튼
+        var amount = /*[[${orderResponse.totalPrice}]]*/null
+        var orderId = /*[[${orderResponse.orderId}]]*/null
+        var orderName = /*[[${orderResponse.name}]]*/null
+        var customerName = /*[[${orderResponse.buyerName}]]*/null
+
+        button.addEventListener('click', function () {
+            var addressId = document.getElementById('addressId').innerText;
+
+            if (addressId) {
+                tossPayments.requestPayment('카드', {
+                    amount: amount,
+                    orderId: orderId + "_" + (Math.random() + "").substring(2),
+                    orderName: orderName,
+                    customerName: customerName,
+                    successUrl: window.location.origin + "/order/" + orderId + "/success?addressId=" + addressId,
+                    failUrl:  window.location.origin + "/order/" + orderId + "/fail"
+                });
+            }else {
+                toastWarning("배송지를 선택해주세요.");
+            }
+        })
+
+    </script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        function displaySelectedAddress() {
+
+            var addressId = document.getElementById("AddressSelect").value;
+
+            $.ajax({
+                url: '/usr/buyer/myAddress/getAddressDetails',
+                type: 'GET',
+                data: { addressId: addressId },
+                success: function(response) {
+                    var address = response;
+
+                    document.getElementById("addressId").innerText = address.id;
+                    document.getElementById("addressName").innerText = address.name;
+                    document.getElementById("addressReceiverName").innerText = address.receiverName;
+                    document.getElementById("addressPhoneNumber").innerText = address.phoneNumber;
+                    document.getElementById("addressAddress").innerText
+                        = "(" + address.postCode + ") " + address.address + " " + address.detailAddress;
+                    document.getElementById("selectedAddress").style.display = "block";
+                },
+                error: function(error) {
+                    toastWarning(error);
+                }
+            });
+        }
+    </script>
+
+</main>
+</body>
+
+</html>

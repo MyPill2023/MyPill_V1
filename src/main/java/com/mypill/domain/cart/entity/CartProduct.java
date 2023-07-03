@@ -1,5 +1,6 @@
 package com.mypill.domain.cart.entity;
 
+import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
@@ -21,8 +22,8 @@ public class CartProduct extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Order order;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
 
     @Column(nullable = false)
     private Long quantity;
@@ -49,5 +50,9 @@ public class CartProduct extends BaseEntity {
     public void softDelete() {
         super.softDelete();
         cart.updateCart();
+    }
+
+    public void connectOrder(Order order) {
+        this.order = order;
     }
 }

@@ -1,0 +1,98 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>주문 상세</title>
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col my-10 w-[32rem]">
+        <h1 class="text-2xl font-bold">
+            주문 상세 관리
+        </h1>
+
+        <div class="flex flex-col gap-5 w-full max-w-md mb-10 mt-5 px-5">
+            <div class="flex gap-2">
+                <span class="text-lg font-bold">주문 번호</span>
+                <span class="text-lg underline" th:text="${order.orderNumber}"></span>
+            </div>
+            <div class="flex flex-col gap-2">
+                <span class="text-lg font-bold">주문내역</span>
+                <div th:each="orderItem, loop : ${orderItems}">
+                    <div class="bg-base-100 border-b border-gray-200 p-5 ">
+                        <div class="flex justify-around gap-5">
+                            <div class="border border-gray-200 w-2/6 p-5">
+                                이미지
+                            </div>
+                            <div class="flex flex-col gap-3 w-4/6">
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between">
+                                        <h3 th:text="${orderItem.product.seller.name}"></h3>
+                                        <span class="badge badge-ghost" th:text="${orderItem.orderStatus.value}"></span>
+                                    </div>
+                                    <a th:text="${orderItem.product.name}"
+                                       class="font-bold "></a>
+                                </div>
+                                <div class="flex gap-3 justify-between">
+                                    <span class="text-lg" th:text="${orderItem.quantity} + '개'"></span>
+                                    <span class="text-lg"
+                                          th:text="${#numbers.formatInteger(orderItem.product.price * orderItem.quantity, 0, 'COMMA') + '원'}"></span>
+                                </div>
+                                <form th:action="@{|/order/update/status/${orderItem.id}|}" method="POST" class="flex gap-3">
+                                    <input type="hidden" name="orderId" th:value="${order.orderId}">
+                                    <select class="select select-bordered" name="newStatus">
+                                        <option th:each="orderStatus, loop : ${orderStatuses}"
+                                                th:value="${orderStatus.value}" th:text="${orderStatus.value}"
+                                                th:selected="${orderStatus.value.equals(orderItem.orderStatus.value)}"></option>
+                                    </select>
+                                    <button class="btn" type="submit">변경</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+<!--                        <div class="flex flex-col gap-2">-->
+<!--                            <h3 class="text-lg font-bold mb-2 mt-10">배송 정보</h3>-->
+<!--                            <div class="flex gap-2">-->
+<!--                                <span class="w-1/4 text-gray-400">수령인</span>-->
+<!--                                <span th:text="${order.deliveryAddress.receiverName}"></span>-->
+<!--                            </div>-->
+<!--                            <div class="flex gap-2">-->
+<!--                                <span class="w-1/4 text-gray-400">연락처</span>-->
+<!--                                <span th:text="${order.deliveryAddress.phoneNumber}"></span>-->
+<!--                            </div>-->
+<!--                            <div class="flex gap-2">-->
+<!--                                <span class="w-1/4 text-gray-400">배송지</span>-->
+<!--                                <span class="w-3/4"-->
+<!--                                      th:text="'(' + ${order.deliveryAddress.postCode} + ') ' + ${orderResponse.deliveryAddress.address} + ' ' + ${orderResponse.deliveryAddress.detailAddress}">-->
+<!--                                    </span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+            <div class="flex flex-col gap-2">
+                <h3 class="text-lg font-bold mb-2 mt-10">결제 정보</h3>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">결제일시</span>
+                    <span th:text="${#temporals.format(order.payment.payDate, 'yyyy-MM-dd HH:mm')}"></span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">결제수단</span>
+                    <span th:text="${order.payment.method}"></span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">결제금액</span>
+                    <span th:text="${#numbers.formatInteger(order.payment.totalAmount, 0, 'COMMA') + '원'}"></span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</main>
+</body>
+
+</html>

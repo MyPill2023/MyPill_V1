@@ -43,25 +43,20 @@ public class AppConfig {
 //        cancelAvailableSeconds = Integer.valueOf(value);
 //    }
 //
-//    @Value("${spring.profiles.active:}")
-//    public void setActiveProfile(String value) {
-//        activeProfile = value;
-//    }
-//
-//    @Value("${custom.site.name}")
-//    public void setSiteName(String siteName) {
-//        AppConfig.siteName = siteName;
-//    }
-//
-//    @Value("${custom.site.baseUrl}")
-//    public void setSiteBaseUrl(String siteBaseUrl) {
-//        AppConfig.siteBaseUrl = siteBaseUrl;
-//    }
-//
-//    @Value("${custom.member.changePasswordCycleDays}")
-//    public void setChangePasswordCycleDays(int changePasswordCycleDays) {
-//        AppConfig.changePasswordCycleDays = changePasswordCycleDays;
-//    }
+    @Value("${spring.profiles.active:}")
+    public void setActiveProfile(String value) {
+        activeProfile = value;
+    }
+
+    @Value("${custom.site.name}")
+    public void setSiteName(String siteName) {
+        AppConfig.siteName = siteName;
+    }
+
+    @Value("${custom.site.baseUrl}")
+    public void setSiteBaseUrl(String siteBaseUrl) {
+        AppConfig.siteBaseUrl = siteBaseUrl;
+    }
 
     public static boolean isNotProd() {
         return isProd() == false;
@@ -124,5 +119,24 @@ public class AppConfig {
         AppConfig.completeMinLength = completeMinLength;
     }
 
+    @Getter
+    private static int maxOrderNameLength;
+    @Value("${custom.order.maxOrderNameLength}")
+    private void setMaxOrderName(int maxOrderNameLength) {
+        AppConfig.maxOrderNameLength = maxOrderNameLength;
+    }
+    @Getter
+    private static int maxAddressCount;
+    @Value("${custom.address.maxAddressCount}")
+    private void setMaxAddressCount(int maxAddressCount) {
+        AppConfig.maxAddressCount = maxAddressCount;
+    }
 
+    @Getter
+    private static String tossPaymentSecretKey;
+
+    @Value("${custom.toss_payment.secretKey}")
+    private void setTossPaymentSecretKey(String tossPaymentSecretKey) {
+        AppConfig.tossPaymentSecretKey = tossPaymentSecretKey;
+    }
 }

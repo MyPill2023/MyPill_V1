@@ -1,6 +1,5 @@
 package com.mypill.global.security.handler;
 
-import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,13 +16,18 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final MemberService memberService;
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final Rq rq;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String username = authentication.getName();
 
+        if (!rq.getMember().getEmailVerified()) {
+            redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/usr/member/login", "이메일 인증이 완료되지 않은 계정입니다."));
+            clearAuthenticationAttributes(request);
+            rq.invalidateSession();
+            return;
+        }
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

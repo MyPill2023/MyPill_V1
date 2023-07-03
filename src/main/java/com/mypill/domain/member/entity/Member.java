@@ -2,6 +2,7 @@ package com.mypill.domain.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mypill.domain.nutrient.entity.Nutrient;
+import com.mypill.domain.address.entity.Address;
 import jakarta.persistence.*;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.base.entitiy.BaseEntity;
@@ -43,8 +44,30 @@ public class Member extends BaseEntity {
     private String accessToken;
     @Column
     private String providerTypeCode; // 카카오로 가입한 회원인지, 네이버로 가입한 회원인지
+
+    private boolean emailVerified;
     @ManyToMany(mappedBy = "likedMembers")
     private List<Product> likedProducts = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "member_nutrients",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "nutrient_id")
+    )
+    private List<Nutrient> surveyNutrients = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Address> addresses;
+
+    private boolean brnoCertificated;
+    private boolean nBrnoCertificated;
+
+    public void brnoCertificate() {
+        this.brnoCertificated = true;
+    }
+
+    public void nBrnoCertificate() {
+        this.nBrnoCertificated = true;
+    }
 
     public List<GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -52,11 +75,18 @@ public class Member extends BaseEntity {
         if (isSeller()) {
             authorities.add(new SimpleGrantedAuthority("SELLER"));
         }
+        if (isWaiter()) {
+            authorities.add(new SimpleGrantedAuthority("WAITER"));
+        }
         return authorities;
     }
 
     public boolean isSeller() {
         return userType.equals(2);
+    }
+
+    public boolean isWaiter() {
+        return userType.equals(3);
     }
 
     public Map<String, Object> toClaims() {
@@ -91,10 +121,24 @@ public class Member extends BaseEntity {
         this.accessToken = accessToken;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "member_nutrients",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "nutrient_id")
-    )
-    private List<Nutrient> surveyNutrients = new ArrayList<>();
+    public void updateName(String newName) {
+        this.name = newName;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public void updateUserType() {
+        this.userType = 2;
+    }
+    public boolean getEmailVerified(){
+        return this.emailVerified;
+    }
+
+    public Optional<Address> getDefaultAddress() {
+        return addresses.stream()
+                .filter(Address::isDefault)
+                .findFirst();
+    }
 }

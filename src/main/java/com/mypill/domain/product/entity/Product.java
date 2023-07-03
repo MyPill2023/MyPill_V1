@@ -81,6 +81,10 @@ public class Product extends BaseEntity {
         this.categories = categories;
     }
 
+    public void updateStockByOrder(Long quantity){
+        this.stock -= quantity;
+    }
+
     public Long getLikedCount() {
         if (likedMembers == null) {
             return 0L;

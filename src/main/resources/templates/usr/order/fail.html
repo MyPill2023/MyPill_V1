@@ -1,0 +1,22 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>주문 결제실패</title>
+    <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col my-10 w-[32rem]">
+        <h1 class="text-2xl font-bold mb-10">
+            주문 결제실패
+        </h1>
+
+        <div th:text="'주문번호 : ' + ${orderNumber}" class="text-lg"></div>
+        <div th:text="${message}"></div>
+        <<div th:text="${code}"></div>
+    </div>
+</main>
+</body>
+
+</html>

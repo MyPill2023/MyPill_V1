@@ -1,0 +1,38 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>마이페이지</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
+        <h1 class="text-4xl font-bold">마이페이지</h1>
+        <div class="flex flex-col bg-base-100 pt-5 w-full justify-between items-center gap-5">
+            <div class="card bg-base-100 border border-gray-200 p-5">
+                <a class="text-2xl" href="/usr/buyer/myInfo">회원 정보</a>
+            </div>
+            <div class="card bg-base-100 border border-gray-200 p-5">
+                <a href="/usr/buyer/myAddress">나의 배송지 관리</a>
+            </div>
+            <div class="card bg-base-100 border border-gray-200 pl-5 pr-5">
+                <a href="/usr/buyer/myOrder">주문 내역</a>
+            </div>
+            <div class="card bg-base-100 border border-gray-200 pl-5 pr-5">
+                <a href="/usr/buyer/myLikes">관심 상품</a>
+            </div>
+            <div class="card bg-base-100 border border-gray-200 pl-5 pr-5">
+                <a href="/usr/buyer/myPosts">게시판 활동내역</a>
+            </div>
+            <div class="card bg-base-100 border border-gray-200 pl-5 pr-5">
+                <a href="">설문 결과 정보</a>
+            </div>
+            <div class="card bg-base-100 border border-gray-200 pl-5 pr-5">
+                <a href="/usr/buyer/mySchedule">복약 관리</a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+</html>
