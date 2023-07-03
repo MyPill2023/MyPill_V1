@@ -6,75 +6,81 @@
 
 <body>
 <main layout:fragment="main">
-
-
-    <div class="hero-content flex flex-col my-10">
-        <h1 class="text-4xl font-bold">
-            상품 수정하기
+    <div class="hero-content flex flex-col my-10 w-[32rem] mb-28">
+        <h1 class="text-2xl font-bold">
+            상품 수정
         </h1>
 
-        <form th:action method="POST" class="flex flex-col gap-4"
+        <form th:action method="POST" class="flex flex-col gap-7 mt-5 px-5 w-full"
               onsubmit="productRequestDto__submit(this, event); return false;">
             <input type="hidden" id="sellerId" name="sellerId" th:value="${@rq.member.id}">
             <div>
                 <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
                 <input type="text" id="name" name="name" th:value="${product.name}"
-                       class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+                       class="input input-bordered py-2 px-3 w-full">
             </div>
 
             <div class="flex flex-col">
                 <span class="text-gray-700 font-bold mb-2">상세 설명</span>
                 <textarea id="description" name="description" th:text="${product.description}"
-                          class="shadow textarea-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline"></textarea>
+                          class="textarea textarea-bordered h-36 py-2 px-3"></textarea>
             </div>
             <div>
                 <label for="price" class="block text-gray-700 font-bold mb-2">가격(원)</label>
                 <input type="number" min="0" id="price" name="price" th:value="${product.price}"
-                       class="shadow input-accent border rounded py-2 px-3">
+                       class="input input-bordered py-2 px-3 w-full">
             </div>
             <div class="mb-4">
                 <label for="stock" class="block text-gray-700 font-bold mb-2">재고</label>
                 <input type="number" min="0" id="stock" name="stock" th:value="${product.stock}"
-                       class="shadow input-accent border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
+                       class="input input-bordered py-2 px-3 w-full">
             </div>
-          <div class="form-control">
-            <label class="block text-gray-700 font-bold mb-2">주요 성분</label>
-            <select id="selectedNutrient" name="selectedNutrient" class="select select-accent">
-              <option disabled selected>주요 영양성분</option>
-              <option th:each="nutrient, loop : ${nutrients}"
-                      th:value="${nutrient.id}"
-                      th:text="${nutrient.name}"></option>
-            </select>
-            <button type="button" class="btn btn-sm" onclick="addSelectedNutrient()">성분 추가하기</button>
-            <ul id="selectedNutrientList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3">
-              <!-- 이미 등록된 영양성분 목록-->
-                <li th:each="nutrient : ${product.nutrients}" th:data-id="${nutrient.id}">
-                    <span th:text="${nutrient.name}"></span>
-                    <button type="button" class="bg-gray-200 px-1 ml-3 cursor-pointer rounded-md" onclick="removeSelectedNutrient(this)">X</button>
-                </li>
-            </ul>
-              <input type="hidden" id="nutrientIds" name="nutrientIds" value="">
-          </div>
+            <div class="form-control">
+                <label class="block text-gray-700 font-bold mb-2">주요 성분</label>
+                <div class="flex justify-between">
+                    <select id="selectedNutrient" name="selectedNutrient" class="select select-bordered w-3/4">
+                        <option disabled selected>주요 영양성분</option>
+                        <option th:each="nutrient, loop : ${nutrients}"
+                                th:value="${nutrient.id}"
+                                th:text="${nutrient.name}"></option>
+                    </select>
+                    <button type="button" class="btn" onclick="addSelectedNutrient()">성분 추가하기</button>
+                </div>
+                <ul id="selectedNutrientList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3">
+                    <!-- 이미 등록된 영양성분 목록-->
+                    <li th:each="nutrient : ${product.nutrients}" th:data-id="${nutrient.id}">
+                        <span th:text="${nutrient.name}"></span>
+                        <button type="button" class="bg-gray-200 px-1 ml-3 cursor-pointer rounded-md"
+                                onclick="removeSelectedNutrient(this)">X
+                        </button>
+                    </li>
+                </ul>
+                <input type="hidden" id="nutrientIds" name="nutrientIds" value="">
+            </div>
             <div class="form-control">
                 <label class="block text-gray-700 font-bold mb-2">주요 기능</label>
-                <select id="selectedCategory" name="selectedCategory" class="select select-accent">
-                    <option disabled selected>주요 기능</option>
-                    <option th:each="category, loop : ${categories}"
-                            th:value="${category.id}"
-                            th:text="${category.name}"></option>
-                </select>
-                <button type="button" class="btn btn-sm" onclick="addSelectedCategory()">성분 추가하기</button>
+                <div class="flex justify-between">
+                    <select id="selectedCategory" name="selectedCategory" class="select select-bordered w-3/4">
+                        <option disabled selected>주요 기능</option>
+                        <option th:each="category, loop : ${categories}"
+                                th:value="${category.id}"
+                                th:text="${category.name}"></option>
+                    </select>
+                    <button type="button" class="btn" onclick="addSelectedCategory()">성분 추가하기</button>
+                </div>
                 <ul id="selectedCategoryList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3">
-                  <!-- 이미 등록된 주요 기능 카테고리 목록-->
+                    <!-- 이미 등록된 주요 기능 카테고리 목록-->
                     <li th:each="category : ${product.categories}" th:data-id="${category.id}">
                         <span th:text="${category.name}"></span>
-                        <button type="button" class="bg-gray-200 px-1 ml-3 cursor-pointer rounded-md" onclick="removeSelectedCategory(this)">X</button>
+                        <button type="button" class="bg-gray-200 px-1 ml-3 cursor-pointer rounded-md"
+                                onclick="removeSelectedCategory(this)">X
+                        </button>
                     </li>
                 </ul>
                 <input type="hidden" id="categoryIds" name="categoryIds" value="">
             </div>
 
-            <button type="submit" class="btn btn-accent">
+            <button type="submit" class="btn btn-accent mt-5">
                 수정 완료
             </button>
         </form>

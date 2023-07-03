@@ -6,13 +6,15 @@
 
 <body>
 <main layout:fragment="main">
-    <div class="hero-content flex flex-col my-10">
-        <h1 class="text-4xl font-bold">
-            Q&A
-        </h1>
-        <span class="text-lg">영양제 복용, 건강관리 등에 대해 물어보세요!</span>
+    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
+        <div>
+            <h1 class="text-2xl font-bold">Q&A</h1>
+            <span class="text-lg">영양제 복용, 건강관리 등에 대해 물어보세요!</span>
+        </div>
 
-        <div class="mb-9 sm:mb-16" th:each="question, loop : ${questionList}">
+
+
+        <div class="mb-9 sm:mb-16 !px-5" th:each="question, loop : ${questionList}">
             <div class="overflow-hidden">
                 <ul class="divide-y divide-gray-500/30 dark:divide-gray-500/70">
                     <li class="flex flex-col bg-green-50 py-4 px-2 dark:bg-gray-700 sm:px-2.5">

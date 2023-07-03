@@ -12,6 +12,9 @@
         </h1>
 
         <div class="flex flex-col w-full max-w-md mb-10 mt-5 px-5">
+            <div th:if="${orders.size() == 0}" class="flex justify-center my-16">
+                <span >주문 내역이 없습니다.</span>
+            </div>
             <div th:each="order, loop : ${orders}">
                 <a th:href="@{|/order/management/${order.orderId}|}">
                     <div class="bg-base-100 border-b border-gray-200 p-5 ">

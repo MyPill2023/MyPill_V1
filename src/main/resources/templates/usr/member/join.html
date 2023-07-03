@@ -2,32 +2,94 @@
 
 <head>
     <title>회원가입</title>
-    <style>
-        input:invalid {
-            border-color: red;
-        }
-
-        #btn-usernameCheck {
-            width: 15%;
-        }
-
-        #btn-emailCheck {
-            width: 15%;
-        }
-
-        .checkMsgF {
-            color: red;
-        }
-
-        .checkMsgT {
-            color: blue;
-        }
-
-    </style>
 </head>
 
 <body>
 <main layout:fragment="main">
+    <div class="hero-content flex flex-col mb-10 2 mt-12">
+        <h1 class="text-2xl font-bold">
+            회원가입
+        </h1>
+
+        <div class="max-w-2xl w-full px-5 mt-8">
+            <form th:action method="POST" class="flex flex-col flex-grow" id="joinForm"
+                  onsubmit="MemberJoin__submit(this); return false;">
+                <div class="flex flex-col gap-2">
+                    <div><span class="font-bold text-lg">회원 유형 선택</span></div>
+                    <div class="flex justify-around gap-2">
+                        <div class="w-1/2">
+                            <input type="radio" name="option" id="1" class="peer hidden" value="1"/>
+                            <label for="1"
+                                   class="block cursor-pointer select-none border border-gray-400 rounded-xl p-2 text-center peer-checked:bg-blue-200 peer-checked:font-bold peer-checked:border-0">
+                                일반 회원
+                            </label>
+                        </div>
+                        <div class="w-1/2">
+                            <input type="radio" name="option" id="3" class="peer hidden" value="3"/>
+                            <label for="3"
+                                   class="block cursor-pointer select-none border border-gray-400 rounded-xl p-2 text-center peer-checked:bg-red-200 peer-checked:font-bold peer-checked:border-0">
+                                판매자 회원
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <span class="font-bold text-lg mt-8 mb-2">회원 정보 입력</span>
+                <div class="flex flex-col gap-3">
+                    <div class="form-control flex gap-1">
+                        <span id="userNameCheckMsg" class="text-red-400 mx-3"></span>
+                        <div class="flex flex-row">
+                            <input type="text" id="username" maxlength="15" name="username" placeholder="아이디를 입력하세요"
+                                   required pattern=".*\S.*" onkeydown="usernameWrite(this)"
+                                   class="input input-bordered flex-grow mr-4 w-3/4"
+                                   oninput="enableInputEnglishAndNumber(this)"/>
+                            <button type="button" id="btn-usernameCheck" class="btn" style="border: none;">
+                                <span>중복 확인</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <input type="text" name="name" maxlength="8" placeholder="실명을 입력하세요"
+                               required pattern=".*\S.*"
+                               class="input input-bordered"
+                               oninput="enableInputKorean(this)"/>
+                    </div>
+                    <div class="form-control">
+                        <div class="flex-row">
+                            <span id="passwordCheckMsg" class="checkMsgF"></span>
+                        </div>
+                        <input type="password" name="password" maxlength="12" placeholder="비밀번호"
+                               required pattern=".*\S.*" class="input input-bordered"
+                               oninput="enableInputEnglishAndNumber(this)"/>
+                    </div>
+                    <div class="form-control">
+                        <div class="flex-row">
+                            <span id="password2CheckMsg" class="checkMsgF"></span>
+                        </div>
+                        <input type="password" name="password2" maxlength="12" placeholder="비밀번호 확인"
+                               required pattern=".*\S.*" class="input input-bordered"
+                               oninput="enableInputEnglishAndNumber(this)"/>
+                    </div>
+                    <div class="form-control flex">
+                        <div class="flex-row">
+                            <span id="emailCheckMsg"></span>
+                        </div>
+                        <div class="flex flex-row ">
+                            <input type="text" id="email" name="email" maxlength="30" placeholder="이메일 주소"
+                                   required pattern=".*\S.*" onkeydown="emailWrite(this)"
+                                   class="input input-bordered flex-grow mr-4 w-3/4" oninput="enableInputEmailStyle(this)"/>
+                            <button type="button" id="btn-emailCheck" class="btn" style="border: none;">
+                                <span>중복 확인</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="btn-join" class="btn btn-block btn-accent gap-1 mt-5">
+                        <span class="text-black">회원 가입</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function usernameWrite() {
             usernameChecked = false;
@@ -215,93 +277,6 @@
 
     </script>
 
-    <div class="hero-content flex flex-col mb-10">
-        <h1 class="text-4xl font-bold">
-            회원가입
-        </h1>
-
-        <div class="max-w-2xl w-full px-4">
-
-            <form th:action method="POST" class="flex flex-col gap-3 flex-grow" id="joinForm"
-                  onsubmit="MemberJoin__submit(this); return false;">
-                <span>회원 유형</span>
-                <div class="flex flex-row">
-                    <div class="w-1/2">
-                        <input type="radio" name="option" id="1" class="peer hidden" value="1"/>
-                        <label for="1"
-                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">
-                            일반 회원
-                        </label>
-                    </div>
-                    <div class="w-1/2">
-                        <input type="radio" name="option" id="3" class="peer hidden" value="3"/>
-                        <label for="3"
-                               class="block cursor-pointer select-none border rounded-xl p-2 text-center peer-checked:bg-red-500 peer-checked:font-bold peer-checked:text-white">
-                            판매자 회원
-                        </label>
-                    </div>
-                </div>
-                <div class="form-control flex">
-                    <div class="flex-row">
-                        <span>아이디</span>
-                        <span id="userNameCheckMsg"></span>
-                    </div>
-                    <div class="flex flex-row">
-                        <input type="text" id="username" maxlength="15" name="username" placeholder="아이디를 입력하세요"
-                               required pattern=".*\S.*" onkeydown="usernameWrite(this)"
-                               class="input input-bordered flex-grow mr-4"
-                               oninput="enableInputEnglishAndNumber(this)"/>
-                        <button type="button" id="btn-usernameCheck" class="btn btn-block" style="border: none;">
-                            <span>중복 확인</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="form-control">
-                        <span>이름</span>
-                    <input type="text" name="name" maxlength="8" placeholder="실명을 입력하세요"
-                           required pattern=".*\S.*"
-                           class="input input-bordered"
-                           oninput="enableInputKorean(this)"/>
-                </div>
-                <div class="form-control">
-                    <div class="flex-row">
-                        <span>비밀번호</span>
-                        <span id="passwordCheckMsg" class="checkMsgF"></span>
-                    </div>
-                    <input type="password" name="password" maxlength="12" placeholder="비밀번호"
-                           required pattern=".*\S.*" class="input input-bordered"
-                           oninput="enableInputEnglishAndNumber(this)"/>
-                </div>
-                <div class="form-control">
-                    <div class="flex-row">
-                        <span>비밀번호 확인</span>
-                        <span id="password2CheckMsg" class="checkMsgF"></span>
-                    </div>
-                    <input type="password" name="password2" maxlength="12" placeholder="비밀번호 확인"
-                           required pattern=".*\S.*" class="input input-bordered"
-                           oninput="enableInputEnglishAndNumber(this)"/>
-                </div>
-                <div class="form-control flex">
-                    <div class="flex-row">
-                        <span id="emailTitle">이메일</span>
-                        <span id="emailCheckMsg"></span>
-                    </div>
-                    <div class="flex flex-row ">
-                        <input type="text" id="email" name="email" maxlength="30" placeholder="이메일 주소"
-                               required pattern=".*\S.*" onkeydown="emailWrite(this)"
-                               class="input input-bordered flex-grow mr-4" oninput="enableInputEmailStyle(this)"/>
-                        <button type="button" id="btn-emailCheck" class="btn btn-block" style="border: none;">
-                            <span>중복 확인</span>
-                        </button>
-                    </div>
-                </div>
-                <button id="btn-join" class="btn btn-block gap-1"
-                        style="background-color: rgb(220 252 231); border: none;">
-                    <span class="text-black">회원 가입</span>
-                </button>
-            </form>
-        </div>
-    </div>
 </main>
 </body>
 
