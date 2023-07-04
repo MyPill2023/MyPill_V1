@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import static java.util.Arrays.asList;
 
 @Configuration
-@Profile({"dev", "test"})
+@Profile({"dev"})
 public class NotProd {
 
     @Bean

@@ -44,12 +44,11 @@ public class MemberService {
 
 
     @Transactional
-    public RsData<Member> join(String username, String name, String password, String userTypeStr, String email) {
+    public RsData<Member> join(String username, String name, String password, Integer userType, String email) {
         if (memberRepository.findByUsername(username).isPresent()) {
             throw new AlreadyJoinException("%s(은)는 이미 사용중인 아이디 입니다.".formatted(username));
         }
 
-        Integer userType = Integer.parseInt(userTypeStr);
         Member member = Member.builder()
                 .username(username)
                 .name(name)
@@ -59,6 +58,12 @@ public class MemberService {
                 .build();
         Member savedMember = memberRepository.save(member);
 
+        sendEmail(savedMember);
+
+        return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
+    }
+
+    private void sendEmail(Member member) {
         CompletableFuture<RsData<Long>> sendRsFuture = emailVerificationService.send(member);
         sendRsFuture.whenComplete((sendRs, throwable) -> {
             if (sendRs.isSuccess()) {
@@ -67,7 +72,14 @@ public class MemberService {
                 log.info("이메일 인증 메일 발송 실패");
             }
         });
-        return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
+    }
+
+    @Transactional
+    public RsData<Member> whenSocialLogin(String providerTypeCode, String username, String name, String email) {
+        Optional<Member> opMember = findByUsername(username);
+
+        return opMember.map(member -> RsData.of("S-2", "로그인 되었습니다.", member))
+                .orElseGet(() -> oauthJoin(providerTypeCode, username, name, email));
     }
 
     private RsData<Member> oauthJoin(String providerTypeCode, String username, String name, String email) {
@@ -92,14 +104,32 @@ public class MemberService {
         return RsData.of("S-1", "회원가입이 완료되었습니다.", member);
     }
 
-    public Optional<Member> findByUsername(String username) {
-        return memberRepository.findByUsername(username);
-    }
-
     public Optional<Member> findById(Long id) {
         return memberRepository.findById(id);
     }
 
+    public Optional<Member> findByUsername(String username) {
+        return memberRepository.findByUsername(username);
+    }
+
+    @Transactional
+    public RsData<Member> updateName(Member member, String newName) {
+        member = member.toBuilder()
+                .name(newName)
+                .build();
+        memberRepository.save(member);
+        return RsData.of("S-1", "이름 변경이 완료되었습니다.", member);
+    }
+
+    @Transactional
+    public RsData<Member> deleteAccount(Member member) {
+        if (member == null) {
+            return RsData.of("F-1", "로그인이 필요한 서비스입니다.");
+        }
+        member.softDelete();
+        Member deletedMember = memberRepository.save(member);
+        return RsData.of("S-1", "회원 탈퇴가 완료되었습니다.", deletedMember);
+    }
 
     public int idValidation(String username) {
         if (username.equals("")) {
@@ -134,13 +164,6 @@ public class MemberService {
         return matcher.matches();
     }
 
-    @Transactional
-    public RsData<Member> whenSocialLogin(String providerTypeCode, String username, String name, String email) {
-        Optional<Member> opMember = findByUsername(username);
-
-        return opMember.map(member -> RsData.of("S-2", "로그인 되었습니다.", member))
-                .orElseGet(() -> oauthJoin(providerTypeCode, username, name, email));
-    }
 
     public void whenAfterLike(Member member, Product product) {
         member.like(product);
@@ -156,24 +179,6 @@ public class MemberService {
         return RsData.of("S-1", "설문이 초기화 되었습니다");
     }
 
-    @Transactional
-    public String nameUpdate(Member member, String newName) {
-        member = member.toBuilder()
-                .name(newName)
-                .build();
-        memberRepository.save(member);
-        return "success";
-    }
-
-    @Transactional
-    public RsData deleteAccount(Member member) {
-        if (member == null) {
-            return RsData.of("F-1", "로그인이 필요한 서비스입니다.");
-        }
-        member.softDelete();
-        memberRepository.save(member);
-        return RsData.of("S-1", "회원 탈퇴가 완료되었습니다.");
-    }
 
     @Transactional
     public RsData verifyEmail(Long id, String verificationCode) {
