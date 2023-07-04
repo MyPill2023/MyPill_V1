@@ -125,7 +125,11 @@ public class OrderController {
             return rq.historyBack("주문 가격과 결제 가격이 일치하지 않습니다.");
         }
 
-        //TODO : 재고체크과정 필요?
+        for(OrderItem orderItem : order.getOrderItems()){
+            if(orderItem.getProduct().getStock() < orderItem.getQuantity()){
+                return rq.historyBack("%s의 주문 수량이 재고보다 많습니다.".formatted(orderItem.getProduct().getName()));
+            }
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((AppConfig.getTossPaymentSecretKey() + ":").getBytes()));

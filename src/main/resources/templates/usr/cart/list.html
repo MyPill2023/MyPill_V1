@@ -98,12 +98,12 @@
                     </div>
 
                     <div class="mt-10 flex gap-5 justify-center">
-                        <form th:action="@{|/order/create/all|}" method="POST">
-                            <button class="btn" type="submit">전체 상품 주문하기</button>
-                        </form>
                         <form th:action="@{/order/create}" method="POST">
                             <input type="hidden" name="selectedCartProductIds" id="selectedIds">
-                            <button class="btn" type="submit">선택 상품 주문하기</button>
+                            <button class="btn btn-success" type="submit">선택 상품 주문하기</button>
+                        </form>
+                        <form th:action="@{|/order/create/all|}" method="POST">
+                            <button class="btn" type="submit">전체 상품 주문하기</button>
                         </form>
                     </div>
                 </div>
