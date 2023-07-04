@@ -30,7 +30,7 @@ public class CommentController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{postId}")
     @Operation(summary = "댓글 등록")
-    public String create(@PathVariable String postId, @Valid CommentRequest commentRequest) {
+    public String create(@PathVariable Long postId, @Valid CommentRequest commentRequest) {
         RsData<Comment> commentRsData = commentService.create(commentRequest, rq.getMember(), postId);
         if (commentRsData.isFail()) {
             return rq.historyBack(commentRsData.getMsg());

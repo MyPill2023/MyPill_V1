@@ -23,8 +23,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public RsData<Comment> create(CommentRequest commentRequest, Member member, String postIdStr) {
-        Long postId = Long.parseLong(postIdStr);
+    public RsData<Comment> create(CommentRequest commentRequest, Member member, Long postId) {
         Post post = postRepository.findById(postId).orElse(null);
         if (post == null) {
             return RsData.of("F-1", "존재하지 않는 게시물입니다.");
@@ -68,7 +67,7 @@ public class CommentService {
     }
 
     @Transactional
-    public List<Comment> getList(Member member) {
+    public List<Comment> getMyComments(Member member) {
         return commentRepository.findByWriter(member);
     }
 }

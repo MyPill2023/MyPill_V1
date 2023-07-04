@@ -59,7 +59,7 @@ public class BuyerController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myComments")
     public String myComments(Model model) {
-        List<Comment> comments = commentService.getList(rq.getMember());
+        List<Comment> comments = commentService.getMyComments(rq.getMember());
         model.addAttribute("comments", comments);
         return "usr/buyer/myComments";
     }
