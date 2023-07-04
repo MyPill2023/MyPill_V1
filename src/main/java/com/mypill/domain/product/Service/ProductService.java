@@ -1,10 +1,10 @@
-package com.mypill.domain.product.Service;
+package com.mypill.domain.product.service;
 
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.nutrient.Service.NutrientService;
+import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.dto.response.ProductResponse;

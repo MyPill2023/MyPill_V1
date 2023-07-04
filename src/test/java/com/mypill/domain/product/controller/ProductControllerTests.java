@@ -1,12 +1,7 @@
 package com.mypill.domain.product.controller;
 
 
-import com.mypill.domain.category.entity.Category;
-import com.mypill.domain.category.service.CategoryService;
-import com.mypill.domain.nutrient.Service.NutrientService;
-import com.mypill.domain.nutrient.entity.Nutrient;
-import com.mypill.domain.product.Service.ProductService;
-import com.mypill.domain.product.dto.response.ProductResponse;
+import com.mypill.domain.product.service.ProductService;
 import com.mypill.domain.product.entity.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -21,11 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

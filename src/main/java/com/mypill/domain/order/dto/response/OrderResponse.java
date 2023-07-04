@@ -24,6 +24,7 @@ public class OrderResponse {
     private Long totalPrice;
     private Address deliveryAddress;
     private Payment payment;
+    private OrderStatus primaryOrderStatus;
 
     public static OrderResponse of(Order order){
         return OrderResponse.builder()
@@ -35,6 +36,7 @@ public class OrderResponse {
                 .totalPrice(order.getTotalPrice())
                 .deliveryAddress(order.getDeliveryAddress())
                 .payment(order.getPayment())
+                .primaryOrderStatus(order.getPrimaryOrderStatus())
                 .build();
     }
 
