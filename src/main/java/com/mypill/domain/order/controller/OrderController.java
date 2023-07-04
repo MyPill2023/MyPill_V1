@@ -61,12 +61,29 @@ public class OrderController {
         return "usr/order/form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("/create/all")
     @PreAuthorize("hasAuthority('MEMBER')")
-    public String create() {
+    public String createFromCart() {
         Member buyer = rq.getMember();
         RsData<Order> orderRsData = orderService.createFromCart(buyer);
 
+        if (orderRsData.isFail()) {
+            return rq.historyBack(orderRsData);
+        }
+
+        return rq.redirectWithMsg("/order/form/%s".formatted(orderRsData.getData().getId()), orderRsData);
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasAuthority('MEMBER')")
+    public String createFromSelected(@RequestParam String[] selectedCartProductIds) {
+        Member buyer = rq.getMember();
+
+        if(selectedCartProductIds.length == 0){
+            return rq.historyBack("선택된 상품이 없습니다.");
+        }
+
+        RsData<Order> orderRsData = orderService.createFromSelectedCartProduct(buyer, selectedCartProductIds);
         if (orderRsData.isFail()) {
             return rq.historyBack(orderRsData);
         }

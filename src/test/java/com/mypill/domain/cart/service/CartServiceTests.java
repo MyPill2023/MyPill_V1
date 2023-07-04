@@ -42,7 +42,7 @@ public class CartServiceTests {
     void addProductSuccessTest02() throws Exception {
         cartService.addProduct(new CartProductRequest(1L, 1L));
         RsData<CartProduct> addRsData =  cartService.addProduct(new CartProductRequest(1L, 1L));
-        assertThat(addRsData.getResultCode()).isEqualTo("S-2");
+        assertThat(addRsData.getResultCode()).isEqualTo("S-1");
 
         CartProduct cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
         assertThat(cartProduct).isNotNull();
