@@ -1,6 +1,7 @@
 package com.mypill.domain.cart.controller;
 
 import com.mypill.domain.cart.dto.request.CartProductRequest;
+import com.mypill.domain.cart.entity.Cart;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.domain.member.entity.Member;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,13 +49,13 @@ class CartControllerTests {
 
     @BeforeEach
     void beforeEachTest() {
-        testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com", true).getData();
+        testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com").getData();
         product = productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
         cartProduct = cartService.addProduct(testUser1, new CartProductRequest(product.getId(), 1L)).getData();
     }
 
     @Test
-    @DisplayName("02 장바구니 추가 성공")
+    @DisplayName("01 장바구니 추가 성공")
     @WithMockUser(username = "testUser1", authorities = "MEMBER")
     void addCartProductSuccessTest() throws Exception {
         ResultActions resultActions = mvc
@@ -69,10 +71,14 @@ class CartControllerTests {
                 .andExpect(handler().methodName("addCartProduct"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/product/detail/**"));
+
+        Cart cart = cartService.findByMemberId(testUser1.getId());
+        assertThat(cart.getCartProducts().size()).isEqualTo(1);
+        assertThat(cart.getCartProducts().get(0).getQuantity()).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("01 장바구니에 담긴 상품 수량 변경 성공")
+    @DisplayName("02 장바구니에 담긴 상품 수량 변경 성공")
     @WithMockUser(username = "testUser1", authorities = "MEMBER")
     void addCartProductFailTest() throws Exception {
         CartProduct cartProduct = cartService.findCartProductById(this.cartProduct.getId()).orElse(null);
@@ -92,6 +98,8 @@ class CartControllerTests {
                 .andExpect(handler().methodName("updateQuantity"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/cart**"));
+
+        assertThat(cartProduct.getQuantity()).isEqualTo(3);
     }
 
     @Test
