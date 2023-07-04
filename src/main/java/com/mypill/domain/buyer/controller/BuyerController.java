@@ -57,7 +57,7 @@ public class BuyerController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPosts")
     public String myPosts(Model model) {
-        List<Post> posts = postService.getList(rq.getMember());
+        List<Post> posts = postService.getMyPosts(rq.getMember());
         model.addAttribute("posts", posts);
         return "usr/buyer/myPosts";
     }
@@ -65,7 +65,7 @@ public class BuyerController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myComments")
     public String myComments(Model model) {
-        List<Comment> comments = commentService.getList(rq.getMember());
+        List<Comment> comments = commentService.getMyComments(rq.getMember());
         model.addAttribute("comments", comments);
         return "usr/buyer/myComments";
     }

@@ -139,16 +139,8 @@ public class Rq {
         return Ut.json.toStr(parameterMap);
     }
 
-    public String getUserId() {
-        return (String) this.session.getAttribute("userId");
-    }
-
     public String getPassword() {
         return (String) this.session.getAttribute("password");
-    }
-
-    public HttpSession getSession() {
-        return this.session;
     }
 
     public void invalidateSession() {
