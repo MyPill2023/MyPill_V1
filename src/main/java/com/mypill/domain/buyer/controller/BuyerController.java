@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -75,7 +76,9 @@ public class BuyerController {
     public String myOrder(Model model) {
 
         List<Order> orders = orderService.findByBuyerId(rq.getMember().getId());
-        List<OrderListResponse> orderListResponses = orders.stream().map(OrderListResponse::of).toList();
+        List<OrderListResponse> orderListResponses = orders.stream()
+                .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
+                .map(OrderListResponse::of).toList();
         model.addAttribute("orders", orderListResponses);
 
         return "usr/buyer/myOrder";

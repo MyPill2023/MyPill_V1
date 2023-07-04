@@ -1,6 +1,8 @@
 package com.mypill.domain.seller.controller;
 
 import com.mypill.domain.order.dto.response.OrderListResponse;
+import com.mypill.domain.order.entity.Order;
+import com.mypill.domain.order.entity.Payment;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.seller.service.SellerService;
 import com.mypill.global.rq.Rq;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -38,7 +41,10 @@ public class SellerController {
     @GetMapping("/order")
     public String orderManagement(Model model) {
         List<OrderListResponse> orderResponses = orderService.findBySellerId(rq.getMember().getId())
-                .stream().map(OrderListResponse::of).toList();
+                .stream()
+                .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
+                .map(OrderListResponse::of).toList();
+
         model.addAttribute("orders", orderResponses);
         return "usr/seller/orderList";
     }
