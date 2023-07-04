@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -37,8 +36,7 @@ public class MemberController {
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/loginFail")
-    public String loginFail(@RequestParam(value = "error", required = false) String error,
-                            @RequestParam(value = "exception", required = false) String exception) {
+    public String loginFail(@RequestParam(value = "exception", required = false) String exception) {
         return rq.historyBack(exception);
     }
 
@@ -82,5 +80,11 @@ public class MemberController {
         SecurityContextHolder.clearContext();
         request.getSession().invalidate();
         response.sendRedirect("/");
+    }
+    @PreAuthorize("isAuthenticated()")
+    @ResponseBody
+    @PostMapping("/name/update")
+    public String nameUpdate(String newName) {
+        return memberService.nameUpdate(rq.getMember(), newName);
     }
 }

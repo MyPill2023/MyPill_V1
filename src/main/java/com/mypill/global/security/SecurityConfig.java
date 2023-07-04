@@ -61,6 +61,7 @@ public class SecurityConfig {
                                 .tokenEndpoint(t -> t
                                         .accessTokenResponseClient(oAuth2AccessTokenResponseClient)
                                 )
+                                .failureHandler(customAuthenticationFailureHandler)
                 )
                 .logout(
                         logout -> logout

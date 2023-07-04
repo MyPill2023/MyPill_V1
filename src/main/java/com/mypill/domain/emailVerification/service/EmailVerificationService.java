@@ -24,8 +24,8 @@ public class EmailVerificationService {
         String email = member.getEmail();
         String title = "[%s 이메일인증] 안녕하세요 %s님. 링크를 클릭하여 회원가입을 완료해주세요.".formatted(AppConfig.getSiteName(), member.getName());
         String url = genEmailVerificationUrl(member);
-
-        RsData<Long> sendEmailRs = emailService.sendEmail(email, title, url);
+        String body = "해당 링크가 열리지 않는다면, 링크를 복사하여 주소창에 검색해주세요.\n" + url;
+        RsData<Long> sendEmailRs = emailService.sendEmail(email, title, body);
 
         return CompletableFuture.supplyAsync(() -> sendEmailRs);
     }
