@@ -15,9 +15,19 @@
             <div th:if="${orders.size() == 0}" class="flex justify-center my-16">
                 <span >주문 내역이 없습니다.</span>
             </div>
+            <div class="flex flex-grow justify-between p-5 mb-10">
+                <th:block th:each="status, statusIndex : ${orderStatuses}">
+                    <div class="flex flex-col justify-center items-center gap-2">
+                        <span th:text="${orderStatusCount.containsKey(status) ? orderStatusCount.get(status) : 0}"
+                              class="font-bold"></span>
+                        <span th:text="${status.value}" class="text-sm text-center"></span>
+                    </div>
+                </th:block>
+            </div>
+
             <div th:each="order, loop : ${orders}">
                 <a th:href="@{|/order/management/${order.orderId}|}">
-                    <div class="bg-base-100 border-b border-gray-200 p-5 ">
+                    <div th:class="'bg-base-100 border-b border-gray-200 p-5' + (${loop.first} ? ' border-t' : '')">
                         <div class="flex flex-col gap-1">
                             <div class="flex justify-between">
                                 <span th:text="${#temporals.format(order.payment.payDate, 'yyyy-MM-dd')}"></span>

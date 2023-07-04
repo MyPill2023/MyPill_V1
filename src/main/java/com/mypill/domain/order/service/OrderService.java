@@ -212,5 +212,11 @@ public class OrderService {
     public List<Order> findBySellerId(Long sellerId) {
         return orderRepository.findBySellerId(sellerId);
     }
+    public List<OrderItem> findOrderItemBySellerId(Long sellerId) {
+        return orderItemRepository.findBySellerId(sellerId);
+    }
+    public List<OrderItem> findOrderItemByBuyerId(Long buyerId) {
+        return orderItemRepository.findByBuyerId(buyerId);
+    }
 
 }

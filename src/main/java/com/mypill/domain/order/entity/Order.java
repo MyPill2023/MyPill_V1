@@ -78,7 +78,7 @@ public class Order extends BaseEntity {
         }
 
         if (orderItems.size() > 1) {
-            sb.append(" 외 %d개".formatted(orderItems.size() - 1));
+            sb.append(" 외 %d".formatted(orderItems.size() - 1));
         }
 
         this.name = sb.toString();

@@ -46,7 +46,8 @@
                                       class="flex gap-3 mt-5">
                                     <input type="hidden" name="orderId" th:value="${order.orderId}">
                                     <select class="select select-bordered w-3/4" name="newStatus">
-                                        <option th:each="orderStatus, loop : ${orderStatuses}" th:unless="${loop.index <= 1}"
+                                        <option th:each="orderStatus, loop : ${orderStatuses}" th:unless="${loop.index < 1}"
+                                                th:disabled="${loop.index == 1}"
                                                 th:value="${orderStatus.value}" th:text="${orderStatus.value}"
                                                 th:selected="${orderStatus.value.equals(orderItem.orderStatus.value)}"></option>
                                     </select>
