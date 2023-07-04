@@ -39,8 +39,8 @@ public class CartService {
     }
 
     @Transactional
-    public RsData<CartProduct> addProduct(CartProductRequest request) {
-        Cart cart = findByMemberId(rq.getMember().getId());
+    public RsData<CartProduct> addProduct(Member member, CartProductRequest request) {
+        Cart cart = findByMemberId(member.getId());
         Product product = productService.findById(request.getProductId()).orElse(null);
 
         if(product == null){
@@ -52,7 +52,7 @@ public class CartService {
         }
 
         if(cart == null){
-            cart = createCart(rq.getMember());
+            cart = createCart(member);
         }
 
         CartProduct cartProduct = findOrCreateCartProduct(cart, product, request.getQuantity());

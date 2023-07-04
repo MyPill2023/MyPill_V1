@@ -113,23 +113,12 @@ public class OrderController {
             @RequestParam("addressId") String addressId,
             Model model) throws Exception {
 
-        Order order = orderService.findById(id).get();
-
-        long orderIdInputed = Long.parseLong(orderId.split("_")[0]);
-
-        if (id != orderIdInputed) {
-            return rq.historyBack("주문번호가 일치하지 않습니다.");
+        RsData<Order> validateRsData = orderService.validateOrder(id, orderId, amount);
+        if(validateRsData.isFail()){
+            return rq.historyBack(validateRsData);
         }
 
-        if (!amount.equals(order.getTotalPrice())) {
-            return rq.historyBack("주문 가격과 결제 가격이 일치하지 않습니다.");
-        }
-
-        for(OrderItem orderItem : order.getOrderItems()){
-            if(orderItem.getProduct().getStock() < orderItem.getQuantity()){
-                return rq.historyBack("%s의 주문 수량이 재고보다 많습니다.".formatted(orderItem.getProduct().getName()));
-            }
-        }
+        Order order = validateRsData.getData();
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((AppConfig.getTossPaymentSecretKey() + ":").getBytes()));
@@ -159,19 +148,6 @@ public class OrderController {
         }
     }
 
-    private void extractMessageFromResponse(ResponseEntity<JsonNode> responseEntity, Order order) {
-        JsonNode body = responseEntity.getBody();
-
-        String requestedAt = body.get("requestedAt").asText();
-        LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-
-        String method = body.get("method").asText();
-        Long totalAmount = body.get("totalAmount").asLong();
-        String status = body.get("status").asText();
-
-        orderService.updatePayment(order, method, totalAmount, payDate, status);
-    }
-
     @RequestMapping("/{id}/fail")
     public String failPayment(@RequestParam String message, @RequestParam String code, @RequestParam String orderNumber, Model model) {
         model.addAttribute("orderNumber", orderNumber);
@@ -179,7 +155,6 @@ public class OrderController {
         model.addAttribute("code", code);
         return "order/fail";
     }
-
 
     @GetMapping("/management/{orderId}")
     @PreAuthorize("hasAuthority('SELLER')")
@@ -218,6 +193,19 @@ public class OrderController {
             rq.historyBack(updateRsData);
         }
         return rq.redirectWithMsg("/order/management/%s".formatted(orderId), updateRsData);
+    }
+
+    private void extractMessageFromResponse(ResponseEntity<JsonNode> responseEntity, Order order) {
+        JsonNode body = responseEntity.getBody();
+
+        String requestedAt = body.get("requestedAt").asText();
+        LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
+        String method = body.get("method").asText();
+        Long totalAmount = body.get("totalAmount").asLong();
+        String status = body.get("status").asText();
+
+        orderService.updatePayment(order, method, totalAmount, payDate, status);
     }
 
 }

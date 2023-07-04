@@ -40,7 +40,7 @@ public class CartController {
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/add")
     public String addCartProduct(@Valid CartProductRequest request){
-        RsData<CartProduct> addRsData = cartService.addProduct(request);
+        RsData<CartProduct> addRsData = cartService.addProduct(rq.getMember(), request);
 
         if(addRsData.isFail()){
             return rq.historyBack(addRsData);
