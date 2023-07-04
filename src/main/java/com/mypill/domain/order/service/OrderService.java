@@ -21,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
 import java.util.Comparator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,12 +57,6 @@ public class OrderService {
     public RsData<Order> createFromCart(Member buyer) {
         List<CartProduct> cartProducts = cartService.findByMemberId(buyer.getId()).getCartProducts();
 
-        for(CartProduct cartProduct : cartProducts){
-            if(cartProduct.getQuantity() > cartProduct.getProduct().getStock()){
-                return RsData.of("F-1", "%s의 수량이 현재 재고보다 많습니다.".formatted(cartProduct.getProduct().getName()));
-            }
-        }
-
         List<OrderItem> orderItems = cartProducts.stream()
                 .filter(cartProduct -> cartProduct.getDeleteDate() == null)
                 .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
@@ -73,6 +69,22 @@ public class OrderService {
         return RsData.of("S-1", "주문이 생성되었습니다.", order);
     }
 
+    @Transactional
+    public RsData<Order> createSelectedCartProduct(Member buyer, String[] selectedCartProductIds) {
+        List<Long> ids = Arrays.stream(selectedCartProductIds).map(Long::valueOf).toList();
+        List<CartProduct> cartProducts = cartService.findCartProductByIdIn(ids);
+
+        List<OrderItem> orderItems = cartProducts.stream()
+                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
+                .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
+                .toList();
+
+        Order order = create(buyer, orderItems);
+        for(CartProduct cartProduct : cartProducts){
+            order.addCartProduct(cartProduct);
+        }
+        return RsData.of("S-1", "주문이 생성되었습니다.", order);
+    }
 
     // 임시 NotProd용
     @Transactional
@@ -125,8 +137,8 @@ public class OrderService {
         order.updatePayment(method, totalAmount, payDate, status);
         orderRepository.save(order);
     }
-
     // 결제 완료된 주문을 조회
+
     public RsData<Order> getOrderDetail(Long orderId) {
         Order order = findById(orderId).orElse(null);
         if (!isOrderValid(order)) {
@@ -142,8 +154,8 @@ public class OrderService {
 
         return RsData.of("S-1", order);
     }
-
     // 판매자가 자신의 상품이 포함된 주문을 조회
+
     public RsData<List<OrderItem>> getOrderBySeller(Order order){
 
         Long sellerId = rq.getMember().getId();
@@ -184,6 +196,7 @@ public class OrderService {
         return RsData.of("S-1", "주문 상태가 변경되었습니다.");
     }
 
+
     @Transactional
     public void updatePrimaryOrderStatus(Order order){
         order.updatePrimaryOrderStatus(getHighestPriorityOrderItemStatus(order));
@@ -212,6 +225,7 @@ public class OrderService {
     public List<Order> findBySellerId(Long sellerId) {
         return orderRepository.findBySellerId(sellerId);
     }
+
     public List<OrderItem> findOrderItemBySellerId(Long sellerId) {
         return orderItemRepository.findBySellerId(sellerId);
     }
