@@ -2,7 +2,7 @@ package com.mypill.domain.email.service;
 
 import com.mypill.domain.email.entity.SendEmailLog;
 import com.mypill.domain.email.repository.SendEmailLogRepository;
-import com.mypill.domain.emailSender.service.EmailSenderService;
+import com.mypill.domain.emailsender.service.EmailSenderService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
