@@ -55,23 +55,23 @@
                 </div>
 
             </div>
-<!--                        <div class="flex flex-col gap-2">-->
-<!--                            <h3 class="text-lg font-bold mb-2 mt-10">배송 정보</h3>-->
-<!--                            <div class="flex gap-2">-->
-<!--                                <span class="w-1/4 text-gray-400">수령인</span>-->
-<!--                                <span th:text="${order.deliveryAddress.receiverName}"></span>-->
-<!--                            </div>-->
-<!--                            <div class="flex gap-2">-->
-<!--                                <span class="w-1/4 text-gray-400">연락처</span>-->
-<!--                                <span th:text="${order.deliveryAddress.phoneNumber}"></span>-->
-<!--                            </div>-->
-<!--                            <div class="flex gap-2">-->
-<!--                                <span class="w-1/4 text-gray-400">배송지</span>-->
-<!--                                <span class="w-3/4"-->
-<!--                                      th:text="'(' + ${order.deliveryAddress.postCode} + ') ' + ${orderResponse.deliveryAddress.address} + ' ' + ${orderResponse.deliveryAddress.detailAddress}">-->
-<!--                                    </span>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                <div class="flex flex-col gap-2">
+                    <h3 class="text-lg font-bold mb-2 mt-10">배송 정보</h3>
+                    <div class="flex gap-2">
+                        <span class="w-1/4 text-gray-400">수령인</span>
+                        <span th:text="${order.deliveryAddress.receiverName}"></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="w-1/4 text-gray-400">연락처</span>
+                        <span th:text="${order.deliveryAddress.phoneNumber}"></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <span class="w-1/4 text-gray-400">배송지</span>
+                        <span class="w-3/4"
+                              th:text="'(' + ${order.deliveryAddress.postCode} + ') ' + ${order.deliveryAddress.address} + ' ' + ${order.deliveryAddress.detailAddress}">
+                            </span>
+                    </div>
+                </div>
             <div class="flex flex-col gap-2">
                 <h3 class="text-lg font-bold mb-2 mt-10">결제 정보</h3>
                 <div class="flex gap-2">
