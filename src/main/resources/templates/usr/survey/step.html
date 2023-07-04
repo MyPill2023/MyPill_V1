@@ -29,15 +29,15 @@
                 <div class="join join-vertical gap-4">
                     <input onchange="if ( this.checked == false ) $(document.stepForm).find('input[type=hidden][name=' + $(this).attr('name') + ']').remove();"
                            th:each="question : ${questions}" type="checkbox" th:name="|question_${question.id}|"
-                           th:aria-label="${question.content}" th:value="Y" class="btn btn-wide btn-outline bg-green-100"
+                           th:aria-label="${question.content}" th:value="Y" class="btn btn-block btn-wide btn-outline bg-green-100 w-full"
                            th:checked="${stepParam.isChecked(question.id)}"/>
                 </div>
-                <div class="grid gap-2 mt-5">
+                <div class="grid flex justify-center gap-2 mt-5">
                     <button onclick="document.stepForm.stepNo.value = document.stepForm.stepNo.getAttribute('prev')"
-                            th:unless="${stepParam.first}" class="btn btn-success">이전([[${stepParam.prevStepNo}]]단계)
+                            th:unless="${stepParam.first}" class="btn btn-success w-36">이전 ([[${stepParam.prevStepNo}]]단계)
                     </button>
                     <button onclick="document.stepForm.stepNo.value = document.stepForm.stepNo.getAttribute('next')"
-                            th:unless="${stepParam.last}" class="btn btn-success">다음([[${stepParam.nextStepNo}]]단계)
+                            th:unless="${stepParam.last}" class="btn btn-success  w-36">다음 ([[${stepParam.nextStepNo}]]단계)
                     </button>
                     <button onclick="document.stepForm.stepNo.value = '0';" th:if="${stepParam.last}" class="btn btn-success">작성완료</button>
                 </div>

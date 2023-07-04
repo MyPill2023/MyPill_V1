@@ -7,7 +7,7 @@
 
 <body>
 <main layout:fragment="main">
-    <div class="hero-content flex flex-col my-10 w-[32rem]">
+    <div class="hero-content flex flex-col my-10 w-[32rem] !mb-28">
         <h1 class="text-2xl font-bold">
             주문 상세 관리
         </h1>
@@ -39,7 +39,8 @@
                                     <span class="text-lg"
                                           th:text="${#numbers.formatInteger(orderItem.product.price * orderItem.quantity, 0, 'COMMA') + '원'}"></span>
                                 </div>
-                                <form th:action="@{|/order/update/status/${orderItem.id}|}" method="POST" class="flex gap-3">
+                                <form th:action="@{|/order/update/status/${orderItem.id}|}" method="POST"
+                                      class="flex gap-3">
                                     <input type="hidden" name="orderId" th:value="${order.orderId}">
                                     <select class="select select-bordered" name="newStatus">
                                         <option th:each="orderStatus, loop : ${orderStatuses}"
@@ -55,23 +56,40 @@
                 </div>
 
             </div>
-                <div class="flex flex-col gap-2">
-                    <h3 class="text-lg font-bold mb-2 mt-10">배송 정보</h3>
-                    <div class="flex gap-2">
-                        <span class="w-1/4 text-gray-400">수령인</span>
-                        <span th:text="${order.deliveryAddress.receiverName}"></span>
-                    </div>
-                    <div class="flex gap-2">
-                        <span class="w-1/4 text-gray-400">연락처</span>
-                        <span th:text="${order.deliveryAddress.phoneNumber}"></span>
-                    </div>
-                    <div class="flex gap-2">
-                        <span class="w-1/4 text-gray-400">배송지</span>
-                        <span class="w-3/4"
-                              th:text="'(' + ${order.deliveryAddress.postCode} + ') ' + ${order.deliveryAddress.address} + ' ' + ${order.deliveryAddress.detailAddress}">
-                            </span>
-                    </div>
+            <div class="flex flex-col gap-2">
+                <h3 class="text-lg font-bold mb-2 mt-10">주문 회원 정보</h3>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">이름</span>
+                    <span th:text="${order.buyerName}"></span>
                 </div>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">연락처</span>
+                    <span th:text="${order.deliveryAddress.phoneNumber}"></span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">배송지</span>
+                    <span class="w-3/4"
+                          th:text="'(' + ${order.deliveryAddress.postCode} + ') ' + ${order.deliveryAddress.address} + ' ' + ${order.deliveryAddress.detailAddress}">
+                        </span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <h3 class="text-lg font-bold mb-2 mt-10">배송 정보</h3>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">수령인</span>
+                    <span th:text="${order.deliveryAddress.receiverName}"></span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">연락처</span>
+                    <span th:text="${order.deliveryAddress.phoneNumber}"></span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">배송지</span>
+                    <span class="w-3/4"
+                          th:text="'(' + ${order.deliveryAddress.postCode} + ') ' + ${order.deliveryAddress.address} + ' ' + ${order.deliveryAddress.detailAddress}">
+                        </span>
+                </div>
+            </div>
             <div class="flex flex-col gap-2">
                 <h3 class="text-lg font-bold mb-2 mt-10">결제 정보</h3>
                 <div class="flex gap-2">
