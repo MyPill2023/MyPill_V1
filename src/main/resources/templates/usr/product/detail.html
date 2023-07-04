@@ -18,30 +18,29 @@
             </div>
 
             <div class="flex flex-col justify-start w-full gap-2">
-                <h3 class=" text-xl" th:text="${productResponse.seller.name}"></h3>
-                <div class="flex flex-row justify-between">
-                    <h1 class=" text-3xl font-bold" th:text="${productResponse.name}"></h1>
-                    <div class="flex flex-row items-center">
-                        <button id="like-button" class="heart-icon mr-1">
-                            <i th:if="${productResponse.isLiked}" class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
-                            <i th:unless="${productResponse.isLiked}" class="fa-solid fa-heart"
-                               style="color: #C0C0C0;"></i>
-                        </button>
-                        <div id="like-count">
+                <h3 th:text="${productResponse.seller.name}"></h3>
+                <h1 class=" text-xl font-bold" th:text="${productResponse.name}"></h1>
+            </div>
+            <div class="flex justify-between">
+                <div class="flex items-center">
+                    <button id="like-button" class="heart-icon mx-1">
+                        <i th:if="${productResponse.isLiked}" class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
+                        <i th:unless="${productResponse.isLiked}" class="fa-solid fa-heart"
+                           style="color: #C0C0C0;"></i>
+                    </button>
+                    <div id="like-count">
                             <span class="text-xl" style="color:#ffb0b0;" th:if="${productResponse.isLiked}"
                                   th:text="${productResponse.likedMembers == null ? 0 : productResponse.likedMembers.size}">
                             </span>
-                            <span class="text-xl" style="color:black;" th:unless="${productResponse.isLiked}"
-                                  th:text="${productResponse.likedMembers == null ? 0 : productResponse.likedMembers.size}">
+                        <span class="text-xl" style="color:black;" th:unless="${productResponse.isLiked}"
+                              th:text="${productResponse.likedMembers == null ? 0 : productResponse.likedMembers.size}">
                             </span>
-                        </div>
                     </div>
-
                 </div>
-            </div>
-            <div class="flex justify-end w-full items-center">
-                <span class="text-2xl font-bold"
+                <div class="flex justify-end w-full items-center">
+                    <span class="text-xl font-bold"
                       th:text="${#numbers.formatInteger(productResponse.price, 0, 'COMMA') + '원'}"></span>
+                </div>
             </div>
             <div class="divider !my-2"></div>
             <form th:action="@{|/cart/add|}" method="POST"

@@ -20,7 +20,7 @@
 
                 <div th:if="${cartResponse.totalQuantity != 0}">
                     <div th:each="cartProduct, loop : ${cartResponse.cartProducts}">
-                        <div class="bg-base-100 border-b border-gray-200 p-5 ">
+                        <div class="bg-base-100 border-b border-gray-200 p-4 ">
                                 <div class="flex justify-around gap-5">
                                     <input name="selectedItems" type="checkbox" checked="checked" class="checkbox checkbox-success"
                                            th:data-product-price="${cartProduct.product.price}"
@@ -59,14 +59,14 @@
                                             </form>
                                         </div>
                                         <form th:action="@{|/cart/update|}" method="POST" class="mt-2">
-                                            <div class="flex gap-3 justify-center items-center">
-                                                <button class="badge badge-ghost badge-lg" type="button"
+                                            <div class="flex gap-1 justify-around items-center">
+                                                <button class="badge badge-ghost " type="button"
                                                         th:attr="onclick='decreaseQuantity(' + ${loop.index} + ');'">-
                                                 </button>
                                                 <input type="number" th:id="'quantity'+${loop.index}" name="newQuantity"
                                                        min="1" th:value="${cartProduct.quantity}"
                                                        class="input input-bordered input-sm w-16" required />
-                                                <button class="badge badge-ghost badge-lg" type="button"
+                                                <button class="badge badge-ghost " type="button"
                                                         th:attr="onclick='increaseQuantity(' + ${loop.index} + ');'">+
                                                 </button>
                                                 <input type="hidden" name="cartProductId" th:value="${cartProduct.id}"/>
