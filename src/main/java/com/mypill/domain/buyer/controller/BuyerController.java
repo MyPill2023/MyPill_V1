@@ -7,6 +7,8 @@ import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.order.dto.response.OrderListResponse;
 import com.mypill.domain.order.entity.Order;
+import com.mypill.domain.order.entity.OrderItem;
+import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
@@ -18,7 +20,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -75,8 +81,21 @@ public class BuyerController {
     public String myOrder(Model model) {
 
         List<Order> orders = orderService.findByBuyerId(rq.getMember().getId());
-        List<OrderListResponse> orderListResponses = orders.stream().map(OrderListResponse::of).toList();
+        List<OrderListResponse> orderListResponses = orders.stream()
+                .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
+                .map(OrderListResponse::of).toList();
         model.addAttribute("orders", orderListResponses);
+
+        List<OrderItem> orderItems = orderService.findOrderItemByBuyerId(rq.getMember().getId());
+        Map<OrderStatus, Long> orderStatusCount = orderItems.stream()
+                .collect(Collectors.groupingBy(OrderItem::getStatus, Collectors.counting()));
+
+        model.addAttribute("orderStatusCount", orderStatusCount);
+
+        OrderStatus[] filteredOrderStatus = Arrays.stream(OrderStatus.values())
+                .filter(status -> status.getPriority() >=1 && status.getPriority() <= 4 )
+                .toArray(OrderStatus[]::new);
+        model.addAttribute("orderStatuses", filteredOrderStatus);
 
         return "usr/buyer/myOrder";
     }
