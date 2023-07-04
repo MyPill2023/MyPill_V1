@@ -9,7 +9,7 @@ import com.mypill.domain.cart.repository.CartRepository;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.order.entity.Order;
-import com.mypill.domain.product.Service.ProductService;
+import com.mypill.domain.product.service.ProductService;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
@@ -17,11 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +48,7 @@ public class CartService {
         }
 
         if(!checkStockAvailability(product.getStock(), request.getQuantity())){
-            return RsData.of("F-2", "선택한 수량이 재고보다 많습니다.");
+            return RsData.of("F-2", "선택한 수량이  재고보다 많습니다.");
         }
 
         if(cart == null){

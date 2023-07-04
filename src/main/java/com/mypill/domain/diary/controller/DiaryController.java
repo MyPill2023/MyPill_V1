@@ -1,10 +1,8 @@
 package com.mypill.domain.diary.controller;
 
-import com.mypill.domain.category.service.CategoryService;
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
 import com.mypill.domain.diary.service.DiaryService;
-import com.mypill.domain.nutrient.Service.NutrientService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;

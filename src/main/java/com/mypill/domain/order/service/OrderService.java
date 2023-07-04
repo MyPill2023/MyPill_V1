@@ -1,6 +1,5 @@
 package com.mypill.domain.order.service;
 
-import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.cart.entity.CartProduct;
@@ -12,7 +11,7 @@ import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.repository.OrderItemRepository;
 import com.mypill.domain.order.repository.OrderRepository;
-import com.mypill.domain.product.Service.ProductService;
+import com.mypill.domain.product.service.ProductService;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
@@ -24,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

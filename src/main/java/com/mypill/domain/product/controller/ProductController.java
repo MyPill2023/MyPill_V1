@@ -2,28 +2,24 @@ package com.mypill.domain.product.controller;
 
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
-import com.mypill.domain.nutrient.Service.NutrientService;
+import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
-import com.mypill.domain.product.Service.ProductService;
+import com.mypill.domain.product.service.ProductService;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor

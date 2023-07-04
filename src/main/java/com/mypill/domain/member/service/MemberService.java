@@ -1,12 +1,11 @@
 package com.mypill.domain.member.service;
 
-import com.mypill.domain.emailVerification.service.EmailVerificationService;
+import com.mypill.domain.emailverification.service.EmailVerificationService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rsData.RsData;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
