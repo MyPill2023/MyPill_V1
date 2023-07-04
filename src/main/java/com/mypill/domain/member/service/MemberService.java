@@ -6,13 +6,11 @@ import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rsData.RsData;
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -72,7 +70,7 @@ public class MemberService {
         return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
     }
 
-    private RsData<Member> oauthJoin(String providerTypeCode, String username, String password, String name, String email) {
+    private RsData<Member> oauthJoin(String providerTypeCode, String username, String name, String email) {
         if (findByUsername(username).isPresent()) {
             return RsData.of("F-1", "해당 아이디(%s)는 이미 사용중입니다.".formatted(username));
         }
@@ -81,15 +79,11 @@ public class MemberService {
             return RsData.of("F-2", "해당 이메일은 이미 사용중입니다.");
         }
 
-        if (StringUtils.hasText(password)) {
-            password = passwordEncoder.encode(password);
-        }
-
         Member member = Member.builder()
                 .providerTypeCode(providerTypeCode)
                 .username(username)
                 .name(name)
-                .password(passwordEncoder.encode(password))
+                .password(passwordEncoder.encode(""))
                 .userType(1)
                 .email(email)
                 .build();
@@ -145,8 +139,7 @@ public class MemberService {
         Optional<Member> opMember = findByUsername(username);
 
         return opMember.map(member -> RsData.of("S-2", "로그인 되었습니다.", member))
-                .orElseGet(() -> oauthJoin(providerTypeCode, username, "", name, email));
-
+                .orElseGet(() -> oauthJoin(providerTypeCode, username, name, email));
     }
 
     public void whenAfterLike(Member member, Product product) {
@@ -165,7 +158,9 @@ public class MemberService {
 
     @Transactional
     public String nameUpdate(Member member, String newName) {
-        member.updateName(newName);
+        member = member.toBuilder()
+                .name(newName)
+                .build();
         memberRepository.save(member);
         return "success";
     }
@@ -184,13 +179,15 @@ public class MemberService {
     public RsData verifyEmail(Long id, String verificationCode) {
         RsData verifyVerificationCodeRs = emailVerificationService.verifyVerificationCode(id, verificationCode);
 
-        if (verifyVerificationCodeRs.isSuccess() == false) {
+        if (!verifyVerificationCodeRs.isSuccess()) {
             return verifyVerificationCodeRs;
         }
 
         Member member = memberRepository.findById(id).get();
-        member.setEmailVerified(true);
-
+        member = member.toBuilder()
+                .emailVerified(true)
+                .build();
+        memberRepository.save(member);
         return RsData.of("S-1", "이메일인증이 완료되었습니다.");
     }
 }

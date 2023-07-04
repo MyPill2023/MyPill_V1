@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -62,8 +63,11 @@ public class PostService {
         if (post == null) {
             return RsData.of("F-1", "존재하지 않는 게시글입니다.");
         }
-        if (post.getPoster().getId() != member.getId()) {
+        if (!Objects.equals(post.getPoster().getId(), member.getId())) {
             return RsData.of("F-2", "작성자만 수정이 가능합니다.");
+        }
+        if (post.getDeleteDate() != null) {
+            return RsData.of("F-3", "삭제된 게시물입니다.");
         }
         post = post.toBuilder()
                 .title(postRequest.getTitle())
@@ -79,7 +83,7 @@ public class PostService {
         if (post == null) {
             return RsData.of("F-1", "존재하지 않는 게시글입니다.");
         }
-        if (post.getPoster().getId() != member.getId()) {
+        if (!Objects.equals(post.getPoster().getId(), member.getId())) {
             return RsData.of("F-2", "작성자만 삭제가 가능합니다.");
         }
         post = post.toBuilder()
@@ -114,5 +118,4 @@ public class PostService {
     public Page<Post> searchContent(String keyword, Pageable pageable) {
         return postRepository.findByContentContainingAndDeleteDateIsNullOrderByIdDesc(keyword, pageable);
     }
-
 }

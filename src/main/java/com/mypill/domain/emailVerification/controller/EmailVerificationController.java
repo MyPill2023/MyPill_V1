@@ -18,16 +18,13 @@ public class EmailVerificationController {
     @GetMapping("/verify")
     public String verify(Long memberId, String code) {
         RsData verifyEmailRsData = memberService.verifyEmail(memberId, code);
-
         if (verifyEmailRsData.isFail()) {
             return rq.redirectWithMsg("/", verifyEmailRsData);
         }
         String successMsg = verifyEmailRsData.getMsg();
-
         if (rq.isLogout()) {
             return rq.redirectWithMsg("/usr/member/login", successMsg);
         }
-
         return rq.redirectWithMsg("/", successMsg);
     }
 }

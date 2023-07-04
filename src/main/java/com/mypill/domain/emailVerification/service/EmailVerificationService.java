@@ -26,7 +26,6 @@ public class EmailVerificationService {
         String url = genEmailVerificationUrl(member);
         String body = "해당 링크가 열리지 않는다면, 링크를 복사하여 주소창에 검색해주세요.\n" + url;
         RsData<Long> sendEmailRs = emailService.sendEmail(email, title, body);
-
         return CompletableFuture.supplyAsync(() -> sendEmailRs);
     }
 
@@ -36,28 +35,20 @@ public class EmailVerificationService {
 
     public String genEmailVerificationUrl(long memberId) {
         String code = genEmailVerificationCode(memberId);
-
         return AppConfig.getSiteBaseUrl() + "/emailVerification/verify?memberId=%d&code=%s".formatted(memberId, code);
     }
 
     public String genEmailVerificationCode(long memberId) {
         String code = UUID.randomUUID().toString();
-        attrService.set("member__%d__extra__emailVerificationCode".formatted(memberId), code, LocalDateTime.now().plusSeconds(60 * 60 * 1));
-
+        attrService.set("member__%d__extra__emailVerificationCode".formatted(memberId), code, LocalDateTime.now().plusSeconds(60 * 60));
         return code;
     }
 
     public RsData verifyVerificationCode(long memberId, String code) {
         String foundCode = attrService.get("member__%d__extra__emailVerificationCode".formatted(memberId), "");
-
-        if (foundCode.equals(code) == false) {
+        if (!foundCode.equals(code)) {
             return RsData.of("F-1", "만료되었거나 유효하지 않은 코드입니다.");
         }
-
         return RsData.of("S-1", "인증된 코드 입니다.");
-    }
-
-    public String findEmailVerificationCode(long memberId) {
-        return attrService.get("member__%d__extra__emailVerificationCode".formatted(memberId), "");
     }
 }

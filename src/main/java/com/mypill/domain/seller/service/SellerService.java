@@ -17,8 +17,10 @@ public class SellerService {
         if (!brnoCertificated) {
             return RsData.of("F-1", "인증에 실패했습니다.");
         }
-        member.brnoCertificate();
-        updateUserType(member);
+        member = member.toBuilder()
+                .brnoCertificated(true)
+                .build();
+        member = updateUserType(member);
 
         memberRepository.save(member);
         return RsData.of("S-1", "인증에 성공했습니다.");
@@ -29,14 +31,20 @@ public class SellerService {
         if (!nBrnoCertificated) {
             return RsData.of("F-1", "인증에 실패했습니다.");
         }
-        member.nBrnoCertificate();
-        updateUserType(member);
+        member = member.toBuilder()
+                .nBrnoCertificated(true)
+                .build();
+        member = updateUserType(member);
         memberRepository.save(member);
         return RsData.of("S-1", "인증에 성공했습니다.");
     }
-    private void updateUserType(Member member){
-        if(member.isBrnoCertificated()&&member.isNBrnoCertificated()){
-            member.updateUserType();
+
+    private Member updateUserType(Member member) {
+        if (member.isBrnoCertificated() && member.isNBrnoCertificated()) {
+            member = member.toBuilder()
+                    .userType(2)
+                    .build();
         }
+        return member;
     }
 }
