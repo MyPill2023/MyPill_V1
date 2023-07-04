@@ -57,32 +57,20 @@ public class OrderService {
     public RsData<Order> createFromCart(Member buyer) {
         List<CartProduct> cartProducts = cartService.findByMemberId(buyer.getId()).getCartProducts();
 
-        List<OrderItem> orderItems = cartProducts.stream()
-                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
-                .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
-                .toList();
-
+        List<OrderItem> orderItems = createOrderItemsFromCartProducts(cartProducts);
         Order order = create(buyer, orderItems);
-        for(CartProduct cartProduct : cartProducts){
-            order.addCartProduct(cartProduct);
-        }
+        addCartProductsToOrder(order, cartProducts);
         return RsData.of("S-1", "주문이 생성되었습니다.", order);
     }
 
     @Transactional
-    public RsData<Order> createSelectedCartProduct(Member buyer, String[] selectedCartProductIds) {
+    public RsData<Order> createFromSelectedCartProduct(Member buyer, String[] selectedCartProductIds) {
         List<Long> ids = Arrays.stream(selectedCartProductIds).map(Long::valueOf).toList();
         List<CartProduct> cartProducts = cartService.findCartProductByIdIn(ids);
 
-        List<OrderItem> orderItems = cartProducts.stream()
-                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
-                .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
-                .toList();
-
+        List<OrderItem> orderItems = createOrderItemsFromCartProducts(cartProducts);
         Order order = create(buyer, orderItems);
-        for(CartProduct cartProduct : cartProducts){
-            order.addCartProduct(cartProduct);
-        }
+        addCartProductsToOrder(order, cartProducts);
         return RsData.of("S-1", "주문이 생성되었습니다.", order);
     }
 
@@ -137,8 +125,8 @@ public class OrderService {
         order.updatePayment(method, totalAmount, payDate, status);
         orderRepository.save(order);
     }
-    // 결제 완료된 주문을 조회
 
+    // 결제 완료된 주문을 조회
     public RsData<Order> getOrderDetail(Long orderId) {
         Order order = findById(orderId).orElse(null);
         if (!isOrderValid(order)) {
@@ -154,8 +142,8 @@ public class OrderService {
 
         return RsData.of("S-1", order);
     }
-    // 판매자가 자신의 상품이 포함된 주문을 조회
 
+    // 판매자가 자신의 상품이 포함된 주문을 조회
     public RsData<List<OrderItem>> getOrderBySeller(Order order){
 
         Long sellerId = rq.getMember().getId();
@@ -168,14 +156,6 @@ public class OrderService {
         }
 
         return RsData.of("S-1", "접근 가능한 주문입니다.", filteredOrderItems);
-    }
-
-    private boolean isOrderValid(Order order) {
-        return order != null && order.getPayment() != null;
-    }
-
-    private boolean isOrderAccessibleByBuyer(Order order, Member member) {
-        return order.getBuyer().getId().equals(member.getId());
     }
 
     @Transactional
@@ -195,7 +175,6 @@ public class OrderService {
 
         return RsData.of("S-1", "주문 상태가 변경되었습니다.");
     }
-
 
     @Transactional
     public void updatePrimaryOrderStatus(Order order){
@@ -232,5 +211,26 @@ public class OrderService {
     public List<OrderItem> findOrderItemByBuyerId(Long buyerId) {
         return orderItemRepository.findByBuyerId(buyerId);
     }
+
+    private boolean isOrderValid(Order order) {
+        return order != null && order.getPayment() != null;
+    }
+
+    private boolean isOrderAccessibleByBuyer(Order order, Member member) {
+        return order.getBuyer().getId().equals(member.getId());
+    }
+
+    private List<OrderItem> createOrderItemsFromCartProducts(List<CartProduct> cartProducts) {
+        return cartProducts.stream()
+                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
+                .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
+                .toList();
+    }
+    private void addCartProductsToOrder(Order order, List<CartProduct> cartProducts) {
+        for (CartProduct cartProduct : cartProducts) {
+            order.addCartProduct(cartProduct);
+        }
+    }
+
 
 }

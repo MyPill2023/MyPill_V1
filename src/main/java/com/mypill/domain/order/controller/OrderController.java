@@ -83,7 +83,7 @@ public class OrderController {
             return rq.historyBack("선택된 상품이 없습니다.");
         }
 
-        RsData<Order> orderRsData = orderService.createSelectedCartProduct(buyer, selectedCartProductIds);
+        RsData<Order> orderRsData = orderService.createFromSelectedCartProduct(buyer, selectedCartProductIds);
         if (orderRsData.isFail()) {
             return rq.historyBack(orderRsData);
         }
