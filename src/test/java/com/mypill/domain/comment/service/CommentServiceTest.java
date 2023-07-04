@@ -34,8 +34,6 @@ class CommentServiceTest {
 
     @BeforeEach()
     void beforeEach() {
-        commentRepository.deleteAll();
-        postRepository.deleteAll();
 
         commentRequest = new CommentRequest();
         commentRequest.setNewContent("새 댓글");
