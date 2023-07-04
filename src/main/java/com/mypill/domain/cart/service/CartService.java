@@ -145,6 +145,9 @@ public class CartService {
     public Optional<CartProduct> findCartProductById(Long cartProductId){
         return cartProductRepository.findById(cartProductId);
     }
+    public List<CartProduct> findCartProductByIdIn(List<Long> cartProductIds){
+        return cartProductRepository.findByIdIn(cartProductIds);
+    }
 
     // cartProduct가 현재 회원 cart의 product인지
     private boolean hasPermisson(Cart cart, CartProduct cartProduct) {

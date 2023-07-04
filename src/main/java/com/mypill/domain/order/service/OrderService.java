@@ -21,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
 import java.util.Comparator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,24 +57,22 @@ public class OrderService {
     public RsData<Order> createFromCart(Member buyer) {
         List<CartProduct> cartProducts = cartService.findByMemberId(buyer.getId()).getCartProducts();
 
-        for(CartProduct cartProduct : cartProducts){
-            if(cartProduct.getQuantity() > cartProduct.getProduct().getStock()){
-                return RsData.of("F-1", "%s의 수량이 현재 재고보다 많습니다.".formatted(cartProduct.getProduct().getName()));
-            }
-        }
-
-        List<OrderItem> orderItems = cartProducts.stream()
-                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
-                .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
-                .toList();
-
+        List<OrderItem> orderItems = createOrderItemsFromCartProducts(cartProducts);
         Order order = create(buyer, orderItems);
-        for(CartProduct cartProduct : cartProducts){
-            order.addCartProduct(cartProduct);
-        }
+        addCartProductsToOrder(order, cartProducts);
         return RsData.of("S-1", "주문이 생성되었습니다.", order);
     }
 
+    @Transactional
+    public RsData<Order> createFromSelectedCartProduct(Member buyer, String[] selectedCartProductIds) {
+        List<Long> ids = Arrays.stream(selectedCartProductIds).map(Long::valueOf).toList();
+        List<CartProduct> cartProducts = cartService.findCartProductByIdIn(ids);
+
+        List<OrderItem> orderItems = createOrderItemsFromCartProducts(cartProducts);
+        Order order = create(buyer, orderItems);
+        addCartProductsToOrder(order, cartProducts);
+        return RsData.of("S-1", "주문이 생성되었습니다.", order);
+    }
 
     // 임시 NotProd용
     @Transactional
@@ -158,14 +158,6 @@ public class OrderService {
         return RsData.of("S-1", "접근 가능한 주문입니다.", filteredOrderItems);
     }
 
-    private boolean isOrderValid(Order order) {
-        return order != null && order.getPayment() != null;
-    }
-
-    private boolean isOrderAccessibleByBuyer(Order order, Member member) {
-        return order.getBuyer().getId().equals(member.getId());
-    }
-
     @Transactional
     public RsData<OrderItem> updateOrderStatus(Long orderItemId, String newStatus) {
         OrderItem orderItem = findOrderItemById(orderItemId).orElse(null);
@@ -212,11 +204,33 @@ public class OrderService {
     public List<Order> findBySellerId(Long sellerId) {
         return orderRepository.findBySellerId(sellerId);
     }
+
     public List<OrderItem> findOrderItemBySellerId(Long sellerId) {
         return orderItemRepository.findBySellerId(sellerId);
     }
     public List<OrderItem> findOrderItemByBuyerId(Long buyerId) {
         return orderItemRepository.findByBuyerId(buyerId);
     }
+
+    private boolean isOrderValid(Order order) {
+        return order != null && order.getPayment() != null;
+    }
+
+    private boolean isOrderAccessibleByBuyer(Order order, Member member) {
+        return order.getBuyer().getId().equals(member.getId());
+    }
+
+    private List<OrderItem> createOrderItemsFromCartProducts(List<CartProduct> cartProducts) {
+        return cartProducts.stream()
+                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
+                .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
+                .toList();
+    }
+    private void addCartProductsToOrder(Order order, List<CartProduct> cartProducts) {
+        for (CartProduct cartProduct : cartProducts) {
+            order.addCartProduct(cartProduct);
+        }
+    }
+
 
 }
