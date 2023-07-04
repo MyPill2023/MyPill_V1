@@ -79,9 +79,12 @@ public class DiaryController {
         model.addAttribute("diary",diary);
         return "usr/diary/detail";
     }
-    
+
+    @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/todolist")
+    @Operation(summary = "하루 달성 체크 폼")
     public String todolist(Model model) {
+
         List<Diary> diaries = diaryService.getList();
         model.addAttribute("diaries", diaries);
         return "usr/diary/todolist";        
@@ -89,8 +92,9 @@ public class DiaryController {
 
     @PostMapping("/todolist")
     @Operation(summary = "하루 달성 체크")
-    public String checked(DiaryCheckLogRequest diaryCheckLogRequest, Member member) {
-        RsData<DiaryCheckLog> checkRsData = diaryService.check(diaryCheckLogRequest.getId(), member);
+    public String checked(@Valid DiaryCheckLogRequest diaryCheckLogRequest, Member member) {
+        Long diaryId = diaryCheckLogRequest.getDiaryId();
+        RsData<DiaryCheckLog> checkRsData = diaryService.check(diaryId, member);
 
         if(checkRsData.isFail()){
             return rq.historyBack(checkRsData);

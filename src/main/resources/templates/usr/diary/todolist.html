@@ -33,7 +33,8 @@
                     <div class="inline-flex items-center space-x-2">
                         <form th:action method="POST" class="flex flex-col gap-4" onsubmit="DiaryCheck__submit(onclick);">
                             <input type="checkbox" checked="checked" class="checkbox" />
-                            <div class="text-slate-500 name" th:text="${diary.name}" th:value="${diary.id}" name="id"></div>
+                            <input type="hidden" th:value="${diary.id}" name="diaryId" />
+                            <div class="text-slate-500 name" th:text="${diary.name}"></div>
                             <div>
                                 <button class="btn btn-accent" type="submit">등록</button>
                             </div>
