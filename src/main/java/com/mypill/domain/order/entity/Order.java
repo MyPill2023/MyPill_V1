@@ -45,6 +45,8 @@ public class Order extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Address deliveryAddress;
 
+    private OrderStatus primaryOrderStatus;
+
     public Order(Member buyer) {
         this.buyer = buyer;
         this.cartProducts = new ArrayList<>();
@@ -91,6 +93,10 @@ public class Order extends BaseEntity {
 
     public void updatePayment(String method, Long totalAmount, LocalDateTime payDate, String status) {
         this.payment = new Payment(method, totalAmount, status, payDate);
+    }
+
+    public void updatePrimaryOrderStatus(OrderStatus orderStatus){
+        this.primaryOrderStatus = orderStatus;
     }
 
 

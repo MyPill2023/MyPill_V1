@@ -19,10 +19,17 @@
                 <a th:href="@{|/order/management/${order.orderId}|}">
                     <div class="bg-base-100 border-b border-gray-200 p-5 ">
                         <div class="flex flex-col gap-1">
-                            <span th:text="${#temporals.format(order.payment.payDate, 'yyyy-MM-dd')}"></span>
+                            <div class="flex justify-between">
+                                <span th:text="${#temporals.format(order.payment.payDate, 'yyyy-MM-dd')}"></span>
+                                <span th:class="${order.primaryOrderStatus.priority <= 1 ? 'badge badge-info' :
+                                    (order.primaryOrderStatus.priority <= 3 ? 'badge badge-success' :
+                                    (order.primaryOrderStatus.priority == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
+                                      th:text="${order.primaryOrderStatus.value}"></span>
+                            </div>
                             <div th:text="${order.orderNumber}"
                                  class="font-bold "></div>
                             <h3 th:text="${order.name}"></h3>
+
                         </div>
                     </div>
                 </a>

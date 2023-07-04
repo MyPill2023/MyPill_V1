@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,6 +97,7 @@ public class OrderService {
         }
 
         order.makeName();
+        order.updatePrimaryOrderStatus(OrderStatus.BEFORE);
         orderRepository.save(order);
 
         return order;
@@ -112,8 +114,8 @@ public class OrderService {
                     orderItem.updateStatus(OrderStatus.ORDERED);
                     orderItem.getProduct().updateStockByOrder(orderItem.getQuantity()); // 재고 업데이트
                 });
+        order.updatePrimaryOrderStatus(OrderStatus.ORDERED);
         order.getCartProducts().forEach(CartProduct::softDelete); // 장바구니에서 삭제
-
 
         orderRepository.save(order);
     }
@@ -149,7 +151,7 @@ public class OrderService {
                 .filter(orderItem -> orderItem.getProduct().getSeller().getId().equals(sellerId))
                 .toList();
 
-        if(filteredOrderItems.size() == 0){
+        if(filteredOrderItems.isEmpty()){
             return RsData.of("F-2", "접근 권한이 없습니다");
         }
 
@@ -172,13 +174,30 @@ public class OrderService {
         }
 
         OrderStatus status = OrderStatus.findByValue(newStatus);
-        System.out.println(newStatus);
         if (status == null) {
             return RsData.of("F-2", "유효하지 않은 주문 상태입니다.");
         }
 
         orderItem.updateStatus(status);
+        updatePrimaryOrderStatus(orderItem.getOrder());
+
         return RsData.of("S-1", "주문 상태가 변경되었습니다.");
+    }
+
+    @Transactional
+    public void updatePrimaryOrderStatus(Order order){
+        order.updatePrimaryOrderStatus(getHighestPriorityOrderItemStatus(order));
+    }
+
+    public OrderStatus getHighestPriorityOrderItemStatus(Order order){
+        List<OrderItem> orderItems = order.getOrderItems();
+        if (orderItems.isEmpty()) {
+            return null;
+        }
+        return orderItems.stream()
+                .map(OrderItem::getStatus)
+                .min(Comparator.comparing(OrderStatus::getPriority))
+                .orElse(null);
     }
 
     public Optional<Order> findById(Long orderId) {

@@ -29,7 +29,10 @@
                                 <div class="flex flex-col gap-1">
                                     <div class="flex justify-between">
                                         <h3 th:text="${orderItem.product.seller.name}"></h3>
-                                        <span class="badge badge-ghost" th:text="${orderItem.orderStatus.value}"></span>
+                                        <span th:class="${orderItem.orderStatus.priority <= 1 ? 'badge badge-info' :
+                                                    (orderItem.orderStatus.priority <= 3 ? 'badge badge-success' :
+                                                    (orderItem.orderStatus.priority == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
+                                              th:text="${orderItem.orderStatus.value}"></span>
                                     </div>
                                     <a th:text="${orderItem.product.name}"
                                        class="font-bold "></a>
@@ -40,14 +43,14 @@
                                           th:text="${#numbers.formatInteger(orderItem.product.price * orderItem.quantity, 0, 'COMMA') + '원'}"></span>
                                 </div>
                                 <form th:action="@{|/order/update/status/${orderItem.id}|}" method="POST"
-                                      class="flex gap-3">
+                                      class="flex gap-3 mt-5">
                                     <input type="hidden" name="orderId" th:value="${order.orderId}">
-                                    <select class="select select-bordered" name="newStatus">
-                                        <option th:each="orderStatus, loop : ${orderStatuses}"
+                                    <select class="select select-bordered w-3/4" name="newStatus">
+                                        <option th:each="orderStatus, loop : ${orderStatuses}" th:unless="${loop.index <= 1}"
                                                 th:value="${orderStatus.value}" th:text="${orderStatus.value}"
                                                 th:selected="${orderStatus.value.equals(orderItem.orderStatus.value)}"></option>
                                     </select>
-                                    <button class="btn" type="submit">변경</button>
+                                    <button class="btn btn-success w-1/4" type="submit">변경</button>
                                 </form>
                             </div>
                         </div>
@@ -55,23 +58,6 @@
                     </div>
                 </div>
 
-            </div>
-            <div class="flex flex-col gap-2">
-                <h3 class="text-lg font-bold mb-2 mt-10">주문 회원 정보</h3>
-                <div class="flex gap-2">
-                    <span class="w-1/4 text-gray-400">이름</span>
-                    <span th:text="${order.buyerName}"></span>
-                </div>
-                <div class="flex gap-2">
-                    <span class="w-1/4 text-gray-400">연락처</span>
-                    <span th:text="${order.deliveryAddress.phoneNumber}"></span>
-                </div>
-                <div class="flex gap-2">
-                    <span class="w-1/4 text-gray-400">배송지</span>
-                    <span class="w-3/4"
-                          th:text="'(' + ${order.deliveryAddress.postCode} + ') ' + ${order.deliveryAddress.address} + ' ' + ${order.deliveryAddress.detailAddress}">
-                        </span>
-                </div>
             </div>
             <div class="flex flex-col gap-2">
                 <h3 class="text-lg font-bold mb-2 mt-10">배송 정보</h3>
@@ -88,6 +74,13 @@
                     <span class="w-3/4"
                           th:text="'(' + ${order.deliveryAddress.postCode} + ') ' + ${order.deliveryAddress.address} + ' ' + ${order.deliveryAddress.detailAddress}">
                         </span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <h3 class="text-lg font-bold mb-2 mt-10">주문 회원 정보</h3>
+                <div class="flex gap-2">
+                    <span class="w-1/4 text-gray-400">이름</span>
+                    <span th:text="${order.buyerName}"></span>
                 </div>
             </div>
             <div class="flex flex-col gap-2">
