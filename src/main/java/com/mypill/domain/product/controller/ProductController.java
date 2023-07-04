@@ -46,7 +46,7 @@ public class ProductController {
     @Operation(summary = "상품 등록")
     public String create(@Valid ProductRequest productRequest) {
 
-        RsData<ProductResponse> createRsData = productService.create(productRequest);
+        RsData<Product> createRsData = productService.create(productRequest);
 
         return rq.redirectWithMsg("/product/detail/%s".formatted(createRsData.getData().getId()), createRsData);
     }

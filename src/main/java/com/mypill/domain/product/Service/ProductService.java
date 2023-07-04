@@ -37,17 +37,16 @@ public class ProductService {
     private final ApplicationEventPublisher publisher;
 
     @Transactional
-    public RsData<ProductResponse> create(ProductRequest request) {
+    public RsData<Product> create(ProductRequest request) {
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
-
 
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
         Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
 
         productRepository.save(product);
-        return RsData.of("S-1", "상품 등록이 완료되었습니다.", ProductResponse.of(product));
+        return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
     }
 
     public RsData<ProductResponse> get(Long productId) {
