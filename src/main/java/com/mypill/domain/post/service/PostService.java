@@ -29,7 +29,7 @@ public class PostService {
     }
 
     @Transactional
-    public List<Post> getList(Member member) {
+    public List<Post> getMyPosts(Member member) {
         return postRepository.findByPoster(member);
     }
 
@@ -46,16 +46,6 @@ public class PostService {
         postRepository.save(newPost);
         return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
     }
-
-    @Transactional
-    public RsData<PostResponse> get(Long postId) {
-        Post post = postRepository.findById(postId).orElse(null);
-        if (post == null) {
-            return RsData.of("F-1", "존재하지 않는 게시글입니다.");
-        }
-        return RsData.of("S-1", "존재하는 게시글입니다.", PostResponse.of(post));
-    }
-
 
     @Transactional
     public RsData<Post> update(Long postId, PostRequest postRequest, Member member) {

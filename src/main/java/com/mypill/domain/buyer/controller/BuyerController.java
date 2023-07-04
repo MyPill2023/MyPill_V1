@@ -57,7 +57,7 @@ public class BuyerController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPosts")
     public String myPosts(Model model) {
-        List<Post> posts = postService.getList(rq.getMember());
+        List<Post> posts = postService.getMyPosts(rq.getMember());
         model.addAttribute("posts", posts);
         return "usr/buyer/myPosts";
     }
