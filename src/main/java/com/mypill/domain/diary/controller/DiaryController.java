@@ -1,10 +1,13 @@
 package com.mypill.domain.diary.controller;
 
-import com.mypill.domain.category.service.CategoryService;
+
+import com.mypill.domain.diary.dto.DiaryCheckLogRequest;
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
+import com.mypill.domain.diary.entity.DiaryCheckLog;
 import com.mypill.domain.diary.service.DiaryService;
-import com.mypill.domain.nutrient.Service.NutrientService;
+import com.mypill.domain.member.entity.Member;
+
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -73,9 +77,24 @@ public class DiaryController {
         model.addAttribute("diary",diary);
         return "usr/diary/detail";
     }
+    
+    @GetMapping("/todolist")
+    public String todolist(Model model) {
+        List<Diary> diaries = diaryService.getList();
+        model.addAttribute("diaries", diaries);
+        return "usr/diary/todolist";        
+    }
 
+    @PostMapping("/todolist")
+    @Operation(summary = "하루 달성 체크")
+    public String checked(DiaryCheckLogRequest diaryCheckLogRequest, Member member) {
+        RsData<DiaryCheckLog> checkRsData = diaryService.check(diaryCheckLogRequest.getId(), member);
 
+        if(checkRsData.isFail()){
+            return rq.historyBack(checkRsData);
+        }
 
-
+        return rq.redirectWithMsg("/usr/diary/todolist", checkRsData);
+    }
 
 }
