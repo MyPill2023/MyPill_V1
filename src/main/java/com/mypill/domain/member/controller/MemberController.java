@@ -70,6 +70,16 @@ public class MemberController {
         return memberService.emailValidation(email);
     }
 
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myPage")
+    public String myPage() {
+        if (rq.isWaiter() || rq.isSeller()) {
+            return "usr/seller/myPage";
+        }
+        return "usr/buyer/myPage";
+    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/deleteAccount")
     public void deleteAccount(HttpServletRequest request, HttpServletResponse response) throws IOException {

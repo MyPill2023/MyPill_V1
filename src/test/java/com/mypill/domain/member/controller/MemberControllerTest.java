@@ -148,6 +148,60 @@ class MemberControllerTest {
 
     @Test
     @WithMockUser(username = "testUser1", roles = "MEMBER")
+    @DisplayName("마이페이지 이동 - 구매자 회원")
+    void myPageTest1() throws Exception {
+        // GIVEN
+        String username = "testUser1";
+        String name = "김철수";
+        String password = "1234";
+        String email = "testEmail@test.com";
+        Integer userType = 1;
+        memberService.join(username, name, password, userType, email);
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/member/myPage")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("myPage"))
+                .andExpect(status().is2xxSuccessful())
+        ;
+    }
+
+    @Test
+    @WithMockUser(username = "testUser2", roles = "MEMBER")
+    @DisplayName("마이페이지 이동 - 판매자 회원")
+    void myPageTest2() throws Exception {
+        // GIVEN
+        String username = "testUser2";
+        String name = "이영희";
+        String password = "1234";
+        String email = "testEmail@test.com";
+        Integer userType = 2;
+        memberService.join(username, name, password, userType, email);
+
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(get("/usr/member/myPage")
+                        .with(csrf())
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(MemberController.class))
+                .andExpect(handler().methodName("myPage"))
+                .andExpect(status().is2xxSuccessful())
+        ;
+    }
+
+    @Test
+    @WithMockUser(username = "testUser1", roles = "MEMBER")
     @DisplayName("회원 탈퇴")
     void deleteAccountTest() throws Exception {
         // GIVEN

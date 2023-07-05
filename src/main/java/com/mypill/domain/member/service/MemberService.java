@@ -188,7 +188,11 @@ public class MemberService {
             return verifyVerificationCodeRs;
         }
 
-        Member member = memberRepository.findById(id).get();
+        Optional<Member> opMember = memberRepository.findById(id);
+        if (opMember.isEmpty()) {
+            return RsData.of("F-1", "이메일 인증에 실패했습니다.");
+        }
+        Member member = opMember.get();
         member = member.toBuilder()
                 .emailVerified(true)
                 .build();
