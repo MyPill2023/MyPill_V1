@@ -1,6 +1,7 @@
 package com.mypill.domain.post.service;
 
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
@@ -27,6 +28,8 @@ class PostServiceTest {
     private PostService postService;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private MemberRepository memberRepository;
     private PostRequest postRequest;
     private Member buyer;
 
@@ -44,6 +47,7 @@ class PostServiceTest {
                 .userType(1)
                 .email("cs@test.com")
                 .build();
+        buyer = memberRepository.save(buyer);
     }
 
     @Test
@@ -103,6 +107,7 @@ class PostServiceTest {
                 .userType(1)
                 .email("yh@test.com")
                 .build();
+        buyer2 = memberRepository.save(buyer2);
         postService.create(postRequest, buyer);
         postService.create(postRequest, buyer);
         postService.create(postRequest, buyer2);
@@ -126,6 +131,7 @@ class PostServiceTest {
                 .userType(1)
                 .email("yh@test.com")
                 .build();
+        buyer2 = memberRepository.save(buyer2);
         postService.create(postRequest, buyer);
         postService.create(postRequest, buyer);
         postService.create(postRequest, buyer2);

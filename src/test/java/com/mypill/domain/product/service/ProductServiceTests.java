@@ -32,8 +32,8 @@ class ProductServiceTests {
 
     @BeforeEach
     void beforeEachTest() {
-        testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", "2", "testSeller1@test.com").getData();
-        testUserSeller2 = memberService.join("testUserSeller2", "김철수", "1234", "2", "testSeller2@test.com").getData();
+        testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
+        testUserSeller2 = memberService.join("testUserSeller2", "김철수", "1234", 2, "testSeller2@test.com").getData();
         product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
     }
 
