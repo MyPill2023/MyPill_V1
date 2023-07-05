@@ -1,6 +1,7 @@
 package com.mypill.domain.notification.entity;
 
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.global.base.entitiy.BaseEntity;
@@ -31,6 +32,9 @@ public class Notification extends BaseEntity {
     private OrderItem orderItem;
 
     private OrderStatus newStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
 
     public void markAsRead() {
         readDate = LocalDateTime.now();

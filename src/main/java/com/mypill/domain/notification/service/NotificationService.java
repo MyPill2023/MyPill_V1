@@ -4,6 +4,7 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.notification.entity.Notification;
 import com.mypill.domain.notification.entity.NotificationTypeCode;
 import com.mypill.domain.notification.repository.NotificationRepository;
+import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +24,22 @@ public class NotificationService {
 
     @Transactional
     public void whenAfterOrderStatusUpdate(Member member, OrderItem orderItem, OrderStatus newStatus) {
-
         Notification notification = Notification.builder()
                 .typeCode(NotificationTypeCode.OrderStatus)
                 .member(member)
                 .orderItem(orderItem)
                 .newStatus(newStatus)
                 .build();
+        notificationRepository.save(notification);
+    }
 
+    @Transactional
+    public void whenAfterOrderPayment(Member seller, Order order){
+        Notification notification = Notification.builder()
+                .typeCode(NotificationTypeCode.OrderPayment)
+                .member(seller)
+                .order(order)
+                .build();
         notificationRepository.save(notification);
     }
 

@@ -13,6 +13,7 @@ import com.mypill.domain.order.repository.OrderItemRepository;
 import com.mypill.domain.order.repository.OrderRepository;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
+import com.mypill.global.event.EventAfterOrderPayment;
 import com.mypill.global.event.EventAfterOrderStatusUpdate;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
@@ -111,6 +112,7 @@ public class OrderService {
                 .forEach(orderItem -> {
                     orderItem.updateStatus(OrderStatus.ORDERED);
                     orderItem.getProduct().updateStockByOrder(orderItem.getQuantity()); // 재고 업데이트
+                    publisher.publishEvent(new EventAfterOrderPayment(this, orderItem.getProduct().getSeller(), order)); // 이벤트 - 판매자에게 알림
                 });
         order.updatePrimaryOrderStatus(OrderStatus.ORDERED);
         order.getCartProducts().forEach(CartProduct::softDelete); // 장바구니에서 삭제
