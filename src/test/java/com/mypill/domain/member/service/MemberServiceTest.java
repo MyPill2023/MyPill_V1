@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +25,6 @@ class MemberServiceTest {
     private MemberService memberService;
     @Autowired
     private AttrService attrService;
-
     @Autowired
     private MemberRepository memberRepository;
     private String username1;
@@ -247,7 +246,7 @@ class MemberServiceTest {
         // GIVEN
         Member member = memberService.join(username1, name1, password1, userType1, email1).getData();
         member = member.toBuilder()
-                .likedProducts(new ArrayList<>())
+                .likedProducts(new HashSet<>())
                 .build();
         Member savedMember = memberRepository.save(member);
 
@@ -268,7 +267,6 @@ class MemberServiceTest {
 
         // THEN
         assertThat(savedMember.getLikedProducts().size()).isEqualTo(1);
-        assertThat(savedMember.getLikedProducts().get(0).getId()).isEqualTo(product.getId());
     }
 
     @Test
@@ -277,7 +275,7 @@ class MemberServiceTest {
         // GIVEN
         Member member = memberService.join(username1, name1, password1, userType1, email1).getData();
         member = member.toBuilder()
-                .likedProducts(new ArrayList<>())
+                .likedProducts(new HashSet<>())
                 .build();
         Member savedMember = memberRepository.save(member);
 

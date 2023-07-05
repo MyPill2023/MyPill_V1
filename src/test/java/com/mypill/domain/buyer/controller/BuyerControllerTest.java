@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,7 +40,7 @@ class BuyerControllerTest {
                 .password("1234")
                 .userType(1)
                 .email("testEmail@test.com")
-                .likedProducts(new ArrayList<>())
+                .likedProducts(new HashSet<>())
                 .build();
         memberRepository.save(testUser1);
     }

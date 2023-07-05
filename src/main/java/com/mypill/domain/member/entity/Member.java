@@ -43,7 +43,7 @@ public class Member extends BaseEntity {
     @Column
     private boolean emailVerified;
     @ManyToMany(mappedBy = "likedMembers")
-    private List<Product> likedProducts = new ArrayList<>();
+    private Set<Product> likedProducts = new HashSet<>();
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "member_nutrients",
             joinColumns = @JoinColumn(name = "member_id"),
@@ -78,18 +78,10 @@ public class Member extends BaseEntity {
     }
 
     public void like(Product product) {
-        if (!likedProducts.contains(product)) {
-            likedProducts.add(product);
-        }
+        likedProducts.add(product);
     }
 
     public void unLike(Product product) {
         likedProducts.remove(product);
-    }
-
-    public Optional<Address> getDefaultAddress() {
-        return addresses.stream()
-                .filter(Address::isDefault)
-                .findFirst();
     }
 }

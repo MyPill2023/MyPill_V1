@@ -5,6 +5,7 @@ import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.repository.CommentRepository;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
 import com.mypill.domain.post.service.PostService;
@@ -37,6 +38,8 @@ class CommentControllerTest {
     private CommentService commentService;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private MemberRepository memberRepository;
     private CommentRequest commentRequest;
     private Post savedPost;
     private Member buyer;
@@ -60,6 +63,7 @@ class CommentControllerTest {
                 .userType(1)
                 .email("cs@test.com")
                 .build();
+        buyer = memberRepository.save(buyer);
         savedPost = postRepository.save(post);
     }
 
