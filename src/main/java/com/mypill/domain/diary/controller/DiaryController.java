@@ -33,6 +33,7 @@ import java.util.Optional;
 public class DiaryController {
 
     private final DiaryService diaryService;
+    private final DiaryCheckLogService diaryCheckLogService;
     private final Rq rq;
 
 
@@ -98,7 +99,7 @@ public class DiaryController {
     @PostMapping("/todolist")
     @Operation(summary = "하루 달성 체크")
     public String checked(Member member, String name) {
-        diaryService.save(member,name);
+        diaryCheckLogService.save(member,name);
 
         return "usr/diary/todolist";
     }

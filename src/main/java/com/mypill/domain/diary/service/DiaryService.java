@@ -48,27 +48,6 @@ public class DiaryService {
         return diaryRepository.findByDeleteDateNull();
     }
 
-    @Transactional
-    public Diary save(Member member, String name) {
-
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        return findByName(name)
-                .map(diary -> {
-                    diary.revive();
-                    return diary;
-                })
-                .orElseGet(() -> diaryRepository.save(Diary.builder().member(member).name(name).build()));
-
-    }
-
-    private Optional<Diary> findByName (String name) {
-
-        return diaryRepository.findByName(name);
-    }
-
     public Optional<Diary> findById (Long diaryId) {
         return diaryRepository.findByDeleteDateNullAndId(diaryId);
     }
@@ -79,6 +58,8 @@ public class DiaryService {
 
         if (diary == null) return;
         diary.toggleDiaryCheckLog(checkDate);
+
+
     }
 
 }

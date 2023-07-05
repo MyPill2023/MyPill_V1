@@ -50,8 +50,6 @@ public class Diary extends BaseEntity {
         timeChecks.remove(diaryCheckLog);
     }
 
-
-
     public DiaryCheckLog addDiaryCheckLog (LocalDate now) {
         return DiaryCheckLog.builder()
                 .diary(this)
@@ -66,7 +64,8 @@ public class Diary extends BaseEntity {
                 .orElse(null);
 
         if (diaryCheckLog == null) {
-            addDiaryCheckLog(checkDate);
+            diaryCheckLog = addDiaryCheckLog(checkDate);
+            timeChecks.add(diaryCheckLog);
         } else {
             removeDiaryCheckLog(diaryCheckLog);
         }
