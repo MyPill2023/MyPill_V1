@@ -1,5 +1,6 @@
 package com.mypill.domain.member.controller;
 
+import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.form.JoinForm;
 import com.mypill.domain.member.service.MemberService;
@@ -26,7 +27,10 @@ public class MemberController {
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
-    public String login(HttpServletRequest request) {
+    public String login(HttpServletRequest request, @RequestParam(value = "exception", required = false) String exception) {
+        if (exception != null) {
+            return rq.historyBack(exception);
+        }
         String uri = request.getHeader("Referer");
         if (uri != null && !uri.contains("/usr/member/login")) {
             request.getSession().setAttribute("prevPage", uri);
@@ -35,14 +39,8 @@ public class MemberController {
     }
 
     @PreAuthorize("isAnonymous()")
-    @GetMapping("/loginFail")
-    public String loginFail(@RequestParam(value = "exception", required = false) String exception) {
-        return rq.historyBack(exception);
-    }
-
-    @PreAuthorize("isAnonymous()")
     @GetMapping("/join")
-    public String showJoin() {
+    public String join() {
         return "usr/member/join";
     }
 
@@ -50,10 +48,12 @@ public class MemberController {
     @PostMapping("/join")
     public String join(@Valid JoinForm joinForm) {
         try {
-            memberService.join(joinForm.getUsername(), joinForm.getName(),
-                    joinForm.getPassword(), joinForm.getUserType(), joinForm.getEmail());
+            memberService.join(joinForm.getUsername(), joinForm.getName(), joinForm.getPassword(),
+                    Integer.parseInt(joinForm.getUserType()), joinForm.getEmail());
         } catch (AlreadyJoinException e) {
             return rq.historyBack(e.getMessage());
+        } catch (NumberFormatException e) {
+            return rq.historyBack("회원 유형이 올바르지 않습니다.");
         }
         return rq.redirectWithMsg("/usr/member/login", "회원가입이 완료되었습니다.");
     }
@@ -70,10 +70,20 @@ public class MemberController {
         return memberService.emailValidation(email);
     }
 
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myPage")
+    public String myPage() {
+        if (rq.isWaiter() || rq.isSeller()) {
+            return "usr/seller/myPage";
+        }
+        return "usr/buyer/myPage";
+    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/deleteAccount")
     public void deleteAccount(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        RsData rsData = memberService.deleteAccount(rq.getMember());
+        RsData<Member> rsData = memberService.deleteAccount(rq.getMember());
         if (rsData.isFail()) {
             rq.historyBack(rsData.getMsg());
         }
@@ -81,10 +91,12 @@ public class MemberController {
         request.getSession().invalidate();
         response.sendRedirect("/");
     }
+
     @PreAuthorize("isAuthenticated()")
     @ResponseBody
     @PostMapping("/name/update")
     public String nameUpdate(String newName) {
-        return memberService.nameUpdate(rq.getMember(), newName);
+        RsData<Member> rsData = memberService.updateName(rq.getMember(), newName);
+        return rsData.getResultCode();
     }
 }

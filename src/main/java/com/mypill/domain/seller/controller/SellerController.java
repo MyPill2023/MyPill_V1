@@ -34,7 +34,7 @@ public class SellerController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPage")
-    public String main() {
+    public String myPage() {
         return "usr/buyer/myPage";
     }
 
