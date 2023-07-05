@@ -1,21 +1,25 @@
 package com.mypill.domain.product.controller;
 
 
+import com.mypill.domain.cart.dto.request.CartProductRequest;
+import com.mypill.domain.cart.entity.CartProduct;
+import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.service.MemberService;
+import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.service.ProductService;
 import com.mypill.domain.product.entity.Product;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,17 +32,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.MethodName.class)
-public class ProductControllerTests {
+class ProductControllerTests {
 
     @Autowired
     private MockMvc mvc;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private MemberService memberService;
+
+    private Member testUserSeller1;
+    private Member testUserSeller2;
+    private Product product;
+
+    @BeforeEach
+    void beforeEachTest() {
+        testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", "2", "testSeller1@test.com").getData();
+        testUserSeller2 = memberService.join("testUserSeller2", "김철수", "1234", "2", "testSeller2@test.com").getData();
+        product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
+    }
 
     @Test
     @DisplayName("상품 등록 폼 처리")
-    @WithUserDetails("user3")
-    void createProductTest() throws Exception {
+    @WithMockUser(username = "testUserSeller1", authorities = "SELLER")
+    void createProductSuccessTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
                 .perform(post("/product/create")
@@ -58,18 +75,17 @@ public class ProductControllerTests {
                 .andExpect(handler().handlerType(ProductController.class))
                 .andExpect(handler().methodName("create"))
                 .andExpect(status().is3xxRedirection());
-
     }
 
     @Test
     @DisplayName("상품 수정 폼 처리 - 성공")
-    @WithUserDetails("user3")
+    @WithMockUser(username = "testUserSeller1", authorities = "SELLER")
     void updateProductSuccessTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/product/update/1")
+                .perform(post("/product/update/%s".formatted(product.getId()))
                         .with(csrf())
-                        .param("sellerId", "3")
+                        .param("sellerId", String.valueOf(testUserSeller1.getId()))
                         .param("name", "수정상품명")
                         .param("description", "수정설명")
                         .param("price", "1000")
@@ -85,7 +101,7 @@ public class ProductControllerTests {
                 .andExpect(handler().methodName("update"))
                 .andExpect(status().is3xxRedirection());
 
-        Product updatedproduct = productService.findById(1L).orElse(null);
+        Product updatedproduct = productService.findById(product.getId()).orElse(null);
         assertThat(updatedproduct).isNotNull();
         assertThat(updatedproduct.getName()).isEqualTo("수정상품명");
         assertThat(updatedproduct.getDescription()).isEqualTo("수정설명");
@@ -93,13 +109,13 @@ public class ProductControllerTests {
 
     @Test
     @DisplayName("상품 수정 폼 처리 - 권한없음 실패")
-    @WithUserDetails("user4")
+    @WithMockUser(username = "testUserSeller2", authorities = "SELLER")
     void updateProductFailTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/product/update/1")
+                .perform(post("/product/update/%s".formatted(product.getId()))
                         .with(csrf())
-                        .param("sellerId", "4")
+                        .param("sellerId", String.valueOf(testUserSeller2))
                         .param("name", "수정상품명")
                         .param("description", "수정설명")
                         .param("price", "1000")
@@ -113,21 +129,21 @@ public class ProductControllerTests {
         resultActions
                 .andExpect(handler().handlerType(ProductController.class))
                 .andExpect(handler().methodName("update"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is4xxClientError());
 
-        Product updatedproduct = productService.findById(1L).orElse(null);
+        Product updatedproduct = productService.findById(product.getId()).orElse(null);
         assertThat(updatedproduct).isNotNull();
-        assertThat(updatedproduct.getName()).isEqualTo("루테인 베스트");
+        assertThat(updatedproduct.getName()).isEqualTo("테스트 상품1");
     }
 
 
     @Test
     @DisplayName("상품 삭제 - 성공")
-    @WithUserDetails("user3")
+    @WithMockUser(username = "testUserSeller1", authorities = "SELLER")
     void deleteProductSuccessTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/product/delete/1")
+                .perform(post("/product/delete/%s".formatted(product.getId()))
                         .with(csrf())
                 )
                 .andDo(print());
@@ -138,18 +154,18 @@ public class ProductControllerTests {
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().is3xxRedirection());
 
-        Product deletedproduct = productService.findById(1L).orElse(null);
+        Product deletedproduct = productService.findById(product.getId()).orElse(null);
         assertThat(deletedproduct).isNotNull();
         assertThat(deletedproduct.getDeleteDate()).isNotNull();
     }
 
     @Test
     @DisplayName("상품 삭제 - 권한없음 실패")
-    @WithUserDetails("user4")
+    @WithMockUser(username = "testUserSeller2", authorities = "SELLER")
     void deleteProductFailTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/product/delete/1")
+                .perform(post("/product/delete/%s".formatted(product.getId()))
                         .with(csrf())
                 )
                 .andDo(print());
@@ -160,7 +176,7 @@ public class ProductControllerTests {
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().is3xxRedirection());
 
-        Product deletedproduct = productService.findById(1L).orElse(null);
+        Product deletedproduct = productService.findById(product.getId()).orElse(null);
         assertThat(deletedproduct).isNotNull();
         assertThat(deletedproduct.getDeleteDate()).isNull();
     }

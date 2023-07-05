@@ -33,49 +33,41 @@ public class ProductService {
     private final NutrientService nutrientService;
     private final CategoryService categoryService;
     private final MemberService memberService;
-    private final Rq rq;
     private final ApplicationEventPublisher publisher;
 
     @Transactional
-    public RsData<ProductResponse> create(ProductRequest request) {
+    public RsData<Product> create(ProductRequest request) {
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
-
 
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
         Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
 
         productRepository.save(product);
-        return RsData.of("S-1", "상품 등록이 완료되었습니다.", ProductResponse.of(product));
+        return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
     }
 
-    public RsData<ProductResponse> get(Long productId) {
+    public RsData<Product> get(Long productId) {
         Product product = findById(productId).orElse(null);
 
         if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
-        if (rq.isLogin() && product.getLikedMembers().contains(rq.getMember())) {
-            return RsData.of("S-1", "존재하는 상품입니다.", ProductResponse.of(product, true));
-        }
-        return RsData.of("S-1", "존재하는 상품입니다.", ProductResponse.of(product, false));
-    }
 
-    public List<ProductResponse> getAllProduct(List<Product> products) {
-        return products.stream().map(this::convertToResponse).collect(Collectors.toList());
+        return RsData.of("S-1", "존재하는 상품입니다.", product);
     }
 
     @Transactional
-    public RsData<Product> update(Long productId, ProductRequest request) {
+    public RsData<Product> update(Member actor, Long productId, ProductRequest request) {
 
         Product product = findById(productId).orElse(null);
         if (product == null) {
-            return RsData.of("F-1", "존재하지 않는 상품입니다.");
+            return RsData.of("F-1", "존재하지 않는 상품입니다.", product);
         }
 
-        if (!hasPermission(product.getSeller().getId())) {
-            return RsData.of("F-2", "수정 권한이 없습니다.");
+        if (!actor.getId().equals(product.getSeller().getId())) {
+            return RsData.of("F-2", "수정 권한이 없습니다.", product);
         }
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
@@ -86,15 +78,15 @@ public class ProductService {
     }
 
     @Transactional
-    public RsData<Product> delete(Long productId) {
+    public RsData<Product> delete(Member actor, Long productId) {
 
         Product product = findById(productId).orElse(null);
         if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
 
-        if (!hasPermission(product.getSeller().getId())) {
-            return RsData.of("F-2", "삭제 권한이 없습니다.");
+        if (!actor.getId().equals(product.getSeller().getId())) {
+            return RsData.of("F-2", "삭제 권한이 없습니다.", product);
         }
 
         product = product.toBuilder().deleteDate(LocalDateTime.now()).build();
@@ -121,15 +113,6 @@ public class ProductService {
 
     public List<Product> findByCategoriesId(Long categoryId) {
         return productRepository.findByCategoriesIdAndDeleteDateIsNull(categoryId);
-    }
-
-
-    private ProductResponse convertToResponse(Product product) {
-        return ProductResponse.of(product);
-    }
-
-    private boolean hasPermission(Long sellerId) {
-        return sellerId.equals(rq.getMember().getId());
     }
 
     @Transactional
