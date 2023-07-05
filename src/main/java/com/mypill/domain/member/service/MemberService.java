@@ -26,8 +26,7 @@ public class MemberService {
     private final EmailVerificationService emailVerificationService;
 
 
-    //NotProd 용 메소드, 개발 끝나면 삭제 예정
-    @Transactional
+    //NotProd 용 메소드, 개발 끝나면 삭제 예정    @Transactional
     public RsData<Member> join(String username, String name, String password, String userTypeStr, String email, boolean emailVerified) {
         Integer userType = Integer.parseInt(userTypeStr);
         Member member = Member.builder()
