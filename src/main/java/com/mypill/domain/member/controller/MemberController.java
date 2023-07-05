@@ -27,7 +27,10 @@ public class MemberController {
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
-    public String login(HttpServletRequest request) {
+    public String login(HttpServletRequest request, @RequestParam(value = "exception", required = false) String exception) {
+        if (exception != null) {
+            return rq.historyBack(exception);
+        }
         String uri = request.getHeader("Referer");
         if (uri != null && !uri.contains("/usr/member/login")) {
             request.getSession().setAttribute("prevPage", uri);
@@ -36,14 +39,8 @@ public class MemberController {
     }
 
     @PreAuthorize("isAnonymous()")
-    @GetMapping("/loginFail")
-    public String loginFail(@RequestParam(value = "exception", required = false) String exception) {
-        return rq.historyBack(exception);
-    }
-
-    @PreAuthorize("isAnonymous()")
     @GetMapping("/join")
-    public String showJoin() {
+    public String join() {
         return "usr/member/join";
     }
 
