@@ -46,4 +46,8 @@ public class NotificationService {
     public Optional<Notification> findById(Long id){
         return notificationRepository.findById(id);
     }
+
+    public boolean countUnreadNotificationsByMember(Member member) {
+        return notificationRepository.countByMemberAndReadDateIsNull(member) > 0;
+    }
 }

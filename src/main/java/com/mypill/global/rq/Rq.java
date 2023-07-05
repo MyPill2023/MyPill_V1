@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
+import com.mypill.domain.notification.entity.Notification;
+import com.mypill.domain.notification.service.NotificationService;
 import com.mypill.global.rsData.RsData;
 
 import com.mypill.global.util.Ut;
@@ -35,14 +37,16 @@ public class Rq {
     private Locale locale;
     private final MemberService memberService;
     private Member member = null;
+    private final NotificationService notificationService;
 
-    public Rq(MessageSource messageSource, LocaleResolver localeResolver, HttpServletRequest req, HttpServletResponse resp, HttpSession session, MemberService memberService) {
+    public Rq(MessageSource messageSource, LocaleResolver localeResolver, HttpServletRequest req, HttpServletResponse resp, HttpSession session, MemberService memberService, NotificationService notificationService) {
         this.messageSource = messageSource;
         this.localeResolver = localeResolver;
         this.req = req;
         this.resp = resp;
         this.session = session;
         this.memberService = memberService;
+        this.notificationService = notificationService;
 
         // 현재 로그인한 회원의 인증정보를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -149,5 +153,13 @@ public class Rq {
 
     public static String urlWithErrorMsg(String url, String errorMsg) {
         return Ut.url.modifyQueryParam(url, "errorMsg", msgWithTtl(errorMsg));
+    }
+
+    public boolean hasUnreadNotifications() {
+        if (isLogout()) return false;
+
+        Member actor = getMember();
+
+        return notificationService.countUnreadNotificationsByMember(getMember());
     }
 }
