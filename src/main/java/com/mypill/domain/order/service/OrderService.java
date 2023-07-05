@@ -177,8 +177,8 @@ public class OrderService {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
 
-        Long orderIdInputted = Long.parseLong(orderId.split("_")[0]);
-        if (id.equals(orderIdInputted)) {
+        long orderIdInputted = Long.parseLong(orderId.split("_")[0]);
+        if (id != orderIdInputted) {
             return RsData.of("F-2","주문번호가 일치하지 않습니다.");
         }
         if (!amount.equals(order.getTotalPrice())) {
@@ -202,6 +202,9 @@ public class OrderService {
     }
     public List<Order> findByBuyerId(Long buyerId) {
         return orderRepository.findByBuyerId(buyerId);
+    }
+    public List<Order> findByBuyerIdAndPaymentIsNotNull(Long buyerId) {
+        return orderRepository.findByBuyerIdAndPaymentIsNotNull(buyerId);
     }
     public List<Order> findBySellerId(Long sellerId) {
         return orderRepository.findBySellerId(sellerId);

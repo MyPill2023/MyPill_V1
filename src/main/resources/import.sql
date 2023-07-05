@@ -45,7 +45,6 @@ INSERT INTO categories (name) VALUES ('수면');
 INSERT INTO categories (name) VALUES ('간');
 INSERT INTO categories (name) VALUES ('대장');
 
-
 INSERT INTO questions (category_id, content) VALUES (1,'눈이 침침하거나 시력이 떨어졌나요?');
 INSERT INTO questions (category_id, content) VALUES (1, '장시간 모니터를 보거나 전자기기를 사용하시나요?');
 INSERT INTO questions (category_id, content) VALUES (1, '장시간 렌즈를 착용하시거나 눈이 건조한 편이신가요?');

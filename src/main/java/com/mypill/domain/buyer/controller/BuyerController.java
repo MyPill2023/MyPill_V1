@@ -80,7 +80,7 @@ public class BuyerController {
     @GetMapping("/myOrder")
     public String myOrder(Model model) {
 
-        List<Order> orders = orderService.findByBuyerId(rq.getMember().getId());
+        List<Order> orders = orderService.findByBuyerIdAndPaymentIsNotNull(rq.getMember().getId());
         List<OrderListResponse> orderListResponses = orders.stream()
                 .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
                 .map(OrderListResponse::of).toList();
