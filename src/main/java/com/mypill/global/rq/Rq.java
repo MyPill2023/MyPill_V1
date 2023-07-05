@@ -140,9 +140,6 @@ public class Rq {
 
     public boolean hasUnreadNotifications() {
         if (isLogout()) return false;
-
-        Member actor = getMember();
-
         return notificationService.countUnreadNotificationsByMember(getMember());
     }
 }

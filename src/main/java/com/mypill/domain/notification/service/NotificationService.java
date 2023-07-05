@@ -7,6 +7,7 @@ import com.mypill.domain.notification.repository.NotificationRepository;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
+import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -44,9 +45,13 @@ public class NotificationService {
     }
 
     @Transactional
-    public void makeAsRead(Long notificationId) {
+    public RsData<Notification> makeAsRead(Member actor, Long notificationId) {
         Notification notification = findById(notificationId).orElseThrow();
+        if(!notification.getMember().getId().equals(actor.getId())){
+            return RsData.of("F-1", "권한이 없습니다.");
+        }
         notification.markAsRead();
+        return RsData.of("S-1","");
     }
 
     public List<Notification> findByMemberId(Long memberId){
