@@ -5,6 +5,8 @@ import com.mypill.domain.diary.dto.DiaryCheckLogRequest;
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
 import com.mypill.domain.diary.entity.DiaryCheckLog;
+import com.mypill.domain.diary.repository.DiaryCheckLogRepository;
+import com.mypill.domain.diary.service.DiaryCheckLogService;
 import com.mypill.domain.diary.service.DiaryService;
 import com.mypill.domain.member.entity.Member;
 
@@ -18,12 +20,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Controller
@@ -85,22 +86,29 @@ public class DiaryController {
     @Operation(summary = "하루 달성 체크 폼")
     public String todolist(Model model) {
 
-        List<Diary> diaries = diaryService.getList();
+        String today = LocalDate.now().toString();
+
+        List<Diary> diaries = diaryService.findAll();
+        model.addAttribute("today", today);
         model.addAttribute("diaries", diaries);
         return "usr/diary/todolist";        
     }
 
+    @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/todolist")
     @Operation(summary = "하루 달성 체크")
-    public String checked(@Valid DiaryCheckLogRequest diaryCheckLogRequest, Member member) {
-        Long diaryId = diaryCheckLogRequest.getDiaryId();
-        RsData<DiaryCheckLog> checkRsData = diaryService.check(diaryId, member);
+    public String checked(Member member, String name) {
+        diaryService.save(member,name);
 
-        if(checkRsData.isFail()){
-            return rq.historyBack(checkRsData);
-        }
+        return "usr/diary/todolist";
+    }
 
-        return rq.redirectWithMsg("/usr/diary/todolist", checkRsData);
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @PostMapping ("/todolist/toggleCheck/{diaryId}")
+    public String toggleCheck(@PathVariable Long diaryId, Member member) {
+        diaryService.toggleCheck(member, diaryId, LocalDate.now());
+
+        return "usr/diary/todolist";
     }
 
 }

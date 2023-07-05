@@ -27,7 +27,14 @@ public class DiaryCheckLog extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Diary diary;
 
+    private String name;
+
     private LocalDate checkDate;
+
+
+    public void revive() {
+        this.deleteDate = null;
+    }
 
     public static DiaryCheckLog of(Diary diary, Member member) {
         return DiaryCheckLog.builder()

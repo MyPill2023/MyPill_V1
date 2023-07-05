@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,10 +25,6 @@ public class DiaryService {
 
     public List<Diary> getList () {
         return diaryRepository.findByDeleteDateIsNullOrderByCreateDateDesc();
-    }
-
-    public List<Diary> getList(Member member) {
-        return diaryRepository.findByMember(member);
     }
 
     @Transactional
@@ -50,37 +44,41 @@ public class DiaryService {
         return RsData.of("S-1","영양제 등록이 완료되었습니다.", newDiary);
     }
 
-    public RsData<DiaryCheckLog> check (Long id , Member member) {
-        if (id == null) {
-            return RsData.of("F-2", "유효하지 않은 다이어리 ID입니다.");
+    public List<Diary> findAll() {
+        return diaryRepository.findByDeleteDateNull();
+    }
+
+    @Transactional
+    public Diary save(Member member, String name) {
+
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException();
         }
-        DiaryCheckLog todayDiaryCheckLog = findByMemberAndCAndCreateDate(member.getId()).orElse(null);
 
-        if(todayDiaryCheckLog != null){
-            return RsData.of("F-1","오늘의 기록이 이미 등록되어있습니다.");
-        }
-        Diary diary = findById(id).orElseThrow();
+        return findByName(name)
+                .map(diary -> {
+                    diary.revive();
+                    return diary;
+                })
+                .orElseGet(() -> diaryRepository.save(Diary.builder().member(member).name(name).build()));
 
-        DiaryCheckLog newDiaryCheckLog = DiaryCheckLog.of(diary,member);
+    }
 
-        diaryCheckLogRepository.save(newDiaryCheckLog);
-        return RsData.of("S-1","오늘이 복약기록이 등록되었습니다.", newDiaryCheckLog);
+    private Optional<Diary> findByName (String name) {
+
+        return diaryRepository.findByName(name);
     }
 
     public Optional<Diary> findById (Long diaryId) {
-        if (diaryId == null) {
-            return Optional.empty();
-        }
-        return diaryRepository.findById(diaryId);
+        return diaryRepository.findByDeleteDateNullAndId(diaryId);
     }
 
-    public Optional<DiaryCheckLog> findByMemberAndCAndCreateDate(Long memberId) {
-        LocalDate currentDate = LocalDate.now();
-        LocalDateTime startOfDay = currentDate.atStartOfDay();
-        LocalDateTime endOfDay = currentDate.atTime(LocalTime.MAX);
-        return diaryCheckLogRepository.findByMemberAndCreateDateBetween(memberId, startOfDay, endOfDay);
+    @Transactional
+    public void toggleCheck(Member member, Long diaryId, LocalDate checkDate){
+        Diary diary = findById(diaryId).orElse(null);
+
+        if (diary == null) return;
+        diary.toggleDiaryCheckLog(checkDate);
     }
-
-
 
 }
