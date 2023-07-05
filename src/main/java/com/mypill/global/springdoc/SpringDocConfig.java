@@ -1,4 +1,4 @@
-package com.mypill.global.springDoc;
+package com.mypill.global.springdoc;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;

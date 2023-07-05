@@ -38,7 +38,7 @@ class PostControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com").getData();
+        testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
     }
 
     @Test

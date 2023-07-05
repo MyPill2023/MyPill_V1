@@ -4,6 +4,7 @@ import com.mypill.domain.comment.dto.CommentRequest;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.repository.CommentRepository;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
 import org.junit.jupiter.api.*;
@@ -28,6 +29,8 @@ class CommentServiceTest {
     private CommentRepository commentRepository;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private MemberRepository memberRepository;
     private CommentRequest commentRequest;
     private Member buyer;
     private Post savedPost;
@@ -51,6 +54,7 @@ class CommentServiceTest {
                 .userType(1)
                 .email("cs@test.com")
                 .build();
+        buyer = memberRepository.save(buyer);
         savedPost = postRepository.save(post);
     }
 
@@ -97,8 +101,8 @@ class CommentServiceTest {
         commentService.delete(buyer, comment.getId());
 
         // THEN
-        assertTrue(commentRepository.findById(savedPost.getId()).isPresent());
-        assertThat(commentRepository.findById(savedPost.getId()).get().getDeleteDate()).isNotNull();
+        assertTrue(commentRepository.findById(comment.getId()).isPresent());
+        assertThat(commentRepository.findById(comment.getId()).get().getDeleteDate()).isNotNull();
     }
 
     @Test
@@ -117,6 +121,7 @@ class CommentServiceTest {
                 .userType(1)
                 .email("yh@test.com")
                 .build();
+        buyer2 = memberRepository.save(buyer2);
         commentService.create(commentRequest, buyer2, savedPost.getId());
 
         // WHEN

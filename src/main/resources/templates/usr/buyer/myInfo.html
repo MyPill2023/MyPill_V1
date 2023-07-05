@@ -52,7 +52,7 @@
                 },
                 success: function (data) {
                     // 요청 결과를 받아와서 동적으로 댓글 내용 업데이트
-                    if (data === "success") {
+                    if (data.startsWith("S-")) {
                         const nameElement = document.getElementById('name');
                         nameElement.innerText = newName;
                         nameElement.style.display = 'block';
