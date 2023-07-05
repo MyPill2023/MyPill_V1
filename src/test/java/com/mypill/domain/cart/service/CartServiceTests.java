@@ -78,6 +78,19 @@ class CartServiceTests {
         assertThat(addRsData.getResultCode()).isEqualTo("F-1");
     }
 
+
+    @Test
+    @DisplayName("장바구니에서 상품 수량 변경 성공")
+    void updateQuantitySuccessTest() {
+        CartProduct cartProduct =  cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L)).getData();
+        RsData<CartProduct> updateRsData =  cartService.updateQuantity(testUser1, cartProduct.getId(), 3L);
+        assertThat(updateRsData.getResultCode()).isEqualTo("S-1");
+
+        CartProduct updatedCartProduct = cartService.findCartProductById(updateRsData.getData().getId()).orElse(null);
+        assertThat(updatedCartProduct).isNotNull();
+        assertThat(updatedCartProduct.getQuantity()).isEqualTo(3);
+    }
+
     @Test
     @DisplayName("장바구니에서 상품 수량 변경 실패 - 장바구니에 없는 상품")
     void updateQuantityFailTest() {

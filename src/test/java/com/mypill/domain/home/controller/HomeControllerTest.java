@@ -1,9 +1,8 @@
 package com.mypill.domain.home.controller;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.service.MemberService;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +27,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class HomeControllerTest {
     @Autowired
     private MockMvc mvc;
+    @Autowired
+    private MemberService memberService;
+
+    private Member testUser1;
+    @BeforeEach
+    void beforeEach() {
+        testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
+    }
 
     @Test
     @WithAnonymousUser
@@ -48,7 +55,7 @@ class HomeControllerTest {
         ;
     }
     @Test
-    @WithMockUser
+    @WithMockUser(username = "testUser1", authorities = "MEMBER")
     @DisplayName("메인페이지 이동 - 로그인")
     void showMainTest2() throws Exception {
         // WHEN

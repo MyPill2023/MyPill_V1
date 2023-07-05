@@ -70,7 +70,7 @@ class PostControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(username = "testUser1", authorities = "MEMBER")
     @DisplayName("게시글 등록 페이지 이동 컨트롤러 테스트")
     void createGetTest() throws Exception {
         // WHEN
