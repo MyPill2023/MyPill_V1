@@ -1,0 +1,42 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+  <title>알림</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.6/flowbite.min.css" rel="stylesheet"/>
+</head>
+
+<body>
+<main layout:fragment="main">
+  <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
+    <h1 class="text-2xl font-bold">알림</h1>
+    <div class="flex flex-col p-5 w-full">
+      <div th:each="notification, loop : ${notifications}">
+
+        <div th:if="${notification.typeCode == OrderStatus}">
+          <a th:href="@{|/order/detail/${notification.orderId}|}">
+            <div th:class="'bg-base-100 border-b border-gray-200 p-5' + (${loop.first} ? ' border-t' : '')">
+              <div class="flex flex-col gap-1">
+                <span th:text="${#temporals.format(notification.createDate, 'yyyy-MM-dd')}"></span>
+                <div>
+                  <span>주문하신 </span>
+                  <span th:text="${notification.productName}" class="font-bold "></span>
+                  <span>의 상태가 </span>
+                  <span th:class="${notification.newStatus.priority <= 1 ? 'f badge-info' :
+                                                (notification.newStatus.priority <= 3 ? 'badge badge-success' :
+                                                (notification.newStatus.priority == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
+                        th:text="${notification.newStatus.value}"></span>
+                  <span>(으)로 변경되었습니다.</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+
+</html>

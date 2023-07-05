@@ -21,15 +21,15 @@ public class Notification extends BaseEntity {
     private Member member;
 
     @Enumerated
-    private NotificationTypeCode typeCode;
-
     @Column(nullable = false)
-    private String message;
+    private NotificationTypeCode typeCode;
 
     @Column
     private LocalDateTime readDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderItem orderItem;
+
+    private OrderStatus newStatus;
 
 }
