@@ -4,8 +4,8 @@
     <title>메인</title>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <meta name="productId" th:content="${productResponse.id}"/>
-    <meta name="_isLiked" th:content="${productResponse.isLiked}"/>
+    <meta name="productId" th:content="${product.id}"/>
+    <meta name="_isLiked" th:content="${product.isLiked}"/>
 </head>
 
 <body>
@@ -18,34 +18,34 @@
             </div>
 
             <div class="flex flex-col justify-start w-full gap-2">
-                <h3 th:text="${productResponse.seller.name}"></h3>
-                <h1 class=" text-xl font-bold" th:text="${productResponse.name}"></h1>
+                <h3 th:text="${product.seller.name}"></h3>
+                <h1 class=" text-xl font-bold" th:text="${product.name}"></h1>
             </div>
             <div class="flex justify-between">
                 <div class="flex items-center">
                     <button id="like-button" class="heart-icon mx-1">
-                        <i th:if="${productResponse.isLiked}" class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
-                        <i th:unless="${productResponse.isLiked}" class="fa-solid fa-heart"
+                        <i th:if="${product.isLiked}" class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
+                        <i th:unless="${product.isLiked}" class="fa-solid fa-heart"
                            style="color: #C0C0C0;"></i>
                     </button>
                     <div id="like-count">
-                            <span class="text-xl" style="color:#ffb0b0;" th:if="${productResponse.isLiked}"
-                                  th:text="${productResponse.likedMembers == null ? 0 : productResponse.likedMembers.size}">
+                            <span class="text-xl" style="color:#ffb0b0;" th:if="${product.isLiked}"
+                                  th:text="${product.likedMembers == null ? 0 : product.likedMembers.size}">
                             </span>
-                        <span class="text-xl" style="color:black;" th:unless="${productResponse.isLiked}"
-                              th:text="${productResponse.likedMembers == null ? 0 : productResponse.likedMembers.size}">
+                        <span class="text-xl" style="color:black;" th:unless="${product.isLiked}"
+                              th:text="${product.likedMembers == null ? 0 : product.likedMembers.size}">
                             </span>
                     </div>
                 </div>
                 <div class="flex justify-end w-full items-center">
                     <span class="text-xl font-bold"
-                      th:text="${#numbers.formatInteger(productResponse.price, 0, 'COMMA') + '원'}"></span>
+                      th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
                 </div>
             </div>
             <div class="divider !my-2"></div>
             <form th:action="@{|/cart/add|}" method="POST"
                   onsubmit="CartProductRequest__submit(this, event); return false;">
-                <input type="hidden" id="productId" name="productId" th:value="${productResponse.id}">
+                <input type="hidden" id="productId" name="productId" th:value="${product.id}">
                 <div class="flex justify-between items-center">
                     <div class="flex gap-3 justify-center items-center">
                         <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
@@ -54,9 +54,9 @@
                                class="input input-bordered  input-sm w-16" required>
                         <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
                     </div>
-                    <button class="btn btn-success" type="submit" th:disabled="${productResponse.stock < 1}">장바구니 담기</button>
+                    <button class="btn btn-success" type="submit" th:disabled="${product.stock < 1}">장바구니 담기</button>
                 </div>
-                <div class="flex justify-end mt-5" th:if="${productResponse.stock < 1}">
+                <div class="flex justify-end mt-5" th:if="${product.stock < 1}">
                     <span class="text-red-300">해당 상품은 품절되었습니다.</span>
                 </div>
 
@@ -65,7 +65,7 @@
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
                     <h2 class="card-title mb-2">주요 영양성분</h2>
-                    <div th:each="nutrient, loop : ${productResponse.nutrients}">
+                    <div th:each="nutrient, loop : ${product.nutrients}">
                         <p th:text="${nutrient.name}"></p>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
                     <h2 class="card-title mb-2">주요 기능</h2>
-                    <div th:each="category, loop : ${productResponse.categories}">
+                    <div th:each="category, loop : ${product.categories}">
                         <p th:text="${category.name}"></p>
                     </div>
                 </div>
@@ -83,13 +83,13 @@
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
                     <h2 class="card-title mb-2">상품 상세 설명</h2>
-                    <span th:text="${productResponse.description}"></span>
+                    <span th:text="${product.description}"></span>
                 </div>
             </div>
 
             <div sec:authorize="isAuthenticated()">
-                <div th:if="${productResponse.seller.id == @rq.member.id}" class="flex justify-end gap-3">
-                    <a th:href="@{|/product/update/${productResponse.id}|}"
+                <div th:if="${product.seller.id == @rq.member.id}" class="flex justify-end gap-3">
+                    <a th:href="@{|/product/update/${product.id}|}"
                        class="btn flex gap-1">
                         수정하기
                     </a>
@@ -97,7 +97,7 @@
                        href="javascript:;"
                        onclick="if ( confirm('상품을 삭제하시겠습니까?') ) $(this).next().submit();">
                         삭제하기</a>
-                    <form hidden th:action="@{|/product/delete/${productResponse.id}|}"
+                    <form hidden th:action="@{|/product/delete/${product.id}|}"
                           method="POST">
                         <input type="hidden" name="_method" value="delete">
                     </form>

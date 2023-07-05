@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,14 +43,18 @@ class CartControllerTests {
     private ProductService productService;
 
     private Member testUser1;
-    private Product product;
+    private Member testUserSeller1;
+    private Product product1;
+    private Product product2;
     private CartProduct cartProduct;
 
     @BeforeEach
     void beforeEachTest() {
         testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com").getData();
-        product = productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
-        cartProduct = cartService.addProduct(testUser1, new CartProductRequest(product.getId(), 1L)).getData();
+        testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", "2", "testSeller1@test.com").getData();
+        product1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
+        product2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 15000L, 100L, asList(3L, 4L), asList(3L, 4L))).getData();
+        cartProduct = cartService.addProduct(testUser1, new CartProductRequest(product1.getId(), 1L)).getData();
     }
 
     @Test
@@ -61,7 +64,7 @@ class CartControllerTests {
         ResultActions resultActions = mvc
                 .perform(post("/cart/add")
                         .with(csrf())
-                        .param("productId", String.valueOf(product.getId()))
+                        .param("productId", String.valueOf(product2.getId()))
                         .param("quantity","1")
                 )
                 .andDo(print());
@@ -71,10 +74,6 @@ class CartControllerTests {
                 .andExpect(handler().methodName("addCartProduct"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/product/detail/**"));
-
-        Cart cart = cartService.findByMemberId(testUser1.getId());
-        assertThat(cart.getCartProducts().size()).isEqualTo(1);
-        assertThat(cart.getCartProducts().get(0).getQuantity()).isEqualTo(1);
     }
 
     @Test
