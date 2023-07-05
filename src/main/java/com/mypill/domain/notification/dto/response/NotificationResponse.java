@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 public class NotificationResponse {
 
+    private Long id;
     private LocalDateTime createDate;
     private NotificationTypeCode typeCode;
     private Long orderId;
@@ -21,6 +22,7 @@ public class NotificationResponse {
 
     public static NotificationResponse of(Notification notification){
         return NotificationResponse.builder()
+                .id(notification.getId())
                 .createDate(notification.getCreateDate())
                 .orderId(notification.getOrderItem().getOrder().getId())
                 .newStatus(notification.getNewStatus())

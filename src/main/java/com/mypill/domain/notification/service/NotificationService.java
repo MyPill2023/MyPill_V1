@@ -7,9 +7,12 @@ import com.mypill.domain.notification.repository.NotificationRepository;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -18,6 +21,7 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
+    @Transactional
     public void whenAfterOrderStatusUpdate(Member member, OrderItem orderItem, OrderStatus newStatus) {
 
         Notification notification = Notification.builder()
@@ -30,7 +34,16 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    @Transactional
+    public void makeAsRead(Long notificationId) {
+        Notification notification = findById(notificationId).orElseThrow();
+        notification.markAsRead();
+    }
+
     public List<Notification> findByMemberId(Long memberId){
-        return notificationRepository.findByMemberId(memberId);
+        return notificationRepository.findByMemberIdOrderByCreateDateDesc(memberId);
+    }
+    public Optional<Notification> findById(Long id){
+        return notificationRepository.findById(id);
     }
 }

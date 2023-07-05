@@ -32,4 +32,8 @@ public class Notification extends BaseEntity {
 
     private OrderStatus newStatus;
 
+    public void markAsRead() {
+        readDate = LocalDateTime.now();
+    }
+
 }
