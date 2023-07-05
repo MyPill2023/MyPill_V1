@@ -58,8 +58,6 @@ public class DiaryService {
 
         if (diary == null) return;
         diary.toggleDiaryCheckLog(checkDate);
-
-
     }
 
 }

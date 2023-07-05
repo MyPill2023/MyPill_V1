@@ -96,20 +96,11 @@ public class DiaryController {
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
-    @PostMapping("/todolist")
-    @Operation(summary = "하루 달성 체크")
-    public String checked(Member member, String name) {
-        diaryCheckLogService.save(member,name);
-
-        return "usr/diary/todolist";
-    }
-
-    @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping ("/todolist/toggleCheck/{diaryId}")
     public String toggleCheck(@PathVariable Long diaryId, Member member) {
         diaryService.toggleCheck(member, diaryId, LocalDate.now());
 
-        return "usr/diary/todolist";
+        return "redirect:/usr/diary/todolist";
     }
 
 }
