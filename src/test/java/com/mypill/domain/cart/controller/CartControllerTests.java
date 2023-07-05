@@ -76,30 +76,30 @@ class CartControllerTests {
                 .andExpect(redirectedUrlPattern("/product/detail/**"));
     }
 
-//    @Test
-//    @DisplayName("02 장바구니에 담긴 상품 수량 변경 성공")
-//    @WithMockUser(username = "testUser1", authorities = "MEMBER")
-//    void addCartProductFailTest() throws Exception {
-//        CartProduct cartProduct = cartService.findCartProductById(this.cartProduct.getId()).orElse(null);
-//        assertThat(cartProduct).isNotNull();
-//        assertThat(cartProduct.getQuantity()).isEqualTo(1);
-//
-//        ResultActions resultActions = mvc
-//                .perform(post("/cart/update")
-//                        .with(csrf())
-//                        .param("cartProductId",String.valueOf(this.cartProduct.getId()))
-//                        .param("newQuantity","3")
-//                )
-//                .andDo(print());
-//
-//        resultActions
-//                .andExpect(handler().handlerType(CartController.class))
-//                .andExpect(handler().methodName("updateQuantity"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrlPattern("/cart**"));
-//
-//        assertThat(cartProduct.getQuantity()).isEqualTo(3);
-//    }
+    @Test
+    @DisplayName("02 장바구니에 담긴 상품 수량 변경 성공")
+    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    void addCartProductFailTest() throws Exception {
+        CartProduct cartProduct = cartService.findCartProductById(this.cartProduct.getId()).orElse(null);
+        assertThat(cartProduct).isNotNull();
+        assertThat(cartProduct.getQuantity()).isEqualTo(1);
+
+        ResultActions resultActions = mvc
+                .perform(post("/cart/update")
+                        .with(csrf())
+                        .param("cartProductId",String.valueOf(cartProduct.getId()))
+                        .param("newQuantity","3")
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(CartController.class))
+                .andExpect(handler().methodName("updateQuantity"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/cart**"));
+
+        assertThat(cartProduct.getQuantity()).isEqualTo(3);
+    }
 
     @Test
     @DisplayName("03 장바구니에 담긴 상품 삭제 성공")

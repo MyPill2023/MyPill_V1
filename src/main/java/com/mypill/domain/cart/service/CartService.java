@@ -88,9 +88,7 @@ public class CartService {
             return RsData.of("F-1", "장바구니에 없는 상품입니다.", existProduct);
         }
 
-        Product product = productService.findById(existProduct.getId()).orElseThrow();
-
-        if(!checkStockAvailability(product.getStock(), newQuantity)){
+        if(!checkStockAvailability(existProduct.getProduct().getStock(), newQuantity)){
             return RsData.of("F-2", "선택한 수량이 재고보다 많습니다.");
         }
 

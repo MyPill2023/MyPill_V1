@@ -28,7 +28,7 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final Rq rq;
 
-    @PreAuthorize("isAuthenticated()")
+
     @GetMapping("/list")
     public String list(Model model){
 
@@ -44,7 +44,7 @@ public class NotificationController {
 
         return "usr/notification/list";
     }
-    @PreAuthorize("isAuthenticated()")
+
     @PostMapping("/read/{notificationId}")
     public String list(@PathVariable Long notificationId){
         RsData<Notification> readRsData = notificationService.makeAsRead(rq.getMember(), notificationId);
