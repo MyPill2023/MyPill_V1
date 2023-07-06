@@ -44,11 +44,19 @@ public class DiaryService {
     }
 
     @Transactional
-    public void toggleCheck(Member member, Long diaryId, LocalDate checkDate){
-        Diary diary = findById(diaryId).orElse(null);
+    public RsData<Diary> toggleCheck(Member member, Long diaryId, LocalDate checkDate){
 
-        if (diary == null) return;
+        Diary diary = findById(diaryId).orElse(null);
+        if (diary == null) {
+            return RsData.of("F-1", "존재하지 않는 영양제입니다.",null);
+        }
+
+        if (!Objects.equals(member.getId(), diary.getMember().getId())) {
+             return RsData.of("F-2", "본인만 체크 할 수 있습니다");
+        }
+
         diary.toggleDiaryCheckLog(checkDate);
+        return RsData.of("S-1","체크 되었습니다.");
     }
 
     @Transactional
@@ -65,28 +73,33 @@ public class DiaryService {
         return RsData.of("S-1","영양제가 삭제 되었습니다.",diary);
     }
 
-    public List<Diary> findHistory(LocalDate date) {
+    public List<Diary> findHistory(Member member, LocalDate date) {
+
         List<DiaryCheckLog> diaryCheckLogs = diaryCheckLogRepository.findByCheckDate(date);
 
         return diaryCheckLogs
                 .stream()
+                .filter(e -> Objects.equals(e.getDiary().getMember().getId(), member.getId()))
                 .map(DiaryCheckLog::getDiary)
                 .toList();
     }
 
-    public List<Diary> getList () {
-        return diaryRepository.findByDeleteDateIsNullOrderByCreateDateDesc();
+    public List<Diary> findByMemberId (Long memberId) {
+        return diaryRepository.findByMemberId(memberId);
     }
 
-    public List<Diary> findAll() {
-        return diaryRepository.findByDeleteDateNull();
+    public List<Diary> getList (Long memberId) {
+        List<Diary> diaryList = diaryRepository.findByDeleteDateIsNullOrderByCreateDateDesc();
+
+        return diaryList
+                .stream()
+                .filter(e ->Objects.equals(e.getMember().getId(), memberId))
+                .toList();
     }
+
 
     public Optional<Diary> findById (Long diaryId) {
         return diaryRepository.findByDeleteDateNullAndId(diaryId);
     }
 
-    public List<DiaryCheckLog> findByCheckDate (LocalDate date) {
-        return diaryCheckLogRepository.findByCheckDate(date);
-    }
 }
