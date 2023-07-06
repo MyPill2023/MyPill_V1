@@ -32,28 +32,6 @@
             </div>
         </div>
     </div>
-    <script>
-        function confirmAndDelete(diaryId) {
-            if (confirm('삭제하시겠습니까?')) {
-                $.ajax({
-                    url: '/delete/' + diaryId,
-                    type: 'DELETE',
-                    success: function (response) {
-                        // 성공적으로 삭제된 경우에 대한 처리
-                        alert('삭제되었습니다.');
-                        // 추가적인 리다이렉션 또는 동작 수행
-                    },
-                    error: function (error) {
-                        // 삭제 실패 또는 에러 발생 시에 대한 처리
-                        alert('삭제에 실패했습니다.');
-                        console.log(error);
-                    }
-                });
-            }
-        }
-    </script>
-
-
 </main>
 </body>
 </html>
