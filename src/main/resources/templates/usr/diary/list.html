@@ -1,4 +1,5 @@
-<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:margin-left="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>영양제 관리</title>
@@ -8,16 +9,24 @@
 <main layout:fragment="main">
 
     <div class="hero-content flex flex-col justify-center my-10 w-full ">
-        <h1 class="text-2xl text-center font-bold "> 나의 영양제 관리 🗒️
+        <h1 class="text-2xl text-center font-bold "> 나의 영양제 목록 📂
         </h1>
-        <div class="flex justify-center items-center w-full" th:each="diary:${diaries}">
-            <div tabindex="0" class="collapse collapse-close border border-base-300 bg-base-200">
-                <a class="collapse-title text-xl font-medium" th:text="${diary.name}" th:href="@{/usr/diary/detail/{id}(id=${diary.id})}">
-                </a>
+        <div class="flex justify-around gap-2">
+            <div class="w-1/2">
+                <a href="/usr/diary/todolist" class="btn btn-block btn-success">체크리스트</a>
+            </div>
+            <div class="w-1/2">
+                <a href="/usr/diary/create" class="btn btn-block btn-success">영양제 등록</a>
             </div>
         </div>
-        <div>
-            <a href="/usr/diary/create" class="btn btn-block btn-success">영양제 등록하러 가기</a>
+        <div class="text-black p-2 flex justify-center" th:if="${diaries.isEmpty()}">
+            <i class="fa-regular fa-face-laugh"></i> 등록하신 영양제가 없네요! 영양제를 등록해주세요~
+        </div>
+        <div class="flex justify-center items-center w-full" th:each="diary:${diaries}">
+            <div tabindex="0" class="collapse collapse-close border border-base-200 bg-base-200" style="display: flex; align-items: center;">
+                <a class="collapse-title text-xl font-medium" th:text="${diary.name}" th:href="@{/usr/diary/detail/{id}(id=${diary.id})}"></a>
+                <button class="delete-button" style="margin-right: 15px" onclick="deleteDiary()">❌</button>
+            </div>
         </div>
     </div>
 
