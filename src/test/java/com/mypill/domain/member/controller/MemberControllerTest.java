@@ -1,5 +1,6 @@
 package com.mypill.domain.member.controller;
 
+import com.mypill.domain.buyer.controller.BuyerController;
 import com.mypill.domain.member.service.MemberService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -147,8 +148,8 @@ class MemberControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
-    @DisplayName("마이페이지 이동 - 구매자 회원")
+    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @DisplayName("마이페이지 이동")
     void myPageTest1() throws Exception {
         // GIVEN
         String username = "testUser1";
@@ -174,20 +175,20 @@ class MemberControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser2", roles = "MEMBER")
-    @DisplayName("마이페이지 이동 - 판매자 회원")
-    void myPageTest2() throws Exception {
+    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @DisplayName("회원정보")
+    void myInfoTest() throws Exception {
         // GIVEN
-        String username = "testUser2";
-        String name = "이영희";
+        String username = "testUser1";
+        String name = "김철수";
         String password = "1234";
         String email = "testEmail@test.com";
-        Integer userType = 2;
+        Integer userType = 1;
         memberService.join(username, name, password, userType, email);
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/member/myPage")
+                .perform(get("/usr/member/myInfo")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -195,13 +196,13 @@ class MemberControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(MemberController.class))
-                .andExpect(handler().methodName("myPage"))
+                .andExpect(handler().methodName("myInfo"))
                 .andExpect(status().is2xxSuccessful())
         ;
     }
 
     @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "MEMBER")
     @DisplayName("회원 탈퇴")
     void deleteAccountTest() throws Exception {
         // GIVEN
@@ -227,7 +228,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "MEMBER")
     @DisplayName("회원 탈퇴")
     void nameUpdate() throws Exception {
         // GIVEN

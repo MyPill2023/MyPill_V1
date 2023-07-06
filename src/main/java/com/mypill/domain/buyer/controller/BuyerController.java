@@ -30,8 +30,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/usr/buyer")
 public class BuyerController {
-    private final PostService postService;
-    private final CommentService commentService;
     private final OrderService orderService;
     private final AddressService addressService;
     private final Rq rq;

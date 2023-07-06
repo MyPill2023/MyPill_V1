@@ -26,7 +26,7 @@ class SellerServiceTest {
     private Member testUser1;
 
     @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "WAITER")
     @DisplayName("통신판매업 검증")
     void certificateBRNOTest1() {
         // GIVEN
@@ -51,7 +51,7 @@ class SellerServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "WAITER")
     @DisplayName("통신판매업 검증 후 판매자 자격 변경")
     void certificateBRNOTest2() {
         // GIVEN
@@ -76,7 +76,7 @@ class SellerServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "WAITER")
     @DisplayName("건강기능식품 판매업 검증")
     void certificateNBRNOTest1() {
         // GIVEN
@@ -100,7 +100,7 @@ class SellerServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "WAITER")
     @DisplayName("건강기능식품 판매업 검증 후 판매자 자격 변경")
     void certificateNBRNOTest2() {
         // GIVEN
