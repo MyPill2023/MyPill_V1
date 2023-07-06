@@ -9,3 +9,6 @@ spring:
 custom:
   site:
     baseUrl: http://localhost
+jpa:
+  hibernate:
+    ddl-auto: create

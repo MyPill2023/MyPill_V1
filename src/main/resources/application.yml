@@ -34,8 +34,6 @@ spring:
   thymeleaf:
     enabled: true
   jpa:
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         show_sql: true
