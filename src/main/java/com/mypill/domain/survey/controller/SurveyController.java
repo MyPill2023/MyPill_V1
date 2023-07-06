@@ -99,7 +99,7 @@ public class SurveyController {
             return "redirect:/usr/survey/step";
         }
 
-        List<Long> answers = new ArrayList<>();
+        Set<Long> answers = new HashSet<>();
         for (Long id : questionIds) {
             List<NutrientQuestion> nutrientQuestions = nutrientQuestionService.findByQuestionId(id);
 
