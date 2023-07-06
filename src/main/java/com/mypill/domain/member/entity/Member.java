@@ -60,6 +60,9 @@ public class Member extends BaseEntity {
     public List<GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("MEMBER"));
+        if (isBuyer()) {
+            authorities.add(new SimpleGrantedAuthority("BUYER"));
+        }
         if (isSeller()) {
             authorities.add(new SimpleGrantedAuthority("SELLER"));
         }

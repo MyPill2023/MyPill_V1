@@ -42,21 +42,6 @@ public class BuyerController {
         return "usr/buyer/myLikes";
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myPosts")
-    public String myPosts(Model model) {
-        List<Post> posts = postService.getMyPosts(rq.getMember());
-        model.addAttribute("posts", posts);
-        return "usr/buyer/myPosts";
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myComments")
-    public String myComments(Model model) {
-        List<Comment> comments = commentService.getMyComments(rq.getMember());
-        model.addAttribute("comments", comments);
-        return "usr/buyer/myComments";
-    }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/mySchedule")
