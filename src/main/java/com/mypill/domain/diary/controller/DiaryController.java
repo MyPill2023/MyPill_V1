@@ -2,6 +2,7 @@ package com.mypill.domain.diary.controller;
 
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
+import com.mypill.domain.diary.entity.DiaryCheckLog;
 import com.mypill.domain.diary.service.DiaryCheckLogService;
 import com.mypill.domain.diary.service.DiaryService;
 import com.mypill.domain.member.entity.Member;
@@ -78,15 +79,35 @@ public class DiaryController {
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
+    @PostMapping("/list/delete/{diaryId}")
+    @Operation(summary = "영양제 정보 삭제")
+    public String delete(@PathVariable Long diaryId) {
+        RsData<Diary> deleteRsData = diaryService.delete(diaryId, rq.getMember());
+
+        if (deleteRsData.isFail()) {
+            return rq.historyBack(deleteRsData.getMsg());
+        }
+        return rq.redirectWithMsg("/usr/diary/list",deleteRsData);
+    }
+
+    @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/todolist")
     @Operation(summary = "하루 달성 체크 폼")
-    public String todolist(Model model) {
+    public String todolist(Model model, String dateStr) {
 
         String today = LocalDate.now().toString();
 
         List<Diary> diaries = diaryService.findAll();
         model.addAttribute("today", today);
         model.addAttribute("diaries", diaries);
+
+        LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr);
+        List<Diary> history = diaryService.findHistory(date);
+
+        model.addAttribute("history", history);
+
+        List<DiaryCheckLog> diaryCheckLogList = diaryCheckLogService.findByCheckDate(date);
+        model.addAttribute("diaryCheckLog",diaryCheckLogList);
         return "usr/diary/todolist";        
     }
 
