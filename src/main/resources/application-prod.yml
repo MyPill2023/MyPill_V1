@@ -6,7 +6,7 @@ spring:
     password: '${custom.prod_db.password}'
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: false
