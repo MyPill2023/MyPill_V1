@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("usr/buyer/myAddress")
+@RequestMapping("/usr/buyer/myAddress")
 public class AddressController {
 
     private final AddressService addressService;
@@ -49,7 +49,7 @@ public class AddressController {
     @GetMapping("/update/{addressId}")
     public String updateForm(@PathVariable Long addressId, Model model){
 
-        RsData<Address> rsData = addressService.get(addressId);
+        RsData<Address> rsData = addressService.get(rq.getMember(), addressId);
         if(rsData.isFail()){
             return rq.historyBack(rsData);
         }
@@ -62,7 +62,7 @@ public class AddressController {
     @PostMapping("/update/{addressId}")
     public String update(@PathVariable Long addressId, @Valid AddressRequest addressRequest){
 
-        RsData<Address> rsData = addressService.get(addressId);
+        RsData<Address> rsData = addressService.get(rq.getMember(), addressId);
         if(rsData.isFail()){
             return rq.historyBack(rsData);
         }
@@ -73,9 +73,9 @@ public class AddressController {
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/delete/{addressId}")
-    public String update(@PathVariable Long addressId){
+    public String delete(@PathVariable Long addressId){
 
-        RsData<Address> rsData = addressService.get(addressId);
+        RsData<Address> rsData = addressService.get(rq.getMember(), addressId);
         if(rsData.isFail()){
             return rq.historyBack(rsData);
         }
