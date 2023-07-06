@@ -33,9 +33,13 @@ public class BaseEntity {
     @LastModifiedDate
     private LocalDateTime modifyDate;
 
-    protected LocalDateTime deleteDate;
+    private LocalDateTime deleteDate;
 
     public void softDelete(){
         this.deleteDate = LocalDateTime.now();
+    }
+
+    public void revive() {
+        this.deleteDate = null;
     }
 }
