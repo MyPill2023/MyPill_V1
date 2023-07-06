@@ -5,7 +5,6 @@ import com.mypill.domain.diary.repository.DiaryCheckLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 import java.util.Optional;
 
 

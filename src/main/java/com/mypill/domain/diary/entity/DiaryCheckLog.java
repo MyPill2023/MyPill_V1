@@ -31,11 +31,6 @@ public class DiaryCheckLog extends BaseEntity {
 
     private LocalDate checkDate;
 
-
-    public void revive() {
-        this.deleteDate = null;
-    }
-
     public static DiaryCheckLog of(Diary diary, Member member) {
         return DiaryCheckLog.builder()
                 .diary(diary)
