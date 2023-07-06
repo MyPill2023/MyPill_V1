@@ -17,7 +17,7 @@ public class NutrientQuestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "nutirent_question_id")
+    @Column(name = "nutrient_question_id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")

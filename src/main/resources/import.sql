@@ -124,7 +124,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (8,8);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (9,9);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (10,6);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (10,7);
-#3번
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (11,10);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (11,11);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (12,12);
