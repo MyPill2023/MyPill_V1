@@ -1,8 +1,14 @@
 package com.mypill.domain.diary.controller;
 
+
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
+import com.mypill.domain.diary.service.DiaryCheckLogService;
 import com.mypill.domain.diary.service.DiaryService;
+import com.mypill.domain.member.entity.Member;
+
+
+
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,12 +17,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -24,10 +29,11 @@ import java.util.List;
 public class DiaryController {
 
     private final DiaryService diaryService;
+    private final DiaryCheckLogService diaryCheckLogService;
     private final Rq rq;
 
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/create")
     @Operation(summary = "영양제 등록 폼")
     public String create() {
@@ -35,7 +41,7 @@ public class DiaryController {
         return "usr/diary/create";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/create")
     @Operation(summary = "영양제 등록")
     public String create(@Valid DiaryRequest diaryRequest) {
@@ -48,7 +54,7 @@ public class DiaryController {
 
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/list")
     @Operation(summary = "영양제 목록")
     public String showList(Model model) {
@@ -57,7 +63,7 @@ public class DiaryController {
         return "usr/diary/list";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/detail/{diaryId}")
     @Operation(summary = "영양제 정보 상세")
     public String showDetail(@PathVariable Long diaryId, Model model) {
@@ -72,8 +78,25 @@ public class DiaryController {
         return "usr/diary/detail";
     }
 
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @GetMapping("/todolist")
+    @Operation(summary = "하루 달성 체크 폼")
+    public String todolist(Model model) {
 
+        String today = LocalDate.now().toString();
 
+        List<Diary> diaries = diaryService.findAll();
+        model.addAttribute("today", today);
+        model.addAttribute("diaries", diaries);
+        return "usr/diary/todolist";        
+    }
 
+    @PreAuthorize("hasAuthority('MEMBER')")
+    @PostMapping ("/todolist/toggleCheck/{diaryId}")
+    public String toggleCheck(@PathVariable Long diaryId, Member member) {
+        diaryService.toggleCheck(member, diaryId, LocalDate.now());
+
+        return "redirect:/usr/diary/todolist";
+    }
 
 }

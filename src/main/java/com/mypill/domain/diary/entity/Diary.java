@@ -2,14 +2,14 @@ package com.mypill.domain.diary.entity;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.base.entitiy.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,4 +40,44 @@ public class Diary extends BaseEntity {
             default -> "자기전";
         };
     }
+
+    @Builder.Default
+    @OneToMany(mappedBy = "diary",cascade = CascadeType.ALL,orphanRemoval = true)
+    private final List<DiaryCheckLog> timeChecks = new ArrayList<>();
+
+
+    public void removeDiaryCheckLog(DiaryCheckLog diaryCheckLog) {
+        timeChecks.remove(diaryCheckLog);
+    }
+
+    public DiaryCheckLog addDiaryCheckLog (LocalDate now) {
+        return DiaryCheckLog.builder()
+                .diary(this)
+                .checkDate(now)
+                .build();
+    }
+
+    public void toggleDiaryCheckLog(LocalDate checkDate) {
+        DiaryCheckLog diaryCheckLog = timeChecks.stream()
+                .filter(e -> e.getCheckDate().equals(checkDate))
+                .findFirst()
+                .orElse(null);
+
+        if (diaryCheckLog == null) {
+            diaryCheckLog = addDiaryCheckLog(checkDate);
+            timeChecks.add(diaryCheckLog);
+        } else {
+            removeDiaryCheckLog(diaryCheckLog);
+        }
+    }
+
+    public boolean isCheckedWhen(String checkDate) {
+        return timeChecks.stream()
+                .anyMatch(e -> e.getCheckDate().toString().equals(checkDate));
+    }
+
+    public void revive() {
+        deleteDate = null;
+    }
+
 }
