@@ -1,6 +1,5 @@
 package com.mypill.domain.diary.controller;
 
-
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
 import com.mypill.domain.diary.service.DiaryCheckLogService;

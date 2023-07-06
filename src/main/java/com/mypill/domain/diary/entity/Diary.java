@@ -7,7 +7,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class Diary extends BaseEntity {
     }
 
     @Builder.Default
-    @OneToMany(mappedBy = "diary",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<DiaryCheckLog> timeChecks = new ArrayList<>();
 
 
@@ -74,10 +73,6 @@ public class Diary extends BaseEntity {
     public boolean isCheckedWhen(String checkDate) {
         return timeChecks.stream()
                 .anyMatch(e -> e.getCheckDate().toString().equals(checkDate));
-    }
-
-    public void revive() {
-        deleteDate = null;
     }
 
 }

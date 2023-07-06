@@ -38,4 +38,8 @@ public class BaseEntity {
     public void softDelete(){
         this.deleteDate = LocalDateTime.now();
     }
+
+    public void revive() {
+        this.deleteDate = null;
+    }
 }
