@@ -67,11 +67,18 @@ public class Order extends BaseEntity {
 
     public void makeName() {
         StringBuilder sb = new StringBuilder();
-        String productName = orderItems.get(0).getProduct().getName();
+        String productName;
+
+        if(orderItems.isEmpty()){
+            productName = "";
+        }else{
+            productName = orderItems.get(0).getProduct().getName();
+        }
+
         int maxOrderNameLength = AppConfig.getMaxOrderNameLength();
 
         if (productName.length() > maxOrderNameLength) {
-            sb.append(productName.substring(0, maxOrderNameLength + 1));
+            sb.append(productName, 0, maxOrderNameLength + 1);
             sb.append("...");
         } else {
             sb.append(productName);
