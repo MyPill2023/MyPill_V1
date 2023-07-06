@@ -45,7 +45,6 @@ INSERT INTO categories (name) VALUES ('수면');
 INSERT INTO categories (name) VALUES ('간');
 INSERT INTO categories (name) VALUES ('대장');
 
-
 INSERT INTO questions (category_id, content) VALUES (1,'눈이 침침하거나 시력이 떨어졌나요?');
 INSERT INTO questions (category_id, content) VALUES (1, '장시간 모니터를 보거나 전자기기를 사용하시나요?');
 INSERT INTO questions (category_id, content) VALUES (1, '장시간 렌즈를 착용하시거나 눈이 건조한 편이신가요?');
@@ -102,7 +101,7 @@ INSERT INTO questions (category_id, content) VALUES ( 10,'평소에 장이 예�
 INSERT INTO questions (category_id, content) VALUES (10,'설사 또는 변비가 자주 있나요?');
 INSERT INTO questions (category_id, content) VALUES ( 10,'배변 이후에도 완전히 배변하지 못한 느낌이 드나요?');
 INSERT INTO questions (category_id, content) VALUES (10,'변을 보거나 방귀를 뀌고나면 왼쪽 하복부 통증이 사라지나요?');
-#1번
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (1,1);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (1,2);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (1,3);
@@ -115,7 +114,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (3,3);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (4,4);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (4,5);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (5,1);
-#2번
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (6,6);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (6,8);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (7,6);
@@ -138,7 +137,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (14,7);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (15,14);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (15,12);
 
-# 4번 위
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (16,32);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (17,33);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (17,31);
@@ -147,7 +146,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (18,31);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (19,31);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (20,31);
 
-# 5번 두뇌
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (21,16);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (21,3);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (22,17);
@@ -157,7 +156,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (24,18);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (25,16);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (25,3);
 
-#6번 피부
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (26,19);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (26,20);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (27,19);
@@ -167,7 +166,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (29,4);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (30,19);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (30,4);
 
-#7번 다이어트
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (31,23);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (32,25);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (33,25);
@@ -175,7 +174,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (34,24);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (35,29);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (35,28);
 
-#8번 수면
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (36,11);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (36,18);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (37,11);
@@ -184,7 +183,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (38,34);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (39,34);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (40,3);
 
-#9번 간
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (41,26);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (41,28);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (42,27);
@@ -192,7 +191,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (42,26);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (43,27);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (43,26);
 
-#10 대장
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (44,29);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (45,29);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (45,30);

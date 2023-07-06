@@ -22,8 +22,14 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        if (!rq.getMember().getEmailVerified()) {
+        if (!rq.getMember().isEmailVerified()) {
             redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/usr/member/login", "이메일 인증이 완료되지 않은 계정입니다."));
+            clearAuthenticationAttributes(request);
+            rq.invalidateSession();
+            return;
+        }
+        if (rq.getMember().getDeleteDate() != null) {
+            redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/usr/member/login", "삭제된 계정입니다."));
             clearAuthenticationAttributes(request);
             rq.invalidateSession();
             return;

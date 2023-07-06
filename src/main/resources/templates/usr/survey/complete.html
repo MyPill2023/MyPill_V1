@@ -8,24 +8,29 @@
 </head>
 <body>
 <main layout:fragment="main">
-    <div class="hero-content flex flex-col justify-center my-10 ">
-        <h1 class="text-3xl font-bold">건강 설문 결과
-        </h1>
-        <p><span th:style="${'font-size:17px; text-align: center'}" class="text-success font-bold">고객
-        </span><span th:style="${'color: black; font-size:17px; text-align: center'}" >님의 건강 설문 결과</span></p>
-        <span th:style="${'color: black; font-size:17px; text-align: center'}">필요한 영양소입니다
-        </span>
+    <div class="hero-content flex flex-col justify-center my-10 !mb-28">
 
-        <div class="flex justify-center items-center w-full" th:each="nutrient:${nutrientAnswers}">
-            <div class="collapse collapse-arrow bg-base-200">
-                <input type="radio" name="my-accordion-2" checked="checked" />
-                <div class="collapse-title text-xl font-medium" th:text="${nutrient.name}"></div>
+        <div class="flex flex-col justify-center mb-5">
+            <h1 class="text-2xl text-center font-bold text-center mb-5">건강 설문 결과</h1>
+            <div class="text-center flex items-center">
+                <span class="text-green-400 font-bold" th:if="${@rq.login}" th:text="${@rq.member.name}"></span>
+                <span class="text-green-400 font-bold" th:if="${@rq.logout}">고객</span>
+                <span>님의 건강 설문 결과</span>
+            </div>
+            <span class="text-center">필요한 영양소입니다.</span>
+        </div>
+
+
+        <div class="flex justify-center items-center w-full px-5" th:each="nutrient:${nutrientAnswers}" >
+            <div class="collapse collapse-arrow bg-base-200" >
+                <input type="radio" name="my-accordion-2"/>
+                <div class="collapse-title text-lg font-bold" th:text="${nutrient.name}"></div>
                 <div class="collapse-content" th:text="${nutrient.description}">
                 </div>
             </div>
         </div>
-        <div>
-            <a href="/product/list/all" class="btn btn-block btn-success">영양제 구매 바로가기</a>
+        <div class="mt-5">
+            <a href="/product/list/all" class="btn btn-block">영양제 구매 바로가기</a>
         </div>
     </div>
 </main>

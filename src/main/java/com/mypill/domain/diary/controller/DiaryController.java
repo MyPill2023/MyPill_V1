@@ -1,11 +1,8 @@
 package com.mypill.domain.diary.controller;
 
 
-import com.mypill.domain.diary.dto.DiaryCheckLogRequest;
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
-import com.mypill.domain.diary.entity.DiaryCheckLog;
-import com.mypill.domain.diary.repository.DiaryCheckLogRepository;
 import com.mypill.domain.diary.service.DiaryCheckLogService;
 import com.mypill.domain.diary.service.DiaryService;
 import com.mypill.domain.member.entity.Member;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 
 @Controller

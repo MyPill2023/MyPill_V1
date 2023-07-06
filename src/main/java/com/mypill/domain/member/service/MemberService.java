@@ -1,6 +1,6 @@
 package com.mypill.domain.member.service;
 
-import com.mypill.domain.emailVerification.service.EmailVerificationService;
+import com.mypill.domain.emailverification.service.EmailVerificationService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
@@ -8,14 +8,9 @@ import com.mypill.domain.product.entity.Product;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -31,13 +26,28 @@ public class MemberService {
     private final EmailVerificationService emailVerificationService;
 
 
+    //NotProd 용 메소드, 개발 끝나면 삭제 예정    @Transactional
+    public RsData<Member> join(String username, String name, String password, String userTypeStr, String email, boolean emailVerified) {
+        Integer userType = Integer.parseInt(userTypeStr);
+        Member member = Member.builder()
+                .username(username)
+                .name(name)
+                .password(passwordEncoder.encode(password))
+                .email(email)
+                .userType(userType)
+                .emailVerified(emailVerified)
+                .build();
+        Member savedMember = memberRepository.save(member);
+        return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
+    }
+
+
     @Transactional
-    public RsData<Member> join(String username, String name, String password, String userTypeStr, String email) {
+    public RsData<Member> join(String username, String name, String password, Integer userType, String email) {
         if (memberRepository.findByUsername(username).isPresent()) {
             throw new AlreadyJoinException("%s(은)는 이미 사용중인 아이디 입니다.".formatted(username));
         }
 
-        Integer userType = Integer.parseInt(userTypeStr);
         Member member = Member.builder()
                 .username(username)
                 .name(name)
@@ -47,6 +57,12 @@ public class MemberService {
                 .build();
         Member savedMember = memberRepository.save(member);
 
+        sendEmail(savedMember);
+
+        return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
+    }
+
+    private void sendEmail(Member member) {
         CompletableFuture<RsData<Long>> sendRsFuture = emailVerificationService.send(member);
         sendRsFuture.whenComplete((sendRs, throwable) -> {
             if (sendRs.isSuccess()) {
@@ -55,23 +71,30 @@ public class MemberService {
                 log.info("이메일 인증 메일 발송 실패");
             }
         });
-        return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
     }
 
-    private RsData<Member> oauthJoin(String providerTypeCode, String username, String password, String name, String email) {
+    @Transactional
+    public RsData<Member> whenSocialLogin(String providerTypeCode, String username, String name, String email) {
+        Optional<Member> opMember = findByUsername(username);
+
+        return opMember.map(member -> RsData.of("S-2", "로그인 되었습니다.", member))
+                .orElseGet(() -> oauthJoin(providerTypeCode, username, name, email));
+    }
+
+    private RsData<Member> oauthJoin(String providerTypeCode, String username, String name, String email) {
         if (findByUsername(username).isPresent()) {
             return RsData.of("F-1", "해당 아이디(%s)는 이미 사용중입니다.".formatted(username));
         }
-
-        if (StringUtils.hasText(password)) {
-            password = passwordEncoder.encode(password);
+        Optional<Member> opMember = memberRepository.findByEmail(email);
+        if (opMember.isPresent()) {
+            return RsData.of("F-2", "해당 이메일은 이미 사용중입니다.");
         }
 
         Member member = Member.builder()
                 .providerTypeCode(providerTypeCode)
                 .username(username)
                 .name(name)
-                .password(passwordEncoder.encode(password))
+                .password(passwordEncoder.encode(""))
                 .userType(1)
                 .email(email)
                 .build();
@@ -80,14 +103,32 @@ public class MemberService {
         return RsData.of("S-1", "회원가입이 완료되었습니다.", member);
     }
 
-    public Optional<Member> findByUsername(String username) {
-        return memberRepository.findByUsername(username);
-    }
-
     public Optional<Member> findById(Long id) {
         return memberRepository.findById(id);
     }
 
+    public Optional<Member> findByUsername(String username) {
+        return memberRepository.findByUsername(username);
+    }
+
+    @Transactional
+    public RsData<Member> updateName(Member member, String newName) {
+        member = member.toBuilder()
+                .name(newName)
+                .build();
+        memberRepository.save(member);
+        return RsData.of("S-1", "이름 변경이 완료되었습니다.", member);
+    }
+
+    @Transactional
+    public RsData<Member> deleteAccount(Member member) {
+        if (member == null) {
+            return RsData.of("F-1", "로그인이 필요한 서비스입니다.");
+        }
+        member.softDelete();
+        Member deletedMember = memberRepository.save(member);
+        return RsData.of("S-1", "회원 탈퇴가 완료되었습니다.", deletedMember);
+    }
 
     public int idValidation(String username) {
         if (username.equals("")) {
@@ -122,18 +163,6 @@ public class MemberService {
         return matcher.matches();
     }
 
-    @Transactional
-    public RsData<Member> whenSocialLogin(String providerTypeCode, String username, String name, String email) {
-        Optional<Member> opMember = findByUsername(username);
-
-        return opMember.map(member -> RsData.of("S-2", "로그인 되었습니다.", member))
-                .orElseGet(() -> oauthJoin(providerTypeCode, username, "", name, email));
-
-    }
-
-    public boolean verifyWithWhiteList(Member member, String token) {
-        return member.getAccessToken().equals(token);
-    }
 
     public void whenAfterLike(Member member, Product product) {
         member.like(product);
@@ -149,41 +178,24 @@ public class MemberService {
         return RsData.of("S-1", "설문이 초기화 되었습니다");
     }
 
-    @Transactional
-    public String nameUpdate(Member member, String newName) {
-        member.updateName(newName);
-        memberRepository.save(member);
-        return "success";
-    }
-
-    @Transactional
-    public RsData deleteAccount(Member member) {
-        if (member == null) {
-            return RsData.of("F-1", "로그인이 필요한 서비스입니다.");
-        }
-        memberRepository.delete(member);
-        return RsData.of("S-1", "회원 탈퇴가 완료되었습니다.");
-    }
 
     @Transactional
     public RsData verifyEmail(Long id, String verificationCode) {
         RsData verifyVerificationCodeRs = emailVerificationService.verifyVerificationCode(id, verificationCode);
 
-        if (verifyVerificationCodeRs.isSuccess() == false) {
+        if (!verifyVerificationCodeRs.isSuccess()) {
             return verifyVerificationCodeRs;
         }
 
-        Member member = memberRepository.findById(id).get();
-        member.setEmailVerified(true);
-
-        return RsData.of("S-1", "이메일인증이 완료되었습니다.");
-    }
-
-    public boolean hasEmailVerified(String username) {
-        Member member = memberRepository.findByUsername(username).orElse(null);
-        if (member == null) {
-            return false;
+        Optional<Member> opMember = memberRepository.findById(id);
+        if (opMember.isEmpty()) {
+            return RsData.of("F-1", "이메일 인증에 실패했습니다.");
         }
-        return member.getEmailVerified();
+        Member member = opMember.get();
+        member = member.toBuilder()
+                .emailVerified(true)
+                .build();
+        memberRepository.save(member);
+        return RsData.of("S-1", "이메일인증이 완료되었습니다.");
     }
 }

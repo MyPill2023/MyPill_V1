@@ -4,7 +4,6 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.global.rsData.RsData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.concurrent.CompletableFuture;
 

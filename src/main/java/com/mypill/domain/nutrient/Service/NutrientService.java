@@ -1,4 +1,4 @@
-package com.mypill.domain.nutrient.Service;
+package com.mypill.domain.nutrient.service;
 
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.nutrient.repository.NutrientRepository;

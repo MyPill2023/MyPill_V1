@@ -6,19 +6,18 @@
 
 <body>
 <main layout:fragment="main">
-    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg">
+    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
         <div class="w-full max-w-md flex flex-col justify-center gap-5 mb-20">
-
             <h1 class="text-2xl font-bold text-center my-5">관심 상품</h1>
-            <th:block th:if="${@rq.getMember.likedProducts.size() == 0}">
-                <span class="flex items-center justify-center">등록된 관심상품이 없습니다.</span>
-            </th:block>
+            <div th:if="${@rq.getMember.likedProducts.size() == 0}" class="flex justify-center my-16">
+                <span >등록된 관심상품이 없습니다.</span>
+            </div>
             <div th:each="product, loop : ${@rq.getMember.likedProducts}"
                  class="bg-base-100 border-b border-gray-200 p-10 pt-5">
                 <a th:href="@{|/product/detail/${product.id}|}">
                     <div class="flex justify-end">
                         <a th:href="@{/product/unlike/{id}(id=${product.id})}"
-                           class="btn btn-success btn-outline flex gap-1 btn-xs"
+                           class="btn btn-outline flex gap-1 btn-xs"
                            onclick="return confirm('상품을 삭제하시겠습니까?')">
                             삭제하기
                         </a>
@@ -34,10 +33,10 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <div class="items-center">
-                                    <i class="fa-solid fa-heart" style="color: #FF0000;"></i>
+                                    <i class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
                                     <span th:text="${product.likedMembers.size()}"></span>
                                 </div>
-                                <span class="text-lg font-bold"
+                                <span class="font-bold"
                                       th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
                             </div>
                         </div>

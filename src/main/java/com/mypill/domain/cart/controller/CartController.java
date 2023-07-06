@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/cart")
@@ -30,17 +28,15 @@ public class CartController {
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("")
     public String showCart(Model model){
-
-        CartResponse cartResponse =  cartService.cartView();
-        model.addAttribute("cartResponse",cartResponse);
-
+        Cart cart =  cartService.cartView(rq.getMember());
+        model.addAttribute("cartResponse",CartResponse.of(cart));
         return "usr/cart/list";
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/add")
     public String addCartProduct(@Valid CartProductRequest request){
-        RsData<CartProduct> addRsData = cartService.addProduct(request);
+        RsData<CartProduct> addRsData = cartService.addProduct(rq.getMember(), request);
 
         if(addRsData.isFail()){
             return rq.historyBack(addRsData);
@@ -52,7 +48,7 @@ public class CartController {
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/update")
     public String updateQuantity(@RequestParam Long cartProductId, @RequestParam Long newQuantity){
-        RsData<CartProduct> updateRsData = cartService.updateQuantity(cartProductId, newQuantity);
+        RsData<CartProduct> updateRsData = cartService.updateQuantity(rq.getMember(), cartProductId, newQuantity);
 
         if(updateRsData.getResultCode().equals("F-2")){
             return rq.redirectWithMsg("/cart", updateRsData);
@@ -68,7 +64,7 @@ public class CartController {
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping("/delete")
     public String softDeleteCartProduct(@RequestParam Long cartProductId){
-        RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(cartProductId);
+        RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(rq.getMember(), cartProductId);
 
         if(deleteRsData.isFail()){
             return rq.historyBack(deleteRsData);

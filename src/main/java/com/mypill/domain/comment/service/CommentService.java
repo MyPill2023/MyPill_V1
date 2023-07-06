@@ -23,8 +23,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public RsData<Comment> create(CommentRequest commentRequest, Member member, String postIdStr) {
-        Long postId = Long.parseLong(postIdStr);
+    public RsData<Comment> create(CommentRequest commentRequest, Member member, Long postId) {
         Post post = postRepository.findById(postId).orElse(null);
         if (post == null) {
             return RsData.of("F-1", "존재하지 않는 게시물입니다.");
@@ -40,16 +39,16 @@ public class CommentService {
 
     public CommentResponse update(CommentRequest commentRequest, Member member, Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
-        String newComment = commentRequest.getNewContent();
+        String newContent = commentRequest.getNewContent();
         if (comment == null) {
-            new CommentResponse("1", "존재하지 않는 댓글입니다.", newComment);
+            return new CommentResponse("1", "존재하지 않는 댓글입니다.", newContent);
         }
         if (!Objects.equals(comment.getWriter().getId(), member.getId())) {
-            return new CommentResponse("2", "본인 댓글만 수정할 수 있습니다.", newComment);
+            return new CommentResponse("2", "본인 댓글만 수정할 수 있습니다.", newContent);
         }
-        comment.update(newComment);
+        comment.update(newContent);
         commentRepository.save(comment);
-        return new CommentResponse("0", "성공", newComment);
+        return new CommentResponse("0", "성공", newContent);
     }
 
     public RsData<Comment> delete(Member member, Long commentId) {
@@ -68,7 +67,7 @@ public class CommentService {
     }
 
     @Transactional
-    public List<Comment> getList(Member member) {
+    public List<Comment> getMyComments(Member member) {
         return commentRepository.findByWriter(member);
     }
 }

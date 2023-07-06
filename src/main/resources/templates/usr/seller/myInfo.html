@@ -41,7 +41,7 @@
                 return;
             }
 
-            const url = '/usr/consumer/name/update';
+            const url = '/usr/member/name/update';
             const csrfToken = $('meta[name=csrf-token]').attr('content'); // 메타 태그에서 CSRF 토큰 가져오기
 
             // Ajax 요청을 사용하여 댓글 수정 API 호출
@@ -54,7 +54,7 @@
                 },
                 success: function (data) {
                     // 요청 결과를 받아와서 동적으로 댓글 내용 업데이트
-                    if (data === "success") {
+                    if (data.startsWith("S-")) {
                         const nameElement = document.getElementById('name');
                         nameElement.innerText = newName;
                         nameElement.style.display = 'block';
@@ -78,10 +78,10 @@
             nameEditFormElement.style.display = 'none';
         }
     </script>
-    <div class="hero-content flex flex-col mb-10 w-full">
+    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
         <div class="flex flex-row items-center">
-            <i class="fa-solid fa-circle-user fa-2xl mr-2"></i>
-            <h1 class="text-4xl font-bold">
+            <i class="fa-solid fa-circle-user fa-xl mr-2"></i>
+            <h1 class="text-2xl font-bold">
                 회원 정보
             </h1>
         </div>
@@ -90,7 +90,7 @@
                 <div class="flex flex-row justify-between items-center">
                     <span class="text-xl">회원 유형</span>
                     <a th:if="${@rq.isWaiter()}" href="/usr/seller/certificate"
-                       class="btn btn-success btn-outline flex gap-1 btn-xs"
+                       class="btn btn-outline flex gap-1 btn-xs"
                        onclick="return confirm('판매 업체 인증 페이지로 이동하시겠습니까?')">
                         판매 업체 인증하기
                     </a>
@@ -98,11 +98,11 @@
                 <div class="card bg-base-100 border border-gray-200 mt-2">
                     <div class="card-body whitespace-normal"
                          style="word-wrap: break-word; word-break: break-all; padding: 1rem;">
-                        <div th:if="${@rq.isSeller()}" class="flex flex-row">
+                        <div th:if="${@rq.isSeller()}" class="flex flex-row gap-1">
                             <span>판매자 회원</span>
                             <span class="text-blue-500"> (인증 완료)</span>
                         </div>
-                        <div th:if="${@rq.isWaiter()}" class="flex flex-row">
+                        <div th:if="${@rq.isWaiter()}" class="flex flex-row gap-1">
                             <span>판매자 회원</span>
                             <span class="text-red-500"> (미인증)</span>
                         </div>
@@ -124,8 +124,8 @@
             <div class="form-control flex mt-4">
                 <div class="flex flex-row justify-between items-center">
                     <span class="text-xl mr-4">이름</span>
-                    <button href=""
-                            class="btn btn-success btn-outline flex gap-1 btn-xs">
+                    <button class="btn btn-outline flex gap-1 btn-xs"
+                            onclick="editName(this);">
                         수정하기
                     </button>
                 </div>
@@ -163,6 +163,15 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="flex flex-row gap-4 justify-between mt-5">
+            <a href="/usr/member/deleteAccount" class="btn flex-grow-0 flex-shrink-0"
+               onclick="return confirm('정말로 회원을 탈퇴하시겠습니까?')">
+                회원 탈퇴
+            </a>
+            <a href="javascript:history.back()" class="btn">
+                돌아가기
+            </a>
         </div>
     </div>
 </main>
