@@ -46,7 +46,6 @@
                         <input th:checked="${diary.isCheckedWhen(today)}" type="checkbox" class="checkbox" onclick="$(this).next().submit(); return false;" />
                         <form hidden th:action="@{|/usr/diary/todolist/toggleCheck/${diary.id}|}" method="POST">
                             <input type="hidden" name="_method" value="POST"/>
-                            o
                         </form>
                         <div class="text-slate-500 name" th:text="${diary.name}"></div>
                     </div>

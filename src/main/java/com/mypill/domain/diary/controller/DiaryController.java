@@ -78,6 +78,18 @@ public class DiaryController {
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
+    @PostMapping("/list/delete/{diaryId}")
+    @Operation(summary = "영양제 정보 삭제")
+    public String delete(@PathVariable Long diaryId) {
+        RsData<Diary> deleteRsData = diaryService.delete(diaryId, rq.getMember());
+
+        if (deleteRsData.isFail()) {
+            return rq.historyBack(deleteRsData.getMsg());
+        }
+        return rq.redirectWithMsg("/usr/diary/list",deleteRsData);
+    }
+
+    @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/todolist")
     @Operation(summary = "하루 달성 체크 폼")
     public String todolist(Model model) {

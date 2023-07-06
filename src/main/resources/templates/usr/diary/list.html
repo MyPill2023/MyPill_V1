@@ -25,10 +25,33 @@
         <div class="flex justify-center items-center w-full" th:each="diary:${diaries}">
             <div tabindex="0" class="collapse collapse-close border border-base-200 bg-base-200" style="display: flex; align-items: center;">
                 <a class="collapse-title text-xl font-medium" th:text="${diary.name}" th:href="@{/usr/diary/detail/{id}(id=${diary.id})}"></a>
-                <button class="delete-button" style="margin-right: 15px" onclick="deleteDiary()">❌</button>
+                <button class="delete-button" style="margin-right: 15px" onclick="if ( !confirm('삭제하시겠습니까?') ) return false; $(this).next().submit();">❌</button>
+                    <form hidden th:action="@{|/usr/diary/list/delete/${diary.id}|}" method="POST">
+                        <input type="hidden" name="_method" value="POST"/>
+                    </form>
             </div>
         </div>
     </div>
+    <script>
+        function confirmAndDelete(diaryId) {
+            if (confirm('삭제하시겠습니까?')) {
+                $.ajax({
+                    url: '/delete/' + diaryId,
+                    type: 'DELETE',
+                    success: function (response) {
+                        // 성공적으로 삭제된 경우에 대한 처리
+                        alert('삭제되었습니다.');
+                        // 추가적인 리다이렉션 또는 동작 수행
+                    },
+                    error: function (error) {
+                        // 삭제 실패 또는 에러 발생 시에 대한 처리
+                        alert('삭제에 실패했습니다.');
+                        console.log(error);
+                    }
+                });
+            }
+        }
+    </script>
 
 
 </main>
