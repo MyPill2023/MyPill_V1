@@ -86,7 +86,7 @@ public class MemberService {
         }
         Optional<Member> opMember = memberRepository.findByEmail(email);
         if (opMember.isPresent()) {
-            return RsData.of("F-2", "해당 이메일은 이미 사용중입니다.");
+            return RsData.of("F-2", "이미 가입된 이메일입니다.");
         }
 
         Member member = Member.builder()

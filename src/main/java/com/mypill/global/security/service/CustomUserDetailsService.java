@@ -3,7 +3,6 @@ package com.mypill.global.security.service;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -6,6 +6,7 @@ import com.mypill.domain.member.form.JoinForm;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
+import com.mypill.global.util.Ut;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Controller
 @RequiredArgsConstructor
