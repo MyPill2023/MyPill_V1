@@ -32,7 +32,7 @@ public class SellerController {
     private final OrderService orderService;
     private final Rq rq;
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/order")
     public String orderManagement(Model model) {
         List<OrderListResponse> orderResponses = orderService.findBySellerId(rq.getMember().getId())
@@ -54,12 +54,13 @@ public class SellerController {
         return "usr/seller/orderList";
     }
 
+    @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/certificate")
     public String certificate() {
         return "usr/seller/certificate";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/brnoCertificate")
     public String brnoCertificate(@RequestParam("brno") String brno) {
         RsData rsData = sellerService.certificateBRNO(brno, rq.getMember());
@@ -68,7 +69,7 @@ public class SellerController {
         }
         return rq.redirectWithMsg("/usr/seller/certificate", rsData);
     }
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/nBrnoCertificate")
     public String nBrnoCertificate(@RequestParam("nBrno") String nBrno) {
         RsData rsData = sellerService.certificateNBRNO(nBrno, rq.getMember());

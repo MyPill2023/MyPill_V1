@@ -106,7 +106,6 @@ public class MemberController {
         return "usr/member/myComments";
     }
 
-
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/deleteAccount")
     public void deleteAccount(HttpServletRequest request, HttpServletResponse response) throws IOException {

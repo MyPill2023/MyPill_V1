@@ -36,20 +36,20 @@ public class BuyerController {
     private final AddressService addressService;
     private final Rq rq;
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/myLikes")
     public String myLikes() {
         return "usr/buyer/myLikes";
     }
 
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/mySchedule")
     public String mySchedule() {
         return "usr/buyer/mySchedule";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/myOrder")
     public String myOrder(Model model) {
 
@@ -73,7 +73,7 @@ public class BuyerController {
         return "usr/buyer/myOrder";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/myAddress")
     public String myAddress(Model model) {
 

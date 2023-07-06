@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -36,6 +37,7 @@ public class SurveyController {
     private final Rq rq;
     private final SurveyService surveyService;
 
+    @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @GetMapping("/guide")
     @Operation(summary = "설문 가이드 폼")
     public String guide(Model model) {
@@ -45,6 +47,7 @@ public class SurveyController {
         return "usr/survey/guide";
     }
 
+    @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @GetMapping("/start")
     @Operation(summary = "설문 시작 폼")
     public String start(Model model) {
@@ -61,7 +64,7 @@ public class SurveyController {
         return "usr/survey/start";
     }
 
-
+    @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @GetMapping("/step")
     @Operation(summary = "설문 질문 폼")
     public String step(Model model, @RequestParam Map<String, String> param, @RequestParam(defaultValue = "1") Long stepNo) {
@@ -85,6 +88,7 @@ public class SurveyController {
         return "usr/survey/step";
     }
 
+    @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @Transactional
     @GetMapping("/complete")
     @Operation(summary = "설문 결과 폼")
@@ -108,15 +112,12 @@ public class SurveyController {
             }
         }
 
-
-
         List<Nutrient> nutrientAnswers = new ArrayList<>();
         for (Long id : answers) {
             Optional<Nutrient> nutrient = nutrientService.findById(id);
 
             nutrient.ifPresent(nutrientAnswers::add);
         }
-
 
         if (rq.isLogin()) {
             Member member = rq.getMember();
