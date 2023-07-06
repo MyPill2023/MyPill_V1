@@ -19,7 +19,7 @@ public class AddressRequest {
     private String detailAddress;
     @NotBlank(message = "우편번호는 필수입니다")
     private String postCode;
-    @NotBlank(message = "수령인 전화번호는 필수입니다")
+    @NotBlank(message = "수령인 연락처는 필수입니다")
     private String phoneNumber;
     @JsonProperty("isDefault")
     private boolean isDefault;

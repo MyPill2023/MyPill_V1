@@ -20,7 +20,6 @@ import java.util.Optional;
 public class AddressService {
     private final MemberService memberService;
     private final AddressRepository addressRepository;
-    private final Rq rq;
 
     @Transactional
     public RsData<Address> create(AddressRequest addressRequest){
@@ -37,7 +36,7 @@ public class AddressService {
         return RsData.of("S-1", "배송지가 추가되었습니다", address);
     }
 
-    public RsData<Address> get(Long addressId){
+    public RsData<Address> get(Member actor, Long addressId){
         Address address = findById(addressId).orElse(null);
 
         if(address == null){
@@ -48,7 +47,7 @@ public class AddressService {
             return RsData.of("F-2", "삭제된 배송지입니다.");
         }
 
-        if(!address.getMember().getId().equals(rq.getMember().getId())){
+        if(!address.getMember().getId().equals(actor.getId())){
             return RsData.of("F-3", "수정 및 삭제 권한이 없습니다");
         }
 

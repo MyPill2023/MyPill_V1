@@ -41,7 +41,7 @@ public class OrderController {
     @GetMapping("/form/{orderId}")
     @PreAuthorize("hasAuthority('MEMBER')")
     public String getOrderForm(@PathVariable Long orderId, Model model) {
-        RsData<OrderResponse> rsData = orderService.getOrderForm(orderId);
+        RsData<OrderResponse> rsData = orderService.getOrderForm(rq.getMember(), orderId);
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
