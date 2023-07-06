@@ -92,13 +92,18 @@ public class DiaryController {
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/todolist")
     @Operation(summary = "하루 달성 체크 폼")
-    public String todolist(Model model) {
+    public String todolist(Model model, String dateStr) {
 
         String today = LocalDate.now().toString();
 
         List<Diary> diaries = diaryService.findAll();
         model.addAttribute("today", today);
         model.addAttribute("diaries", diaries);
+
+        LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr);
+        List<Diary> history = diaryService.findHistory(date);
+
+        model.addAttribute("history", history);
         return "usr/diary/todolist";        
     }
 

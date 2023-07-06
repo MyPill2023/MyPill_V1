@@ -2,6 +2,7 @@ package com.mypill.domain.diary.service;
 
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
+import com.mypill.domain.diary.entity.DiaryCheckLog;
 import com.mypill.domain.diary.repository.DiaryRepository;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.rsData.RsData;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
+    private final DiaryCheckLogService diaryCheckLogService;
 
     @Transactional
     public RsData<Diary> create(DiaryRequest diaryRequest, Member member) {
@@ -59,6 +61,15 @@ public class DiaryService {
         diary = diary.toBuilder().deleteDate(LocalDateTime.now()).build();
         diaryRepository.save(diary);
         return RsData.of("S-1","영양제가 삭제 되었습니다.",diary);
+    }
+
+    public List<Diary> findHistory(LocalDate date) {
+        List<DiaryCheckLog> diaryCheckLogs = diaryCheckLogService.findByCheckDate(date);
+
+        return diaryCheckLogs
+                .stream()
+                .map(DiaryCheckLog::getDiary)
+                .toList();
     }
 
     public List<Diary> getList () {
