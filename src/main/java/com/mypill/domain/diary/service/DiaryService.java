@@ -3,6 +3,7 @@ package com.mypill.domain.diary.service;
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
 import com.mypill.domain.diary.entity.DiaryCheckLog;
+import com.mypill.domain.diary.repository.DiaryCheckLogRepository;
 import com.mypill.domain.diary.repository.DiaryRepository;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.rsData.RsData;
@@ -22,7 +23,8 @@ import java.util.Optional;
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
-    private final DiaryCheckLogService diaryCheckLogService;
+    private final DiaryCheckLogRepository diaryCheckLogRepository;
+
 
     @Transactional
     public RsData<Diary> create(DiaryRequest diaryRequest, Member member) {
@@ -64,7 +66,7 @@ public class DiaryService {
     }
 
     public List<Diary> findHistory(LocalDate date) {
-        List<DiaryCheckLog> diaryCheckLogs = diaryCheckLogService.findByCheckDate(date);
+        List<DiaryCheckLog> diaryCheckLogs = diaryCheckLogRepository.findByCheckDate(date);
 
         return diaryCheckLogs
                 .stream()
@@ -84,6 +86,7 @@ public class DiaryService {
         return diaryRepository.findByDeleteDateNullAndId(diaryId);
     }
 
-
-
+    public List<DiaryCheckLog> findByCheckDate (LocalDate date) {
+        return diaryCheckLogRepository.findByCheckDate(date);
+    }
 }
