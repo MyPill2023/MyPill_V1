@@ -7,5 +7,5 @@ import java.util.List;
 
 
 public interface NutrientQuestionRepository extends JpaRepository<NutrientQuestion, Long> {
-    List<NutrientQuestion> findByNutrientId(Long questionId);
+    List<NutrientQuestion> findByQuestionId(Long questionId);
 }

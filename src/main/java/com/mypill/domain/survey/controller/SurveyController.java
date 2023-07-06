@@ -100,15 +100,13 @@ public class SurveyController {
         }
 
         Set<Long> answers = new HashSet<>();
-        for (Long id : questionIds) {
-            List<NutrientQuestion> nutrients = nutrientQuestionService.findByNutrientId(id);
+        for (Long questionId : questionIds) {
+            List<NutrientQuestion> nutrientQuestions = nutrientQuestionService.findByQuestionId(questionId);
 
-            for (NutrientQuestion nutrient : nutrients){
-                answers.add(nutrient.getId());
+            for (NutrientQuestion nutrientQuestion : nutrientQuestions){
+                answers.add(nutrientQuestion.getNutrient().getId());
             }
         }
-
-
 
         List<Nutrient> nutrientAnswers = new ArrayList<>();
         for (Long id : answers) {
