@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -16,11 +15,6 @@ import java.time.format.DateTimeFormatter;
 @Transactional(readOnly = true)
 public class AttrService {
     private final AttrRepository attrRepository;
-
-    @Transactional
-    public void set(String varName, String value) {
-        set(varName, value, null);
-    }
 
     @Transactional
     public void set(String varName, String value, LocalDateTime expireDate) {
@@ -31,33 +25,6 @@ public class AttrService {
         String type2Code = varNameBits[3];
 
         set(relTypeCode, relId, typeCode, type2Code, value, expireDate);
-    }
-
-    @Transactional
-    public void set(String varName, long value) {
-        set(varName, String.valueOf(value));
-    }
-
-    @Transactional
-    public void set(String varName, long value, LocalDateTime expireDate) {
-        set(varName, String.valueOf(value), expireDate);
-    }
-
-    @Transactional
-    public void set(String varName, boolean value) {
-        set(varName, String.valueOf(value));
-    }
-
-    @Transactional
-    public void set(String varName, boolean value, LocalDateTime expireDate) {
-        set(varName, String.valueOf(value), expireDate);
-    }
-
-    @Transactional
-    public void set(String relTypeCode, Long relId, String typeCode, String type2Code, LocalDateTime value, LocalDateTime expireDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-
-        set(relTypeCode, relId, typeCode, type2Code, value.format(formatter), expireDate);
     }
 
     @Transactional
@@ -106,38 +73,5 @@ public class AttrService {
         }
 
         return attr.getVal();
-    }
-
-    public long getAsLong(String varName, long defaultValue) {
-        String value = get(varName, "");
-
-        if (value.equals("")) {
-            return defaultValue;
-        }
-
-        return Long.parseLong(value);
-    }
-
-    public boolean getAsBoolean(String varName, boolean defaultValue) {
-        String value = get(varName, "");
-
-        if (value.equals("")) {
-            return defaultValue;
-        }
-
-        if (value.equals("true")) {
-            return true;
-        } else return value.equals("1");
-    }
-
-    public LocalDateTime getAsLocalDatetime(String relTypeCode, Long relId, String typeCode, String type2Code, LocalDateTime defaultValue) {
-        String varName = "%s__%d__%s__%s".formatted(relTypeCode, relId, typeCode, type2Code);
-        String value = get(varName, "");
-
-        if (value.isBlank()) {
-            return defaultValue;
-        }
-
-        return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
     }
 }

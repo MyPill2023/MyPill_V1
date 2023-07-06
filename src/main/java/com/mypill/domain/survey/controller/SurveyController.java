@@ -4,7 +4,7 @@ import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.nutrient.Service.NutrientService;
+import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.question.entity.NutrientQuestion;
 import com.mypill.domain.question.entity.Question;
@@ -39,7 +39,9 @@ public class SurveyController {
     @GetMapping("/guide")
     @Operation(summary = "설문 가이드 폼")
     public String guide(Model model) {
-
+        if(rq.isLogin()){
+            return "redirect:/usr/survey/start";
+        }
         return "usr/survey/guide";
     }
 

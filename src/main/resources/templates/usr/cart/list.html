@@ -2,12 +2,13 @@
 
 <head>
     <title>장바구니</title>
+    <meta name="csrf-token" th:content="${_csrf.token}">
 </head>
 
 <body>
 <main layout:fragment="main">
-    <div class="hero-content flex flex-col my-10 w-[32rem]">
-        <div class="max-w-md flex flex-col justify-center gap-5">
+    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
+        <div class="flex flex-col justify-center gap-5 w-full lg:px-5">
             <h1 class="text-2xl font-bold text-center">
                 장바구니
             </h1>
@@ -19,9 +20,13 @@
 
                 <div th:if="${cartResponse.totalQuantity != 0}">
                     <div th:each="cartProduct, loop : ${cartResponse.cartProducts}">
-                        <div class="bg-base-100 border-b border-gray-200 p-5 ">
-
+                        <div class="bg-base-100 border-b border-gray-200 p-4">
                                 <div class="flex justify-around gap-5">
+                                    <input name="selectedItems" type="checkbox" checked="checked" class="checkbox checkbox-success"
+                                           th:data-product-price="${cartProduct.product.price}"
+                                           th:data-product-id="${cartProduct.product.id}"
+                                           th:data-product-quantity="${cartProduct.quantity}"
+                                           onclick="updateSelectedItem(this)">
                                     <div class="border border-gray-200 w-2/6 p-5">
                                         이미지
                                     </div>
@@ -54,14 +59,14 @@
                                             </form>
                                         </div>
                                         <form th:action="@{|/cart/update|}" method="POST" class="mt-2">
-                                            <div class="flex gap-3 justify-center items-center">
-                                                <button class="badge badge-ghost badge-lg" type="button"
+                                            <div class="flex gap-1 justify-around items-center">
+                                                <button class="badge badge-ghost " type="button"
                                                         th:attr="onclick='decreaseQuantity(' + ${loop.index} + ');'">-
                                                 </button>
                                                 <input type="number" th:id="'quantity'+${loop.index}" name="newQuantity"
                                                        min="1" th:value="${cartProduct.quantity}"
                                                        class="input input-bordered input-sm w-16" required />
-                                                <button class="badge badge-ghost badge-lg" type="button"
+                                                <button class="badge badge-ghost " type="button"
                                                         th:attr="onclick='increaseQuantity(' + ${loop.index} + ');'">+
                                                 </button>
                                                 <input type="hidden" name="cartProductId" th:value="${cartProduct.id}"/>
@@ -81,25 +86,120 @@
 
                     <div class="flex flex-col gap-2 mt-10 px-5">
                         <div class="flex justify-between">
-                            <span class="text-lg">총 주문 수량</span>
-                            <span class="text-lg" th:text="${cartResponse.totalQuantity} + '개'"></span>
+                            <span class="text-lg">선택 상품 금액</span>
+                            <span class="text-lg" id="selectedPrice"
+                                  th:text="${#numbers.formatInteger(cartResponse.totalPrice, 0, 'COMMA') + '원'}"></span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-lg">총 주문 금액</span>
+                            <span class="text-lg">전체 상품 금액</span>
                             <span class="text-lg"
                                   th:text="${#numbers.formatInteger(cartResponse.totalPrice, 0, 'COMMA') + '원'}"></span>
                         </div>
                     </div>
 
-                    <form class="mt-10 flex justify-center" th:action="@{|/order/create|}" method="POST">
-                        <button class="btn" type="submit">전체상품 주문하기</button>
-                    </form>
+                    <div class="mt-10 flex gap-5 justify-center">
+                        <form th:action="@{/order/create}" method="POST">
+                            <input type="hidden" name="selectedCartProductIds" id="selectedIds">
+                            <button class="btn btn-success" type="submit">선택 상품 주문하기</button>
+                        </form>
+                        <form th:action="@{|/order/create/all|}" method="POST">
+                            <button class="btn" type="submit">전체 상품 주문하기</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script th:inline="javascript">
+        let cartProductArray = new Array();
+        let cartProductInfo;
+        /*[# th:each="cartProduct : ${cartResponse.cartProducts}"]*/
+        cartProductInfo = {
+            id: /*[[${cartProduct.product.id}]]*/null,
+            price: /*[[${cartProduct.product.price}]]*/null,
+            quantity: /*[[${cartProduct.quantity}]]*/null,
+        };
+        cartProductArray.push(cartProductInfo);
+        /*[/]*/
+        console.log(cartProductArray);
+        getSelectedProductIds();
 
+        // 선택된 요소 배열에 추가
+        function updateSelectedItem(checkbox) {
+            if (checkbox.checked) {
+                // 체크박스가 선택되었을 때, 배열에 추가
+                var productInfo = {
+                    id: parseInt(checkbox.getAttribute("data-product-id")),
+                    price: parseFloat(checkbox.getAttribute("data-product-price")),
+                    quantity: parseInt(checkbox.getAttribute("data-product-quantity"))
+                };
+                cartProductArray.push(productInfo);
+            } else {
+                // 체크박스가 해제되었을 때, 배열에서 삭제
+                var index = cartProductArray.findIndex(function(item) {
+                    return item.id === parseInt(checkbox.getAttribute("data-product-id"));
+                });
+                if (index !== -1) {
+                    cartProductArray.splice(index, 1);
+                }
+            }
+            updateSelectedPrice();
+            getSelectedProductIds();
+            console.log(cartProductArray);
+        }
+
+        // 선택 상품 가격 업데이트
+        function updateSelectedPrice() {
+            var totalPrice = 0;
+            for (var i = 0; i < cartProductArray.length; i++) {
+                var product = cartProductArray[i];
+                totalPrice += product.price * product.quantity;
+            }
+            console.log("선택 상품 금액: " + totalPrice);
+            document.getElementById('selectedPrice').textContent = totalPrice.toLocaleString() + '원';
+        }
+
+        // 선택한 상품의 id만 배열에 저장
+        function getSelectedProductIds() {
+            var selectedIds = [];
+            var checkboxes = document.getElementsByName('selectedItems');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    var productId = checkboxes[i].getAttribute('data-product-id');
+                    selectedIds.push(productId);
+                }
+            }
+            document.getElementById('selectedIds').value = selectedIds;
+            console.log( document.getElementById('selectedIds').value )
+            return selectedIds;
+        }
+
+    </script>
+
+    <script>
+
+
+        function submitOrder() {
+            // 선택된 상품들을 hidden input으로 전송하기 위해 폼 생성
+            var form = document.createElement("form");
+            form.method = "POST";
+            form.action = "/order/create";
+
+            // 배열의 각 요소를 hidden input으로 추가
+            selectedItems.forEach(function(productId) {
+                var input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "selectedItems";
+                input.value = productId;
+                form.appendChild(input);
+            });
+
+            // 폼을 body에 추가하고 전송
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
     <script>
         function increaseQuantity(index) {
             var quantityInput = document.getElementById("quantity" + index);

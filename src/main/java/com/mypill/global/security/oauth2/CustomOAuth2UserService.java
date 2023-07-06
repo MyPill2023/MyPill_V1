@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
+import com.mypill.global.rsData.RsData;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -57,8 +58,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String username = providerTypeCode + "@%s".formatted(oauthId);
 
-        Member member = memberService.whenSocialLogin(providerTypeCode, username, name, email).getData();
-
+        RsData<Member> rsData = memberService.whenSocialLogin(providerTypeCode, username, name, email);
+        if (rsData.isFail()) {
+            throw new OAuth2AuthenticationException(rsData.getMsg());
+        }
+        Member member = rsData.getData();
         return new CustomOAuth2User(member.getUsername(), member.getPassword(), member.getName(), member.getEmail(), member.getGrantedAuthorities());
     }
 }

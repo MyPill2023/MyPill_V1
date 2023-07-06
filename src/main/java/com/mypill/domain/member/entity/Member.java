@@ -1,12 +1,10 @@
 package com.mypill.domain.member.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.address.entity.Address;
 import jakarta.persistence.*;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.base.entitiy.BaseEntity;
-import com.mypill.global.util.Ut;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -24,7 +22,7 @@ import java.util.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class Member extends BaseEntity {
     @NotNull
     @Column(unique = true)
@@ -40,14 +38,12 @@ public class Member extends BaseEntity {
     @NotNull
     @Column(unique = true, length = 30)
     private String email;
-    @Column(columnDefinition = "TEXT")
-    private String accessToken;
     @Column
     private String providerTypeCode; // 카카오로 가입한 회원인지, 네이버로 가입한 회원인지
-
+    @Column
     private boolean emailVerified;
     @ManyToMany(mappedBy = "likedMembers")
-    private List<Product> likedProducts = new ArrayList<>();
+    private Set<Product> likedProducts = new HashSet<>();
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "member_nutrients",
             joinColumns = @JoinColumn(name = "member_id"),
@@ -60,14 +56,6 @@ public class Member extends BaseEntity {
 
     private boolean brnoCertificated;
     private boolean nBrnoCertificated;
-
-    public void brnoCertificate() {
-        this.brnoCertificated = true;
-    }
-
-    public void nBrnoCertificate() {
-        this.nBrnoCertificated = true;
-    }
 
     public List<GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -89,56 +77,11 @@ public class Member extends BaseEntity {
         return userType.equals(3);
     }
 
-    public Map<String, Object> toClaims() {
-        return Map.of(
-                "id", getId(),
-                "username", getUsername()
-        );
-    }
-
-    @JsonIgnore
-    public Map<String, Object> getAccessTokenClaims() {
-        return Ut.mapOf(
-                "id", getId(),
-                "createDate", getCreateDate(),
-                "username", getUsername()
-        );
-    }
-
     public void like(Product product) {
-        if (!likedProducts.contains(product)) {
-            likedProducts.add(product);
-        }
+        likedProducts.add(product);
     }
 
     public void unLike(Product product) {
-        if (likedProducts.contains(product)) {
-            likedProducts.remove(product);
-        }
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public void updateName(String newName) {
-        this.name = newName;
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
-
-    public void updateUserType() {
-        this.userType = 2;
-    }
-    public boolean getEmailVerified(){
-        return this.emailVerified;
-    }
-
-    public Optional<Address> getDefaultAddress() {
-        return addresses.stream()
-                .filter(Address::isDefault)
-                .findFirst();
+        likedProducts.remove(product);
     }
 }

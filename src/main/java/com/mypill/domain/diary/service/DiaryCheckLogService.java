@@ -18,3 +18,4 @@ public class DiaryCheckLogService {
         return diaryCheckLogRepository.findByDeleteDateNullAndId(diaryId);
     }
 }
+

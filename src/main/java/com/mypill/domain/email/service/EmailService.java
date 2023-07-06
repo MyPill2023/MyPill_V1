@@ -2,11 +2,10 @@ package com.mypill.domain.email.service;
 
 import com.mypill.domain.email.entity.SendEmailLog;
 import com.mypill.domain.email.repository.SendEmailLogRepository;
-import com.mypill.domain.emailSender.service.EmailSenderService;
+import com.mypill.domain.emailsender.service.EmailSenderService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +18,6 @@ import java.time.LocalDateTime;
 public class EmailService {
     private final SendEmailLogRepository emailLogRepository;
     private final EmailSenderService emailSenderService;
-    @Value("${custom.mail.username}")
-    private String adminEmail;
 
     @Transactional
     public RsData<Long> sendEmail(String email, String subject, String body) {
@@ -30,24 +27,18 @@ public class EmailService {
                 .subject(subject)
                 .body(body)
                 .build();
-
         emailLogRepository.save(sendEmailLog);
-
         RsData trySendRs = trySend(email, subject, body);
-
         setCompleted(sendEmailLog, trySendRs.getResultCode(), trySendRs.getMsg());
-
         return RsData.of("S-1", "메일이 발송되었습니다.", sendEmailLog.getId());
     }
 
     private RsData trySend(String email, String title, String body) {
-        if (AppConfig.isNotProd() && email.equals(adminEmail) == false) {
+        if (AppConfig.isTest()) {
             return RsData.of("S-0", "메일이 발송되었습니다.");
         }
-
         try {
             emailSenderService.send(email, "no-reply@no-reply.com", title, body);
-
             return RsData.of("S-1", "메일이 발송되었습니다.");
         } catch (MailException e) {
             return RsData.of("F-1", e.getMessage());
@@ -61,10 +52,8 @@ public class EmailService {
         } else {
             sendEmailLog.setFailDate(LocalDateTime.now());
         }
-
         sendEmailLog.setResultCode(resultCode);
         sendEmailLog.setMessage(message);
-
         emailLogRepository.save(sendEmailLog);
     }
 }

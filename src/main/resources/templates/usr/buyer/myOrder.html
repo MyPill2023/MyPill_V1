@@ -12,17 +12,37 @@
         </h1>
 
         <div class="flex flex-col w-full max-w-md mb-10 mt-5 px-5">
-            <div th:each="order, loop : ${orders}">
-                <a th:href="@{|/order/detail/${order.orderId}|}">
-                    <div class="bg-base-100 border-b border-gray-200 p-5 ">
-                        <div class="flex flex-col gap-1">
-                            <span th:text="${#temporals.format(order.payment.payDate, 'yyyy-MM-dd')}"></span>
-                            <div th:text="${order.orderNumber}"
-                               class="font-bold "></div>
-                            <h3 th:text="${order.name}"></h3>
+            <div th:if="${orders.size() == 0}" class="flex justify-center my-16">
+                <span>주문 내역이 없습니다.</span>
+            </div>
+            <div th:if="${orders.size() != 0}">
+                <div class="flex flex-grow justify-between p-5 mb-10">
+                    <th:block th:each="status, statusIndex : ${orderStatuses}">
+                        <div class="flex flex-col justify-center items-center gap-2">
+                        <span th:text="${orderStatusCount.containsKey(status) ? orderStatusCount.get(status) : 0}"
+                              class="font-bold"></span>
+                            <span th:text="${status.value}" class="text-sm text-center"></span>
                         </div>
-                    </div>
-                </a>
+                    </th:block>
+                </div>
+                <div th:each="order, loop : ${orders}">
+                    <a th:href="@{|/order/detail/${order.orderId}|}">
+                        <div th:class="'bg-base-100 border-b border-gray-200 p-5' + (${loop.first} ? ' border-t' : '')">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex justify-between">
+                                    <span th:text="${#temporals.format(order.payment.payDate, 'yyyy-MM-dd')}"></span>
+                                    <span th:class="${order.primaryOrderStatus.priority <= 1 ? 'badge badge-info' :
+                                    (order.primaryOrderStatus.priority <= 3 ? 'badge badge-success' :
+                                    (order.primaryOrderStatus.priority == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
+                                          th:text="${order.primaryOrderStatus.value}"></span>
+                                </div>
+                                <div th:text="${order.orderNumber}"
+                                     class="font-bold "></div>
+                                <h3 th:text="${order.name}"></h3>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
 
         </div>

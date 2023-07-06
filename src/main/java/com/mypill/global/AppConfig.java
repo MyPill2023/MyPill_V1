@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 @Configuration
 public class AppConfig {
@@ -27,12 +28,15 @@ public class AppConfig {
 
     @Getter
     public static int changePasswordCycleDays;
+    @Autowired
+    private Environment env;
 
     @Autowired
     public void setContext(ApplicationContext context) {
         AppConfig.context = context;
     }
-//
+
+    //
 //    @Value("${custom.rebate.wholesalePriceRate}")
 //    public void setWholesalePriceRate(double value) {
 //        wholesalePriceRate = value;
@@ -44,9 +48,10 @@ public class AppConfig {
 //    }
 //
     @Value("${spring.profiles.active:}")
-    public void setActiveProfile(String value) {
-        activeProfile = value;
+    public void setActiveProfile() {
+        activeProfile = env.getActiveProfiles()[1];
     }
+
 
     @Value("${custom.site.name}")
     public void setSiteName(String siteName) {
@@ -121,12 +126,15 @@ public class AppConfig {
 
     @Getter
     private static int maxOrderNameLength;
+
     @Value("${custom.order.maxOrderNameLength}")
     private void setMaxOrderName(int maxOrderNameLength) {
         AppConfig.maxOrderNameLength = maxOrderNameLength;
     }
+
     @Getter
     private static int maxAddressCount;
+
     @Value("${custom.address.maxAddressCount}")
     private void setMaxAddressCount(int maxAddressCount) {
         AppConfig.maxAddressCount = maxAddressCount;

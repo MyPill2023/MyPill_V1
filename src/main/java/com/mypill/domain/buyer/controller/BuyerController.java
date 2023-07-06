@@ -5,10 +5,10 @@ import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
-import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.order.dto.response.OrderListResponse;
-import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
+import com.mypill.domain.order.entity.OrderItem;
+import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
@@ -18,17 +18,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/usr/buyer")
 public class BuyerController {
-    private final MemberService memberService;
     private final PostService postService;
     private final CommentService commentService;
     private final OrderService orderService;
@@ -56,7 +57,7 @@ public class BuyerController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPosts")
     public String myPosts(Model model) {
-        List<Post> posts = postService.getList(rq.getMember());
+        List<Post> posts = postService.getMyPosts(rq.getMember());
         model.addAttribute("posts", posts);
         return "usr/buyer/myPosts";
     }
@@ -64,7 +65,7 @@ public class BuyerController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myComments")
     public String myComments(Model model) {
-        List<Comment> comments = commentService.getList(rq.getMember());
+        List<Comment> comments = commentService.getMyComments(rq.getMember());
         model.addAttribute("comments", comments);
         return "usr/buyer/myComments";
     }
@@ -79,9 +80,22 @@ public class BuyerController {
     @GetMapping("/myOrder")
     public String myOrder(Model model) {
 
-        List<Order> orders = orderService.findByBuyerId(rq.getMember().getId());
-        List<OrderListResponse> orderListResponses = orders.stream().map(OrderListResponse::of).toList();
+        List<Order> orders = orderService.findByBuyerIdAndPaymentIsNotNull(rq.getMember().getId());
+        List<OrderListResponse> orderListResponses = orders.stream()
+                .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
+                .map(OrderListResponse::of).toList();
         model.addAttribute("orders", orderListResponses);
+
+        List<OrderItem> orderItems = orderService.findOrderItemByBuyerId(rq.getMember().getId());
+        Map<OrderStatus, Long> orderStatusCount = orderItems.stream()
+                .collect(Collectors.groupingBy(OrderItem::getStatus, Collectors.counting()));
+
+        model.addAttribute("orderStatusCount", orderStatusCount);
+
+        OrderStatus[] filteredOrderStatus = Arrays.stream(OrderStatus.values())
+                .filter(status -> status.getPriority() >=1 && status.getPriority() <= 4 )
+                .toArray(OrderStatus[]::new);
+        model.addAttribute("orderStatuses", filteredOrderStatus);
 
         return "usr/buyer/myOrder";
     }
@@ -97,12 +111,5 @@ public class BuyerController {
         model.addAttribute("addresses",addressResponses);
 
         return "usr/buyer/myAddress";
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @ResponseBody
-    @PostMapping("/name/update")
-    public String nameUpdate(String newName) {
-        return memberService.nameUpdate(rq.getMember(), newName);
     }
 }
