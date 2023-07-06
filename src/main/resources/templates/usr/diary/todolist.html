@@ -10,16 +10,27 @@
     <div class="hero-content flex flex-col justify-center my-10 w-full ">
         <h1 class="text-2xl text-center font-bold ">영양제 체크 리스트 📝</h1>
 
-        <input type="date" id="currentDateInput" value="">
+        <h4 id="currentDateInput"></h4>
 
         <script>
             var currentDate = new Date();
             var currentDateInput = document.getElementById("currentDateInput");
-            currentDateInput.value = currentDate.toISOString().split('T')[0];
+            currentDateInput.textContent = currentDate.toISOString().split('T')[0];
         </script>
 
-        <!-- component -->
+
+
         <body class="antialiased bg-slate-200 text-slate-700 mx-2">
+
+        <div class="flex justify-around gap-2">
+            <div class="w-1/2">
+            <a href="/usr/diary/list" class="btn btn-block btn-success">영양제 목록</a>
+            </div>
+            <div class="w-1/2">
+            <a href="/usr/diary/create" class="btn btn-block btn-success">영양제 등록</a>
+            </div>
+        </div>
+
         <div class="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300">
             <div class="flex flex-row justify-between items-center">
                 <div>
@@ -30,23 +41,34 @@
             <p class="text-slate-500">오늘 복용해야할 영양제 입니다!</p>
 
             <div id="tasks" class="my-5">
-                <div id="task" class="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent" th:each="diary: ${diaries}">
+                <div id="task1" class="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent" th:each="diary: ${diaries}">
                     <div class="inline-flex items-center space-x-2">
+                        <div class="text-black p-2 flex justify-center" th:if="${diaries.isEmpty()}">
+                            <i class="fa-sharp fa-light fa-pills"></i> 등록하신 영양제가 없네요!
+                        </div>
                         <div class="badge badge-accent" th:text="${diary.timeDisplayName}"></div>
                         <input th:checked="${diary.isCheckedWhen(today)}" type="checkbox" class="checkbox" onclick="$(this).next().submit(); return false;" />
                         <form hidden th:action="@{|/usr/diary/todolist/toggleCheck/${diary.id}|}" method="POST">
                             <input type="hidden" name="_method" value="POST"/>
-                            o
                         </form>
                         <div class="text-slate-500 name" th:text="${diary.name}"></div>
                     </div>
                 </div>
             </div>
         </div>
-        </body>
-        <div>
-            <a href="/usr/diary/list" class="btn btn-block btn-success">영양제 관리</a>
+
+        <div class="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300">
+            <div id="tasks2" class="my-5">
+                <h1 class="text-2xl text-center font-bold "> 체크한 기록...✍🏻</h1>
+                    <div id="task2" class="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent" th:each="diary : ${history}" >
+                        <div class="items-center space-x-2">
+                            <span class="badge badge-accent" th:text="${diary.timeDisplayName}"></span>
+                            <span th:text="${diary.name}"></span>
+                        </div>
+                    </div>
+            </div>
         </div>
+        </body>
     </div>
 </main>
 </body>
