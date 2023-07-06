@@ -17,4 +17,8 @@ public class NutrientQuestionService {
     public List<NutrientQuestion> findByNutrientId(Long questionId){
         return nutrientQuestionRepository.findByNutrientId(questionId);
     }
+
+    public List<NutrientQuestion> findByQuestionId(Long questionId){
+        return nutrientQuestionRepository.findByQuestionId(questionId);
+    }
 }

@@ -99,16 +99,14 @@ public class SurveyController {
             return "redirect:/usr/survey/step";
         }
 
-        Set<Long> answers = new HashSet<>();
+        List<Long> answers = new ArrayList<>();
         for (Long id : questionIds) {
-            List<NutrientQuestion> nutrients = nutrientQuestionService.findByNutrientId(id);
+            List<NutrientQuestion> nutrientQuestions = nutrientQuestionService.findByQuestionId(id);
 
-            for (NutrientQuestion nutrient : nutrients){
-                answers.add(nutrient.getId());
+            for (NutrientQuestion nutrientQuestion : nutrientQuestions) {
+                answers.add(nutrientQuestion.getNutrient().getId());
             }
         }
-
-
 
         List<Nutrient> nutrientAnswers = new ArrayList<>();
         for (Long id : answers) {

@@ -103,7 +103,7 @@ INSERT INTO questions (category_id, content) VALUES ( 10,'배변 이후에도 �
 INSERT INTO questions (category_id, content) VALUES (10,'변을 보거나 방귀를 뀌고나면 왼쪽 하복부 통증이 사라지나요?');
 
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (1,1);
-INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (1,2);
+INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (1,1);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (1,3);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (2,1);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (2,2);
@@ -124,7 +124,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (8,8);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (9,9);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (10,6);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (10,7);
-#3번
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (11,10);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (11,11);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (12,12);
@@ -190,7 +190,6 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (42,27);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (42,26);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (43,27);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (43,26);
-
 
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (44,29);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (45,29);
