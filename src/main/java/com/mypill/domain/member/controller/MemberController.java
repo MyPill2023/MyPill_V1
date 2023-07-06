@@ -1,9 +1,13 @@
 package com.mypill.domain.member.controller;
 
+import com.mypill.domain.comment.entity.Comment;
+import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.form.JoinForm;
 import com.mypill.domain.member.service.MemberService;
+import com.mypill.domain.post.entity.Post;
+import com.mypill.domain.post.service.PostService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,9 +17,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,6 +29,8 @@ import java.io.IOException;
 public class MemberController {
 
     private final MemberService memberService;
+    private final PostService postService;
+    private final CommentService commentService;
     private final Rq rq;
 
     @PreAuthorize("isAnonymous()")
@@ -74,10 +82,28 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPage")
     public String myPage() {
-        if (rq.isWaiter() || rq.isSeller()) {
-            return "usr/seller/myPage";
-        }
-        return "usr/buyer/myPage";
+        return "usr/member/myPage";
+    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myInfo")
+    public String myInfo() {
+        return "usr/member/myInfo";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myPosts")
+    public String myPosts(Model model) {
+        List<Post> posts = postService.getMyPosts(rq.getMember());
+        model.addAttribute("posts", posts);
+        return "usr/member/myPosts";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myComments")
+    public String myComments(Model model) {
+        List<Comment> comments = commentService.getMyComments(rq.getMember());
+        model.addAttribute("comments", comments);
+        return "usr/member/myComments";
     }
 
     @PreAuthorize("isAuthenticated()")

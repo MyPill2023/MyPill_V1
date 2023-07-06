@@ -38,8 +38,8 @@ public class OrderController {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
 
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/form/{orderId}")
-    @PreAuthorize("hasAuthority('MEMBER')")
     public String getOrderForm(@PathVariable Long orderId, Model model) {
         RsData<OrderResponse> rsData = orderService.getOrderForm(rq.getMember(), orderId);
         if (rsData.isFail()) {
@@ -61,8 +61,8 @@ public class OrderController {
         return "usr/order/form";
     }
 
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create/all")
-    @PreAuthorize("hasAuthority('MEMBER')")
     public String createFromCart() {
         Member buyer = rq.getMember();
         RsData<Order> orderRsData = orderService.createFromCart(buyer);
@@ -74,8 +74,8 @@ public class OrderController {
         return rq.redirectWithMsg("/order/form/%s".formatted(orderRsData.getData().getId()), orderRsData);
     }
 
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create")
-    @PreAuthorize("hasAuthority('MEMBER')")
     public String createFromSelected(@RequestParam String[] selectedCartProductIds) {
         Member buyer = rq.getMember();
 
@@ -91,8 +91,8 @@ public class OrderController {
         return rq.redirectWithMsg("/order/form/%s".formatted(orderRsData.getData().getId()), orderRsData);
     }
 
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/detail/{orderId}")
-    @PreAuthorize("isAuthenticated()")
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
 
         RsData<Order> rsData = orderService.getOrderDetail(orderId);
@@ -104,6 +104,7 @@ public class OrderController {
         return "usr/order/detail";
     }
 
+    @PreAuthorize("hasAuthority('BUYER')")
     @RequestMapping("/{id}/success")
     public String confirmPayment(
             @PathVariable long id,
@@ -148,6 +149,7 @@ public class OrderController {
         }
     }
 
+    @PreAuthorize("hasAuthority('BUYER')")
     @RequestMapping("/{id}/fail")
     public String failPayment(@RequestParam String message, @RequestParam String code, @RequestParam String orderNumber, Model model) {
         model.addAttribute("orderNumber", orderNumber);
@@ -156,8 +158,8 @@ public class OrderController {
         return "order/fail";
     }
 
-    @GetMapping("/management/{orderId}")
     @PreAuthorize("hasAuthority('SELLER')")
+    @GetMapping("/management/{orderId}")
     public String management(@PathVariable Long orderId, Model model) {
 
         RsData<Order> rsData = orderService.getOrderDetail(orderId);
@@ -181,8 +183,8 @@ public class OrderController {
         return "usr/order/management";
     }
 
-    @PostMapping("/update/status/{orderItemId}")
     @PreAuthorize("hasAuthority('SELLER')")
+    @PostMapping("/update/status/{orderItemId}")
     public String updateOrderStatus(@PathVariable Long orderItemId,
                                     @RequestParam Long orderId,
                                     @RequestParam String newStatus,

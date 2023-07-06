@@ -36,47 +36,20 @@ public class BuyerController {
     private final AddressService addressService;
     private final Rq rq;
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myPage")
-    public String myPage() {
-        return "usr/buyer/myPage";
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myInfo")
-    public String myInfo() {
-        return "usr/buyer/myInfo";
-    }
-
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/myLikes")
     public String myLikes() {
         return "usr/buyer/myLikes";
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myPosts")
-    public String myPosts(Model model) {
-        List<Post> posts = postService.getMyPosts(rq.getMember());
-        model.addAttribute("posts", posts);
-        return "usr/buyer/myPosts";
-    }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myComments")
-    public String myComments(Model model) {
-        List<Comment> comments = commentService.getMyComments(rq.getMember());
-        model.addAttribute("comments", comments);
-        return "usr/buyer/myComments";
-    }
-
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/mySchedule")
     public String mySchedule() {
         return "usr/buyer/mySchedule";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/myOrder")
     public String myOrder(Model model) {
 
@@ -100,7 +73,7 @@ public class BuyerController {
         return "usr/buyer/myOrder";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/myAddress")
     public String myAddress(Model model) {
 

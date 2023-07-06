@@ -24,7 +24,7 @@ public class AddressController {
     private final AddressService addressService;
     private final Rq rq;
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/create")
     public String createForm(){
 
@@ -35,7 +35,7 @@ public class AddressController {
         return "usr/address/create";
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create")
     public String create(@Valid AddressRequest addressRequest){
         RsData<Address> createRsData = addressService.create(addressRequest);
@@ -45,7 +45,7 @@ public class AddressController {
         return rq.redirectWithMsg("/usr/buyer/myAddress", createRsData);
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/update/{addressId}")
     public String updateForm(@PathVariable Long addressId, Model model){
 
@@ -58,7 +58,7 @@ public class AddressController {
         return "usr/address/update";
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/update/{addressId}")
     public String update(@PathVariable Long addressId, @Valid AddressRequest addressRequest){
 
@@ -71,7 +71,7 @@ public class AddressController {
         return rq.redirectWithMsg("/usr/buyer/myAddress", updateRsData);
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/delete/{addressId}")
     public String delete(@PathVariable Long addressId){
 
@@ -85,6 +85,7 @@ public class AddressController {
     }
 
     // 주문에서 배송지 선택 시 세부정보 가져오기
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/getAddressDetails")
     @ResponseBody
     public ResponseEntity<?> getAddressDetails(@RequestParam Long addressId) {

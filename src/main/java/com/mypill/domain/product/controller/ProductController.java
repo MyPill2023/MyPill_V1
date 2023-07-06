@@ -128,8 +128,9 @@ public class ProductController {
         return rq.redirectWithMsg("/product/detail/%s".formatted(productId), updateRsData);
     }
 
-    @PreAuthorize("hasAuthority('SELLER')")
+
     @PostMapping("/delete/{productId}")
+    @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "상품 삭제")
     public String delete(@PathVariable Long productId) {
 
@@ -139,17 +140,20 @@ public class ProductController {
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/like/{id}")
     public Integer likeProduct(@PathVariable("id") Long id) {
         return productService.like(rq.getMember(), id);
     }
 
     @ResponseBody
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/unlike/{id}")
     public Integer unlikeProduct(@PathVariable("id") Long id) {
         return productService.unlike(rq.getMember(), id);
     }
 
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/unlike/{id}")
     public String unlike(@PathVariable("id") Long id) {
         productService.unlike(rq.getMember(), id);
