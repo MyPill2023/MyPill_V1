@@ -1,5 +1,5 @@
-#server:
-#  port: 443
+server:
+  port: 443
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
