@@ -73,6 +73,12 @@ public class Rq {
         return member;
     }
 
+    public boolean isBuyer() {
+        if (isLogout()) return false;
+
+        return getMember().isBuyer();
+    }
+
     public boolean isSeller() {
         if (isLogout()) return false;
 

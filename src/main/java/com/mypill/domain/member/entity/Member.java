@@ -69,6 +69,10 @@ public class Member extends BaseEntity {
         return authorities;
     }
 
+    public boolean isBuyer() {
+        return userType.equals(1);
+    }
+
     public boolean isSeller() {
         return userType.equals(2);
     }

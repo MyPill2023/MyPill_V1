@@ -74,10 +74,16 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPage")
     public String myPage() {
-        if (rq.isWaiter() || rq.isSeller()) {
-            return "usr/seller/myPage";
+        return "usr/member/myPage";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/myInfo")
+    public String myInfo() {
+        if (rq.isBuyer()) {
+            return "usr/buyer/myInfo";
         }
-        return "usr/buyer/myPage";
+        return "usr/seller/myInfo";
     }
 
     @PreAuthorize("isAuthenticated()")
