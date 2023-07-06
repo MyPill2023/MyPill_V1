@@ -1,12 +1,17 @@
 spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://172.17.0.1:3306/${custom.prod_db.dbName}?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true&serverTimezone=Asia/Seoul
+    username: '${custom.prod_db.username}'
+    password: '${custom.prod_db.password}'
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
-        use_sql_comments: true
+        show_sql: false
+        format_sql: false
+        use_sql_comments: false
 logging:
   level:
     root: INFO
@@ -15,4 +20,4 @@ logging:
     org.hibernate.orm.jdbc.extract: INFO
 custom:
   site:
-    baseUrl: https://mypill.shop
+    baseUrl: 'https://www.mypill.shop'
