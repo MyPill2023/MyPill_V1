@@ -48,10 +48,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             name = properties.get("nickname");
             Map<String, String> kakaoAccount = (Map<String, String>) attributes.get("kakao_account");
             email = kakaoAccount.get("email");
-
             providerTypeCode = "K";
             oauthId = oAuth2User.getName();
-
         } else {
             oauthId = oAuth2User.getName();
         }

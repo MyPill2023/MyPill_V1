@@ -41,7 +41,6 @@ public class MemberService {
         return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
     }
 
-
     @Transactional
     public RsData<Member> join(String username, String name, String password, Integer userType, String email) {
         if (memberRepository.findByUsername(username).isPresent()) {

@@ -33,7 +33,6 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider bean = new DaoAuthenticationProvider();
-        bean.setHideUserNotFoundExceptions(false);
         bean.setUserDetailsService(customUserDetailsService);
         bean.setPasswordEncoder(passwordEncoder());
         return bean;

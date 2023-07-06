@@ -28,12 +28,6 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             rq.invalidateSession();
             return;
         }
-        if (rq.getMember().getDeleteDate() != null) {
-            redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/usr/member/login", "삭제된 계정입니다."));
-            clearAuthenticationAttributes(request);
-            rq.invalidateSession();
-            return;
-        }
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

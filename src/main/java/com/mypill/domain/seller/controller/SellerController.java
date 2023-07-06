@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/usr/seller")
 public class SellerController {
     private final SellerService sellerService;
-
     private final OrderService orderService;
     private final Rq rq;
 
