@@ -1,5 +1,6 @@
 package com.mypill.global.security;
 
+import com.mypill.global.security.handler.CustomOAuth2SuccessHandler;
 import com.mypill.global.security.oauth2.CustomOAuth2AccessTokenResponseClient;
 import com.mypill.global.security.handler.CustomAuthenticationFailureHandler;
 import com.mypill.global.security.handler.CustomAuthenticationSuccessHandler;
@@ -22,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final CustomOAuth2AccessTokenResponseClient oAuth2AccessTokenResponseClient;
     private final CustomUserDetailsService customUserDetailsService;
@@ -61,6 +63,7 @@ public class SecurityConfig {
                                 .tokenEndpoint(t -> t
                                         .accessTokenResponseClient(oAuth2AccessTokenResponseClient)
                                 )
+                                .successHandler(customOAuth2SuccessHandler)
                                 .failureHandler(customAuthenticationFailureHandler)
                 )
                 .logout(

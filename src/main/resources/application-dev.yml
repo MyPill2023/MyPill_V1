@@ -11,4 +11,4 @@ spring:
       ddl-auto: create
 custom:
   site:
-    baseUrl: http://localhost
+    baseUrl: http://localhost:443
