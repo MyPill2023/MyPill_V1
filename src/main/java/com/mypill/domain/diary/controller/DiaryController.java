@@ -2,6 +2,7 @@ package com.mypill.domain.diary.controller;
 
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
+import com.mypill.domain.diary.entity.DiaryCheckLog;
 import com.mypill.domain.diary.service.DiaryCheckLogService;
 import com.mypill.domain.diary.service.DiaryService;
 import com.mypill.domain.member.entity.Member;
@@ -104,6 +105,9 @@ public class DiaryController {
         List<Diary> history = diaryService.findHistory(date);
 
         model.addAttribute("history", history);
+
+        List<DiaryCheckLog> diaryCheckLogList = diaryCheckLogService.findByCheckDate(date);
+        model.addAttribute("diaryCheckLog",diaryCheckLogList);
         return "usr/diary/todolist";        
     }
 
