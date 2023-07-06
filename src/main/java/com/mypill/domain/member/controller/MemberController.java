@@ -80,10 +80,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myInfo")
     public String myInfo() {
-        if (rq.isBuyer()) {
-            return "usr/buyer/myInfo";
-        }
-        return "usr/seller/myInfo";
+        return "usr/member/myInfo";
     }
 
     @PreAuthorize("isAuthenticated()")

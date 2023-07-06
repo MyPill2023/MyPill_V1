@@ -37,12 +37,6 @@ public class BuyerController {
     private final Rq rq;
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myInfo")
-    public String myInfo() {
-        return "usr/buyer/myInfo";
-    }
-
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/myLikes")
     public String myLikes() {
         return "usr/buyer/myLikes";

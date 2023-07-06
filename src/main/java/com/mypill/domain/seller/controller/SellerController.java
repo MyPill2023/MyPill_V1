@@ -33,12 +33,6 @@ public class SellerController {
     private final Rq rq;
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myInfo")
-    public String myInfo() {
-        return "usr/seller/myInfo";
-    }
-
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/order")
     public String orderManagement(Model model) {
         List<OrderListResponse> orderResponses = orderService.findBySellerId(rq.getMember().getId())
