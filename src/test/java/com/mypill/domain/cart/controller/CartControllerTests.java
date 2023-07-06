@@ -59,7 +59,7 @@ class CartControllerTests {
 
     @Test
     @DisplayName("01 장바구니 추가 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void addCartProductSuccessTest() throws Exception {
         ResultActions resultActions = mvc
                 .perform(post("/cart/add")
@@ -78,7 +78,7 @@ class CartControllerTests {
 
     @Test
     @DisplayName("02 장바구니에 담긴 상품 수량 변경 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void addCartProductFailTest() throws Exception {
         CartProduct cartProduct = cartService.findCartProductById(this.cartProduct.getId()).orElse(null);
         assertThat(cartProduct).isNotNull();
@@ -103,7 +103,7 @@ class CartControllerTests {
 
     @Test
     @DisplayName("03 장바구니에 담긴 상품 삭제 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void softDeleteCartProductSuccessTest() throws Exception {
         CartProduct cartProduct = cartService.findCartProductById(this.cartProduct.getId()).orElse(null);
         assertThat(cartProduct).isNotNull();

@@ -72,7 +72,7 @@ class OrderControllerTests {
 
     @Test
     @DisplayName("전체 상품 주문 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testCreateFromCartSuccess() throws Exception {
         //WHEN
         ResultActions resultActions = mvc
@@ -90,7 +90,7 @@ class OrderControllerTests {
 
     @Test
     @DisplayName("선택 상품 주문 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testCreateFromSelectedSuccess() throws Exception {
         //WHEN
         ResultActions resultActions = mvc
@@ -108,7 +108,7 @@ class OrderControllerTests {
     }
     @Test
     @DisplayName("주문 폼 가져오기 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testGetOrderFormSuccess() throws Exception {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
@@ -124,7 +124,7 @@ class OrderControllerTests {
     }
     @Test
     @DisplayName("주문 폼 가져오기 실패 - 다른 사람의 주문")
-    @WithMockUser(username = "testUser2", authorities = "MEMBER")
+    @WithMockUser(username = "testUser2", authorities = "BUYER")
     void testGetOrderFormFail() throws Exception {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
@@ -141,7 +141,7 @@ class OrderControllerTests {
 
     @Test
     @DisplayName("주문 상세 정보")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testGetOrderDetailSuccess() throws Exception {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();

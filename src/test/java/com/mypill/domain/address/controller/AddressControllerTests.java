@@ -52,7 +52,7 @@ class AddressControllerTests {
 
     @Test
     @DisplayName("배송지 추가 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testCreateSuccess() throws Exception {
         //WHEN
         ResultActions resultActions = mvc
@@ -83,7 +83,7 @@ class AddressControllerTests {
 
     @Test
     @DisplayName("배송지 추가 실패 - 최대 등록 가능 개수 초과")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testCreateFail() throws Exception {
         //GIVEN
         for(int i = 0; i< AppConfig.getMaxAddressCount(); i++){
@@ -115,7 +115,7 @@ class AddressControllerTests {
 
     @Test
     @DisplayName("배송지 수정 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testUpdateSuccess() throws Exception {
         //GIVEN
         Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
@@ -149,7 +149,7 @@ class AddressControllerTests {
 
     @Test
     @DisplayName("배송지 수정 실패 - 권한 없음")
-    @WithMockUser(username = "testUser2", authorities = "MEMBER")
+    @WithMockUser(username = "testUser2", authorities = "BUYER")
     void testUpdateFail() throws Exception {
         //GIVEN
         Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
@@ -182,7 +182,7 @@ class AddressControllerTests {
 
     @Test
     @DisplayName("배송지 삭제 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testDeleteSuccess() throws Exception {
         //GIVEN
         Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
@@ -207,7 +207,7 @@ class AddressControllerTests {
 
     @Test
     @DisplayName("배송지 삭제 실패 - 권한 없음")
-    @WithMockUser(username = "testUser2", authorities = "MEMBER")
+    @WithMockUser(username = "testUser2", authorities = "BUYER")
     void testDeleteFail() throws Exception {
         //GIVEN
         Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
@@ -231,7 +231,7 @@ class AddressControllerTests {
 
     @Test
     @DisplayName("주문 시 배송지 세부 정보 가져오기 성공")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testGetAddressDetailsSuccess() throws Exception {
         //GIVEN
         Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
@@ -252,7 +252,7 @@ class AddressControllerTests {
     }
     @Test
     @DisplayName("주문 시 배송지 세부 정보 가져오기 실패 - 없는 배송지")
-    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testGetAddressDetailsFail() throws Exception {
         //GIVEN
         Long addressId = 1L;
