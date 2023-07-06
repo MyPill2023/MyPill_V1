@@ -14,7 +14,7 @@ import java.util.List;
 public class NutrientQuestionService {
     private final NutrientQuestionRepository nutrientQuestionRepository;
 
-    public List<NutrientQuestion> findByNutrientId(Long questionId){
-        return nutrientQuestionRepository.findByNutrientId(questionId);
+    public List<NutrientQuestion> findByQuestionId(Long questionId){
+        return nutrientQuestionRepository.findByQuestionId(questionId);
     }
 }

@@ -124,7 +124,7 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (8,8);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (9,9);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (10,6);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (10,7);
-#3번
+
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (11,10);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (11,11);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (12,12);
@@ -190,7 +190,6 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (42,27);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (42,26);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (43,27);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (43,26);
-
 
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (44,29);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (45,29);
