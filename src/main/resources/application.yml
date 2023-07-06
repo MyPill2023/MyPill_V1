@@ -2,11 +2,6 @@ spring:
   profiles:
     active: dev
     include: secret
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: 'jdbc:mariadb://127.0.0.1:3306/${custom.dev_db.dbName}?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true&serverTimezone=Asia/Seoul'
-    username: '${custom.dev_db.username}'
-    password: '${custom.dev_db.password}'
   security:
     oauth2:
       client:
@@ -39,8 +34,6 @@ spring:
   thymeleaf:
     enabled: true
   jpa:
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         show_sql: true
@@ -81,4 +74,4 @@ custom:
     maxAddressCount : 5
   site:
     name: 'MyPill'
-
+    baseUrl: http://localhost
