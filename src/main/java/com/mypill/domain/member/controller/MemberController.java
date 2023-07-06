@@ -55,7 +55,7 @@ public class MemberController {
         } catch (NumberFormatException e) {
             return rq.historyBack("회원 유형이 올바르지 않습니다.");
         }
-        return rq.redirectWithMsg("/usr/member/login", "회원가입이 완료되었습니다.");
+        return rq.redirectWithMsg("/usr/member/login", "인증 이메일이 발송되었습니다.");
     }
 
     @ResponseBody
