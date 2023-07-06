@@ -18,6 +18,7 @@ import com.mypill.global.event.EventAfterOrderStatusUpdate;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,12 +38,13 @@ public class OrderService {
     private final Rq rq;
     private final ApplicationEventPublisher publisher;
 
-    public RsData<OrderResponse> getOrderForm(Long orderId) {
+
+    public RsData<OrderResponse> getOrderForm(Member actor, Long orderId) {
         Order order = findById(orderId).orElse(null);
         if(order == null){
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
-        if(!order.getBuyer().getId().equals(rq.getMember().getId())){
+        if(!order.getBuyer().getId().equals(actor.getId())){
             return RsData.of("F-2", "다른 회원의 주문에 접근할 수 없습니다.");
         }
         if(order.getPayment() != null){
