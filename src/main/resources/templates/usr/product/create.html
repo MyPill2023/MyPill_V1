@@ -11,7 +11,7 @@
             상품 등록
         </h1>
 
-        <form th:action method="POST" class="flex flex-col gap-7 mt-5 px-5 w-full" onsubmit="productRequestDto__submit(this, event); return false;">
+        <form th:action method="POST" class="flex flex-col gap-7 mt-5 px-5 w-full" enctype="multipart/form-data" onsubmit="productRequestDto__submit(this, event); return false;">
             <input type="hidden" id="sellerId" name="sellerId" th:value="${@rq.member.id}">
             <div>
                 <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
@@ -61,7 +61,7 @@
             </div>
             <div class="flex flex-col">
                 <span class="text-gray-700 font-bold mb-2">이미지 등록</span>
-                <input type="file" id="image" name="image" class="file-input file-input-accent w-full max-w-xs"/>
+                <input type="file" id="imageFile" name="imageFile" class="file-input file-input-accent w-full max-w-xs"/>
             </div>
             <button type="submit" class="btn btn-accent mt-5">
                 상품 등록
@@ -245,12 +245,17 @@
                 return;
             }
 
-            form.image.value = form.image.value.trim();
+            var fileInput = document.getElementById('imageFile');
+            var fileName = fileInput.value;
 
-            if (form.image.value.length === "") {
-                toastWarning("상품 이미지를 등록해주세요.");
-                form.image.focus();
-                return;
+            if (fileName !== "") {
+                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/product;
+
+                if (!allowedExtensions.exec(fileName)) {
+                    toastWarning('첨부 파일의 확장자는 JPG, JPEG, PNG, GIF만 가능합니다.');
+                    fileInput.value = '';
+                    return;
+                }
             }
 
             // 폼 제출을 막음

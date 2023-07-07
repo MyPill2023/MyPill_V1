@@ -1,5 +1,6 @@
 package com.mypill.domain.product.entity;
 
+import com.mypill.domain.Image.entity.Image;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
@@ -32,6 +33,9 @@ public class Product extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member seller;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    private Image image;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -102,5 +106,13 @@ public class Product extends BaseEntity {
         if (this.likedMembers.contains(member)) {
             this.likedMembers.remove(member);
         }
+    }
+
+    public void addImage(Image image) {
+        if (this.image != null) {
+            this.image.setProduct(null);
+        }
+        this.image = image;
+        image.setProduct(this);
     }
 }

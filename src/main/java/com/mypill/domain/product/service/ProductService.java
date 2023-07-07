@@ -1,5 +1,7 @@
 package com.mypill.domain.product.service;
 
+import com.mypill.domain.Image.entity.Image;
+import com.mypill.domain.Image.repository.ImageRepository;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
 import com.mypill.domain.member.entity.Member;
@@ -10,19 +12,24 @@ import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
+import com.mypill.global.aws.s3.dto.AmazonS3Dto;
+import com.mypill.global.aws.s3.service.AmazonS3Service;
 import com.mypill.global.event.EventAfterLike;
 import com.mypill.global.event.EventAfterUnlike;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,18 +41,46 @@ public class ProductService {
     private final CategoryService categoryService;
     private final MemberService memberService;
     private final ApplicationEventPublisher publisher;
+    private final AmazonS3Service amazonS3Service;
+    private final ImageRepository imageRepository;
 
     @Transactional
-    public RsData<Product> create(ProductRequest request) {
+    public RsData<Product> create(ProductRequest request, MultipartFile multipartFile) {
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
 
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
+
         Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
 
+        saveImage(multipartFile, product);
         productRepository.save(product);
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
+    }
+
+    @Async
+    void saveImage (MultipartFile multipartFile, Product product) {
+        if (!multipartFile.isEmpty()) {
+            try {
+                // 이미지 업로드 및 URL 정보 받아오기
+                AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, UUID.randomUUID().toString());
+
+                // 이미지 정보를 설정하고 저장
+                Image image = Image.builder()
+                        .filename(multipartFile.getOriginalFilename())
+                        .filepath(amazonS3ImageDto.getCdnUrl()) // CDN URL로 변경
+                        .product(product)
+                        .build();
+
+                image = imageRepository.save(image);  // 이미지를 DB에 저장
+
+                product.addImage(image); // 이미지 정보를 게시글에 추가
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("이미지 업로드에 실패하였습니다", e);
+            }
+        }
     }
 
     public RsData<Product> get(Long productId) {
