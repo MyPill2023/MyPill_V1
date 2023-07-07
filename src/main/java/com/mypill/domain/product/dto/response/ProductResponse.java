@@ -1,5 +1,6 @@
 package com.mypill.domain.product.dto.response;
 
+import com.mypill.domain.Image.entity.Image;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
@@ -26,6 +27,7 @@ public class ProductResponse {
     private List<Category> categories = new ArrayList<>();
     private List<Member> likedMembers = new ArrayList<>();
     private boolean isLiked;
+    private Image image;
 
     public static ProductResponse of(Product product) {
         return ProductResponse.builder()
@@ -38,6 +40,7 @@ public class ProductResponse {
                 .nutrients(product.getNutrients())
                 .categories(product.getCategories())
                 .likedMembers(product.getLikedMembers())
+                .image(product.getImage())
                 .build();
     }
 
@@ -53,6 +56,7 @@ public class ProductResponse {
                 .categories(product.getCategories())
                 .likedMembers(product.getLikedMembers())
                 .isLiked(isLikedInput)
+                .image(product.getImage())
                 .build();
     }
 }

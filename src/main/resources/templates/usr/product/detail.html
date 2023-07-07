@@ -14,7 +14,7 @@
 
         <div class="flex flex-col gap-5 w-full max-w-md mb-10 px-5">
             <div class="border border-gray-200 p-32 text-center">
-                상품 이미지
+                <img class="mt-8 mb-2" th:src="${product.image != null ? product.image.filepath : '/'}" alt="product_image" style="width: 3000px; height: auto;" />
             </div>
 
             <div class="flex flex-col justify-start w-full gap-2">
