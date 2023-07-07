@@ -24,13 +24,12 @@ public class CertificationService {
         String pageNo = "1";
         String numOfRows = "30";
         String resultType = "json";
-        String brno = number;
 
         String urlWithQuery = requestUrl + "?serviceKey=" + BUSINESS_SERVICE_KEY +
                 "&pageNo=" + pageNo +
                 "&numOfRows=" + numOfRows +
                 "&resultType=" + resultType +
-                "&brno=" + brno;
+                "&brno=" + number;
 
         try {
             URL url = new URL(urlWithQuery);
@@ -70,17 +69,16 @@ public class CertificationService {
         String resultType = "json";
         String startIndex = "1";
         String endIndex = "1";
-        String LCNS_NO = number;
 
-        String urlStr = url1 + "/" + NUTRIENT_BUSINESS_SERVICE_KEY
+        String urlWithQuery = url1 + "/" + NUTRIENT_BUSINESS_SERVICE_KEY
                 + "/" + serviceNumber
                 + "/" + resultType
                 + "/" + startIndex
                 + "/" + endIndex
-                + "/LCNS_NO=" + LCNS_NO;
+                + "/LCNS_NO=" + number;
 
         try {
-            URL url = new URL(urlStr);
+            URL url = new URL(urlWithQuery);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-type", "application/json");
