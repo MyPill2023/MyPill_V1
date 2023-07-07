@@ -1,6 +1,5 @@
 package com.mypill.domain.order.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mypill.domain.address.dto.response.AddressResponse;
@@ -205,12 +204,12 @@ public class OrderController {
 
             orderService.cancel(order, cancelDate, status);
 
-            return rq.redirectWithMsg("/order/detail/%s".formatted(order.getId()), "주문번호 %s의 주문 및 결제가 취소되었습니다.".formatted(order.getOrderNumber()));
+            return rq.redirectWithMsg("/order/detail/%s".formatted(order.getId()), "주문번호 %s의 </br> 주문 및 결제가 취소되었습니다.".formatted(order.getOrderNumber()));
         } else {
             JsonNode failNode = responseEntity.getBody();
             String code = failNode.get("message").asText();
             String message = failNode.get("code").asText();
-            return rq.historyBack("%s\n%s".formatted(code, message));
+            return rq.historyBack("%s </br> %s".formatted(code, message));
         }
     }
 

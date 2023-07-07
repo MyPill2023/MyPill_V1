@@ -173,6 +173,15 @@ public class OrderService {
     @Transactional
     public void cancel(Order order, LocalDateTime cancelDate, String status) {
         order.updatePayment(cancelDate, status);
+
+        order.getOrderItems()
+                .forEach(orderItem -> {
+                    orderItem.updateStatus(OrderStatus.CANCELED);
+                    orderItem.getProduct().updateStockByOrderCancel(orderItem.getQuantity()); // 재고 업데이트
+                     // TODO : 이벤트 - 판매자에게 알림
+                });
+        order.updatePrimaryOrderStatus(OrderStatus.CANCELED);
+
         orderRepository.save(order);
     }
 

@@ -82,7 +82,7 @@
                 </div>
             </div>
 
-            <div>
+            <div class="flex justify-end mt-5">
                 <form th:action="@{|/order/cancel/${orderId}|}"  method="POST">
                     <input type="hidden" name="orderId" th:value="${orderResponse.orderId}">
                     <button class="btn">주문 취소하기</button>
