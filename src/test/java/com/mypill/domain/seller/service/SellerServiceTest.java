@@ -9,10 +9,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -24,6 +21,8 @@ class SellerServiceTest {
     @Autowired
     private MemberRepository memberRepository;
     private Member testUser1;
+    private final String brno = "7598700821";
+    private final String nBrno = "20180107318";
 
     @Test
     @WithMockUser(username = "testUser1", authorities = "WAITER")
@@ -36,18 +35,14 @@ class SellerServiceTest {
                 .password("1234")
                 .userType(3)
                 .email("testEmail@test.com")
-                .brnoCertificated(false)
-                .nBrnoCertificated(false)
                 .build();
         memberRepository.save(testUser1);
-        String brno = "7598700821";
 
         // WHEN
-        sellerService.certificateBRNO(brno, testUser1);
+        sellerService.businessNumberCheck(brno, testUser1);
 
         // THEN
-        assertTrue(testUser1.isBrnoCertificated());
-
+        assertThat(testUser1.getBusinessNumber()).isNotNull();
     }
 
     @Test
@@ -61,17 +56,15 @@ class SellerServiceTest {
                 .password("1234")
                 .userType(3)
                 .email("testEmail@test.com")
-                .brnoCertificated(false)
-                .nBrnoCertificated(true)
+                .nutrientBusinessNumber(nBrno)
                 .build();
         memberRepository.save(testUser1);
-        String brno = "7598700821";
 
         // WHEN
-        sellerService.certificateBRNO(brno, testUser1);
+        sellerService.businessNumberCheck(brno, testUser1);
 
         // THEN
-        assertTrue(testUser1.isBrnoCertificated());
+        assertThat(testUser1.getBusinessNumber()).isNotNull();
         assertThat(testUser1.getUserType()).isEqualTo(2);
     }
 
@@ -86,17 +79,14 @@ class SellerServiceTest {
                 .password("1234")
                 .userType(3)
                 .email("testEmail@test.com")
-                .brnoCertificated(false)
-                .nBrnoCertificated(false)
                 .build();
         memberRepository.save(testUser1);
-        String nBrno = "20180107318";
 
         // WHEN
-        sellerService.certificateNBRNO(nBrno, testUser1);
+        sellerService.nutrientBusinessNumberCheck(nBrno, testUser1);
 
         // THEN
-        assertTrue(testUser1.isNBrnoCertificated());
+        assertThat(testUser1.getNutrientBusinessNumber()).isEqualTo(nBrno);
     }
 
     @Test
@@ -110,17 +100,15 @@ class SellerServiceTest {
                 .password("1234")
                 .userType(3)
                 .email("testEmail@test.com")
-                .brnoCertificated(true)
-                .nBrnoCertificated(false)
+                .businessNumber(brno)
                 .build();
         memberRepository.save(testUser1);
-        String nBrno = "20180107318";
 
         // WHEN
-        sellerService.certificateNBRNO(nBrno, testUser1);
+        sellerService.nutrientBusinessNumberCheck(nBrno, testUser1);
 
         // THEN
-        assertTrue(testUser1.isNBrnoCertificated());
+        assertThat(testUser1.getNutrientBusinessNumber()).isEqualTo(nBrno);
         assertThat(testUser1.getUserType()).isEqualTo(2);
     }
 }

@@ -72,7 +72,7 @@ public class SellerController {
     @PreAuthorize("hasAuthority('WAITER')")
     @PostMapping("/nBrnoCertificate")
     public String nBrnoCertificate(@RequestParam("nutrientBusinessNumber") String nutrientBusinessNumber) {
-        RsData<Member> rsData = sellerService.businessNumberCheck(nutrientBusinessNumber, rq.getMember());
+        RsData<Member> rsData = sellerService.nutrientBusinessNumberCheck(nutrientBusinessNumber, rq.getMember());
         if (rsData.isFail()) {
             rq.historyBack(rsData);
         }
