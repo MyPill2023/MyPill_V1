@@ -1,4 +1,3 @@
-
 INSERT INTO nutrients (name, description) VALUES ('루테인', '노화로 인해 감소될 수 있는 황반색소밀도를 유지하여 눈 건강에 도움을 줄 수 있습니다.');
 INSERT INTO nutrients (name, description) VALUES ('아스타잔틴', '눈의 피로도 개선에 도움을 줄 수 있습니다.');
 INSERT INTO nutrients (name, description) VALUES ('오메가3', '뇌세포를 보호하고 신호전달을 원할하게 하여 기억력 개선에 도움을 줍니다. 건조한 눈을 개선시켜 줍니다. 우울감을 개선하여 수면에 간접적으로 도움이 될 수 있습니다.');
@@ -137,7 +136,6 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (14,7);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (15,14);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (15,12);
 
-
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (16,32);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (17,33);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (17,31);
@@ -145,7 +143,6 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (18,33);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (18,31);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (19,31);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (20,31);
-
 
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (21,16);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (21,3);
@@ -156,7 +153,6 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (24,18);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (25,16);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (25,3);
 
-
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (26,19);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (26,20);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (27,19);
@@ -166,14 +162,12 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (29,4);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (30,19);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (30,4);
 
-
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (31,23);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (32,25);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (33,25);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (34,24);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (35,29);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (35,28);
-
 
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (36,11);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (36,18);
@@ -182,7 +176,6 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (37,18);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (38,34);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (39,34);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (40,3);
-
 
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (41,26);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (41,28);

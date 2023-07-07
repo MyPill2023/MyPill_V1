@@ -1,40 +1,37 @@
 package com.mypill.global.security.handler;
 
-import jakarta.servlet.ServletException;
+import com.mypill.global.rq.Rq;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final Rq rq;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException, ServletException {
+                                        AuthenticationException exception) throws IOException{
         String errorMessage;
-
-        if (exception instanceof UsernameNotFoundException) {
-            errorMessage = "존재하지 않는 계정입니다.";
-        } else if (exception instanceof BadCredentialsException) {
-            errorMessage = "비밀번호가 일치하지 않습니다.";
+        if (exception instanceof BadCredentialsException) {
+            errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
         } else if (exception instanceof OAuth2AuthenticationException) {
             errorMessage = ((OAuth2AuthenticationException) exception).getError().getErrorCode();
         } else {
             errorMessage = exception.getMessage();
         }
-        errorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);//한글 인코딩 깨지는 문제 방지
-        setDefaultFailureUrl("/usr/member/login?exception=" + errorMessage);
-        super.onAuthenticationFailure(request, response, exception);
+        redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/usr/member/login", errorMessage));
+        rq.invalidateSession();
     }
 }

@@ -17,7 +17,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         Member member = memberRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-
+        if (member.getDeleteDate() != null) {
+            throw new UsernameNotFoundException("아이디 또는 비밀번호가 일치하지 않습니다.");
+        }
         return new User(member.getUsername(), member.getPassword(), member.getGrantedAuthorities());
     }
 }

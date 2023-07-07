@@ -42,6 +42,11 @@ public class Member extends BaseEntity {
     private String providerTypeCode; // 카카오로 가입한 회원인지, 네이버로 가입한 회원인지
     @Column
     private boolean emailVerified;
+
+    @Column(unique = true)
+    private String businessNumber;
+    @Column(unique = true)
+    private String nutrientBusinessNumber;
     @ManyToMany(mappedBy = "likedMembers")
     private Set<Product> likedProducts = new HashSet<>();
     @ManyToMany(cascade = CascadeType.ALL)
@@ -53,9 +58,6 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Address> addresses;
-
-    private boolean brnoCertificated;
-    private boolean nBrnoCertificated;
 
     public List<GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();

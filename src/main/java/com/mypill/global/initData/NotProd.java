@@ -36,7 +36,6 @@ public class NotProd {
             CartService cartService,
             AddressService addressService,
             OrderService orderService
-
     ) {
         String password = passwordEncoder.encode("1234");
         return args -> {
