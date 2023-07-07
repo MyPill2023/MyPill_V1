@@ -73,6 +73,12 @@ public class Rq {
         return member;
     }
 
+    public boolean isBuyer() {
+        if (isLogout()) return false;
+
+        return getMember().isBuyer();
+    }
+
     public boolean isSeller() {
         if (isLogout()) return false;
 
@@ -142,4 +148,5 @@ public class Rq {
         if (isLogout()) return false;
         return notificationService.countUnreadNotificationsByMember(getMember());
     }
+
 }

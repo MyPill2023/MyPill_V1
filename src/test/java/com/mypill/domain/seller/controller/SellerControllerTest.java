@@ -46,45 +46,6 @@ class SellerControllerTest {
         memberRepository.save(testUser1);
     }
 
-    @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
-    @DisplayName("판매자 마이페이지")
-    void myPageTest() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(get("/usr/seller/myPage")
-                        .with(csrf())
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(SellerController.class))
-                .andExpect(handler().methodName("myPage"))
-                .andExpect(status().is2xxSuccessful())
-        ;
-    }
-
-
-    @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
-    @DisplayName("판매자 회원정보")
-    void myInfoTest() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(get("/usr/seller/myInfo")
-                        .with(csrf())
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(SellerController.class))
-                .andExpect(handler().methodName("myInfo"))
-                .andExpect(status().is2xxSuccessful())
-        ;
-    }
-
 
     @Test
     void orderManagement() {

@@ -32,19 +32,7 @@ public class SellerController {
     private final OrderService orderService;
     private final Rq rq;
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myPage")
-    public String myPage() {
-        return "usr/buyer/myPage";
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/myInfo")
-    public String myInfo() {
-        return "usr/seller/myInfo";
-    }
-
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/order")
     public String orderManagement(Model model) {
         List<OrderListResponse> orderResponses = orderService.findBySellerId(rq.getMember().getId())
@@ -66,12 +54,13 @@ public class SellerController {
         return "usr/seller/orderList";
     }
 
+    @PreAuthorize("hasAuthority('WAITER')")
     @GetMapping("/certificate")
     public String certificate() {
         return "usr/seller/certificate";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('WAITER')")
     @PostMapping("/brnoCertificate")
     public String brnoCertificate(@RequestParam("businessNumber") String businessNumber) {
         RsData<Member> rsData = sellerService.businessNumberCheck(businessNumber, rq.getMember());
@@ -80,8 +69,7 @@ public class SellerController {
         }
         return rq.redirectWithMsg("/usr/seller/certificate", rsData);
     }
-
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAuthority('WAITER')")
     @PostMapping("/nBrnoCertificate")
     public String nBrnoCertificate(@RequestParam("nutrientBusinessNumber") String nutrientBusinessNumber) {
         RsData<Member> rsData = sellerService.businessNumberCheck(nutrientBusinessNumber, rq.getMember());

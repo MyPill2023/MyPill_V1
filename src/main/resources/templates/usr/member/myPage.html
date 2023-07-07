@@ -1,0 +1,70 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>마이페이지</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.6/flowbite.min.css" rel="stylesheet"/>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5">
+        <h1 class="text-2xl font-bold">마이페이지</h1>
+        <div class="flex flex-col p-5 w-full">
+            <div id="accordion-collapse" data-accordion="collapse">
+                <a href="/usr/member/myInfo"
+                   class="flex items-center justify-between w-full p-5 text-left border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200  hover:bg-gray-100 ">
+                    <span>회원정보</span>
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+               <div th:if="${@rq.isBuyer()}">
+                   <a href="/usr/buyer/myOrder"
+                      class="flex items-center justify-between w-full p-5 text-left border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200  hover:bg-gray-100 ">
+                       <span>주문 내역</span>
+                       <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                   </a>
+                   <a href="/usr/buyer/myLikes"
+                      class="flex items-center justify-between w-full p-5 text-left border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200  hover:bg-gray-100 ">
+                       <span>관심 상품</span>
+                       <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+
+                   </a>
+                   <a href="/usr/buyer/myAddress"
+                      class="flex items-center justify-between w-full p-5 text-left border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200  hover:bg-gray-100 ">
+                       <span>나의 배송지 관리</span>
+                       <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                   </a>
+                   <a href="/"
+                      class="flex items-center justify-between w-full p-5 text-left border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200  hover:bg-gray-100 ">
+                       <span>설문 결과 정보</span>
+                       <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                   </a>
+                   <a href="/usr/diary/todolist"
+                      class="flex items-center justify-between w-full p-5 text-left border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200  hover:bg-gray-100 ">
+                       <span>복약 관리</span>
+                       <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                   </a>
+               </div>
+                <div th:unless="${@rq.isBuyer()}">
+                    <a href="/usr/seller/order"
+                       class="flex items-center justify-between w-full p-5 text-left border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200  hover:bg-gray-100 ">
+                        <span>주문 관리</span>
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                    </a>
+                    <a href="/"
+                       class="flex items-center justify-between w-full p-5 text-left border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200  hover:bg-gray-100 ">
+                        <span>통계</span>
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                    </a>
+                </div>
+                <a href="/usr/member/myPosts"
+                   class="flex items-center justify-between w-full p-5 text-left border border-gray-200 focus:ring-4 focus:ring-gray-200  hover:bg-gray-100 ">
+                    <span>Q&A 게시판 활동 내역</span>
+                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+</html>

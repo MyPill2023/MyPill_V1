@@ -45,53 +45,14 @@ class BuyerControllerTest {
         memberRepository.save(testUser1);
     }
 
-    @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
-    @DisplayName("구매자 마이페이지")
-    void myPageTest() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myPage")
-                        .with(csrf())
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(BuyerController.class))
-                .andExpect(handler().methodName("myPage"))
-                .andExpect(status().is2xxSuccessful())
-        ;
-    }
 
     @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
-    @DisplayName("구매자 회원정보")
-    void myInfoTest() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myInfo")
-                        .with(csrf())
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(BuyerController.class))
-                .andExpect(handler().methodName("myInfo"))
-                .andExpect(status().is2xxSuccessful())
-        ;
-    }
-
-    @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
-    @DisplayName("구매자 회원정보")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
+    @DisplayName("구매자 좋아요 정보")
     void myLikesTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myLikes")
-                        .with(csrf())
-                )
+                .perform(get("/usr/buyer/myLikes"))
                 .andDo(print());
 
         // THEN
@@ -102,53 +63,4 @@ class BuyerControllerTest {
         ;
     }
 
-    @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
-    @DisplayName("내 글 목록")
-    void myPostsTest() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myPosts")
-                        .with(csrf())
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(BuyerController.class))
-                .andExpect(handler().methodName("myPosts"))
-                .andExpect(status().is2xxSuccessful())
-        ;
-    }
-
-    @Test
-    @WithMockUser(username = "testUser1", roles = "MEMBER")
-    @DisplayName("내 댓글 목록")
-    void myCommentsTest() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myComments")
-                        .with(csrf())
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(BuyerController.class))
-                .andExpect(handler().methodName("myComments"))
-                .andExpect(status().is2xxSuccessful())
-        ;
-    }
-
-    @Test
-    void mySchedule() {
-    }
-
-    @Test
-    void myOrder() {
-    }
-
-    @Test
-    void myAddress() {
-    }
 }

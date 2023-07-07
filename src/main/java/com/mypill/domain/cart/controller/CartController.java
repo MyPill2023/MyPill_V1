@@ -25,7 +25,7 @@ public class CartController {
     private final CartService cartService;
     private final Rq rq;
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("")
     public String showCart(Model model){
         Cart cart =  cartService.cartView(rq.getMember());
@@ -33,7 +33,7 @@ public class CartController {
         return "usr/cart/list";
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/add")
     public String addCartProduct(@Valid CartProductRequest request){
         RsData<CartProduct> addRsData = cartService.addProduct(rq.getMember(), request);
@@ -45,7 +45,7 @@ public class CartController {
         return rq.redirectWithMsg("/product/detail/%s".formatted(request.getProductId()), addRsData);
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/update")
     public String updateQuantity(@RequestParam Long cartProductId, @RequestParam Long newQuantity){
         RsData<CartProduct> updateRsData = cartService.updateQuantity(rq.getMember(), cartProductId, newQuantity);
@@ -61,7 +61,7 @@ public class CartController {
         return rq.redirectWithMsg("/cart", updateRsData);
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/delete")
     public String softDeleteCartProduct(@RequestParam Long cartProductId){
         RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(rq.getMember(), cartProductId);

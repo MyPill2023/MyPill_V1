@@ -42,25 +42,26 @@
                       th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
                 </div>
             </div>
-            <div class="divider !my-2"></div>
-            <form th:action="@{|/cart/add|}" method="POST"
-                  onsubmit="CartProductRequest__submit(this, event); return false;">
-                <input type="hidden" id="productId" name="productId" th:value="${product.id}">
-                <div class="flex justify-between items-center">
-                    <div class="flex gap-3 justify-center items-center">
-                        <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
-                        <label for="quantity">수량</label>
-                        <input type="number" id="quantity" name="quantity" min="1" value="1"
-                               class="input input-bordered  input-sm w-16" required>
-                        <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
+            <div th:unless="${@rq.isSeller() || @rq.isWaiter()}">
+                <div class="divider !my-2"></div>
+                <form th:action="@{|/cart/add|}" method="POST"
+                      onsubmit="CartProductRequest__submit(this, event); return false;">
+                    <input type="hidden" id="productId" name="productId" th:value="${product.id}">
+                    <div class="flex justify-between items-center">
+                        <div class="flex gap-3 justify-center items-center">
+                            <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
+                            <label for="quantity">수량</label>
+                            <input type="number" id="quantity" name="quantity" min="1" value="1"
+                                   class="input input-bordered  input-sm w-16" required>
+                            <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
+                        </div>
+                        <button class="btn btn-success" type="submit" th:disabled="${product.stock < 1}">장바구니 담기</button>
                     </div>
-                    <button class="btn btn-success" type="submit" th:disabled="${product.stock < 1}">장바구니 담기</button>
-                </div>
-                <div class="flex justify-end mt-5" th:if="${product.stock < 1}">
-                    <span class="text-red-300">해당 상품은 품절되었습니다.</span>
-                </div>
-
-            </form>
+                    <div class="flex justify-end mt-5" th:if="${product.stock < 1}">
+                        <span class="text-red-300">해당 상품은 품절되었습니다.</span>
+                    </div>
+                </form>
+            </div>
             <div class="divider !my-2"></div>
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
