@@ -103,12 +103,50 @@
                 </a>
             </div>
 
+            <div class="pagination">
+                <ul class="flex justify-center">
+                    <li>
+                        <a th:if="${page.hasPrevious()} and ${page.number != 0}"
+                           th:href="@{${pagingUrl}(pageNumber=0, pageSize=${page.size})}"
+                           class="text-blue-500 hover:text-blue-700 mr-4">
+                            처음
+                        </a>
+                    </li>
+                    <li th:if="${page.hasPrevious()}">
+                        <a th:href="@{${pagingUrl}(pageNumber=${page.number - 1}, pageSize=${page.size})}"
+                           class="text-blue-500 hover:text-blue-700 mr-4">
+                            이전
+                        </a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(0, page.totalPages - 1)}"
+                        th:class="${page.totalPages > 1 and pageNum >= page.number - 2 and pageNum <= page.number + 2} ? 'mr-4' : ''">
+                        <a th:if="${page.totalPages > 1 and pageNum >= page.number - 2 and pageNum <= page.number + 2}"
+                           th:href="@{${pagingUrl}(pageNumber=${pageNum}, pageSize=${page.size})}"
+                           class="text-blue-500 hover:text-blue-700 font-bold"
+                           th:class="${pageNum == page.number ? 'text-blue-700' : ''}">
+                            <span th:text="${pageNum + 1}"></span>
+                        </a>
+                    </li>
+                    <li th:if="${page.hasNext()}">
+                        <a th:href="@{${pagingUrl}(pageNumber=${page.number + 1}, pageSize=${page.size})}"
+                           class="text-blue-500 hover:text-blue-700">
+                            다음
+                        </a>
+                    </li>
+                    <li>
+                        <a th:if="${page.hasNext()} and ${page.number != page.totalPages - 1}"
+                           th:href="@{${pagingUrl}(pageNumber=${page.totalPages - 1}, pageSize=${page.size})}"
+                           class="text-blue-500 hover:text-blue-700 ml-4">
+                            마지막
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.6/flowbite.min.js"></script>
-
 </main>
 </body>
 
