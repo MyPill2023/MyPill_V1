@@ -89,14 +89,8 @@ public class DiaryService {
     }
 
     public List<Diary> getList (Long memberId) {
-        List<Diary> diaryList = diaryRepository.findByDeleteDateIsNullOrderByCreateDateDesc();
-
-        return diaryList
-                .stream()
-                .filter(e ->Objects.equals(e.getMember().getId(), memberId))
-                .toList();
+          return diaryRepository.findByMemberIdAndDeleteDateIsNullOrderByCreateDateDesc(memberId);
     }
-
 
     public Optional<Diary> findById (Long diaryId) {
         return diaryRepository.findByDeleteDateNullAndId(diaryId);
