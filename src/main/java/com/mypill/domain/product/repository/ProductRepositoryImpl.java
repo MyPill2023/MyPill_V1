@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+import static com.mypill.domain.category.entity.QCategory.category;
 import static com.mypill.domain.product.entity.QProduct.product;
 
 @RequiredArgsConstructor
@@ -53,8 +54,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     @Override
     public Page<Product> findAllProductByCategoryId(Long categoryId, Pageable pageable) {
         QueryResults<Product> results = jpaQueryFactory.selectFrom(product)
+                .leftJoin(product.categories, category).fetchJoin()
                 .where(
-                        product.categories.any().id.eq(categoryId),
+                        category.id.eq(categoryId),
                         product.deleteDate.isNull(),
                         product.stock.gt(0)
                 )

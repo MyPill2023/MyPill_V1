@@ -58,8 +58,8 @@ public class NotProd {
             Address address1 = addressService.create(addressRequest1).getData();
             Address address2 = addressService.create(addressRequest2).getData();
 
-            Order order1 = orderService.createFromProduct(memberUser1, 1L, 3L).getData();
-            Order order2 = orderService.createFromProduct(memberUser1, 2L, 3L).getData();
+            Order order1 = orderService.createSingleProduct(memberUser1, 1L, 3L).getData();
+            Order order2 = orderService.createSingleProduct(memberUser1, 2L, 3L).getData();
             orderService.payByTossPayments(order1, "1_0001", 1L);
             orderService.payByTossPayments(order2, "2_0002", 1L);
             orderService.updatePayment(order1, "카드", 36000L, LocalDateTime.now(), "Done");

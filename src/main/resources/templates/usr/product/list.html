@@ -37,7 +37,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div th:each="nutrient, loop : ${nutrients}">
                                 <a th:href="@{|/product/list/nutrient/${nutrient.id}|}"
-                                   th:class="${nutrient.name == title ? 'badge badge-accent badge-outline badge-lg hover:bg-green-100' :
+                                   th:class="${nutrient.name == title ? 'badge badge-accent badge-lg hover:bg-green-100' :
                                    'badge badge-ghost badge-lg hover:bg-green-100'}"
                                    th:text="${nutrient.name}"></a>
                             </div>
@@ -63,7 +63,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div th:each="category, loop : ${categories}">
                                 <a th:href="@{|/product/list/category/${category.id}|}"
-                                   th:class="${category.name == title ? 'badge badge-accent badge-outline badge-lg hover:bg-green-100' :
+                                   th:class="${category.name == title ? 'badge badge-accent badge-lg hover:bg-green-100' :
                                    'badge badge-ghost badge-lg hover:bg-green-100'}"
                                    th:text="${category.name}"></a>
                             </div>
