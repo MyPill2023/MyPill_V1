@@ -61,8 +61,8 @@ public class NotProd {
             Order order2 = orderService.createSingleProduct(memberUser1, 2L, 3L).getData();
             orderService.payByTossPayments(order1, "1_0001", 1L);
             orderService.payByTossPayments(order2, "2_0002", 1L);
-            orderService.updatePayment(order1, "카드", 36000L, LocalDateTime.now(), "Done");
-            orderService.updatePayment(order2, "카드", 36000L, LocalDateTime.now(), "Done");
+            orderService.updatePayment(order1,"123", "카드", 36000L, LocalDateTime.now(), "Done");
+            orderService.updatePayment(order2,"123", "카드", 36000L, LocalDateTime.now(), "Done");
         };
     }
 }

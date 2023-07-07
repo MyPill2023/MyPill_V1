@@ -82,6 +82,12 @@
                 </div>
             </div>
 
+            <div>
+                <form th:action="@{|/order/cancel/${orderId}|}"  method="POST">
+                    <input type="hidden" name="orderId" th:value="${orderResponse.orderId}">
+                    <button class="btn">주문 취소하기</button>
+                </form>
+            </div>
         </div>
     </div>
 
