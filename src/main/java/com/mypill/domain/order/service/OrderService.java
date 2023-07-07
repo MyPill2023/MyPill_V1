@@ -113,11 +113,16 @@ public class OrderService {
         order.setPaymentDone(orderId);
         Address address = addressService.findById(addressId).orElse(null);
         order.addAddress(address);
+
+        Set<Member> uniqueSellers = new HashSet<>();
         order.getOrderItems()
                 .forEach(orderItem -> {
                     orderItem.updateStatus(OrderStatus.ORDERED);
                     orderItem.getProduct().updateStockByOrder(orderItem.getQuantity()); // 재고 업데이트
-                    publisher.publishEvent(new EventAfterOrderPayment(this, orderItem.getProduct().getSeller(), order)); // 이벤트 - 판매자에게 알림
+                    Member seller = orderItem.getProduct().getSeller();
+                    if (uniqueSellers.add(seller)) {
+                        publisher.publishEvent(new EventAfterOrderPayment(this, seller, order)); // 이벤트 - 판매자에게 알림
+                    }
                 });
         order.updatePrimaryOrderStatus(OrderStatus.ORDERED);
         order.getCartProducts().forEach(CartProduct::softDelete); // 장바구니에서 삭제
