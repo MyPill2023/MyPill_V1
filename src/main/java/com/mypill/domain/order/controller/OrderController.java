@@ -45,7 +45,7 @@ public class OrderController {
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
-        model.addAttribute("orderResponse", OrderResponse.of(rsData.getData()));
+        model.addAttribute("order", OrderResponse.of(rsData.getData()));
 
         List<AddressResponse> addresses = addressService.findByMemberId(rq.getMember().getId()).stream()
                 .filter(address -> address.getDeleteDate() == null)
@@ -112,7 +112,7 @@ public class OrderController {
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
-        model.addAttribute("orderResponse", OrderResponse.of(rsData.getData()));
+        model.addAttribute("order", OrderResponse.of(rsData.getData()));
 
         return "usr/order/detail";
     }
