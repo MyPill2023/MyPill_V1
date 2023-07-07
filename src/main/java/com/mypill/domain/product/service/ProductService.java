@@ -16,6 +16,8 @@ import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,16 +105,16 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<Product> findNotDeleted() {
-        return productRepository.findByDeleteDateIsNull();
+    public Page<Product> getAllProductList(Pageable pageable) {
+        return productRepository.findAllProduct(pageable);
     }
 
-    public List<Product> findByNutrientsId(Long nutrientId) {
-        return productRepository.findByNutrientsIdAndDeleteDateIsNull(nutrientId);
+    public Page<Product> getAllProductListByNutrientId(Long nutrientId, Pageable pageable) {
+        return productRepository.findAllProductByNutrientId(nutrientId, pageable);
     }
 
-    public List<Product> findByCategoriesId(Long categoryId) {
-        return productRepository.findByCategoriesIdAndDeleteDateIsNull(categoryId);
+    public Page<Product> getAllProductListByCategoryId(Long categoryId, Pageable pageable) {
+        return productRepository.findAllProductByCategoryId(categoryId, pageable);
     }
 
     @Transactional

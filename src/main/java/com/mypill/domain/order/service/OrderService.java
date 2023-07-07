@@ -67,10 +67,14 @@ public class OrderService {
         return createAndConnect(buyer, cartProducts);
     }
 
-    // 임시 NotProd용
+    // 하나의 상품만 주문
     @Transactional
-    public RsData<Order> createFromProduct(Member buyer, Long productId, Long quantity) {
-        Product product = productService.findById(productId).orElseThrow();
+    public RsData<Order> createSingleProduct(Member buyer, Long productId, Long quantity) {
+        Product product = productService.findById(productId).orElse(null);
+
+        if(product == null){
+            return RsData.of("F-1", "존재하지 않는 상품입니다.");
+        }
 
         List<OrderItem> orderItems = new ArrayList<>();
         orderItems.add(new OrderItem(product, quantity));

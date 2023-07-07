@@ -12,8 +12,11 @@ import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,42 +70,36 @@ public class ProductController {
 
     @GetMapping("/list/all")
     @Operation(summary = "상품 전체 목록")
-    public String list(Model model) {
-        List<Product> products = productService.findNotDeleted().stream()
-                .filter(product -> product.getStock() > 0)
-                .toList();
-
+    public String list(Model model, HttpServletRequest request,
+                       @RequestParam(defaultValue = "0") int pageNumber,
+                       @RequestParam(defaultValue = "10") int pageSize) {
+        Page<Product> productPageResult = productService.getAllProductList(PageRequest.of(pageNumber, pageSize));
         model.addAttribute("title", "전체보기");
-        populateModel(model, products);
-
+        populateModel(model, productPageResult, request, pageNumber, pageSize);
         return "usr/product/list";
     }
 
     @GetMapping("/list/nutrient/{nutrientId}")
     @Operation(summary = "영양 성분별 상품 목록")
-    public String listByNutrition(@PathVariable Long nutrientId, Model model) {
-        List<Product> products = productService.findByNutrientsId(nutrientId).stream()
-                .filter(product -> product.getStock() > 0)
-                .toList();
-
+    public String listByNutrition(@PathVariable Long nutrientId,
+                                  @RequestParam(defaultValue = "0") int pageNumber,
+                                  @RequestParam(defaultValue = "10") int pageSize,
+                                  Model model, HttpServletRequest request) {
+        Page<Product> productPageResult = productService.getAllProductListByNutrientId(nutrientId, PageRequest.of(pageNumber, pageSize));
         nutrientService.findById(nutrientId).ifPresent(nutrient -> model.addAttribute("title", nutrient.getName()));
-
-        populateModel(model, products);
-
+        populateModel(model, productPageResult, request, pageNumber, pageSize);
         return "usr/product/list";
     }
 
     @GetMapping("/list/category/{categorytId}")
     @Operation(summary = "주요 기능별 상품 목록")
-    public String listByCategory(@PathVariable Long categorytId, Model model) {
-        List<Product> products = productService.findByCategoriesId(categorytId).stream()
-                .filter(product -> product.getStock() > 0)
-                .toList();
-
+    public String listByCategory(@PathVariable Long categorytId,
+                                 @RequestParam(defaultValue = "0") int pageNumber,
+                                 @RequestParam(defaultValue = "10") int pageSize,
+                                 Model model, HttpServletRequest request) {
+        Page<Product> productPageResult = productService.getAllProductListByCategoryId(categorytId, PageRequest.of(pageNumber, pageSize));
         categoryService.findById(categorytId).ifPresent(category -> model.addAttribute("title", category.getName()));
-
-        populateModel(model, products);
-
+        populateModel(model, productPageResult, request, pageNumber, pageSize);
         return "usr/product/list";
     }
 
@@ -171,12 +168,33 @@ public class ProductController {
         model.addAttribute("categories", categories);
     }
 
-    private void populateModel(Model model, List<Product> products) {
+    private void populateModel(Model model, Page<Product> productPageResult, HttpServletRequest request, int pageNumber, int pageSize) {
         List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
         List<Category> categories = categoryService.findAllByOrderByNameAsc();
         model.addAttribute("nutrients", nutrients);
         model.addAttribute("categories", categories);
-        model.addAttribute("products", convertToResponse(products));
+
+        model.addAttribute("page", productPageResult);
+        model.addAttribute("products", convertToResponse(productPageResult.getContent()));
+        model.addAttribute("pagingUrl", getPagingUrl(request, pageNumber, pageSize));
+
     }
+
+    private String getPagingUrl(HttpServletRequest request, int pageNumber, int pageSize) {
+        String requestURI = request.getRequestURI();
+
+        if (requestURI.contains("/list/all")) {
+            return String.format("/product/list/all?");
+        } else if (requestURI.contains("/list/nutrient/")) {
+            String nutrientId = requestURI.substring(requestURI.lastIndexOf('/') + 1);
+            return String.format("/product/list/nutrient/%s", nutrientId);
+        } else if (requestURI.contains("/list/category/")) {
+            String categoryId = requestURI.substring(requestURI.lastIndexOf('/') + 1);
+            return String.format("/product/list/category/%s", categoryId);
+        } else {
+            return "";
+        }
+    }
+
 
 }
