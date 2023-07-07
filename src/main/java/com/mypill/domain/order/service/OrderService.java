@@ -13,6 +13,7 @@ import com.mypill.domain.order.repository.OrderItemRepository;
 import com.mypill.domain.order.repository.OrderRepository;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
+import com.mypill.global.event.EventAfterOrderCanceled;
 import com.mypill.global.event.EventAfterOrderPayment;
 import com.mypill.global.event.EventAfterOrderStatusUpdate;
 import com.mypill.global.rq.Rq;
@@ -179,11 +180,14 @@ public class OrderService {
     public void cancel(Order order, LocalDateTime cancelDate, String status) {
         order.updatePayment(cancelDate, status);
 
+        Set<Member> uniqueSeller = new HashSet<>();
         order.getOrderItems()
                 .forEach(orderItem -> {
                     orderItem.updateStatus(OrderStatus.CANCELED);
                     orderItem.getProduct().updateStockByOrderCancel(orderItem.getQuantity()); // 재고 업데이트
-                     // TODO : 이벤트 - 판매자에게 알림
+                    if(uniqueSeller.add(orderItem.getProduct().getSeller())){
+                        publisher.publishEvent(new EventAfterOrderCanceled(this, orderItem.getProduct().getSeller(), order));
+                    }
                 });
         order.updatePrimaryOrderStatus(OrderStatus.CANCELED);
 
