@@ -43,7 +43,7 @@ public class DiaryController {
 
         RsData<Diary> createRsData = diaryService.create(diaryRequest, rq.getMember());
         if (createRsData.isFail()) {
-            return rq.historyBack(createRsData.getMsg());
+            return rq.historyBack(createRsData);
         }
         return rq.redirectWithMsg("/usr/diary/detail/%s".formatted(createRsData.getData().getId()), createRsData);
 
@@ -80,7 +80,7 @@ public class DiaryController {
         RsData<Diary> deleteRsData = diaryService.delete(diaryId, rq.getMember());
 
         if (deleteRsData.isFail()) {
-            return rq.historyBack(deleteRsData.getMsg());
+            return rq.historyBack(deleteRsData);
         }
         return rq.redirectWithMsg("/usr/diary/list",deleteRsData);
     }
@@ -112,7 +112,7 @@ public class DiaryController {
         Member writer = rq.getMember();
         RsData<Diary> diaryRsData = diaryService.toggleCheck(writer, diaryId, LocalDate.now());
         if (diaryRsData.isFail()){
-            return rq.historyBack(diaryRsData.getMsg());
+            return rq.historyBack(diaryRsData);
         }
         return rq.redirectWithMsg("/usr/diary/todolist", diaryRsData);
     }
