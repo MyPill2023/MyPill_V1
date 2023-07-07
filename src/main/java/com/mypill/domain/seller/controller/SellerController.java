@@ -1,5 +1,6 @@
 package com.mypill.domain.seller.controller;
 
+import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.order.dto.response.OrderListResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
@@ -59,7 +60,7 @@ public class SellerController {
         model.addAttribute("orderStatusCount", orderStatusCount);
 
         OrderStatus[] filteredOrderStatus = Arrays.stream(OrderStatus.values())
-                .filter(status -> status.getPriority() >=1 && status.getPriority() <= 4 )
+                .filter(status -> status.getPriority() >= 1 && status.getPriority() <= 4)
                 .toArray(OrderStatus[]::new);
         model.addAttribute("orderStatuses", filteredOrderStatus);
         return "usr/seller/orderList";
@@ -72,19 +73,20 @@ public class SellerController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/brnoCertificate")
-    public String brnoCertificate(@RequestParam("brno") String brno) {
-        RsData rsData = sellerService.certificateBRNO(brno, rq.getMember());
+    public String brnoCertificate(@RequestParam("businessNumber") String businessNumber) {
+        RsData<Member> rsData = sellerService.businessNumberCheck(businessNumber, rq.getMember());
         if (rsData.isFail()) {
-            rq.historyBack(rsData.getMsg());
+            rq.historyBack(rsData);
         }
         return rq.redirectWithMsg("/usr/seller/certificate", rsData);
     }
+
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/nBrnoCertificate")
-    public String nBrnoCertificate(@RequestParam("nBrno") String nBrno) {
-        RsData rsData = sellerService.certificateNBRNO(nBrno, rq.getMember());
+    public String nBrnoCertificate(@RequestParam("nutrientBusinessNumber") String nutrientBusinessNumber) {
+        RsData<Member> rsData = sellerService.businessNumberCheck(nutrientBusinessNumber, rq.getMember());
         if (rsData.isFail()) {
-            rq.historyBack(rsData.getMsg());
+            rq.historyBack(rsData);
         }
         return rq.redirectWithMsg("/usr/seller/certificate", rsData);
     }

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,19 +14,19 @@ import java.net.URL;
 public class CertificationService {
 
     @Value("${api.brno.key}")
-    private String BRNO_SERVICE_KEY;
+    private String BUSINESS_SERVICE_KEY;
 
     @Value("${api.n_brno.key}")
     private String NUTRIENT_BUSINESS_SERVICE_KEY;
 
-    public boolean brnoCertificated(String number) {
+    public boolean businessNumberCertificated(String number) {
         String requestUrl = "http://apis.data.go.kr/1130000/MllBs_1Service/getMllBsBiznoInfo_1";
         String pageNo = "1";
         String numOfRows = "30";
         String resultType = "json";
         String brno = number;
 
-        String urlWithQuery = requestUrl + "?serviceKey=" + BRNO_SERVICE_KEY +
+        String urlWithQuery = requestUrl + "?serviceKey=" + BUSINESS_SERVICE_KEY +
                 "&pageNo=" + pageNo +
                 "&numOfRows=" + numOfRows +
                 "&resultType=" + resultType +
@@ -65,7 +64,7 @@ public class CertificationService {
         }
     }
 
-    public boolean nBrnoCertificated(String number) {
+    public boolean nutrientBusinessNumberCertificated(String number) {
         String url1 = "http://openapi.foodsafetykorea.go.kr/api/";
         String serviceNumber = "I1290";
         String resultType = "json";
