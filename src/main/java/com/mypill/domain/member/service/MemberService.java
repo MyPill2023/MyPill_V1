@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
@@ -196,5 +197,13 @@ public class MemberService {
                 .build();
         memberRepository.save(member);
         return RsData.of("S-1", "이메일인증이 완료되었습니다.");
+    }
+
+    public List<Member> getUnverifiedMember() {
+        return memberRepository.findByEmailVerifiedFalse();
+    }
+
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
     }
 }
