@@ -48,13 +48,13 @@
             <div >
                 <label class="block text-gray-700 font-bold mb-2">주요 기능</label>
                 <div class="flex justify-between">
-                   <select id="selectedCategory" name="selectedCategory" class="select select-bordered w-3/4">
-                       <option disabled selected>주요 기능</option>
-                       <option th:each="category, loop : ${categories}"
-                               th:value="${category.id}"
-                               th:text="${category.name}"></option>
-                   </select>
-                   <button type="button" class="btn" onclick="addSelectedCategory()">추가하기</button>
+                    <select id="selectedCategory" name="selectedCategory" class="select select-bordered w-3/4">
+                        <option disabled selected>주요 기능</option>
+                        <option th:each="category, loop : ${categories}"
+                                th:value="${category.id}"
+                                th:text="${category.name}"></option>
+                    </select>
+                    <button type="button" class="btn" onclick="addSelectedCategory()">추가하기</button>
                 </div>
                 <ul id="selectedCategoryList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3"></ul>
                 <input type="hidden" id="categoryIds" name="categoryIds" value="">

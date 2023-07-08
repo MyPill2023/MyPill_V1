@@ -1,5 +1,6 @@
 package com.mypill.domain.post.entity;
 
+import com.mypill.domain.Image.entity.Image;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.base.entitiy.BaseEntity;
@@ -32,6 +33,9 @@ public class Post extends BaseEntity {
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    private Image image;
+
     public Long getCommentCnt() {
         return (long) this.comments.size();
     }
@@ -40,5 +44,13 @@ public class Post extends BaseEntity {
         return this.comments.stream()
                 .filter(x -> x.getDeleteDate() == null)
                 .toList();
+    }
+
+    public void addImage(Image image) {
+        if (this.image != null) {
+            this.image.setPost(null);
+        }
+        this.image = image;
+        image.setPost(this);
     }
 }

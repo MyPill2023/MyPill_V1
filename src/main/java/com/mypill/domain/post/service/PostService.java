@@ -1,5 +1,6 @@
 package com.mypill.domain.post.service;
 
+import com.mypill.domain.Image.service.ImageService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.dto.PostResponse;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.Optional;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final ImageService imageService;
 
     @Transactional
     public List<Post> getList() {
@@ -34,7 +37,7 @@ public class PostService {
     }
 
     @Transactional
-    public RsData<Post> create(PostRequest postRequest, Member member) {
+    public RsData<Post> create(PostRequest postRequest, Member member, MultipartFile multipartFile) {
         if (member == null) {
             return RsData.of("F-1", "존재하지 않는 회원입니다.");
         }
@@ -43,6 +46,8 @@ public class PostService {
                 .content(postRequest.getContent())
                 .poster(member)
                 .build();
+
+        imageService.saveImage(multipartFile, newPost);
         postRepository.save(newPost);
         return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
     }
