@@ -47,10 +47,6 @@ public class Post extends BaseEntity {
     }
 
     public void addImage(Image image) {
-        if (this.image != null) {
-            this.image.setPost(null);
-        }
         this.image = image;
-        image.setPost(this);
     }
 }

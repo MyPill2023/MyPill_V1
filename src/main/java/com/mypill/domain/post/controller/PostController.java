@@ -89,8 +89,8 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/update/{postId}")
     @Operation(summary = "게시글 수정")
-    public String update(@PathVariable Long postId, @Valid PostRequest postRequest) {
-        RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember());
+    public String update(@PathVariable Long postId, @Valid PostRequest postRequest,@RequestParam(value = "imageFile") MultipartFile multipartFile) {
+        RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember(),multipartFile);
         if (updateRsData.isFail()) {
             return rq.historyBack(updateRsData.getMsg());
         }

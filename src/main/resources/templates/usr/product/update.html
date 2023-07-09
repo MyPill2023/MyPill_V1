@@ -11,7 +11,7 @@
             상품 수정
         </h1>
 
-        <form th:action method="POST" class="flex flex-col gap-7 mt-5 px-5 w-full"
+        <form th:action method="POST" class="flex flex-col gap-7 mt-5 px-5 w-full" enctype="multipart/form-data"
               onsubmit="productRequestDto__submit(this, event); return false;">
             <input type="hidden" id="sellerId" name="sellerId" th:value="${@rq.member.id}">
             <div>
@@ -78,6 +78,10 @@
                     </li>
                 </ul>
                 <input type="hidden" id="categoryIds" name="categoryIds" value="">
+            </div>
+            <div class="flex flex-col">
+                <span class="text-gray-700 font-bold mb-2">이미지 등록</span>
+                <input type="file" id="imageFile" name="imageFile" class="file-input file-input-accent w-full max-w-xs"/>
             </div>
 
             <button type="submit" class="btn btn-accent mt-5">
@@ -274,6 +278,21 @@
                 toastWarning("주요 기능을 선택해주세요.");
                 return;
             }
+
+            var fileInput = document.getElementById('imageFile');
+            var fileName = fileInput.value;
+
+
+            if (fileName !== "") {
+                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+                if (!allowedExtensions.exec(fileName)) {
+                    toastWarning('첨부 파일의 확장자는 JPG, JPEG, PNG, GIF만 가능합니다.');
+                    fileInput.value = '';
+                    return;
+                }
+            }
+
 
             // 폼 제출을 막음
             event.preventDefault();

@@ -44,6 +44,21 @@ public class ProductService {
     private final ApplicationEventPublisher publisher;
     private final ImageService imageService;
 
+    //NotProd용
+    @Transactional
+    public RsData<Product> create(ProductRequest request) {
+
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
+        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
+
+        Member seller = memberService.findById(request.getSellerId()).orElse(null);
+
+        Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
+
+        productRepository.save(product);
+        return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
+    }
+
 
     @Transactional
     public RsData<Product> create(ProductRequest request, MultipartFile multipartFile) {
@@ -74,7 +89,7 @@ public class ProductService {
     }
 
     @Transactional
-    public RsData<Product> update(Member actor, Long productId, ProductRequest request) {
+    public RsData<Product> update(Member actor, Long productId, ProductRequest request, MultipartFile multipartFile) {
 
         Product product = findById(productId).orElse(null);
         if (product == null) {
@@ -87,6 +102,11 @@ public class ProductService {
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
+        System.out.println(multipartFile.getName());
+
+
+        imageService.updateImage(multipartFile, product);
+
         product.update(request, nutrients, categories);
 
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);

@@ -122,9 +122,9 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/update/{productId}")
     @Operation(summary = "상품 수정")
-    public String update(@PathVariable Long productId, @Valid ProductRequest productRequest) {
+    public String update(@PathVariable Long productId, @Valid ProductRequest productRequest, @RequestParam(value = "imageFile") MultipartFile multipartFile) {
 
-        RsData<Product> updateRsData = productService.update(rq.getMember(), productId, productRequest);
+        RsData<Product> updateRsData = productService.update(rq.getMember(), productId, productRequest,multipartFile);
 
         return rq.redirectWithMsg("/product/detail/%s".formatted(productId), updateRsData);
     }

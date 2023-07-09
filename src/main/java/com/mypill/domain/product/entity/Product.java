@@ -109,10 +109,6 @@ public class Product extends BaseEntity {
     }
 
     public void addImage(Image image) {
-        if (this.image != null) {
-            this.image.setProduct(null);
-        }
         this.image = image;
-        image.setProduct(this);
     }
 }

@@ -248,8 +248,13 @@
             var fileInput = document.getElementById('imageFile');
             var fileName = fileInput.value;
 
+            if (fileName === "") {
+                toastWarning('사진을 등록해주세요.');
+                return;
+            }
+            
             if (fileName !== "") {
-                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/product;
+                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
 
                 if (!allowedExtensions.exec(fileName)) {
                     toastWarning('첨부 파일의 확장자는 JPG, JPEG, PNG, GIF만 가능합니다.');

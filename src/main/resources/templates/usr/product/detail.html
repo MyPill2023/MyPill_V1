@@ -13,8 +13,9 @@
     <div class="hero-content flex flex-col my-10 w-[32rem]">
 
         <div class="flex flex-col gap-5 w-full max-w-md mb-10 px-5">
-            <div class="border border-gray-200 p-32 text-center">
-                <img class="mt-8 mb-2" th:src="${product.image != null ? product.image.filepath : '/'}" alt="product_image" style="width: 3000px; height: auto;" />
+            <div class="border border-gray-200 text-center">
+                <img th:src="${product.image != null ? product.image.filepath : '/'}" alt="product_image"
+                     style="width: 500px; height: 400px;" />
             </div>
 
             <div class="flex flex-col justify-start w-full gap-2">
