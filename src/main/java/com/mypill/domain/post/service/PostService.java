@@ -31,7 +31,7 @@ public class PostService {
 
     @Transactional
     public List<Post> getMyPosts(Member member) {
-        return postRepository.findByPosterId(member.getId());
+        return postRepository.findByPosterIdAndDeleteDateIsNull(member.getId());
     }
 
     @Transactional
@@ -68,7 +68,7 @@ public class PostService {
         if (!Objects.equals(poster.getId(), memberId)) {
             return RsData.of("F-3", "작성자만 수정이 가능합니다.");
         }
-        return RsData.of("S-1", "게시글 수정 페이지로 이동합니다.");
+        return RsData.of("S-1", "게시글 수정 페이지로 이동합니다.", post);
     }
 
     @Transactional

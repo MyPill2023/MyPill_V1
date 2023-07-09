@@ -91,7 +91,7 @@ public class PostController {
         if (post.isFail()) {
             return rq.historyBack(post);
         }
-        model.addAttribute("post", post);
+        model.addAttribute("post", post.getData());
         return "usr/post/update";
     }
 

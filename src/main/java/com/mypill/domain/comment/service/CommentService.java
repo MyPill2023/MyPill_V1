@@ -75,6 +75,6 @@ public class CommentService {
 
     @Transactional
     public List<Comment> getMyComments(Member member) {
-        return commentRepository.findByCommenterId(member.getId());
+        return commentRepository.findByCommenterIdAndDeleteDateIsNull(member.getId());
     }
 }

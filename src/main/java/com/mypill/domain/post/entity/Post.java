@@ -31,12 +31,12 @@ public class Post extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     public Long getCommentCnt() {
-        return (long) this.comments.size();
-    }
-
-    public List<Comment> getAvailableComments() {
-        return this.comments.stream()
-                .filter(x -> x.getDeleteDate() == null)
-                .toList();
+        long count = 0;
+        for (Comment comment : comments) {
+            if (comment.getDeleteDate() == null) {
+                count++;
+            }
+        }
+        return count;
     }
 }
