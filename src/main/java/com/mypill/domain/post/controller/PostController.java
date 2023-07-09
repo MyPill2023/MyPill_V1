@@ -47,14 +47,14 @@ public class PostController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    @Operation(summary = "게시글 등록 폼")
+    @Operation(summary = "게시글 작성 페이지")
     public String create() {
         return "usr/post/create";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
-    @Operation(summary = "게시글 등록")
+    @Operation(summary = "게시글 작성")
     public String create(@Valid PostRequest postRequest) {
         RsData<Post> createRsData = postService.create(postRequest, rq.getMember());
         if (createRsData.isFail()) {
@@ -85,7 +85,7 @@ public class PostController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/update/{postId}")
-    @Operation(summary = "게시글 수정 폼")
+    @Operation(summary = "게시글 수정 페이지")
     public String update(@PathVariable Long postId, Model model) {
         RsData<Post> post = postService.beforeUpdate(postId, rq.getMember().getId());
         if (post.isFail()) {
