@@ -23,14 +23,14 @@
                     </div>
                     <div class="flex flex-col gap-1 items-end">
                         <span class="text-gray-500 text-sm" style="word-wrap: break-word; word-break: break-all;"
-                              th:text="${#strings.length(post.poster.name) >= 2 ?
-                           post.poster.name.substring(0, 1) + '*' + post.poster.name.substring(2) : post.poster.name}">
+                              th:text="${#strings.length(poster.name) >= 2 ?
+                           poster.name.substring(0, 1) + '*' + poster.name.substring(2) : poster.name}">
                         </span>
                         <span class="text-gray-500 text-sm"
                               th:text="'작성 : ' + ${#temporals.format(post.createDate, 'yy-MM-dd hh:mm')}"></span>
                     </div>
                     <th:block th:if="${@rq.isLogin()}" >
-                        <div th:if="${post.poster.id}==${@rq.member.id}" class="flex justify-end gap-2">
+                        <div th:if="${poster.id}==${@rq.member.id}" class="flex justify-end gap-2">
                             <a th:href="@{/usr/post/update/{id}(id=${post.id})}"
                                class="btn  btn-outline flex gap-1 btn-xs">수정</a>
                             <a class="btn  btn-outline flex gap-1 btn-xs" href="javascript:"

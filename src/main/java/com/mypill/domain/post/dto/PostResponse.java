@@ -19,12 +19,14 @@ public class PostResponse {
     private Long id;
     private String title;
     private String content;
+    private Member poster;
 
-    public static PostResponse of(Post post) {
+    public static PostResponse of(Post post, Member member) {
         return PostResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .poster(member)
                 .build();
     }
 }

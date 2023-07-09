@@ -152,7 +152,7 @@ class PostServiceTest {
         Post post = postService.create(postRequest, buyer).getData();
 
         // WHEN
-        Post postFound = postService.findById(post.getId()).orElse(null);
+        Post postFound = postService.findByIdAndDeleteDateIsNotNull(post.getId()).orElse(null);
 
         // THEN
         assertThat(postFound).isNotNull();

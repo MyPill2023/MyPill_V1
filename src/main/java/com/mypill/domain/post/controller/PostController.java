@@ -1,5 +1,8 @@
 package com.mypill.domain.post.controller;
 
+import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.service.MemberService;
+import com.mypill.domain.post.dto.PostPagingResponse;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
@@ -23,6 +26,7 @@ import java.util.List;
 @Tag(name = "PostController", description = "게시판")
 public class PostController {
     private final PostService postService;
+    private final MemberService memberService;
     private final Rq rq;
 
     @GetMapping("/list")
@@ -31,10 +35,10 @@ public class PostController {
                            @RequestParam(defaultValue = "0") int pageNumber,
                            @RequestParam(defaultValue = "10") int pageSize,
                            Model model) {
-        Page<Post> pageResult = postService.getPosts(keyword, searchType, pageNumber, pageSize);
-        List<Post> posts = pageResult.getContent();
+        Page<PostPagingResponse> pageResult = postService.getPosts(keyword, searchType, pageNumber, pageSize);
+        List<PostPagingResponse> postPagingResponses = pageResult.getContent();
         model.addAttribute("page", pageResult);
-        model.addAttribute("posts", posts);
+        model.addAttribute("postPagingResponses", postPagingResponses);
         return "usr/post/list";
     }
 
@@ -59,14 +63,18 @@ public class PostController {
     @GetMapping("/detail/{postId}")
     @Operation(summary = "게시글 상세")
     public String showPost(@PathVariable Long postId, Model model) {
-        Post post = postService.findById(postId).orElse(null);
-        if (post == null) {
+        RsData<Post> postRsData = postService.showDetail(postId);
+        if (postRsData.isFail()) {
+            return rq.historyBack(postRsData.getMsg());
+        }
+        Post post = postRsData.getData();
+        Long posterId = post.getPosterId();
+        Member poster = memberService.findById(posterId).orElse(null);
+        if (poster == null) {
             return rq.historyBack("존재하지 않는 게시글입니다.");
         }
-        if (post.getDeleteDate() != null) {
-            return rq.historyBack("삭제된 게시글입니다.");
-        }
-        model.addAttribute("post", post);
+        model.addAttribute("post", postRsData.getData());
+        model.addAttribute("poster", poster);
         return "usr/post/detail";
     }
 
@@ -74,12 +82,9 @@ public class PostController {
     @GetMapping("/update/{postId}")
     @Operation(summary = "게시글 수정 폼")
     public String update(@PathVariable Long postId, Model model) {
-        Post post = postService.findById(postId).orElse(null);
-        if (post == null) {
-            return rq.historyBack("존재하지 않는 게시글입니다.");
-        }
-        if (post.getPoster().getId() != rq.getMember().getId()) {
-            return rq.historyBack("작성자만 수정이 가능합니다.");
+        RsData<Post> post = postService.beforeUpdate(postId, rq.getMember().getId());
+        if (post.isFail()) {
+            return rq.historyBack(post);
         }
         model.addAttribute("post", post);
         return "usr/post/update";
@@ -89,7 +94,7 @@ public class PostController {
     @PostMapping("/update/{postId}")
     @Operation(summary = "게시글 수정")
     public String update(@PathVariable Long postId, @Valid PostRequest postRequest) {
-        RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember());
+        RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember().getId());
         if (updateRsData.isFail()) {
             return rq.historyBack(updateRsData.getMsg());
         }

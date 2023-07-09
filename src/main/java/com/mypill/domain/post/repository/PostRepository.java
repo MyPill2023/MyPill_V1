@@ -1,21 +1,17 @@
 package com.mypill.domain.post.repository;
 
-import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.post.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
     List<Post> findByDeleteDateIsNullOrderByCreateDateDesc();
 
-    List<Post> findByPoster(Member poster);
+    List<Post> findByPosterId(Long posterId);
 
-    Page<Post> findByTitleContainingAndDeleteDateIsNullOrderByIdDesc(String keyword, Pageable pageable);
-
-    Page<Post> findByContentContainingAndDeleteDateIsNullOrderByIdDesc(String keyword, Pageable pageable);
-
-    Page<Post> findByDeleteDateIsNullOrderByIdDesc(Pageable pageable);
+    Optional<Post> findByIdAndDeleteDateIsNull(Long postId);
 }

@@ -1,7 +1,6 @@
 package com.mypill.domain.post.entity;
 
 import com.mypill.domain.comment.entity.Comment;
-import com.mypill.domain.member.entity.Member;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,16 +18,15 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class Post extends BaseEntity {
-
-    @ManyToOne
-    private Member poster;
+    @Column
+    private Long posterId;
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
