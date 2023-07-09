@@ -86,4 +86,15 @@ public class CommentService {
     public void deleteComment(Comment comment) {
         commentRepository.delete(comment);
     }
+
+    @Transactional
+    public void whenAfterDeleteMember(Member member) {
+        List<Comment> comments = commentRepository.findByCommenterId(member.getId());
+        for (Comment comment : comments) {
+            comment = comment.toBuilder()
+                    .deleteDate(LocalDateTime.now())
+                    .build();
+            commentRepository.save(comment);
+        }
+    }
 }

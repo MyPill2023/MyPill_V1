@@ -14,4 +14,6 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     Optional<Post> findByIdAndDeleteDateIsNull(Long postId);
 
     List<Post> findByDeleteDateIsNotNull();
+
+    List<Post> findByPosterId(Long id);
 }

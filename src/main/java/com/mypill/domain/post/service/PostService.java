@@ -132,4 +132,15 @@ public class PostService {
     public void deletePost(Post post) {
         postRepository.delete(post);
     }
+
+    @Transactional
+    public void whenAfterDeleteMember(Member member) {
+        List<Post> posts = postRepository.findByPosterId(member.getId());
+        for (Post post : posts) {
+            post = post.toBuilder()
+                    .deleteDate(LocalDateTime.now())
+                    .build();
+            postRepository.save(post);
+        }
+    }
 }
