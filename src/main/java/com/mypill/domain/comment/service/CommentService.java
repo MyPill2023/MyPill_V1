@@ -2,10 +2,10 @@ package com.mypill.domain.comment.service;
 
 import com.mypill.domain.comment.dto.CommentRequest;
 import com.mypill.domain.comment.dto.CommentAJAXResponse;
+import com.mypill.domain.comment.dto.CommentResponse;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.repository.CommentRepository;
 import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.post.dto.CommentResponse;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
 import com.mypill.global.rsData.RsData;

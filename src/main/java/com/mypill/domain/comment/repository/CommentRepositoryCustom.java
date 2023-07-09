@@ -1,10 +1,6 @@
 package com.mypill.domain.comment.repository;
 
-import com.mypill.domain.post.dto.CommentResponse;
-import com.mypill.domain.post.dto.PostResponse;
-import com.mypill.domain.product.entity.Product;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.mypill.domain.comment.dto.CommentResponse;
 
 import java.util.List;
 

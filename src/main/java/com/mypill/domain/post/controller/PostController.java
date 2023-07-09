@@ -1,9 +1,9 @@
 package com.mypill.domain.post.controller;
 
+import com.mypill.domain.comment.dto.CommentResponse;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.post.dto.CommentResponse;
 import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
