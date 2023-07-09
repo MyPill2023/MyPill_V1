@@ -44,21 +44,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="postPagingResponse, loop : ${postPagingResponses}">
+                <tr th:each="postRepsonse, loop : ${postResponses}">
                     <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         <div class="flex flex-row items-center">
                             <div style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                <a th:text="${postPagingResponse.post.title}" th:href="@{/usr/post/detail/{id}(id=${postPagingResponse.post.id})}"></a>
+                                <a th:text="${postRepsonse.post.title}" th:href="@{/usr/post/detail/{id}(id=${postRepsonse.post.id})}"></a>
                             </div>
                             <span class="ml-2"
-                                  th:text="${(postPagingResponse.post.getCommentCnt() >= 1 ? ' (' + postPagingResponse.post.getCommentCnt() + ')' : '')}"></span>
+                                  th:text="${(postRepsonse.post.getCommentCnt() >= 1 ? ' (' + postRepsonse.post.getCommentCnt() + ')' : '')}"></span>
                         </div>
                     </td>
-                    <td th:text="${#strings.length(postPagingResponse.poster.name) >= 2 ?
-                           postPagingResponse.poster.name.substring(0, 1) +
+                    <td th:text="${#strings.length(postRepsonse.poster.name) >= 2 ?
+                           postRepsonse.poster.name.substring(0, 1) +
                             '*' +
-                           postPagingResponse.poster.name.substring(2) : postPagingResponse.poster.name}"></td>
-                    <td th:text="${#temporals.format(postPagingResponse.post.createDate, 'MM/dd')}"></td>
+                           postRepsonse.poster.name.substring(2) : postRepsonse.poster.name}"></td>
+                    <td th:text="${#temporals.format(postRepsonse.post.createDate, 'MM/dd')}"></td>
                 </tr>
                 </tbody>
             </table>

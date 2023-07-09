@@ -2,7 +2,7 @@ package com.mypill.domain.post.service;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.post.dto.PostPagingResponse;
+import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
@@ -102,7 +102,7 @@ public class PostService {
         return RsData.of("S-1", "게시글이 삭제되었습니다.");
     }
 
-    public Page<PostPagingResponse> getPosts(String keyword, String searchType, int pageNumber, int pageSize) {
+    public Page<PostResponse> getPosts(String keyword, String searchType, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         if (keyword == null || searchType == null) {
             return postRepository.findPostsWithMembers(pageable);
@@ -116,11 +116,11 @@ public class PostService {
         return postRepository.findPostsWithMembers(pageable);
     }
 
-    public Page<PostPagingResponse> searchTitle(String keyword, Pageable pageable) {
+    public Page<PostResponse> searchTitle(String keyword, Pageable pageable) {
         return postRepository.findPostsWithMembersAndTitleContaining(keyword, pageable);
     }
 
-    public Page<PostPagingResponse> searchContent(String keyword, Pageable pageable) {
+    public Page<PostResponse> searchContent(String keyword, Pageable pageable) {
         return postRepository.findPostsWithMembersAndContentContaining(keyword, pageable);
     }
 }

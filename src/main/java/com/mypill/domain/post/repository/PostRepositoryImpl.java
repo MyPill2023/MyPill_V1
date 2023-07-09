@@ -1,7 +1,7 @@
 package com.mypill.domain.post.repository;
 
 import com.mypill.domain.member.entity.QMember;
-import com.mypill.domain.post.dto.PostPagingResponse;
+import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.entity.QPost;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -20,7 +20,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<PostPagingResponse> findPostsWithMembers(Pageable pageable) {
+    public Page<PostResponse> findPostsWithMembers(Pageable pageable) {
         QPost qPost = QPost.post;
         QMember qMember = QMember.member;
 
@@ -29,7 +29,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return getPostPagingResponses(pageable, qPost, qMember, condition);
     }
 
-    public Page<PostPagingResponse> findPostsWithMembersAndTitleContaining(String keyword, Pageable pageable) {
+    public Page<PostResponse> findPostsWithMembersAndTitleContaining(String keyword, Pageable pageable) {
         QPost qPost = QPost.post;
         QMember qMember = QMember.member;
 
@@ -39,7 +39,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return getPostPagingResponses(pageable, qPost, qMember, condition);
     }
 
-    public Page<PostPagingResponse> findPostsWithMembersAndContentContaining(String keyword, Pageable pageable) {
+    public Page<PostResponse> findPostsWithMembersAndContentContaining(String keyword, Pageable pageable) {
         QPost qPost = QPost.post;
         QMember qMember = QMember.member;
 
@@ -61,11 +61,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
     }
 
-    private Page<PostPagingResponse> getPostPagingResponses(Pageable pageable, QPost qPost, QMember qMember, BooleanExpression condition) {
+    private Page<PostResponse> getPostPagingResponses(Pageable pageable, QPost qPost, QMember qMember, BooleanExpression condition) {
         List<Tuple> tuples = getTuples(qPost, qMember, condition, pageable);
 
-        List<PostPagingResponse> postPagingResponses = tuples.stream()
-                .map(tuple -> new PostPagingResponse(tuple.get(qPost), tuple.get(qMember)))
+        List<PostResponse> postResponse = tuples.stream()
+                .map(tuple -> new PostResponse(tuple.get(qPost), tuple.get(qMember)))
                 .collect(Collectors.toList());
 
         long total = jpaQueryFactory
@@ -73,6 +73,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .where(condition)
                 .fetch().size();
 
-        return new PageImpl<>(postPagingResponses, pageable, total);
+        return new PageImpl<>(postResponse, pageable, total);
     }
 }

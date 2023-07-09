@@ -1,8 +1,10 @@
 package com.mypill.domain.post.controller;
 
+import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.post.dto.PostPagingResponse;
+import com.mypill.domain.post.dto.CommentResponse;
+import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
@@ -26,6 +28,7 @@ import java.util.List;
 @Tag(name = "PostController", description = "게시판")
 public class PostController {
     private final PostService postService;
+    private final CommentService commentService;
     private final MemberService memberService;
     private final Rq rq;
 
@@ -35,10 +38,10 @@ public class PostController {
                            @RequestParam(defaultValue = "0") int pageNumber,
                            @RequestParam(defaultValue = "10") int pageSize,
                            Model model) {
-        Page<PostPagingResponse> pageResult = postService.getPosts(keyword, searchType, pageNumber, pageSize);
-        List<PostPagingResponse> postPagingResponses = pageResult.getContent();
+        Page<PostResponse> pageResult = postService.getPosts(keyword, searchType, pageNumber, pageSize);
+        List<PostResponse> postResponse = pageResult.getContent();
         model.addAttribute("page", pageResult);
-        model.addAttribute("postPagingResponses", postPagingResponses);
+        model.addAttribute("postResponses", postResponse);
         return "usr/post/list";
     }
 
@@ -73,8 +76,10 @@ public class PostController {
         if (poster == null) {
             return rq.historyBack("존재하지 않는 게시글입니다.");
         }
+        List<CommentResponse> commentResponses = commentService.getCommentsWithMembers(postId);
         model.addAttribute("post", postRsData.getData());
         model.addAttribute("poster", poster);
+        model.addAttribute("commentResponses", commentResponses);
         return "usr/post/detail";
     }
 

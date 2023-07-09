@@ -1,10 +1,11 @@
 package com.mypill.domain.comment.service;
 
 import com.mypill.domain.comment.dto.CommentRequest;
-import com.mypill.domain.comment.dto.CommentResponse;
+import com.mypill.domain.comment.dto.CommentAJAXResponse;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.repository.CommentRepository;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.post.dto.CommentResponse;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
 import com.mypill.global.rsData.RsData;
@@ -30,33 +31,39 @@ public class CommentService {
         }
         Comment comment = Comment.builder()
                 .post(post)
-                .writer(member)
+                .commenterId(member.getId())
                 .content(commentRequest.getNewContent())
                 .build();
         commentRepository.save(comment);
         return RsData.of("S-1", "댓글 등록이 완료되었습니다.", comment);
     }
 
-    public CommentResponse update(CommentRequest commentRequest, Member member, Long commentId) {
+    public List<CommentResponse> getCommentsWithMembers(Long postId) {
+        return commentRepository.findCommentsWithMembers(postId);
+    }
+
+    @Transactional
+    public CommentAJAXResponse update(CommentRequest commentRequest, Member member, Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
         String newContent = commentRequest.getNewContent();
         if (comment == null) {
-            return new CommentResponse("1", "존재하지 않는 댓글입니다.", newContent);
+            return new CommentAJAXResponse("1", "존재하지 않는 댓글입니다.", newContent);
         }
-        if (!Objects.equals(comment.getWriter().getId(), member.getId())) {
-            return new CommentResponse("2", "본인 댓글만 수정할 수 있습니다.", newContent);
+        if (!Objects.equals(comment.getCommenterId(), member.getId())) {
+            return new CommentAJAXResponse("2", "본인 댓글만 수정할 수 있습니다.", newContent);
         }
         comment.update(newContent);
         commentRepository.save(comment);
-        return new CommentResponse("0", "성공", newContent);
+        return new CommentAJAXResponse("0", "성공", newContent);
     }
 
+    @Transactional
     public RsData<Comment> delete(Member member, Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (comment == null) {
             return RsData.of("F-1", "존재하지 않는 댓글입니다.");
         }
-        if (!Objects.equals(comment.getWriter().getId(), member.getId())) {
+        if (!Objects.equals(comment.getCommenterId(), member.getId())) {
             return RsData.of("F-2", "본인 댓글만 삭제할 수 있습니다.");
         }
         comment = comment.toBuilder()
@@ -68,6 +75,6 @@ public class CommentService {
 
     @Transactional
     public List<Comment> getMyComments(Member member) {
-        return commentRepository.findByWriter(member);
+        return commentRepository.findByCommenterId(member.getId());
     }
 }

@@ -1,6 +1,5 @@
 package com.mypill.domain.comment.entity;
 
-import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
@@ -17,8 +16,8 @@ import lombok.experimental.SuperBuilder;
 public class Comment extends BaseEntity {
     @ManyToOne
     private Post post;
-    @ManyToOne
-    private Member writer;
+    @Column
+    private Long commenterId;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
