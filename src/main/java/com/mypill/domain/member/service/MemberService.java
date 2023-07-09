@@ -203,6 +203,7 @@ public class MemberService {
         return memberRepository.findByEmailVerifiedFalse();
     }
 
+    @Transactional
     public void deleteMember(Member member) {
         memberRepository.delete(member);
     }

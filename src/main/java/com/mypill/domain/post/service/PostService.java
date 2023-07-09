@@ -31,7 +31,7 @@ public class PostService {
 
     @Transactional
     public List<Post> getMyPosts(Member member) {
-        return postRepository.findByPosterIdAndDeleteDateIsNull(member.getId());
+        return postRepository.findByPosterIdAndDeleteDateIsNullOrderByIdDesc(member.getId());
     }
 
     @Transactional
@@ -122,5 +122,14 @@ public class PostService {
 
     public Page<PostResponse> searchContent(String keyword, Pageable pageable) {
         return postRepository.findPostsWithMembersAndContentContaining(keyword, pageable);
+    }
+
+    public List<Post> getDeletedPosts() {
+        return postRepository.findByDeleteDateIsNotNull();
+    }
+
+    @Transactional
+    public void deletePost(Post post) {
+        postRepository.delete(post);
     }
 }

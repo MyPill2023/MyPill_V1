@@ -75,6 +75,15 @@ public class CommentService {
 
     @Transactional
     public List<Comment> getMyComments(Member member) {
-        return commentRepository.findByCommenterIdAndDeleteDateIsNull(member.getId());
+        return commentRepository.findByCommenterIdAndDeleteDateIsNullOrderByIdDesc(member.getId());
+    }
+
+    public List<Comment> getDeletedComments() {
+        return commentRepository.findByDeleteDateIsNotNull();
+    }
+
+    @Transactional
+    public void deleteComment(Comment comment) {
+        commentRepository.delete(comment);
     }
 }

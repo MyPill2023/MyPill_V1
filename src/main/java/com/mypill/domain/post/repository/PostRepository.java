@@ -9,7 +9,9 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
     List<Post> findByDeleteDateIsNullOrderByCreateDateDesc();
 
-    List<Post> findByPosterIdAndDeleteDateIsNull(Long posterId);
+    List<Post> findByPosterIdAndDeleteDateIsNullOrderByIdDesc(Long posterId);
 
     Optional<Post> findByIdAndDeleteDateIsNull(Long postId);
+
+    List<Post> findByDeleteDateIsNotNull();
 }
