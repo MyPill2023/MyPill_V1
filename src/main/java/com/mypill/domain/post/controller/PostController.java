@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -55,8 +56,8 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     @Operation(summary = "게시글 작성")
-    public String create(@Valid PostRequest postRequest) {
-        RsData<Post> createRsData = postService.create(postRequest, rq.getMember());
+    public String create(@Valid PostRequest postRequest, @RequestParam("imageFile") MultipartFile multiPartFile) {
+        RsData<Post> createRsData = postService.create(postRequest, rq.getMember(), multiPartFile);
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData.getMsg());
         }
@@ -98,8 +99,8 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/update/{postId}")
     @Operation(summary = "게시글 수정")
-    public String update(@PathVariable Long postId, @Valid PostRequest postRequest) {
-        RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember().getId());
+    public String update(@PathVariable Long postId, @Valid PostRequest postRequest,@RequestParam(value = "imageFile") MultipartFile multipartFile) {
+        RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember().getId(),multipartFile);
         if (updateRsData.isFail()) {
             return rq.historyBack(updateRsData.getMsg());
         }

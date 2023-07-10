@@ -41,6 +41,18 @@
                 form.content.focus();
                 return;
             }
+            var fileInput = document.getElementById('imageFile');
+            var fileName = fileInput.value;
+
+            if (fileName !== "") {
+                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/product;
+
+                if (!allowedExtensions.exec(fileName)) {
+                    toastWarning('첨부 파일의 확장자는 JPG, JPEG, PNG, GIF만 가능합니다.');
+                    fileInput.value = '';
+                    return;
+                }
+            }
 
             // 폼 발송
             form.submit();
@@ -50,7 +62,7 @@
         <h1 class="text-2xl font-bold">
             질문 등록
         </h1>
-        <form th:action method="POST" class="flex flex-col gap-4 w-full px-5"
+        <form th:action method="POST" class="flex flex-col gap-4 w-full px-5" enctype="multipart/form-data"
               onsubmit="CreateForm__submit(this); return false;">
             <div>
                 <label for="title" class="block text-gray-700 font-bold mb-2 text-xl">제목</label>
@@ -68,6 +80,10 @@
                           style="height: 200px;"></textarea>
                     <div id="contentCount" class="absolute right-5 bottom-5">(0 / 1000)</div>
                 </div>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-gray-700 font-bold mb-2">이미지 등록</span>
+                <input type="file" id="imageFile" name="imageFile" class="file-input file-input-success w-full max-w-xs"/>
             </div>
             <div class="flex flex-row gap-2 justify-end">
                 <a href="javascript:history.back()" class="btn">

@@ -57,7 +57,6 @@ dependencies {
     //Oauth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-
     //QueryDsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
@@ -66,6 +65,12 @@ dependencies {
 
     //메일
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    //네이버 클라우드 이미지 배포(S3)
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.476'
+    implementation 'org.apache.tika:tika-core:2.5.0'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     // 스프링 배치
     implementation 'org.springframework.boot:spring-boot-starter-batch'

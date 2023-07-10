@@ -11,7 +11,7 @@
             상품 등록
         </h1>
 
-        <form th:action method="POST" class="flex flex-col gap-7 mt-5 px-5 w-full" onsubmit="productRequestDto__submit(this, event); return false;">
+        <form th:action method="POST" class="flex flex-col gap-7 mt-5 px-5 w-full" enctype="multipart/form-data" onsubmit="productRequestDto__submit(this, event); return false;">
             <input type="hidden" id="sellerId" name="sellerId" th:value="${@rq.member.id}">
             <div>
                 <label for="name" class="block text-gray-700 font-bold mb-2">상품명</label>
@@ -48,16 +48,20 @@
             <div >
                 <label class="block text-gray-700 font-bold mb-2">주요 기능</label>
                 <div class="flex justify-between">
-                   <select id="selectedCategory" name="selectedCategory" class="select select-bordered w-3/4">
-                       <option disabled selected>주요 기능</option>
-                       <option th:each="category, loop : ${categories}"
-                               th:value="${category.id}"
-                               th:text="${category.name}"></option>
-                   </select>
-                   <button type="button" class="btn" onclick="addSelectedCategory()">추가하기</button>
+                    <select id="selectedCategory" name="selectedCategory" class="select select-bordered w-3/4">
+                        <option disabled selected>주요 기능</option>
+                        <option th:each="category, loop : ${categories}"
+                                th:value="${category.id}"
+                                th:text="${category.name}"></option>
+                    </select>
+                    <button type="button" class="btn" onclick="addSelectedCategory()">추가하기</button>
                 </div>
                 <ul id="selectedCategoryList" class="flex flex-col gap-3 my-2 border border-gray-200 rounded-md p-3"></ul>
                 <input type="hidden" id="categoryIds" name="categoryIds" value="">
+            </div>
+            <div class="flex flex-col">
+                <span class="text-gray-700 font-bold mb-2">이미지 등록</span>
+                <input type="file" id="imageFile" name="imageFile" class="file-input file-input-accent w-full max-w-xs"/>
             </div>
             <button type="submit" class="btn btn-accent mt-5">
                 상품 등록
@@ -239,6 +243,24 @@
             if (selectedCategoryItems.length === 0) {
                 toastWarning("주요 기능을 선택해주세요.");
                 return;
+            }
+
+            var fileInput = document.getElementById('imageFile');
+            var fileName = fileInput.value;
+
+            if (fileName === "") {
+                toastWarning('사진을 등록해주세요.');
+                return;
+            }
+            
+            if (fileName !== "") {
+                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+                if (!allowedExtensions.exec(fileName)) {
+                    toastWarning('첨부 파일의 확장자는 JPG, JPEG, PNG, GIF만 가능합니다.');
+                    fileInput.value = '';
+                    return;
+                }
             }
 
             // 폼 제출을 막음

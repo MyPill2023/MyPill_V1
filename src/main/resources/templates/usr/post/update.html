@@ -43,6 +43,21 @@
                 return;
             }
 
+            var fileInput = document.getElementById('imageFile');
+            var fileName = fileInput.value;
+
+
+            if (fileName !== "") {
+                var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+                if (!allowedExtensions.exec(fileName)) {
+                    toastWarning('첨부 파일의 확장자는 JPG, JPEG, PNG, GIF만 가능합니다.');
+                    fileInput.value = '';
+                    return;
+                }
+            }
+
+
             // 폼 발송
             form.submit();
         }
@@ -51,7 +66,7 @@
         <h1 class="text-2xl font-bold">
             질문 수정
         </h1>
-        <form th:action method="POST" th:object="${post}" class="flex flex-col gap-4 w-full px-5"
+        <form th:action method="POST" th:object="${post}" class="flex flex-col gap-4 w-full px-5" enctype="multipart/form-data"
               onsubmit="CreateForm__submit(this); return false;">
             <div>
                 <label for="title" class="block text-gray-700 font-bold mb-2 text-xl">제목</label>
@@ -71,6 +86,12 @@
                     <div id="contentCount" class="absolute right-5 bottom-5" th:text="'(' + ${post.content.length()} + '/1000)'"></div>
                 </div>
             </div>
+
+            <div class="flex flex-col">
+                <span class="text-gray-700 font-bold mb-2">이미지 등록</span>
+                <input type="file" id="imageFile" name="imageFile" class="file-input file-input-accent w-full max-w-xs"/>
+            </div>
+
             <button type="submit" class="btn btn-success">수정완료</button>
         </form>
     </div>

@@ -16,6 +16,7 @@
 
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
+                    <img class="mb-2" th:if="${post.image != null}" th:src="${post.image.filepath}" alt="post_image" style="width: 500px; height: 300px;" />
                     <div class="flex w-full mt-2 whitespace-normal"
                          style="word-wrap: break-word; word-break: break-all;">
                         <span style="white-space: pre-wrap;"

@@ -1,5 +1,6 @@
 package com.mypill.domain.post.entity;
 
+import com.mypill.domain.Image.entity.Image;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
@@ -30,6 +31,9 @@ public class Post extends BaseEntity {
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    private Image image;
+
     public Long getCommentCnt() {
         long count = 0;
         for (Comment comment : comments) {
@@ -38,5 +42,9 @@ public class Post extends BaseEntity {
             }
         }
         return count;
+    }
+
+    public void addImage(Image image) {
+        this.image = image;
     }
 }

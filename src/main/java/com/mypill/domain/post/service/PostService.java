@@ -1,5 +1,6 @@
 package com.mypill.domain.post.service;
 
+import com.mypill.domain.Image.service.ImageService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.post.dto.PostResponse;
@@ -13,16 +14,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostRepository postRepository;
     private final MemberService memberService;
+    private final ImageService imageService;
 
     @Transactional
     public List<Post> getList() {
@@ -34,6 +38,7 @@ public class PostService {
         return postRepository.findByPosterIdAndDeleteDateIsNullOrderByIdDesc(member.getId());
     }
 
+    //NotProd용
     @Transactional
     public RsData<Post> create(PostRequest postRequest, Member member) {
         if (member == null) {
@@ -44,6 +49,23 @@ public class PostService {
                 .content(postRequest.getContent())
                 .posterId(member.getId())
                 .build();
+
+        postRepository.save(newPost);
+        return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
+    }
+
+    @Transactional
+    public RsData<Post> create(PostRequest postRequest, Member member, MultipartFile multipartFile) {
+        if (member == null) {
+            return RsData.of("F-1", "존재하지 않는 회원입니다.");
+        }
+        Post newPost = Post.builder()
+                .title(postRequest.getTitle())
+                .content(postRequest.getContent())
+                .posterId(member.getId())
+                .build();
+
+        imageService.saveImage(multipartFile, newPost);
         postRepository.save(newPost);
         return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
     }
@@ -71,6 +93,7 @@ public class PostService {
         return RsData.of("S-1", "게시글 수정 페이지로 이동합니다.", post);
     }
 
+    //test용
     @Transactional
     public RsData<Post> update(Long postId, PostRequest postRequest, Long memberId) {
         RsData<Post> postRsData = beforeUpdate(postId, memberId);
@@ -82,6 +105,23 @@ public class PostService {
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
                 .build();
+
+        postRepository.save(post);
+        return RsData.of("S-1", "게시글이 수정되었습니다.", post);
+    }
+
+    @Transactional
+    public RsData<Post> update(Long postId, PostRequest postRequest, Long memberId, MultipartFile multipartFile) {
+        RsData<Post> postRsData = beforeUpdate(postId, memberId);
+        if (postRsData.isFail()) {
+            return postRsData;
+        }
+        Post post = postRsData.getData();
+        post = post.toBuilder()
+                .title(postRequest.getTitle())
+                .content(postRequest.getContent())
+                .build();
+        imageService.updateImage(multipartFile, post);
         postRepository.save(post);
         return RsData.of("S-1", "게시글이 수정되었습니다.", post);
     }
