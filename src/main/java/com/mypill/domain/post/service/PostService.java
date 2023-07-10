@@ -67,6 +67,28 @@ public class PostService {
         postRepository.save(newPost);
         return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
     }
+    //test용
+    @Transactional
+    public RsData<Post> update(Long postId, PostRequest postRequest, Member member) {
+        Post post = postRepository.findById(postId).orElse(null);
+        if (post == null) {
+            return RsData.of("F-1", "존재하지 않는 게시글입니다.");
+        }
+        if (!Objects.equals(post.getPoster().getId(), member.getId())) {
+            return RsData.of("F-2", "작성자만 수정이 가능합니다.");
+        }
+        if (post.getDeleteDate() != null) {
+            return RsData.of("F-3", "삭제된 게시물입니다.");
+        }
+        post = post.toBuilder()
+                .title(postRequest.getTitle())
+                .content(postRequest.getContent())
+                .build();
+
+        postRepository.save(post);
+        return RsData.of("S-1", "게시글이 수정되었습니다.", post);
+    }
+
 
     @Transactional
     public RsData<Post> update(Long postId, PostRequest postRequest, Member member, MultipartFile multipartFile) {

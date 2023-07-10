@@ -77,7 +77,6 @@ public class ProductService {
     }
 
 
-
     public RsData<Product> get(Long productId) {
         Product product = findById(productId).orElse(null);
 
@@ -86,6 +85,27 @@ public class ProductService {
         }
 
         return RsData.of("S-1", "존재하는 상품입니다.", product);
+    }
+
+    //test용
+    @Transactional
+    public RsData<Product> update(Member actor, Long productId, ProductRequest request) {
+
+        Product product = findById(productId).orElse(null);
+        if (product == null) {
+            return RsData.of("F-1", "존재하지 않는 상품입니다.", product);
+        }
+
+        if (!actor.getId().equals(product.getSeller().getId())) {
+            return RsData.of("F-2", "수정 권한이 없습니다.", product);
+        }
+
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
+        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
+
+        product.update(request, nutrients, categories);
+
+        return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
     }
 
     @Transactional
@@ -102,11 +122,8 @@ public class ProductService {
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
-        System.out.println(multipartFile.getName());
-
 
         imageService.updateImage(multipartFile, product);
-
         product.update(request, nutrients, categories);
 
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
