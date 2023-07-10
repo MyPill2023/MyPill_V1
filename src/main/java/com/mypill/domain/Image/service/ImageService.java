@@ -21,27 +21,28 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     @Async
-    public void saveImage (MultipartFile multipartFile, Object targetObject) {
-
+    public void saveImage(MultipartFile multipartFile, Object targetObject) {
         if (!multipartFile.isEmpty()) {
             try {
-                // 이미지 업로드 및 URL 정보 받아오기
-                AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, UUID.randomUUID().toString());
-
-                // 이미지 정보를 설정하고 저장
-                Image image = Image.builder().filename(multipartFile.getOriginalFilename())
-                        .filepath(amazonS3ImageDto.getCdnUrl()) // CDN URL로 변경
-                        .build();
-                if (targetObject instanceof Product) {
-                    Product product = (Product) targetObject;
-                    image = image.toBuilder().product(product).build();
+                if (targetObject instanceof Product product) {
+                    AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
+                    Image image = Image.builder()
+                            .filename(multipartFile.getOriginalFilename())
+                            .filepath(amazonS3ImageDto.getCdnUrl())
+                            .product(product)
+                            .build();
                     product.addImage(image);
-                } else if (targetObject instanceof Post) {
-                    Post post = (Post) targetObject;
-                    image = image.toBuilder().post(post).build();
+                    imageRepository.save(image);
+                } else if (targetObject instanceof Post post) {
+                    AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
+                    Image image = Image.builder()
+                            .filename(multipartFile.getOriginalFilename())
+                            .filepath(amazonS3ImageDto.getCdnUrl())
+                            .post(post)
+                            .build();
                     post.addImage(image);
+                    imageRepository.save(image);
                 }
-                imageRepository.save(image);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException("이미지 업로드에 실패하였습니다", e);
@@ -50,24 +51,29 @@ public class ImageService {
     }
 
     @Async
-    public void updateImage (MultipartFile multipartFile, Object targetObject) {
+    public void updateImage(MultipartFile multipartFile, Object targetObject) {
         if (!multipartFile.isEmpty()) {
             try {
-                AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, UUID.randomUUID().toString());
-                Image image = null;
-                if (targetObject instanceof Product) {
-                    image = ((Product) targetObject).getImage().toBuilder()
+                if (targetObject instanceof Product product) {
+                    AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
+                    Image image = product.getImage().toBuilder()
                             .filename(multipartFile.getOriginalFilename())
-                            .filepath(amazonS3ImageDto.getCdnUrl()) // CDN URL로 변경
+                            .filepath(amazonS3ImageDto.getCdnUrl())
+                            .product(product)
                             .build();
+                    product.addImage(image);
+                    imageRepository.save(image);
                 }
-                if (targetObject instanceof Post) {
-                    image = ((Post) targetObject).getImage().toBuilder()
+                if (targetObject instanceof Post post) {
+                    AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
+                    Image image = post.getImage().toBuilder()
                             .filename(multipartFile.getOriginalFilename())
-                            .filepath(amazonS3ImageDto.getCdnUrl()) // CDN URL로 변경
+                            .filepath(amazonS3ImageDto.getCdnUrl())
+                            .post(post)
                             .build();
+                    post.addImage(image);
+                    imageRepository.save(image);
                 }
-                imageRepository.save(image);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException("이미지 업로드에 실패하였습니다", e);

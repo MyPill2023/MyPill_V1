@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -64,7 +63,6 @@ public class PostService {
                 .content(postRequest.getContent())
                 .posterId(member.getId())
                 .build();
-
         imageService.saveImage(multipartFile, newPost);
         postRepository.save(newPost);
         return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
