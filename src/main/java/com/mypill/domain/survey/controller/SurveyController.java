@@ -14,6 +14,7 @@ import com.mypill.domain.survey.service.SurveyService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -28,6 +29,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/usr/survey")
 @RequiredArgsConstructor
+@Tag(name = "SurveyController", description = "설문조사")
 public class SurveyController {
     private final CategoryService categoryService;
     private final QuestionService questionService;
