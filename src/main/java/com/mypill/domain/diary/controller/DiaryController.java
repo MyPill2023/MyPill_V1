@@ -8,6 +8,7 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +23,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/usr/diary")
+@Tag(name = "DiaryController", description = "복약관리")
 public class DiaryController {
 
     private final DiaryService diaryService;
@@ -87,7 +89,7 @@ public class DiaryController {
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/todolist")
-    @Operation(summary = "하루 달성 체크 폼")
+    @Operation(summary = "영양제 기록 체크 폼")
     public String todolist(Model model, String dateStr) {
 
         Member writer = rq.getMember();
@@ -108,6 +110,7 @@ public class DiaryController {
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @PostMapping ("/todolist/toggleCheck/{diaryId}")
+    @Operation(summary = "영양제 체크 등록")
     public String toggleCheck(@PathVariable Long diaryId) {
         Member writer = rq.getMember();
         RsData<Diary> diaryRsData = diaryService.toggleCheck(writer, diaryId, LocalDate.now());
