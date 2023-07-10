@@ -1,4 +1,4 @@
-package com.mypill.global.rsData;
+package com.mypill.global.rsdata;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

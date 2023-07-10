@@ -4,7 +4,7 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

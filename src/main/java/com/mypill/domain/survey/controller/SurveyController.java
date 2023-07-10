@@ -12,7 +12,7 @@ import com.mypill.domain.question.service.NutrientQuestionService;
 import com.mypill.domain.question.service.QuestionService;
 import com.mypill.domain.survey.service.SurveyService;
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;

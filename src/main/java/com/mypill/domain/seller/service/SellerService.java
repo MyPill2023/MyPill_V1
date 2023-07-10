@@ -2,7 +2,7 @@ package com.mypill.domain.seller.service;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.repository.MemberRepository;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

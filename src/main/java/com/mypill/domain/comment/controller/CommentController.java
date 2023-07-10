@@ -5,7 +5,7 @@ import com.mypill.domain.comment.dto.CommentAJAXResponse;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -2,7 +2,7 @@ package com.mypill.domain.emailverification.controller;
 
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

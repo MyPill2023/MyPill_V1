@@ -89,7 +89,7 @@ class PostServiceTest {
         Post post = postService.create(postRequest, buyer).getData();
 
         // WHEN
-        postService.delete(post.getId(), buyer);
+        postService.softDelete(post.getId(), buyer);
 
         // THEN
         assertTrue(postRepository.findById(post.getId()).isPresent());

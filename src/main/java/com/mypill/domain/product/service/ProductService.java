@@ -12,7 +12,7 @@ import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
 import com.mypill.global.event.EventAfterLike;
 import com.mypill.global.event.EventAfterUnlike;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;

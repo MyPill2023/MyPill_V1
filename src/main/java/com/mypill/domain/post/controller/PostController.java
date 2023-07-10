@@ -9,7 +9,7 @@ import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -111,7 +111,7 @@ public class PostController {
     @PostMapping("/delete/{postId}")
     @Operation(summary = "게시글 삭제")
     public String delete(@PathVariable Long postId) {
-        RsData<Post> deleteRsData = postService.delete(postId, rq.getMember());
+        RsData<Post> deleteRsData = postService.softDelete(postId, rq.getMember());
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData.getMsg());
         }

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

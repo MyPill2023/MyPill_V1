@@ -1,7 +1,7 @@
 package com.mypill.domain.member.dto;
 
 import com.mypill.domain.member.entity.Member;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

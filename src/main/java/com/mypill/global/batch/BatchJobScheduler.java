@@ -35,7 +35,7 @@ public class BatchJobScheduler {
     public void deletePosts() {
         List<Post> deletedPosts = postService.getDeletedPosts();
         for (Post post : deletedPosts) {
-            postService.deletePost(post);
+            postService.hardDelete(post);
         }
     }
 

@@ -6,7 +6,7 @@ import com.mypill.domain.cart.entity.Cart;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

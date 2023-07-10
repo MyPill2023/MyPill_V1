@@ -29,6 +29,7 @@ public class ImageService {
                     Image image = Image.builder()
                             .filename(multipartFile.getOriginalFilename())
                             .filepath(amazonS3ImageDto.getCdnUrl())
+                            .originalUrl(amazonS3ImageDto.getOriginUrl())
                             .product(product)
                             .build();
                     product.addImage(image);
@@ -38,6 +39,7 @@ public class ImageService {
                     Image image = Image.builder()
                             .filename(multipartFile.getOriginalFilename())
                             .filepath(amazonS3ImageDto.getCdnUrl())
+                            .originalUrl(amazonS3ImageDto.getOriginUrl())
                             .post(post)
                             .build();
                     post.addImage(image);
@@ -55,20 +57,26 @@ public class ImageService {
         if (!multipartFile.isEmpty()) {
             try {
                 if (targetObject instanceof Product product) {
+                    Image image = product.getImage();
+                    amazonS3Service.deleteImage(image.getOriginalUrl());
                     AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
-                    Image image = product.getImage().toBuilder()
+                    image = image.toBuilder()
                             .filename(multipartFile.getOriginalFilename())
                             .filepath(amazonS3ImageDto.getCdnUrl())
+                            .originalUrl(amazonS3ImageDto.getOriginUrl())
                             .product(product)
                             .build();
                     product.addImage(image);
                     imageRepository.save(image);
                 }
                 if (targetObject instanceof Post post) {
+                    Image image = post.getImage();
+                    amazonS3Service.deleteImage(image.getOriginalUrl());
                     AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
-                    Image image = post.getImage().toBuilder()
+                    image = image.toBuilder()
                             .filename(multipartFile.getOriginalFilename())
                             .filepath(amazonS3ImageDto.getCdnUrl())
+                            .originalUrl(amazonS3ImageDto.getOriginUrl())
                             .post(post)
                             .build();
                     post.addImage(image);
@@ -76,8 +84,22 @@ public class ImageService {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new RuntimeException("이미지 업로드에 실패하였습니다", e);
+                throw new RuntimeException("이미지 수정에 실패하였습니다", e);
             }
+        }
+    }
+
+    @Async
+    public void deleteImageFromServer(Post post) {
+        Image image = post.getImage();
+        if (image == null) {
+            return;
+        }
+        try {
+            amazonS3Service.deleteImage(image.getOriginalUrl());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("이미지 삭제에 실패하였습니다", e);
         }
     }
 }

@@ -3,7 +3,7 @@ package com.mypill.global.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mypill.global.AppConfig;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

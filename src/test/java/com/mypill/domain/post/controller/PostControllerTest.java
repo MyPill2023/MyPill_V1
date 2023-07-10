@@ -14,11 +14,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.FileInputStream;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -92,35 +88,34 @@ class PostControllerTest {
         ;
     }
 
-//    @Test
-//    @WithMockUser(username = "testUser1", authorities = "MEMBER")
-//    @DisplayName("게시글 등록 컨트롤러 테스트")
-//    void createPostTest() throws Exception {
-//        // GIVEN
-//        String title = "title";
-//        String content = "content";
-//        // 가상의 파일 생성
-//        String fileName = "test.jpg";
-//        byte[] fileContent = "test image content".getBytes();
-//        MockMultipartFile file = new MockMultipartFile("imageFile", fileName, "image/jpeg", fileContent);
-//
-//
-//        // WHEN
-//        MockHttpServletRequestBuilder requestBuilder = multipart("/usr/post/create")
-//                .file(file)
-//                .param("title", title)
-//                .param("content", content)
-//                .with(csrf());
-//        ResultActions resultActions = mvc.perform(requestBuilder)
-//                .andDo(print());
-//
-//        // THEN
-//        resultActions
-//                .andExpect(handler().handlerType(PostController.class))
-//                .andExpect(handler().methodName("create"))
-//                .andExpect(status().is3xxRedirection())
-//        ;
-//    }
+    @Test
+    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @DisplayName("게시글 등록 컨트롤러 테스트")
+    void createPostTest() throws Exception {
+        // GIVEN
+        String title = "title";
+        String content = "content";
+        MockMultipartFile emptyFile = new MockMultipartFile(
+                "imageFile",
+                new byte[0]
+        );
+
+        // WHEN
+        ResultActions resultActions = mvc.perform(
+                multipart("/usr/post/create")
+                        .file(emptyFile)
+                        .param("title", title)
+                        .param("content", content)
+                        .with(csrf())
+        ).andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(PostController.class))
+                .andExpect(handler().methodName("create"))
+                .andExpect(status().is3xxRedirection())
+        ;
+    }
 
     @Test
     @WithMockUser(username = "testUser1", authorities = "MEMBER")
@@ -172,30 +167,36 @@ class PostControllerTest {
         ;
     }
 
-//    @Test
-//    @WithMockUser(username = "testUser1", authorities = "MEMBER")
-//    @DisplayName("게시글 수정 컨트롤러 테스트")
-//    void updatePostTest() throws Exception {
-//        // GIVEN
-//        PostRequest postRequest = new PostRequest();
-//        postRequest.setTitle("title");
-//        postRequest.setContent("content");
-//        Post post = postService.create(postRequest, testUser1).getData();
-//
-//        // WHEN
-//        ResultActions resultActions = mvc
-//                .perform(post("/usr/post/update/" + post.getId())
-//                        .with(csrf())
-//                )
-//                .andDo(print());
-//
-//        // THEN
-//        resultActions
-//                .andExpect(handler().handlerType(PostController.class))
-//                .andExpect(handler().methodName("update"))
-//                .andExpect(status().is3xxRedirection())
-//        ;
-//    }
+    @Test
+    @WithMockUser(username = "testUser1", authorities = "MEMBER")
+    @DisplayName("게시글 수정 컨트롤러 테스트")
+    void updatePostTest() throws Exception {
+        // GIVEN
+        PostRequest postRequest = new PostRequest();
+        postRequest.setTitle("title");
+        postRequest.setContent("content");
+        Post post = postService.create(postRequest, testUser1).getData();
+        MockMultipartFile emptyFile = new MockMultipartFile(
+                "imageFile",
+                new byte[0]
+        );
+
+        // WHEN
+        ResultActions resultActions = mvc.perform(
+                multipart("/usr/post/update/" + post.getId())
+                        .file(emptyFile)
+                        .param("title", post.getTitle())
+                        .param("content", post.getContent())
+                        .with(csrf())
+        ).andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(PostController.class))
+                .andExpect(handler().methodName("update"))
+                .andExpect(status().is3xxRedirection())
+        ;
+    }
 
     @Test
     @WithMockUser(username = "testUser1", authorities = "MEMBER")
