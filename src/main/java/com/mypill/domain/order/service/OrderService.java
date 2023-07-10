@@ -164,12 +164,12 @@ public class OrderService {
         }
 
         if(order.getPayment().getStatus().equals("CANCELED")) {
-            return RsData.of("F-2", "이미 취소된 주문입니다.");
+            return RsData.of("F-3", "이미 취소된 주문입니다.");
         }
 
         for(OrderItem orderItem : order.getOrderItems()){
             if(!orderItem.getStatus().equals(OrderStatus.ORDERED)) {
-                return RsData.of("F-3", "%s인 상품이 있어 주문 취소가 불가합니다".formatted(orderItem.getStatus().getValue()));
+                return RsData.of("F-4", "%s인 상품이 있어 </br>주문 취소가 불가합니다".formatted(orderItem.getStatus().getValue()));
             }
         }
 
