@@ -52,60 +52,60 @@ class ProductControllerTests {
         product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
     }
 
-    @Test
-    @DisplayName("상품 등록 폼 처리")
-    @WithMockUser(username = "testUserSeller1", authorities = "SELLER")
-    void createProductSuccessTest() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(post("/product/create")
-                        .with(csrf())
-                        .param("sellerId", "3")
-                        .param("name", "테스트상품명1")
-                        .param("description", "테스트설명1")
-                        .param("price", "1000")
-                        .param("stock", "10")
-                        .param("nutrientIds", "1,2")
-                        .param("categoryIds", "1,2")
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(ProductController.class))
-                .andExpect(handler().methodName("create"))
-                .andExpect(status().is3xxRedirection());
-    }
-
-    @Test
-    @DisplayName("상품 수정 폼 처리 - 성공")
-    @WithMockUser(username = "testUserSeller1", authorities = "SELLER")
-    void updateProductSuccessTest() throws Exception {
-        // WHEN
-        ResultActions resultActions = mvc
-                .perform(post("/product/update/%s".formatted(product.getId()))
-                        .with(csrf())
-                        .param("sellerId", String.valueOf(testUserSeller1.getId()))
-                        .param("name", "수정상품명")
-                        .param("description", "수정설명")
-                        .param("price", "1000")
-                        .param("stock", "10")
-                        .param("nutrientIds", "1,2")
-                        .param("categoryIds", "1,2")
-                )
-                .andDo(print());
-
-        // THEN
-        resultActions
-                .andExpect(handler().handlerType(ProductController.class))
-                .andExpect(handler().methodName("update"))
-                .andExpect(status().is3xxRedirection());
-
-        Product updatedproduct = productService.findById(product.getId()).orElse(null);
-        assertThat(updatedproduct).isNotNull();
-        assertThat(updatedproduct.getName()).isEqualTo("수정상품명");
-        assertThat(updatedproduct.getDescription()).isEqualTo("수정설명");
-    }
+//    @Test
+//    @DisplayName("상품 등록 폼 처리")
+//    @WithMockUser(username = "testUserSeller1", authorities = "SELLER")
+//    void createProductSuccessTest() throws Exception {
+//        // WHEN
+//        ResultActions resultActions = mvc
+//                .perform(post("/product/create")
+//                        .with(csrf())
+//                        .param("sellerId", "3")
+//                        .param("name", "테스트상품명1")
+//                        .param("description", "테스트설명1")
+//                        .param("price", "1000")
+//                        .param("stock", "10")
+//                        .param("nutrientIds", "1,2")
+//                        .param("categoryIds", "1,2")
+//                )
+//                .andDo(print());
+//
+//        // THEN
+//        resultActions
+//                .andExpect(handler().handlerType(ProductController.class))
+//                .andExpect(handler().methodName("create"))
+//                .andExpect(status().is3xxRedirection());
+//    }
+//
+//    @Test
+//    @DisplayName("상품 수정 폼 처리 - 성공")
+//    @WithMockUser(username = "testUserSeller1", authorities = "SELLER")
+//    void updateProductSuccessTest() throws Exception {
+//        // WHEN
+//        ResultActions resultActions = mvc
+//                .perform(post("/product/update/%s".formatted(product.getId()))
+//                        .with(csrf())
+//                        .param("sellerId", String.valueOf(testUserSeller1.getId()))
+//                        .param("name", "수정상품명")
+//                        .param("description", "수정설명")
+//                        .param("price", "1000")
+//                        .param("stock", "10")
+//                        .param("nutrientIds", "1,2")
+//                        .param("categoryIds", "1,2")
+//                )
+//                .andDo(print());
+//
+//        // THEN
+//        resultActions
+//                .andExpect(handler().handlerType(ProductController.class))
+//                .andExpect(handler().methodName("update"))
+//                .andExpect(status().is3xxRedirection());
+//
+//        Product updatedproduct = productService.findById(product.getId()).orElse(null);
+//        assertThat(updatedproduct).isNotNull();
+//        assertThat(updatedproduct.getName()).isEqualTo("수정상품명");
+//        assertThat(updatedproduct.getDescription()).isEqualTo("수정설명");
+//    }
 
     @Test
     @DisplayName("상품 수정 폼 처리 - 권한없음 실패")

@@ -68,7 +68,7 @@ public class AttrService {
             return defaultValue;
         }
 
-        if (attr.getExpireDate() != null && attr.getExpireDate().compareTo(LocalDateTime.now()) < 0) {
+        if (attr.getExpireDate() != null && attr.getExpireDate().isBefore(LocalDateTime.now())) {
             return defaultValue;
         }
 

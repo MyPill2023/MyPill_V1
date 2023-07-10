@@ -10,6 +10,8 @@ import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -26,6 +28,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/usr/member")
+@Tag(name = "MemberController", description = "회원")
 public class MemberController {
 
     private final MemberService memberService;
@@ -35,6 +38,7 @@ public class MemberController {
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
+    @Operation(summary = "로그인 페이지")
     public String login(HttpServletRequest request, @RequestParam(value = "exception", required = false) String exception) {
         if (exception != null) {
             return rq.historyBack(exception);
@@ -48,12 +52,14 @@ public class MemberController {
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/join")
+    @Operation(summary = "회원가입 페이지")
     public String join() {
         return "usr/member/join";
     }
 
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
+    @Operation(summary = "회원가입")
     public String join(@Valid JoinForm joinForm) {
         try {
             memberService.join(joinForm.getUsername(), joinForm.getName(), joinForm.getPassword(),
@@ -68,12 +74,14 @@ public class MemberController {
 
     @ResponseBody
     @GetMapping("/join/idCheck")
+    @Operation(summary = "회원가입 - 아이디 중복 체크")
     public int idCheck(String username) {
         return memberService.idValidation(username);
     }
 
     @ResponseBody
     @GetMapping("/join/emailCheck")
+    @Operation(summary = "회원가입 - 이메일 중복 체크")
     public int emailCheck(String email) {
         return memberService.emailValidation(email);
     }
@@ -81,17 +89,20 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPage")
+    @Operation(summary = "마이페이지")
     public String myPage() {
         return "usr/member/myPage";
     }
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myInfo")
+    @Operation(summary = "내 정보 페이지")
     public String myInfo() {
         return "usr/member/myInfo";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPosts")
+    @Operation(summary = "내 게시글 목록")
     public String myPosts(Model model) {
         List<Post> posts = postService.getMyPosts(rq.getMember());
         model.addAttribute("posts", posts);
@@ -100,6 +111,7 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myComments")
+    @Operation(summary = "내 댓글 목록")
     public String myComments(Model model) {
         List<Comment> comments = commentService.getMyComments(rq.getMember());
         model.addAttribute("comments", comments);
@@ -108,6 +120,7 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/deleteAccount")
+    @Operation(summary = "회원 탈퇴")
     public void deleteAccount(HttpServletRequest request, HttpServletResponse response) throws IOException {
         RsData<Member> rsData = memberService.deleteAccount(rq.getMember());
         if (rsData.isFail()) {
@@ -121,6 +134,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     @ResponseBody
     @PostMapping("/name/update")
+    @Operation(summary = "이름 변경")
     public String nameUpdate(String newName) {
         RsData<Member> rsData = memberService.updateName(rq.getMember(), newName);
         return rsData.getResultCode();

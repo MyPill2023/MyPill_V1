@@ -71,7 +71,7 @@
             <div>
                 <label for="title" class="block text-gray-700 font-bold mb-2 text-xl">제목</label>
                 <input type="text" id="title" name="title" placeholder="제목을 입력하세요."
-                          th:field="*{title}"
+                          th:field="${post.title}"
                           class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline
                         whitespace-normal" rows="2">
             </div>
@@ -82,8 +82,8 @@
                 <div class="relative">
                     <textarea id="content" name="content" placeholder="질문사항을 자세히 입력해주세요."
                               class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
-                              th:field="*{content}" style="height: 200px;"></textarea>
-                    <div id="contentCount" class="absolute right-5 bottom-5" th:text="'(' + *{content.length()} + '/1000)'"></div>
+                              th:field="${post.content}" style="height: 200px;"></textarea>
+                    <div id="contentCount" class="absolute right-5 bottom-5" th:text="'(' + ${post.content.length()} + '/1000)'"></div>
                 </div>
             </div>
 

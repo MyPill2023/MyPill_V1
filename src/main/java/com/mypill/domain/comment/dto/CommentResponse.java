@@ -1,12 +1,15 @@
 package com.mypill.domain.comment.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.mypill.domain.comment.entity.Comment;
+import com.mypill.domain.member.entity.Member;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Data
+@Getter
+@SuperBuilder
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentResponse {
-    private String responseCode;
-    private String errorMsg;
-    private String newContent;
+    private Comment comment;
+    private Member commenter;
 }
