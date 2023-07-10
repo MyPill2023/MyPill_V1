@@ -1,12 +1,11 @@
 package com.mypill.domain.product.dto.response;
 
-import com.mypill.domain.Image.entity.Image;
+import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.entity.Product;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

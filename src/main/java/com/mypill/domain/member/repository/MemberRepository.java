@@ -2,7 +2,6 @@ package com.mypill.domain.member.repository;
 
 
 import com.mypill.domain.member.entity.Member;
-import com.mypill.global.rsData.RsData;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.mypill.domain.Image.entity;
+package com.mypill.domain.image.entity;
 
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.product.entity.Product;
