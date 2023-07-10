@@ -84,8 +84,22 @@ public class ImageService {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new RuntimeException("이미지 업로드에 실패하였습니다", e);
+                throw new RuntimeException("이미지 수정에 실패하였습니다", e);
             }
+        }
+    }
+
+    @Async
+    public void deleteImageFromServer(Post post) {
+        Image image = post.getImage();
+        if (image == null) {
+            return;
+        }
+        try {
+            amazonS3Service.deleteImage(image.getOriginalUrl());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("이미지 삭제에 실패하였습니다", e);
         }
     }
 }

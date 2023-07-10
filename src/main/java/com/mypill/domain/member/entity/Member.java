@@ -42,7 +42,6 @@ public class Member extends BaseEntity {
     private String providerTypeCode; // 카카오로 가입한 회원인지, 네이버로 가입한 회원인지
     @Column
     private boolean emailVerified;
-
     @Column(unique = true)
     private String businessNumber;
     @Column(unique = true)

@@ -111,7 +111,7 @@ public class PostController {
     @PostMapping("/delete/{postId}")
     @Operation(summary = "게시글 삭제")
     public String delete(@PathVariable Long postId) {
-        RsData<Post> deleteRsData = postService.delete(postId, rq.getMember());
+        RsData<Post> deleteRsData = postService.softDelete(postId, rq.getMember());
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData.getMsg());
         }

@@ -125,7 +125,7 @@ public class PostService {
     }
 
     @Transactional
-    public RsData<Post> delete(Long postId, Member member) {
+    public RsData<Post> softDelete(Long postId, Member member) {
         Post post = postRepository.findByIdAndDeleteDateIsNull(postId).orElse(null);
         if (post == null) {
             return RsData.of("F-1", "존재하지 않는 게시글입니다.");
@@ -167,7 +167,8 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Post post) {
+    public void hardDelete(Post post) {
+        imageService.deleteImageFromServer(post);
         postRepository.delete(post);
     }
 
