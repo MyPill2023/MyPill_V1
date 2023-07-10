@@ -19,7 +19,7 @@ public class OrderStatusUpdateNotificationResponse extends NotificationResponse{
     public static OrderStatusUpdateNotificationResponse of(Notification notification){
         return OrderStatusUpdateNotificationResponse.builder()
                 .id(notification.getId())
-                .typeCode(NotificationTypeCode.OrderStatus)
+                .typeCode(notification.getTypeCode())
                 .createDate(notification.getCreateDate())
                 .orderId(notification.getOrderItem().getOrder().getId())
                 .newStatus(notification.getNewStatus())

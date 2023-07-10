@@ -98,7 +98,7 @@ class OrderServiceTests {
         Order order = orderService.createFromCart(testUser1).getData();
 
         //WHEN
-        orderService.updatePayment(order, "카드", 24000L, LocalDateTime.now(), "Done");
+        orderService.updatePayment(order, "123","카드", 24000L, LocalDateTime.now(), "Done");
 
         //THEN
         assertThat(order).isNotNull();

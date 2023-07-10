@@ -41,11 +41,11 @@ public class OrderController {
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/form/{orderId}")
     public String getOrderForm(@PathVariable Long orderId, Model model) {
-        RsData<OrderResponse> rsData = orderService.getOrderForm(rq.getMember(), orderId);
+        RsData<Order> rsData = orderService.getOrderForm(rq.getMember(), orderId);
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
-        model.addAttribute("orderResponse", rsData.getData());
+        model.addAttribute("order", OrderResponse.of(rsData.getData()));
 
         List<AddressResponse> addresses = addressService.findByMemberId(rq.getMember().getId()).stream()
                 .filter(address -> address.getDeleteDate() == null)
@@ -112,7 +112,7 @@ public class OrderController {
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
-        model.addAttribute("orderResponse", OrderResponse.of(rsData.getData()));
+        model.addAttribute("order", OrderResponse.of(rsData.getData()));
 
         return "usr/order/detail";
     }
@@ -171,6 +171,48 @@ public class OrderController {
         return "order/fail";
     }
 
+    @PreAuthorize("hasAuthority('BUYER')")
+    @RequestMapping("/cancel/{orderId}")
+    public String cancel(@PathVariable Long orderId) throws Exception {
+
+        RsData<Order> checkRsData =  orderService.checkCanCancel(rq.getMember(), orderId);
+        if(checkRsData.isFail()){
+            return rq.historyBack(checkRsData);
+        }
+
+        Order order = checkRsData.getData();
+        String paymentKey = order.getPayment().getPaymentKey();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((AppConfig.getTossPaymentSecretKey() + ":").getBytes()));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, String> payloadMap = new HashMap<>();
+        payloadMap.put("PaymentKey", order.getPayment().getPaymentKey());
+        payloadMap.put("cancelReason", "");
+
+        HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(payloadMap), headers);
+
+        ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(
+                "https://api.tosspayments.com/v1/payments/%s/cancel".formatted(paymentKey), request, JsonNode.class);
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+
+            String approvedAt = responseEntity.getBody().get("approvedAt").asText();
+            LocalDateTime cancelDate = LocalDateTime.parse(approvedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            String status = responseEntity.getBody().get("status").asText();
+
+            orderService.cancel(order, cancelDate, status);
+
+            return rq.redirectWithMsg("/order/detail/%s".formatted(order.getId()), "주문번호 %s의 </br> 주문 및 결제가 취소되었습니다.".formatted(order.getOrderNumber()));
+        } else {
+            JsonNode failNode = responseEntity.getBody();
+            String code = failNode.get("message").asText();
+            String message = failNode.get("code").asText();
+            return rq.historyBack("%s </br> %s".formatted(code, message));
+        }
+    }
+
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/management/{orderId}")
     public String management(@PathVariable Long orderId, Model model) {
@@ -216,11 +258,12 @@ public class OrderController {
         String requestedAt = body.get("requestedAt").asText();
         LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
 
+        String paymentKey = body.get("paymentKey").asText();
         String method = body.get("method").asText();
         Long totalAmount = body.get("totalAmount").asLong();
         String status = body.get("status").asText();
 
-        orderService.updatePayment(order, method, totalAmount, payDate, status);
+        orderService.updatePayment(order, paymentKey, method, totalAmount, payDate, status);
     }
 
 }

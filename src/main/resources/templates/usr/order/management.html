@@ -98,6 +98,10 @@
                     <span class="w-1/4 text-gray-400">결제금액</span>
                     <span th:text="${#numbers.formatInteger(order.payment.totalAmount, 0, 'COMMA') + '원'}"></span>
                 </div>
+                <div class="flex gap-2" th:if="${order.payment.cancelDate != null}">
+                    <span class="w-1/4 text-gray-400">취소일시</span>
+                    <span th:text="${#temporals.format(order.payment.cancelDate, 'yyyy-MM-dd HH:mm')}"></span>
+                </div>
             </div>
 
         </div>

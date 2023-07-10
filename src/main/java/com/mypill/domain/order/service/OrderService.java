@@ -13,12 +13,12 @@ import com.mypill.domain.order.repository.OrderItemRepository;
 import com.mypill.domain.order.repository.OrderRepository;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
+import com.mypill.global.event.EventAfterOrderCanceled;
 import com.mypill.global.event.EventAfterOrderPayment;
 import com.mypill.global.event.EventAfterOrderStatusUpdate;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +39,7 @@ public class OrderService {
     private final ApplicationEventPublisher publisher;
 
 
-    public RsData<OrderResponse> getOrderForm(Member actor, Long orderId) {
+    public RsData<Order> getOrderForm(Member actor, Long orderId) {
         Order order = findById(orderId).orElse(null);
         if(order == null){
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
@@ -51,7 +51,7 @@ public class OrderService {
             return RsData.of("F-3", "이미 결제된 주문입니다.");
         }
 
-        return  RsData.of("S-1", OrderResponse.of(order));
+        return  RsData.of("S-1", order);
     }
 
     @Transactional
@@ -114,11 +114,16 @@ public class OrderService {
         order.setPaymentDone(orderId);
         Address address = addressService.findById(addressId).orElse(null);
         order.addAddress(address);
+
+        Set<Member> uniqueSellers = new HashSet<>();
         order.getOrderItems()
                 .forEach(orderItem -> {
                     orderItem.updateStatus(OrderStatus.ORDERED);
                     orderItem.getProduct().updateStockByOrder(orderItem.getQuantity()); // 재고 업데이트
-                    publisher.publishEvent(new EventAfterOrderPayment(this, orderItem.getProduct().getSeller(), order)); // 이벤트 - 판매자에게 알림
+                    Member seller = orderItem.getProduct().getSeller();
+                    if (uniqueSellers.add(seller)) {
+                        publisher.publishEvent(new EventAfterOrderPayment(this, seller, order)); // 이벤트 - 판매자에게 알림
+                    }
                 });
         order.updatePrimaryOrderStatus(OrderStatus.ORDERED);
         order.getCartProducts().forEach(CartProduct::softDelete); // 장바구니에서 삭제
@@ -127,8 +132,8 @@ public class OrderService {
     }
 
     @Transactional
-    public void updatePayment(Order order, String method, Long totalAmount, LocalDateTime payDate, String status){
-        order.updatePayment(method, totalAmount, payDate, status);
+    public void updatePayment(Order order, String paymentKey, String method, Long totalAmount, LocalDateTime payDate, String status){
+        order.updatePayment(paymentKey, method, totalAmount, payDate, status);
         orderRepository.save(order);
     }
 
@@ -145,6 +150,48 @@ public class OrderService {
         }
 
         return RsData.of("S-1", order);
+    }
+
+    public RsData<Order> checkCanCancel(Member buyer, Long orderId) {
+        Order order = findByIdAndPaymentIsNotNull(orderId).orElse(null);
+
+        if(order == null) {
+            return RsData.of("F-1", "존재하지 않는 주문입니다.");
+        }
+
+        if(!Objects.equals(order.getBuyer().getId(), buyer.getId())) {
+            return RsData.of("F-2", "접근 권한이 없습니다.");
+        }
+
+        if(order.getPayment().getStatus().equals("CANCELED")) {
+            return RsData.of("F-3", "이미 취소된 주문입니다.");
+        }
+
+        for(OrderItem orderItem : order.getOrderItems()){
+            if(!orderItem.getStatus().equals(OrderStatus.ORDERED)) {
+                return RsData.of("F-4", "%s인 상품이 있어 </br>주문 취소가 불가합니다".formatted(orderItem.getStatus().getValue()));
+            }
+        }
+
+        return RsData.of("S-1", "취소 가능한 주문입니다.", order);
+    }
+
+    @Transactional
+    public void cancel(Order order, LocalDateTime cancelDate, String status) {
+        order.updatePayment(cancelDate, status);
+
+        Set<Member> uniqueSeller = new HashSet<>();
+        order.getOrderItems()
+                .forEach(orderItem -> {
+                    orderItem.updateStatus(OrderStatus.CANCELED);
+                    orderItem.getProduct().updateStockByOrderCancel(orderItem.getQuantity()); // 재고 업데이트
+                    if(uniqueSeller.add(orderItem.getProduct().getSeller())){
+                        publisher.publishEvent(new EventAfterOrderCanceled(this, orderItem.getProduct().getSeller(), order));
+                    }
+                });
+        order.updatePrimaryOrderStatus(OrderStatus.CANCELED);
+
+        orderRepository.save(order);
     }
 
     @Transactional
@@ -217,6 +264,9 @@ public class OrderService {
     }
     public List<Order> findByBuyerIdAndPaymentIsNotNull(Long buyerId) {
         return orderRepository.findByBuyerIdAndPaymentIsNotNull(buyerId);
+    }
+    public Optional<Order> findByIdAndPaymentIsNotNull(Long orderId) {
+        return orderRepository.findByIdAndPaymentIsNotNull(orderId);
     }
     public List<Order> findBySellerId(Long sellerId) {
         return orderRepository.findBySellerId(sellerId);

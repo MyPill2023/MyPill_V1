@@ -36,8 +36,8 @@ public class NotificationController {
         List<Notification> notifications = notificationService.findByMemberId(rq.getMember().getId());
         for (Notification notification : notifications) {
             switch (notification.getTypeCode()) {
-                case OrderPayment -> notificationsResponse.add(OrderPaymentNotificationResponse.of(notification));
                 case OrderStatus -> notificationsResponse.add(OrderStatusUpdateNotificationResponse.of(notification));
+                default -> notificationsResponse.add(OrderPaymentNotificationResponse.of(notification));
             }
         }
         model.addAttribute("notifications", notificationsResponse);
