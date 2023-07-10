@@ -152,6 +152,10 @@ public class ProductService {
         return productRepository.findAllProduct(pageable);
     }
 
+    public List<Product> findTop5ProductsBySales() {
+        return productRepository.findTop5ProductsBySales();
+    }
+
     public Page<Product> getAllProductListByNutrientId(Long nutrientId, Pageable pageable) {
         return productRepository.findAllProductByNutrientId(nutrientId, pageable);
     }
