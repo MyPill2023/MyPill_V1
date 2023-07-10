@@ -69,7 +69,7 @@ class CommentServiceTest {
         // THEN
         assertTrue(commentRepository.findById(comment.getId()).isPresent());
         assertThat(commentRepository.findById(comment.getId()).get().getPost().getId()).isEqualTo(savedPost.getId());
-        assertThat(commentRepository.findById(comment.getId()).get().getWriter().getId()).isEqualTo(buyer.getId());
+        assertThat(commentRepository.findById(comment.getId()).get().getCommenterId()).isEqualTo(buyer.getId());
         assertThat(commentRepository.findById(comment.getId()).get().getContent()).isEqualTo("새 댓글");
     }
 
@@ -87,7 +87,7 @@ class CommentServiceTest {
         // THEN
         assertTrue(commentRepository.findById(comment.getId()).isPresent());
         assertThat(commentRepository.findById(comment.getId()).get().getPost().getId()).isEqualTo(savedPost.getId());
-        assertThat(commentRepository.findById(comment.getId()).get().getWriter().getId()).isEqualTo(buyer.getId());
+        assertThat(commentRepository.findById(comment.getId()).get().getCommenterId()).isEqualTo(buyer.getId());
         assertThat(commentRepository.findById(comment.getId()).get().getContent()).isEqualTo("댓글 업데이트");
     }
 

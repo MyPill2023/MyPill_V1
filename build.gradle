@@ -27,7 +27,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    testImplementation 'org.springframework:spring-test:5.3.10'
 
     //타임리프
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -73,6 +72,8 @@ dependencies {
     implementation 'org.apache.tika:tika-core:2.5.0'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+    // 스프링 배치
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 }
 
 tasks.named('test') {

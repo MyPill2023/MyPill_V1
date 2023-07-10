@@ -5,13 +5,16 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.product.entity.Product;
+import com.mypill.global.event.EventAfterDeleteMember;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
@@ -24,7 +27,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
-
+    private final ApplicationEventPublisher publisher;
 
     //NotProd 용 메소드, 개발 끝나면 삭제 예정    @Transactional
     public RsData<Member> join(String username, String name, String password, String userTypeStr, String email, boolean emailVerified) {
@@ -126,6 +129,7 @@ public class MemberService {
         }
         member.softDelete();
         Member deletedMember = memberRepository.save(member);
+        publisher.publishEvent(new EventAfterDeleteMember(this, member));
         return RsData.of("S-1", "회원 탈퇴가 완료되었습니다.", deletedMember);
     }
 
@@ -196,5 +200,14 @@ public class MemberService {
                 .build();
         memberRepository.save(member);
         return RsData.of("S-1", "이메일인증이 완료되었습니다.");
+    }
+
+    public List<Member> getUnverifiedMember() {
+        return memberRepository.findByEmailVerifiedFalse();
+    }
+
+    @Transactional
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
     }
 }

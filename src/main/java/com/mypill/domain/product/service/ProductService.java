@@ -1,8 +1,6 @@
 package com.mypill.domain.product.service;
 
-import com.mypill.domain.Image.entity.Image;
-import com.mypill.domain.Image.repository.ImageRepository;
-import com.mypill.domain.Image.service.ImageService;
+import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
 import com.mypill.domain.member.entity.Member;
@@ -10,18 +8,13 @@ import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
-import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
-import com.mypill.global.aws.s3.dto.AmazonS3Dto;
-import com.mypill.global.aws.s3.service.AmazonS3Service;
 import com.mypill.global.event.EventAfterLike;
 import com.mypill.global.event.EventAfterUnlike;
-import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,8 +25,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

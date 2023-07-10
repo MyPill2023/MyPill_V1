@@ -140,6 +140,7 @@ public class ProductController {
     @ResponseBody
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/like/{id}")
+    @Operation(summary = "상품 좋아요 등록")
     public Integer likeProduct(@PathVariable("id") Long id) {
         return productService.like(rq.getMember(), id);
     }
@@ -147,12 +148,14 @@ public class ProductController {
     @ResponseBody
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/unlike/{id}")
+    @Operation(summary = "상품 좋아요 취소")
     public Integer unlikeProduct(@PathVariable("id") Long id) {
         return productService.unlike(rq.getMember(), id);
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/unlike/{id}")
+    @Operation(summary = "상품 좋아요 리스트에서 좋아요 삭제")
     public String unlike(@PathVariable("id") Long id) {
         productService.unlike(rq.getMember(), id);
         return rq.redirectWithMsg("/usr/buyer/myLikes","관심 상품이 삭제되었습니다.");

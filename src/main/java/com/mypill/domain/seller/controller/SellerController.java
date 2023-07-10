@@ -9,6 +9,8 @@ import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.seller.service.SellerService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/usr/seller")
+@Tag(name = "SellerController", description = "판매자 회원")
 public class SellerController {
     private final SellerService sellerService;
     private final OrderService orderService;
@@ -34,6 +37,7 @@ public class SellerController {
 
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/order")
+    @Operation(summary = "주문 관리")
     public String orderManagement(Model model) {
         List<OrderListResponse> orderResponses = orderService.findBySellerId(rq.getMember().getId())
                 .stream()
@@ -56,12 +60,14 @@ public class SellerController {
 
     @PreAuthorize("hasAuthority('WAITER')")
     @GetMapping("/certificate")
+    @Operation(summary = "판매자 인증 페이지")
     public String certificate() {
         return "usr/seller/certificate";
     }
 
     @PreAuthorize("hasAuthority('WAITER')")
     @PostMapping("/brnoCertificate")
+    @Operation(summary = "통신판매업 인증")
     public String brnoCertificate(@RequestParam("businessNumber") String businessNumber) {
         RsData<Member> rsData = sellerService.businessNumberCheck(businessNumber, rq.getMember());
         if (rsData.isFail()) {
@@ -71,6 +77,7 @@ public class SellerController {
     }
     @PreAuthorize("hasAuthority('WAITER')")
     @PostMapping("/nBrnoCertificate")
+    @Operation(summary = "건강기능식품 판매업 인증")
     public String nBrnoCertificate(@RequestParam("nutrientBusinessNumber") String nutrientBusinessNumber) {
         RsData<Member> rsData = sellerService.nutrientBusinessNumberCheck(nutrientBusinessNumber, rq.getMember());
         if (rsData.isFail()) {

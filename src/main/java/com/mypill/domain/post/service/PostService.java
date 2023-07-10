@@ -1,9 +1,10 @@
 package com.mypill.domain.post.service;
 
-import com.mypill.domain.Image.service.ImageService;
+import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.post.dto.PostRequest;
+import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.post.dto.PostResponse;
+import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
 import com.mypill.global.rsData.RsData;
@@ -18,12 +19,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final MemberService memberService;
     private final ImageService imageService;
 
     @Transactional
@@ -33,7 +34,7 @@ public class PostService {
 
     @Transactional
     public List<Post> getMyPosts(Member member) {
-        return postRepository.findByPoster(member);
+        return postRepository.findByPosterIdAndDeleteDateIsNullOrderByIdDesc(member.getId());
     }
 
     //NotProd용
@@ -45,7 +46,7 @@ public class PostService {
         Post newPost = Post.builder()
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
-                .poster(member)
+                .posterId(member.getId())
                 .build();
 
         postRepository.save(newPost);
@@ -60,26 +61,44 @@ public class PostService {
         Post newPost = Post.builder()
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
-                .poster(member)
+                .posterId(member.getId())
                 .build();
-
         imageService.saveImage(multipartFile, newPost);
         postRepository.save(newPost);
         return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
     }
-    //test용
-    @Transactional
-    public RsData<Post> update(Long postId, PostRequest postRequest, Member member) {
-        Post post = postRepository.findById(postId).orElse(null);
+
+    public RsData<Post> showDetail(Long postId) {
+        Post post = postRepository.findByIdAndDeleteDateIsNull(postId).orElse(null);
         if (post == null) {
             return RsData.of("F-1", "존재하지 않는 게시글입니다.");
         }
-        if (!Objects.equals(post.getPoster().getId(), member.getId())) {
-            return RsData.of("F-2", "작성자만 수정이 가능합니다.");
+        return RsData.of("S-1", "게시글이 존재합니다.", post);
+    }
+
+    public RsData<Post> beforeUpdate(Long postId, Long memberId) {
+        Post post = postRepository.findByIdAndDeleteDateIsNull(postId).orElse(null);
+        if (post == null) {
+            return RsData.of("F-1", "존재하지 않는 게시글입니다.");
         }
-        if (post.getDeleteDate() != null) {
-            return RsData.of("F-3", "삭제된 게시물입니다.");
+        Member poster = memberService.findById(post.getPosterId()).orElse(null);
+        if (poster == null) {
+            return RsData.of("F-2", "존재하지 않는 게시글입니다.");
         }
+        if (!Objects.equals(poster.getId(), memberId)) {
+            return RsData.of("F-3", "작성자만 수정이 가능합니다.");
+        }
+        return RsData.of("S-1", "게시글 수정 페이지로 이동합니다.", post);
+    }
+
+    //test용
+    @Transactional
+    public RsData<Post> update(Long postId, PostRequest postRequest, Long memberId) {
+        RsData<Post> postRsData = beforeUpdate(postId, memberId);
+        if (postRsData.isFail()) {
+            return postRsData;
+        }
+        Post post = postRsData.getData();
         post = post.toBuilder()
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
@@ -89,37 +108,29 @@ public class PostService {
         return RsData.of("S-1", "게시글이 수정되었습니다.", post);
     }
 
-
     @Transactional
-    public RsData<Post> update(Long postId, PostRequest postRequest, Member member, MultipartFile multipartFile) {
-        Post post = postRepository.findById(postId).orElse(null);
-        if (post == null) {
-            return RsData.of("F-1", "존재하지 않는 게시글입니다.");
+    public RsData<Post> update(Long postId, PostRequest postRequest, Long memberId, MultipartFile multipartFile) {
+        RsData<Post> postRsData = beforeUpdate(postId, memberId);
+        if (postRsData.isFail()) {
+            return postRsData;
         }
-        if (!Objects.equals(post.getPoster().getId(), member.getId())) {
-            return RsData.of("F-2", "작성자만 수정이 가능합니다.");
-        }
-        if (post.getDeleteDate() != null) {
-            return RsData.of("F-3", "삭제된 게시물입니다.");
-        }
+        Post post = postRsData.getData();
         post = post.toBuilder()
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
                 .build();
-
         imageService.updateImage(multipartFile, post);
-
         postRepository.save(post);
         return RsData.of("S-1", "게시글이 수정되었습니다.", post);
     }
 
     @Transactional
     public RsData<Post> delete(Long postId, Member member) {
-        Post post = postRepository.findById(postId).orElse(null);
+        Post post = postRepository.findByIdAndDeleteDateIsNull(postId).orElse(null);
         if (post == null) {
             return RsData.of("F-1", "존재하지 않는 게시글입니다.");
         }
-        if (!Objects.equals(post.getPoster().getId(), member.getId())) {
+        if (!Objects.equals(post.getPosterId(), member.getId())) {
             return RsData.of("F-2", "작성자만 삭제가 가능합니다.");
         }
         post = post.toBuilder()
@@ -129,14 +140,10 @@ public class PostService {
         return RsData.of("S-1", "게시글이 삭제되었습니다.");
     }
 
-    public Optional<Post> findById(Long postId) {
-        return postRepository.findById(postId);
-    }
-
-    public Page<Post> getPosts(String keyword, String searchType, int pageNumber, int pageSize) {
+    public Page<PostResponse> getPosts(String keyword, String searchType, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         if (keyword == null || searchType == null) {
-            return postRepository.findByDeleteDateIsNullOrderByIdDesc(pageable);
+            return postRepository.findPostsWithMembers(pageable);
         }
         if (searchType.equals("title")) {
             return searchTitle(keyword, pageable);
@@ -144,14 +151,34 @@ public class PostService {
         if (searchType.equals("content")) {
             return searchContent(keyword, pageable);
         }
-        return postRepository.findByDeleteDateIsNullOrderByIdDesc(pageable);
+        return postRepository.findPostsWithMembers(pageable);
     }
 
-    public Page<Post> searchTitle(String keyword, Pageable pageable) {
-        return postRepository.findByTitleContainingAndDeleteDateIsNullOrderByIdDesc(keyword, pageable);
+    public Page<PostResponse> searchTitle(String keyword, Pageable pageable) {
+        return postRepository.findPostsWithMembersAndTitleContaining(keyword, pageable);
     }
 
-    public Page<Post> searchContent(String keyword, Pageable pageable) {
-        return postRepository.findByContentContainingAndDeleteDateIsNullOrderByIdDesc(keyword, pageable);
+    public Page<PostResponse> searchContent(String keyword, Pageable pageable) {
+        return postRepository.findPostsWithMembersAndContentContaining(keyword, pageable);
+    }
+
+    public List<Post> getDeletedPosts() {
+        return postRepository.findByDeleteDateIsNotNull();
+    }
+
+    @Transactional
+    public void deletePost(Post post) {
+        postRepository.delete(post);
+    }
+
+    @Transactional
+    public void whenAfterDeleteMember(Member member) {
+        List<Post> posts = postRepository.findByPosterId(member.getId());
+        for (Post post : posts) {
+            post = post.toBuilder()
+                    .deleteDate(LocalDateTime.now())
+                    .build();
+            postRepository.save(post);
+        }
     }
 }

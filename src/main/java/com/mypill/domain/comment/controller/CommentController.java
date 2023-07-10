@@ -1,7 +1,7 @@
 package com.mypill.domain.comment.controller;
 
 import com.mypill.domain.comment.dto.CommentRequest;
-import com.mypill.domain.comment.dto.CommentResponse;
+import com.mypill.domain.comment.dto.CommentAJAXResponse;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.global.rq.Rq;
@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +42,7 @@ public class CommentController {
     @ResponseBody
     @PostMapping("/update/{commentId}")
     @Operation(summary = "댓글 수정")
-    public CommentResponse update(CommentRequest commentRequest, @PathVariable("commentId") String commentId) {
+    public CommentAJAXResponse update(CommentRequest commentRequest, @PathVariable("commentId") String commentId) {
         return commentService.update(commentRequest, rq.getMember(), Long.parseLong(commentId));
     }
 

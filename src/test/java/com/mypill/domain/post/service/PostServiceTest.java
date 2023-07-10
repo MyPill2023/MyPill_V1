@@ -3,13 +3,14 @@ package com.mypill.domain.post.service;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.post.dto.PostRequest;
+import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +59,7 @@ class PostServiceTest {
 
         // THEN
         assertTrue(postRepository.findById(post.getId()).isPresent());
-        assertThat(postRepository.findById(post.getId()).get().getPoster().getId()).isEqualTo(buyer.getId());
+        assertThat(postRepository.findById(post.getId()).get().getPosterId()).isEqualTo(buyer.getId());
         assertThat(postRepository.findById(post.getId()).get().getTitle()).isEqualTo(postRequest.getTitle());
         assertThat(postRepository.findById(post.getId()).get().getContent()).isEqualTo(postRequest.getContent());
     }
@@ -72,11 +73,11 @@ class PostServiceTest {
         // WHEN
         postRequest.setTitle("제목 업데이트");
         postRequest.setContent("내용 업데이트");
-        postService.update(post.getId(), postRequest, buyer);
+        postService.update(post.getId(), postRequest, buyer.getId());
 
         // THEN
         assertTrue(postRepository.findById(post.getId()).isPresent());
-        assertThat(postRepository.findById(post.getId()).get().getPoster().getId()).isEqualTo(buyer.getId());
+        assertThat(postRepository.findById(post.getId()).get().getPosterId()).isEqualTo(buyer.getId());
         assertThat(postRepository.findById(post.getId()).get().getTitle()).isEqualTo("제목 업데이트");
         assertThat(postRepository.findById(post.getId()).get().getContent()).isEqualTo("내용 업데이트");
     }
@@ -145,21 +146,6 @@ class PostServiceTest {
         assertThat(posts2.size()).isEqualTo(1);
     }
 
-    @Test
-    @DisplayName("게시글 번호로 게시글 조회 테스트")
-    void findByIdTest() {
-        // GIVEN
-        Post post = postService.create(postRequest, buyer).getData();
-
-        // WHEN
-        Post postFound = postService.findById(post.getId()).orElse(null);
-
-        // THEN
-        assertThat(postFound).isNotNull();
-        assertThat(postFound.getPoster().getId()).isEqualTo(post.getPoster().getId());
-        assertThat(postFound.getTitle()).isEqualTo(post.getTitle());
-        assertThat(postFound.getContent()).isEqualTo(post.getContent());
-    }
 
     @Test
     @DisplayName("게시글 제목 검색 테스트")
@@ -172,11 +158,11 @@ class PostServiceTest {
         postService.create(postRequest, buyer);
 
         // WHEN
-        Page<Post> postPage = postService.searchTitle(keyword, Pageable.unpaged());
+        Page<PostResponse> postResponse = postService.searchTitle(keyword, PageRequest.of(0,10));
 
         // THEN
-        assertThat(postPage.getTotalElements()).isEqualTo(1);
-        assertTrue(postPage.getContent().get(0).getTitle().contains(keyword));
+        assertThat(postResponse.getTotalElements()).isEqualTo(1);
+        assertTrue(postResponse.getContent().get(0).getPost().getTitle().contains(keyword));
     }
 
     @Test
@@ -190,10 +176,10 @@ class PostServiceTest {
         postService.create(postRequest, buyer);
 
         // WHEN
-        Page<Post> postPage = postService.searchContent(keyword, Pageable.unpaged());
+        Page<PostResponse> postResponse = postService.searchContent(keyword, PageRequest.of(0,10));
 
         // THEN
-        assertThat(postPage.getTotalElements()).isEqualTo(1);
-        assertTrue(postPage.getContent().get(0).getContent().contains(keyword));
+        assertThat(postResponse.getTotalElements()).isEqualTo(1);
+        assertTrue(postResponse.getContent().get(0).getPost().getContent().contains(keyword));
     }
 }

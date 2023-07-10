@@ -15,7 +15,7 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class AmazonS3Service {
 
-    private final static String IMAGE_FOLDER_NAME = "i/";
+    private final static String IMAGE_FOLDER_NAME = "image/";
 
     private final AmazonS3Properties amazonS3Properties;
 
@@ -35,7 +35,7 @@ public class AmazonS3Service {
 
         amazonS3Repository.upload(amazonS3Properties.getBucketName(), objectName, file, mimeType);
 
-        String cndUrl = amazonS3Properties.getCdnEndPoint() + objectName + "?type=u&w=2000&h=2000&quality=90";
+        String cndUrl = amazonS3Properties.getCdnEndPoint() + objectName;
         String originUrl = amazonS3Properties.getEndPoint() + "/" + amazonS3Properties.getBucketName() + "/" + objectName;
 
         return AmazonS3Dto.builder()
@@ -50,8 +50,7 @@ public class AmazonS3Service {
             URL url = new URL(imageUrl);
             String path = url.getPath();
             String[] pathSegments = path.split("/");
-            String fileName = pathSegments[pathSegments.length - 1];
-            return fileName;
+            return pathSegments[pathSegments.length - 1];
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("잘못된 이미지 URL입니다.", e);
         }

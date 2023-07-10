@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.notification.entity.Notification;
 import com.mypill.domain.notification.service.NotificationService;
 import com.mypill.global.rsData.RsData;
 

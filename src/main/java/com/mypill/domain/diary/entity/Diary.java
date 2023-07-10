@@ -53,6 +53,7 @@ public class Diary extends BaseEntity {
         return DiaryCheckLog.builder()
                 .diary(this)
                 .checkDate(now)
+                .member(member)
                 .build();
     }
 

@@ -14,6 +14,8 @@ import com.mypill.domain.order.service.OrderService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +32,7 @@ import java.util.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/order")
+@Tag(name="OrderController", description = "주문")
 public class OrderController {
 
     private final OrderService orderService;
@@ -40,6 +43,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/form/{orderId}")
+    @Operation(summary = "주문하기 폼")
     public String getOrderForm(@PathVariable Long orderId, Model model) {
         RsData<Order> rsData = orderService.getOrderForm(rq.getMember(), orderId);
         if (rsData.isFail()) {
@@ -63,6 +67,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create/all")
+    @Operation(summary = "장바구니의 전체 상품 주문")
     public String createFromCart() {
         Member buyer = rq.getMember();
         RsData<Order> orderRsData = orderService.createFromCart(buyer);
@@ -76,6 +81,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create/selected")
+    @Operation(summary = "장바구니에서 선택한 상품만 주문")
     public String createFromSelected(@RequestParam String[] selectedCartProductIds) {
         Member buyer = rq.getMember();
 
@@ -93,6 +99,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create/single")
+    @Operation(summary = "개별 상품 바로 주문")
     public String createFromSingleProduct(@RequestParam Long productId, @RequestParam Long quantity) {
         Member buyer = rq.getMember();
 
@@ -106,6 +113,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/detail/{orderId}")
+    @Operation(summary = "구매자의 주문 내역 조회")
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
 
         RsData<Order> rsData = orderService.getOrderDetail(orderId);
@@ -118,7 +126,8 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @RequestMapping("/{id}/success")
+    @GetMapping("/{id}/success")
+    @Operation(summary = "결제 성공")
     public String confirmPayment(
             @PathVariable long id,
             @RequestParam String paymentKey,
@@ -141,11 +150,12 @@ public class OrderController {
         Map<String, String> payloadMap = new HashMap<>();
         payloadMap.put("orderId", orderId);
         payloadMap.put("amount", String.valueOf(amount));
+        payloadMap.put("paymentKey", paymentKey);
 
         HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(payloadMap), headers);
 
         ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(
-                "https://api.tosspayments.com/v1/payments/" + paymentKey, request, JsonNode.class);
+                "https://api.tosspayments.com/v1/payments/confirm", request, JsonNode.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
 
@@ -163,7 +173,8 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @RequestMapping("/{id}/fail")
+    @GetMapping("/{id}/fail")
+    @Operation(summary = "결제 실패")
     public String failPayment(@RequestParam String message, @RequestParam String code, @RequestParam String orderNumber, Model model) {
         model.addAttribute("orderNumber", orderNumber);
         model.addAttribute("message", message);
@@ -172,7 +183,8 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @RequestMapping("/cancel/{orderId}")
+    @PostMapping("/cancel/{orderId}")
+    @Operation(summary = "주문 취소")
     public String cancel(@PathVariable Long orderId) throws Exception {
 
         RsData<Order> checkRsData =  orderService.checkCanCancel(rq.getMember(), orderId);
@@ -215,6 +227,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/management/{orderId}")
+    @Operation(summary = "판매자의 주문 관리")
     public String management(@PathVariable Long orderId, Model model) {
 
         RsData<Order> rsData = orderService.getOrderDetail(orderId);
@@ -240,6 +253,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/update/status/{orderItemId}")
+    @Operation(summary = "판매자의 주문 상태 업데이트")
     public String updateOrderStatus(@PathVariable Long orderItemId,
                                     @RequestParam Long orderId,
                                     @RequestParam String newStatus,
