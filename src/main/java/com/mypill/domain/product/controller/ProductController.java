@@ -21,6 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -47,9 +48,9 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/create")
     @Operation(summary = "상품 등록")
-    public String create(@Valid ProductRequest productRequest) {
+    public String create(@Valid ProductRequest productRequest, @RequestParam("imageFile") MultipartFile multiPartFile) {
 
-        RsData<Product> createRsData = productService.create(productRequest);
+        RsData<Product> createRsData = productService.create(productRequest, multiPartFile);
 
         return rq.redirectWithMsg("/product/detail/%s".formatted(createRsData.getData().getId()), createRsData);
     }
@@ -118,9 +119,9 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/update/{productId}")
     @Operation(summary = "상품 수정")
-    public String update(@PathVariable Long productId, @Valid ProductRequest productRequest) {
+    public String update(@PathVariable Long productId, @Valid ProductRequest productRequest, @RequestParam(value = "imageFile") MultipartFile multipartFile) {
 
-        RsData<Product> updateRsData = productService.update(rq.getMember(), productId, productRequest);
+        RsData<Product> updateRsData = productService.update(rq.getMember(), productId, productRequest,multipartFile);
 
         return rq.redirectWithMsg("/product/detail/%s".formatted(productId), updateRsData);
     }

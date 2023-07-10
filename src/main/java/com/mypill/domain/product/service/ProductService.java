@@ -1,5 +1,8 @@
 package com.mypill.domain.product.service;
 
+import com.mypill.domain.Image.entity.Image;
+import com.mypill.domain.Image.repository.ImageRepository;
+import com.mypill.domain.Image.service.ImageService;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
 import com.mypill.domain.member.entity.Member;
@@ -10,21 +13,26 @@ import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
+import com.mypill.global.aws.s3.dto.AmazonS3Dto;
+import com.mypill.global.aws.s3.service.AmazonS3Service;
 import com.mypill.global.event.EventAfterLike;
 import com.mypill.global.event.EventAfterUnlike;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +44,9 @@ public class ProductService {
     private final CategoryService categoryService;
     private final MemberService memberService;
     private final ApplicationEventPublisher publisher;
+    private final ImageService imageService;
 
+    //NotProd용
     @Transactional
     public RsData<Product> create(ProductRequest request) {
 
@@ -44,11 +54,30 @@ public class ProductService {
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
 
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
+
         Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
 
         productRepository.save(product);
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
     }
+
+
+    @Transactional
+    public RsData<Product> create(ProductRequest request, MultipartFile multipartFile) {
+
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
+        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
+
+        Member seller = memberService.findById(request.getSellerId()).orElse(null);
+
+        Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
+
+        imageService.saveImage(multipartFile, product);
+
+        productRepository.save(product);
+        return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
+    }
+
 
     public RsData<Product> get(Long productId) {
         Product product = findById(productId).orElse(null);
@@ -60,6 +89,7 @@ public class ProductService {
         return RsData.of("S-1", "존재하는 상품입니다.", product);
     }
 
+    //test용
     @Transactional
     public RsData<Product> update(Member actor, Long productId, ProductRequest request) {
 
@@ -74,6 +104,28 @@ public class ProductService {
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
+
+        product.update(request, nutrients, categories);
+
+        return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
+    }
+
+    @Transactional
+    public RsData<Product> update(Member actor, Long productId, ProductRequest request, MultipartFile multipartFile) {
+
+        Product product = findById(productId).orElse(null);
+        if (product == null) {
+            return RsData.of("F-1", "존재하지 않는 상품입니다.", product);
+        }
+
+        if (!actor.getId().equals(product.getSeller().getId())) {
+            return RsData.of("F-2", "수정 권한이 없습니다.", product);
+        }
+
+        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
+        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
+
+        imageService.updateImage(multipartFile, product);
         product.update(request, nutrients, categories);
 
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
