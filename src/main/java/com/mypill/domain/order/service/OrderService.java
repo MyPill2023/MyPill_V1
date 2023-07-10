@@ -119,7 +119,7 @@ public class OrderService {
         order.getOrderItems()
                 .forEach(orderItem -> {
                     orderItem.updateStatus(OrderStatus.ORDERED);
-                    orderItem.getProduct().updateStockByOrder(orderItem.getQuantity()); // 재고 업데이트
+                    orderItem.getProduct().updateStockAndSalesByOrder(orderItem.getQuantity()); // 재고 업데이트
                     Member seller = orderItem.getProduct().getSeller();
                     if (uniqueSellers.add(seller)) {
                         publisher.publishEvent(new EventAfterOrderPayment(this, seller, order)); // 이벤트 - 판매자에게 알림
@@ -184,7 +184,7 @@ public class OrderService {
         order.getOrderItems()
                 .forEach(orderItem -> {
                     orderItem.updateStatus(OrderStatus.CANCELED);
-                    orderItem.getProduct().updateStockByOrderCancel(orderItem.getQuantity()); // 재고 업데이트
+                    orderItem.getProduct().updateStockAndSaleByOrderCancel(orderItem.getQuantity()); // 재고 업데이트
                     if(uniqueSeller.add(orderItem.getProduct().getSeller())){
                         publisher.publishEvent(new EventAfterOrderCanceled(this, orderItem.getProduct().getSeller(), order));
                     }

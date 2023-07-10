@@ -37,6 +37,8 @@ public class Product extends BaseEntity {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private Image image;
 
+    private Long sales;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "product_nutrient", // 연결테이블
@@ -69,6 +71,7 @@ public class Product extends BaseEntity {
                 .description(requestDto.getDescription())
                 .price(requestDto.getPrice())
                 .stock(requestDto.getStock())
+                .sales(0L)
                 .seller(seller)
                 .nutrients(nutrients)
                 .categories(categories)
@@ -85,12 +88,14 @@ public class Product extends BaseEntity {
         this.categories = categories;
     }
 
-    public void updateStockByOrder(Long quantity){
+    public void updateStockAndSalesByOrder(Long quantity){
         this.stock -= quantity;
+        this.sales += quantity;
     }
 
-    public void updateStockByOrderCancel(Long quantity){
+    public void updateStockAndSaleByOrderCancel(Long quantity){
         this.stock += quantity;
+        this.sales -= quantity;
     }
 
     public Long getLikedCount() {

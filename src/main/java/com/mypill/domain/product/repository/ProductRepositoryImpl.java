@@ -25,6 +25,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                         product.deleteDate.isNull(),
                         product.stock.gt(0)
                 )
+                .orderBy(product.sales.desc())
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchResults();
 
@@ -42,6 +43,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                         product.deleteDate.isNull(),
                         product.stock.gt(0)
                 )
+                .orderBy(product.sales.desc())
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchResults();
 
@@ -60,6 +62,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                         product.deleteDate.isNull(),
                         product.stock.gt(0)
                 )
+                .orderBy(product.sales.desc())
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchResults();
 
