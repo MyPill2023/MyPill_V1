@@ -6,7 +6,7 @@ import com.mypill.domain.diary.entity.DiaryCheckLog;
 import com.mypill.domain.diary.repository.DiaryCheckLogRepository;
 import com.mypill.domain.diary.repository.DiaryRepository;
 import com.mypill.domain.member.entity.Member;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

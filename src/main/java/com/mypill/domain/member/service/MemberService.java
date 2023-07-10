@@ -6,7 +6,7 @@ import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.event.EventAfterDeleteMember;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

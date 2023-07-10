@@ -50,7 +50,7 @@ public class AmazonS3Service {
             URL url = new URL(imageUrl);
             String path = url.getPath();
             String[] pathSegments = path.split("/");
-            return pathSegments[pathSegments.length - 1];
+            return pathSegments[pathSegments.length - 2] + "/" + pathSegments[pathSegments.length - 1];
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("잘못된 이미지 URL입니다.", e);
         }

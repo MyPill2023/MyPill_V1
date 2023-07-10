@@ -7,7 +7,7 @@ import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

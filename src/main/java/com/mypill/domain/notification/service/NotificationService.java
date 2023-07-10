@@ -7,9 +7,8 @@ import com.mypill.domain.notification.repository.NotificationRepository;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

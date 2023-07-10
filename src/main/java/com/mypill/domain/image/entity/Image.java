@@ -21,6 +21,7 @@ public class Image extends BaseEntity {
     private Long id;
     private String filepath;
     private String filename;
+    private String originalUrl;
 
     @OneToOne
     @JoinColumn(name = "product_id")

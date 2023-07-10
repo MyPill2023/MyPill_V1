@@ -6,7 +6,7 @@ import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.AppConfig;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

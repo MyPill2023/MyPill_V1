@@ -1,4 +1,4 @@
-package com.mypill.global.initData;
+package com.mypill.global.initdata;
 
 import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.entity.Address;

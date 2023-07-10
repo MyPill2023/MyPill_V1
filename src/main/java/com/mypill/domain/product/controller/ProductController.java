@@ -9,7 +9,7 @@ import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;

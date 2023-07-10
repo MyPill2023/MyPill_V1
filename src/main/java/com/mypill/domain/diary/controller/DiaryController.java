@@ -6,7 +6,7 @@ import com.mypill.domain.diary.service.DiaryService;
 import com.mypill.domain.member.entity.Member;
 
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

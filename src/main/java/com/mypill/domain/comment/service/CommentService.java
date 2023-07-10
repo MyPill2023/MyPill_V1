@@ -8,7 +8,7 @@ import com.mypill.domain.comment.repository.CommentRepository;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

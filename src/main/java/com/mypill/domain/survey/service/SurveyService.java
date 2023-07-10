@@ -1,7 +1,7 @@
 package com.mypill.domain.survey.service;
 
 import com.mypill.global.AppConfig;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

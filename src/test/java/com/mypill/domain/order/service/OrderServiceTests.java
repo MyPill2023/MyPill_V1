@@ -14,7 +14,7 @@ import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

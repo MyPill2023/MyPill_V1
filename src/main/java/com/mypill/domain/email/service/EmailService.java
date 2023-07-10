@@ -4,7 +4,7 @@ import com.mypill.domain.email.entity.SendEmailLog;
 import com.mypill.domain.email.repository.SendEmailLogRepository;
 import com.mypill.domain.emailsender.service.EmailSenderService;
 import com.mypill.global.AppConfig;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;

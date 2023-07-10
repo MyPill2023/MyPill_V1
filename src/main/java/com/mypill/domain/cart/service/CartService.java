@@ -9,7 +9,7 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

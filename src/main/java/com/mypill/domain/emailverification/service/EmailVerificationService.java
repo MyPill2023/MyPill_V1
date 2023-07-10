@@ -4,7 +4,7 @@ import com.mypill.domain.attr.service.AttrService;
 import com.mypill.domain.email.service.EmailService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.AppConfig;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

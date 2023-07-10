@@ -6,7 +6,7 @@ import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
-import com.mypill.global.rsData.RsData;
+import com.mypill.global.rsdata.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
