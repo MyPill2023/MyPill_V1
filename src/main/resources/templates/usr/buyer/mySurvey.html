@@ -1,0 +1,33 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>결과 보기</title>
+</head>
+
+</head>
+<body>
+<main layout:fragment="main">
+  <div class="hero-content flex flex-col justify-center my-10 !mb-28">
+
+    <div class="flex flex-col justify-center mb-5">
+      <h1 class="text-2xl text-center font-bold text-center mb-5">건강 설문 결과</h1>
+      <div class="text-center flex items-center">
+        <span class="text-green-400 font-bold" th:if="${@rq.login}" th:text="${@rq.member.name}"></span>
+        <span>님의 건강 설문 결과</span>
+      </div>
+      <span class="text-center">필요한 영양소입니다.</span>
+    </div>
+
+    <div class="flex justify-center items-center w-full px-5" th:each="nutrient:${nutrientAnswers}" >
+      <div class="collapse collapse-arrow bg-base-200" >
+        <input type="radio" name="my-accordion-2"/>
+        <div class="collapse-title text-lg font-bold" th:text="${nutrient.name}"></div>
+        <div class="collapse-content" th:text="${nutrient.description}">
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

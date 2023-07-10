@@ -45,6 +45,16 @@ public class NotificationService {
     }
 
     @Transactional
+    public void whenAfterOrderCanceled(Member seller, Order order){
+        Notification notification = Notification.builder()
+                .typeCode(NotificationTypeCode.OrderCanceled)
+                .member(seller)
+                .order(order)
+                .build();
+        notificationRepository.save(notification);
+    }
+
+    @Transactional
     public RsData<Notification> makeAsRead(Member actor, Long notificationId) {
         Notification notification = findById(notificationId).orElseThrow();
         if(!notification.getMember().getId().equals(actor.getId())){

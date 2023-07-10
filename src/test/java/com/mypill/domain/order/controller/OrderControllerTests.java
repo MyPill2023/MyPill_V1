@@ -168,7 +168,7 @@ class OrderControllerTests {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
         orderService.payByTossPayments(order, order.getId() + "_1234", address.getId());
-        orderService.updatePayment(order, "카드", 24000L, LocalDateTime.now(), "Done");
+        orderService.updatePayment(order, "123", "카드", 24000L, LocalDateTime.now(), "Done");
 
         //WHEN
         ResultActions resultActions = mvc
@@ -188,7 +188,7 @@ class OrderControllerTests {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
         orderService.payByTossPayments(order, order.getId() + "_1234", address.getId());
-        orderService.updatePayment(order, "카드", 24000L, LocalDateTime.now(), "Done");
+        orderService.updatePayment(order,"123", "카드", 24000L, LocalDateTime.now(), "Done");
         OrderItem orderItem = order.getOrderItems().get(0);
 
         //WHEN

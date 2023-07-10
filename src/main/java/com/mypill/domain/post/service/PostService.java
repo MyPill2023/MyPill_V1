@@ -1,6 +1,6 @@
 package com.mypill.domain.post.service;
 
-import com.mypill.domain.Image.service.ImageService;
+import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.post.dto.PostResponse;

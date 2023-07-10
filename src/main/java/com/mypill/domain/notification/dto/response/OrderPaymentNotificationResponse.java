@@ -16,7 +16,7 @@ public class OrderPaymentNotificationResponse extends NotificationResponse {
     public static OrderPaymentNotificationResponse of(Notification notification){
         return OrderPaymentNotificationResponse.builder()
                 .id(notification.getId())
-                .typeCode(NotificationTypeCode.OrderPayment)
+                .typeCode(notification.getTypeCode())
                 .createDate(notification.getCreateDate())
                 .orderId(notification.getOrder().getId())
                 .orderNumber(notification.getOrder().getOrderNumber())

@@ -98,8 +98,12 @@ public class Order extends BaseEntity {
         this.orderNumber = orderId;
     }
 
-    public void updatePayment(String method, Long totalAmount, LocalDateTime payDate, String status) {
-        this.payment = new Payment(method, totalAmount, status, payDate);
+    public void updatePayment(String paymentKey, String method, Long totalAmount, LocalDateTime payDate, String status) {
+        this.payment = new Payment(paymentKey, method, totalAmount, payDate, status);
+    }
+
+    public void updatePayment(LocalDateTime cancelDate, String status) {
+       this.payment.updateCancelData(cancelDate, status);
     }
 
     public void updatePrimaryOrderStatus(OrderStatus orderStatus){

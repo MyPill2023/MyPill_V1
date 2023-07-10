@@ -1,6 +1,6 @@
 package com.mypill.domain.post.entity;
 
-import com.mypill.domain.Image.entity.Image;
+import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;

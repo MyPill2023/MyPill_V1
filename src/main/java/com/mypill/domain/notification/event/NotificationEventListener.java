@@ -1,6 +1,7 @@
-package com.mypill.domain.notification.eventlistner;
+package com.mypill.domain.notification.event;
 
 import com.mypill.domain.notification.service.NotificationService;
+import com.mypill.global.event.EventAfterOrderCanceled;
 import com.mypill.global.event.EventAfterOrderPayment;
 import com.mypill.global.event.EventAfterOrderStatusUpdate;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +26,9 @@ public class NotificationEventListener {
     @EventListener
     public void listen(EventAfterOrderPayment event) {
         notificationService.whenAfterOrderPayment(event.getSeller(), event.getOrder());
+    }
+    @EventListener
+    public void listen(EventAfterOrderCanceled event) {
+        notificationService.whenAfterOrderCanceled(event.getSeller(), event.getOrder());
     }
 }

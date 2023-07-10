@@ -3,6 +3,9 @@ package com.mypill.domain.buyer.controller;
 import com.mypill.domain.address.dto.response.AddressResponse;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
+import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.nutrient.service.NutrientService;
+import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.order.dto.response.OrderListResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
@@ -18,10 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class BuyerController {
     private final OrderService orderService;
     private final AddressService addressService;
+    private final NutrientService nutrientService;
     private final Rq rq;
 
     @PreAuthorize("hasAuthority('BUYER')")
@@ -86,4 +87,18 @@ public class BuyerController {
 
         return "usr/buyer/myAddress";
     }
+
+    @PreAuthorize("hasAuthority('BUYER')")
+    @GetMapping("/mySurvey")
+    public String mySurvey(Model model) {
+
+        Member member = rq.getMember();
+
+        List<Nutrient> nutrientAnswers = member.getSurveyNutrients();
+
+        model.addAttribute("nutrientAnswers", nutrientAnswers);
+
+        return "usr/buyer/mySurvey";
+    }
+
 }

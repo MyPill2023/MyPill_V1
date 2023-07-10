@@ -1,19 +1,17 @@
 package com.mypill.domain.product.entity;
 
-import com.mypill.domain.Image.entity.Image;
+import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.global.base.entitiy.BaseEntity;
-import groovy.lang.Lazy;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -87,6 +85,10 @@ public class Product extends BaseEntity {
 
     public void updateStockByOrder(Long quantity){
         this.stock -= quantity;
+    }
+
+    public void updateStockByOrderCancel(Long quantity){
+        this.stock += quantity;
     }
 
     public Long getLikedCount() {

@@ -13,7 +13,6 @@ public class RsData<T> {
     private String msg;
     private T data;
 
-
     public static <T> RsData<T> of(String resultCode, String msg, T data) {
         return new RsData<>(resultCode, msg, data);
     }
