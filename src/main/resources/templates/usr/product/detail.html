@@ -43,12 +43,10 @@
                       th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
                 </div>
             </div>
+            <div class="divider !my-2"></div>
             <div th:unless="${@rq.isSeller() || @rq.isWaiter()}">
-                <div class="divider !my-2"></div>
-                <form th:action="@{|/cart/add|}" method="POST"
-                      onsubmit="CartProductRequest__submit(this, event); return false;">
-                    <input type="hidden" id="productId" name="productId" th:value="${product.id}">
-                    <div class="flex justify-between items-center">
+                <div class="flex justify-between">
+                    <div class="flex flex-col items-center justify-center">
                         <div class="flex gap-3 justify-center items-center">
                             <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
                             <label for="quantity">수량</label>
@@ -56,12 +54,26 @@
                                    class="input input-bordered  input-sm w-16" required>
                             <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
                         </div>
-                        <button class="btn btn-success" type="submit" th:disabled="${product.stock < 1}">장바구니 담기</button>
+                        <div class="flex justify-end mt-5" th:if="${product.stock < 1}">
+                            <span class="text-red-300">해당 상품은 품절되었습니다.</span>
+                        </div>
                     </div>
-                    <div class="flex justify-end mt-5" th:if="${product.stock < 1}">
-                        <span class="text-red-300">해당 상품은 품절되었습니다.</span>
+                    <div class="flex flex-col gap-3 justify-end">
+                        <form id="directBuyForm" th:action="@{/order/create/single}" method="POST">
+                            <input type="hidden" name="productId" th:value="${product.id}">
+                            <input type="hidden" id="directBuyQuantity" name="quantity">
+                            <button class="btn btn-accent" type="button" onclick="submitDirectBuyForm()" th:disabled="${product.stock < 1}">
+                                바로 구매하기
+                            </button>
+                        </form>
+                        <form th:action="@{|/cart/add|}" method="POST" class="flex justify-between"
+                              onsubmit="CartProductRequest__submit(this, event); return false;">
+                            <input type="hidden" id="productId" name="productId" th:value="${product.id}">
+                            <input type="hidden" id="cartProductQuantity" name="quantity">
+                            <button class="btn btn-success" type="submit" th:disabled="${product.stock < 1}">장바구니 담기</button>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="divider !my-2"></div>
             <div class="card bg-base-100 border border-gray-200">
@@ -137,9 +149,27 @@
                 toastWarning("수량은 1 이상이어야 합니다.");
                 return;
             }
+            document.getElementById("cartProductQuantity").value = quantity;
+
 
             form.submit();
         }
+
+        function submitDirectBuyForm() {
+            var quantityValue = document.getElementById("quantity").value;
+
+            var quantity = parseInt(quantityValue);
+
+            // 유효성 검사: 수량이 1 이상인지 확인
+            if (quantity < 1) {
+                toastWarning("수량은 1 이상이어야 합니다.");
+                return;
+            }
+
+            document.getElementById("directBuyQuantity").value = quantityValue;
+            document.getElementById("directBuyForm").submit();
+        }
+
 
         $(function () {
             $("#like-button").click(function () {

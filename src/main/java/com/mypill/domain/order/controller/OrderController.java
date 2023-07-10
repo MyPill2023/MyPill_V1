@@ -75,7 +75,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @PostMapping("/create")
+    @PostMapping("/create/selected")
     public String createFromSelected(@RequestParam String[] selectedCartProductIds) {
         Member buyer = rq.getMember();
 
@@ -84,6 +84,19 @@ public class OrderController {
         }
 
         RsData<Order> orderRsData = orderService.createFromSelectedCartProduct(buyer, selectedCartProductIds);
+        if (orderRsData.isFail()) {
+            return rq.historyBack(orderRsData);
+        }
+
+        return rq.redirectWithMsg("/order/form/%s".formatted(orderRsData.getData().getId()), orderRsData);
+    }
+
+    @PreAuthorize("hasAuthority('BUYER')")
+    @PostMapping("/create/single")
+    public String createFromSingleProduct(@RequestParam Long productId, @RequestParam Long quantity) {
+        Member buyer = rq.getMember();
+
+        RsData<Order> orderRsData = orderService.createSingleProduct(buyer, productId, quantity);
         if (orderRsData.isFail()) {
             return rq.historyBack(orderRsData);
         }

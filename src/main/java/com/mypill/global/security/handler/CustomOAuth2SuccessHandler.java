@@ -15,19 +15,20 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     private final Rq rq;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-        if (!rq.getMember().isEmailVerified()) {
-            redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/usr/member/login", "이메일 인증이 완료되지 않은 계정입니다."));
+        if (rq.getMember().getDeleteDate() != null) {
+            redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/usr/member/login", "아이디 또는 비밀번호가 일치하지 않습니다."));
             clearAuthenticationAttributes(request);
             rq.invalidateSession();
             return;
         }
         super.onAuthenticationSuccess(request, response, authentication);
     }
+
 }

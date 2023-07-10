@@ -14,13 +14,13 @@
         <div class="flex flex-col gap-5 px-5 mt-10 w-full">
             <span class="text-xl">1. 통신판매 사업자 인증</span>
             <div class="flex flex-col bg-base-100   gap-2">
-                <th:block th:if="${@rq.member.isBrnoCertificated}">
+                <th:block th:if="${@rq.member.businessNumber != null}">
                     <span class="text-blue-500">인증이 완료된 항목입니다.</span>
                 </th:block>
-                <th:block th:unless="${@rq.member.isBrnoCertificated}">
+                <th:block th:unless="${@rq.member.businessNumber != null}">
                     <span>통신판매 사업자번호를 입력하세요</span>
                     <form th:action="@{/usr/seller/brnoCertificate}" method="POST" class="flex gap-3 flex-grow">
-                        <input type="text" name="brno" placeholder="숫자만 입력해주세요"
+                        <input type="text" name="businessNumber" placeholder="숫자만 입력해주세요"
                                class="input input-bordered w-3/4"/>
                         <button class="btn btn-accent hover:bg-gray-300 " type="submit">
                             제출
@@ -32,13 +32,13 @@
         <div class="flex flex-col gap-5 px-5 mt-10 w-full">
             <span class="text-xl">2. 건강기능식품 판매업체 인증</span>
             <div class="flex flex-col bg-base-100  gap-2">
-                    <th:block th:if="${@rq.member.isNBrnoCertificated}">
+                    <th:block th:if="${@rq.member.nutrientBusinessNumber != null}">
                         <span class="text-blue-500">인증이 완료된 항목입니다.</span>
                     </th:block>
-                    <th:block th:unless="${@rq.member.isNBrnoCertificated}">
+                    <th:block th:unless="${@rq.member.nutrientBusinessNumber != null}">
                         <span>건강기능식품 판매업 인허가번호를 입력하세요</span>
                         <form th:action="@{/usr/seller/nBrnoCertificate}" method="POST" class="flex gap-3 flex-grow">
-                            <input type="text" name="nBrno" placeholder="숫자만 입력해주세요"
+                            <input type="text" name="nutrientBusinessNumber" placeholder="숫자만 입력해주세요"
                                    class="input input-bordered w-3/4"/>
                             <button class="btn btn-accent hover:bg-gray-300" type="submit">
                                 제출

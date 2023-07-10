@@ -55,6 +55,7 @@ class OrderControllerTests {
     private AddressService addressService;
 
     private Member testUser1;
+    private Product testProduct1;
     private CartProduct cartProduct1;
     private Address address;
 
@@ -63,7 +64,7 @@ class OrderControllerTests {
         testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com", true).getData();
         Member testUser2 = memberService.join("testUser2", "김영희", "1234", "1", "test2@test.com", true).getData();
         Member testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
-        Product testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
+        testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
         Product testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
         cartProduct1 = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L)).getData();
         cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
@@ -94,7 +95,7 @@ class OrderControllerTests {
     void testCreateFromSelectedSuccess() throws Exception {
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/order/create")
+                .perform(post("/order/create/selected")
                         .with(csrf())
                         .param("selectedCartProductIds", new String[]{String.valueOf(cartProduct1.getProduct().getId())}))
                 .andDo(print());
@@ -106,6 +107,27 @@ class OrderControllerTests {
                 .andExpect(redirectedUrlPattern("/order/form/**"));
 
     }
+
+    @Test
+    @DisplayName("개별 상품 주문 성공")
+    @WithMockUser(username = "testUser1", authorities = "BUYER")
+    void testCreateFromSingleProductSuccess() throws Exception {
+        //WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/order/create/single")
+                        .with(csrf())
+                        .param("productId", String.valueOf(testProduct1.getId()))
+                        .param("quantity", "1"))
+                .andDo(print());
+        //THEN
+        resultActions
+                .andExpect(handler().handlerType(OrderController.class))
+                .andExpect(handler().methodName("createFromSingleProduct"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/order/form/**"));
+
+    }
+
     @Test
     @DisplayName("주문 폼 가져오기 성공")
     @WithMockUser(username = "testUser1", authorities = "BUYER")
