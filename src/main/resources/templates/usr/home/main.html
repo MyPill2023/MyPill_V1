@@ -6,11 +6,58 @@
 
 <body>
 <main layout:fragment="main">
-    <div class="hero-content flex flex-col my-10">
-        <h1 class="text-4xl font-bold">
-            MyPill
+    <div class="hero-content flex flex-col my-10 2 w-[32rem] max-w-lg">
+        <h1 class="text-4xl font-bold mb-10">
+            My💊Pill
         </h1>
-        <span class="text-lg">맞춤 영양제 찾기</span>
+
+        <div class="w-full max-w-md flex flex-col justify-center gap-5 mb-20 px-5 ">
+            <div class="card bg-base-100 shadow-lg">
+                <figure class="p-5 bg-green-100"><img src="https://cdn.pixabay.com/photo/2012/04/10/17/40/vitamins-26622_1280.png" alt="pill" /></figure>
+                <div class="card-body">
+                    <h2 class="card-title">건강 설문</h2>
+                    <p>나에게 꼭 필요한 영양성분을 확인해보세요!</p>
+                    <div class="card-actions justify-end mt-1">
+                        <a href="/usr/survey/start" class="btn btn-success">바로가기</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="font-bold text-2xl mt-10">
+                ⭐인기상품 TOP 5⭐
+            </div>
+            <div th:each="product, loop : ${products}"
+                 class="bg-base-100 border-b border-gray-200 pt-3 pb-6">
+                <a th:href="@{|/product/detail/${product.id}|}">
+
+                    <div class="flex justify-around gap-5">
+                        <div style="width: 100px; height: 100px;">
+                            <img th:src="${product.image != null ? product.image.filepath : '/'}" alt="product_image"
+                                 class="object-contain"
+                                 style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
+                        </div>
+                        <div class="flex flex-col gap-3 w-4/6">
+                            <div class="flex flex-col gap-1">
+                                <h3 th:text="${product.seller.name}"></h3>
+                                <h1 th:text="${product.name}" class="text-lg font-bold"></h1>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="items-center">
+                                    <i class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
+                                    <span th:text="${product.likedMembers.size()}"></span>
+                                </div>
+                                <span class="text-lg font-bold"
+                                      th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </a>
+            </div>
+
+        </div>
+
+
     </div>
 </main>
 </body>

@@ -19,6 +19,21 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
+    public List<Product> findTop5ProductsBySales() {
+        List<Product>  top10Products  = jpaQueryFactory.selectFrom(product)
+                .where(
+                        product.deleteDate.isNull(),
+                        product.stock.gt(0)
+                )
+                .orderBy(product.sales.desc())
+                .limit(5)
+                .fetch();
+
+        return top10Products ;
+    }
+
+
+    @Override
     public Page<Product> findAllProduct(Pageable pageable) {
         QueryResults<Product> results = jpaQueryFactory.selectFrom(product)
                 .where(
