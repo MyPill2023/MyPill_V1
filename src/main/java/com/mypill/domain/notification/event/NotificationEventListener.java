@@ -1,4 +1,4 @@
-package com.mypill.domain.notification.eventlistner;
+package com.mypill.domain.notification.event;
 
 import com.mypill.domain.notification.service.NotificationService;
 import com.mypill.global.event.EventAfterOrderCanceled;

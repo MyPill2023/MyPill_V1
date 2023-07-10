@@ -7,6 +7,8 @@ import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/cart")
+@Tag(name = "CartController", description = "장바구니")
 public class CartController {
 
     private final CartService cartService;
@@ -27,6 +30,7 @@ public class CartController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("")
+    @Operation(summary = "장바구니 보여주기")
     public String showCart(Model model){
         Cart cart =  cartService.cartView(rq.getMember());
         model.addAttribute("cartResponse",CartResponse.of(cart));
@@ -35,6 +39,7 @@ public class CartController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/add")
+    @Operation(summary = "장바구니에 상품 추가")
     public String addCartProduct(@Valid CartProductRequest request){
         RsData<CartProduct> addRsData = cartService.addProduct(rq.getMember(), request);
 
@@ -47,6 +52,7 @@ public class CartController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/update")
+    @Operation(summary = "장바구니에서 상품 수량 업데이트")
     public String updateQuantity(@RequestParam Long cartProductId, @RequestParam Long newQuantity){
         RsData<CartProduct> updateRsData = cartService.updateQuantity(rq.getMember(), cartProductId, newQuantity);
 
@@ -63,6 +69,7 @@ public class CartController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/delete")
+    @Operation(summary = "장바구니에서 상품 삭제")
     public String softDeleteCartProduct(@RequestParam Long cartProductId){
         RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(rq.getMember(), cartProductId);
 

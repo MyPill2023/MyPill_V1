@@ -8,6 +8,8 @@ import com.mypill.domain.notification.entity.NotificationTypeCode;
 import com.mypill.domain.notification.service.NotificationService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/usr/notification")
 @RequiredArgsConstructor
+@Tag(name = "NotificationController", description = "알림")
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -30,6 +33,7 @@ public class NotificationController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
+    @Operation(summary = "알림 목록")
     public String list(Model model){
 
         List<NotificationResponse> notificationsResponse = new ArrayList<>();
@@ -47,6 +51,7 @@ public class NotificationController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/read/{notificationId}")
+    @Operation(summary = "알림 읽음 처리")
     public String list(@PathVariable Long notificationId){
         RsData<Notification> readRsData = notificationService.makeAsRead(rq.getMember(), notificationId);
         if(readRsData.isFail()){
