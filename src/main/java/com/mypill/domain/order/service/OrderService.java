@@ -42,22 +42,22 @@ public class OrderService {
 
     public RsData<Order> getOrderForm(Member actor, Long orderId) {
         Order order = findById(orderId).orElse(null);
-        if(order == null){
+        if (order == null) {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
-        if(!order.getBuyer().getId().equals(actor.getId())){
+        if (!order.getBuyer().getId().equals(actor.getId())) {
             return RsData.of("F-2", "다른 회원의 주문에 접근할 수 없습니다.");
         }
-        if(order.getPayment() != null){
+        if (order.getPayment() != null) {
             return RsData.of("F-3", "이미 결제된 주문입니다.");
         }
 
-        return  RsData.of("S-1", order);
+        return RsData.of("S-1", order);
     }
 
     @Transactional
     public RsData<Order> createFromCart(Member buyer) {
-        List<CartProduct> cartProducts = cartService.findByMemberId(buyer.getId()).getCartProducts();
+        List<CartProduct> cartProducts = cartService.getCart(buyer).getCartProducts();
         return createAndConnect(buyer, cartProducts);
     }
 
@@ -73,7 +73,7 @@ public class OrderService {
     public RsData<Order> createSingleProduct(Member buyer, Long productId, Long quantity) {
         Product product = productService.findById(productId).orElse(null);
 
-        if(product == null){
+        if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
 
@@ -85,7 +85,7 @@ public class OrderService {
     }
 
     @Transactional
-    public RsData<Order> createAndConnect(Member buyer, List<CartProduct> cartProducts){
+    public RsData<Order> createAndConnect(Member buyer, List<CartProduct> cartProducts) {
         List<OrderItem> orderItems = createOrderItemsFromCartProducts(cartProducts);
         Order order = create(buyer, orderItems);
         addCartProductsToOrder(order, cartProducts);
@@ -133,7 +133,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void updatePayment(Order order, String paymentKey, String method, Long totalAmount, LocalDateTime payDate, String status){
+    public void updatePayment(Order order, String paymentKey, String method, Long totalAmount, LocalDateTime payDate, String status) {
         order.updatePayment(paymentKey, method, totalAmount, payDate, status);
         orderRepository.save(order);
     }
@@ -156,20 +156,20 @@ public class OrderService {
     public RsData<Order> checkCanCancel(Member buyer, Long orderId) {
         Order order = findByIdAndPaymentIsNotNull(orderId).orElse(null);
 
-        if(order == null) {
+        if (order == null) {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
 
-        if(!Objects.equals(order.getBuyer().getId(), buyer.getId())) {
+        if (!Objects.equals(order.getBuyer().getId(), buyer.getId())) {
             return RsData.of("F-2", "접근 권한이 없습니다.");
         }
 
-        if(order.getPayment().getStatus().equals("CANCELED")) {
+        if (order.getPayment().getStatus().equals("CANCELED")) {
             return RsData.of("F-3", "이미 취소된 주문입니다.");
         }
 
-        for(OrderItem orderItem : order.getOrderItems()){
-            if(!orderItem.getStatus().equals(OrderStatus.ORDERED)) {
+        for (OrderItem orderItem : order.getOrderItems()) {
+            if (!orderItem.getStatus().equals(OrderStatus.ORDERED)) {
                 return RsData.of("F-4", "%s인 상품이 있어 </br>주문 취소가 불가합니다".formatted(orderItem.getStatus().getValue()));
             }
         }
@@ -186,7 +186,7 @@ public class OrderService {
                 .forEach(orderItem -> {
                     orderItem.updateStatus(OrderStatus.CANCELED);
                     orderItem.getProduct().updateStockAndSaleByOrderCancel(orderItem.getQuantity()); // 재고 업데이트
-                    if(uniqueSeller.add(orderItem.getProduct().getSeller())){
+                    if (uniqueSeller.add(orderItem.getProduct().getSeller())) {
                         publisher.publishEvent(new EventAfterOrderCanceled(this, orderItem.getProduct().getSeller(), order));
                     }
                 });
@@ -198,7 +198,7 @@ public class OrderService {
     @Transactional
     public RsData<OrderItem> updateOrderStatus(Long orderItemId, String newStatus) {
         OrderItem orderItem = findOrderItemById(orderItemId).orElse(null);
-        if(orderItem == null){
+        if (orderItem == null) {
             return RsData.of("F-1", "존재하지 않는 주문 상품입니다.");
         }
 
@@ -215,11 +215,11 @@ public class OrderService {
     }
 
     @Transactional
-    public void updatePrimaryOrderStatus(Order order){
+    public void updatePrimaryOrderStatus(Order order) {
         order.updatePrimaryOrderStatus(getHighestPriorityOrderItemStatus(order));
     }
 
-    public OrderStatus getHighestPriorityOrderItemStatus(Order order){
+    public OrderStatus getHighestPriorityOrderItemStatus(Order order) {
         List<OrderItem> orderItems = order.getOrderItems();
         if (orderItems.isEmpty()) {
             return null;
@@ -239,14 +239,14 @@ public class OrderService {
 
         long orderIdInputted = Long.parseLong(orderId.split("_")[0]);
         if (id != orderIdInputted) {
-            return RsData.of("F-2","주문번호가 일치하지 않습니다.");
+            return RsData.of("F-2", "주문번호가 일치하지 않습니다.");
         }
         if (!amount.equals(order.getTotalPrice())) {
             return RsData.of("F-3", "주문 가격과 결제 가격이 일치하지 않습니다.");
         }
 
-        for(OrderItem orderItem : order.getOrderItems()){
-            if(orderItem.getProduct().getStock() < orderItem.getQuantity()){
+        for (OrderItem orderItem : order.getOrderItems()) {
+            if (orderItem.getProduct().getStock() < orderItem.getQuantity()) {
                 return RsData.of("F-4", "%s의 주문 수량이 재고보다 많습니다.".formatted(orderItem.getProduct().getName()));
             }
         }
@@ -257,18 +257,23 @@ public class OrderService {
     public Optional<Order> findById(Long orderId) {
         return orderRepository.findById(orderId);
     }
+
     public Optional<OrderItem> findOrderItemById(Long id) {
         return orderItemRepository.findById(id);
     }
+
     public List<Order> findByBuyerId(Long buyerId) {
         return orderRepository.findByBuyerId(buyerId);
     }
+
     public List<Order> findByBuyerIdAndPaymentIsNotNull(Long buyerId) {
         return orderRepository.findByBuyerIdAndPaymentIsNotNull(buyerId);
     }
+
     public Optional<Order> findByIdAndPaymentIsNotNull(Long orderId) {
         return orderRepository.findByIdAndPaymentIsNotNull(orderId);
     }
+
     public List<Order> findBySellerId(Long sellerId) {
         return orderRepository.findBySellerId(sellerId);
     }
@@ -276,6 +281,7 @@ public class OrderService {
     public List<OrderItem> findOrderItemBySellerId(Long sellerId) {
         return orderItemRepository.findBySellerId(sellerId);
     }
+
     public List<OrderItem> findOrderItemByBuyerId(Long buyerId) {
         return orderItemRepository.findByBuyerId(buyerId);
     }
@@ -294,13 +300,14 @@ public class OrderService {
                 .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
                 .toList();
     }
+
     private void addCartProductsToOrder(Order order, List<CartProduct> cartProducts) {
         for (CartProduct cartProduct : cartProducts) {
             order.addCartProduct(cartProduct);
         }
     }
 
-    public Map<YearMonth, Long> countOrderPrice (Long sellerId) {
+    public Map<YearMonth, Long> countOrderPrice(Long sellerId) {
         List<OrderItem> orderItems = findOrderItemBySellerId(sellerId);
 
         Map<YearMonth, Long> monthlySales = SalesCalculator.calculateMonthlySales(orderItems);

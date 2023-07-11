@@ -25,19 +25,11 @@ public class Category {
     @Column(name = "name", nullable = false)
     private String name;
 
-
     @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "category", orphanRemoval = true, cascade = CascadeType.ALL)
     @Builder.Default
     private List<Question> questions = new ArrayList<>();
-
-    public Question Question (Question question) {
-        Category category = new Category();
-        return Question.builder()
-                .category(category)
-                .build();
-    }
 
     @ManyToMany(mappedBy = "categories")
     private List<Product> products = new ArrayList<>();

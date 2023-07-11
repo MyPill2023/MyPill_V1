@@ -61,7 +61,7 @@ class AddressServiceTests {
         //WHEN
         RsData<Address> createRsData =  addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true));
         //THEN
-        assertThat(createRsData.getResultCode()).isEqualTo("F-1");
+        assertThat(createRsData.getResultCode()).isEqualTo("F-2");
         assertThat(addressService.findByMemberId(testUser1.getId())).hasSize(AppConfig.getMaxAddressCount());
 
     }
