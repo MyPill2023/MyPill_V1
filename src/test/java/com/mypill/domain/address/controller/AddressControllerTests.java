@@ -270,6 +270,4 @@ class AddressControllerTests {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("배송지를 찾을 수 없습니다."));
     }
-
-
 }

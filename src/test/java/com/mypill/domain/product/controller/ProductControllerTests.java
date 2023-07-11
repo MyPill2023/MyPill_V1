@@ -195,5 +195,4 @@ class ProductControllerTests {
         assertThat(deletedproduct).isNotNull();
         assertThat(deletedproduct.getDeleteDate()).isNull();
     }
-
 }

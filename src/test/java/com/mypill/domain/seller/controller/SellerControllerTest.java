@@ -58,6 +58,7 @@ class SellerControllerTest {
                 .andExpect(status().is2xxSuccessful())
         ;
     }
+
     @Test
     @WithMockUser(username = "testUser1", authorities = "WAITER")
     @DisplayName("통신판매업 인증")
@@ -80,6 +81,7 @@ class SellerControllerTest {
                 .andExpect(status().is3xxRedirection())
         ;
     }
+
     @Test
     @WithMockUser(username = "testUser1", authorities = "WAITER")
     @DisplayName("건강기능식품 판매업 인증")

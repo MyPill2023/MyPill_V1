@@ -2,13 +2,11 @@ package com.mypill.domain.comment.controller;
 
 import com.mypill.domain.comment.dto.CommentRequest;
 import com.mypill.domain.comment.entity.Comment;
-import com.mypill.domain.comment.repository.CommentRepository;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
-import com.mypill.domain.post.service.PostService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,8 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -46,7 +42,6 @@ class CommentControllerTest {
 
     @BeforeEach()
     void beforeEach() {
-
         commentRequest = new CommentRequest();
         commentRequest.setNewContent("새 댓글");
 

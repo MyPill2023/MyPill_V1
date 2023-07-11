@@ -40,13 +40,13 @@ class ProductServiceTests {
         );
         testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
         testUserSeller2 = memberService.join("testUserSeller2", "김철수", "1234", 2, "testSeller2@test.com").getData();
-        product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)),emptyFile).getData();
+        product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
     }
 
     @Test
     @DisplayName("상품 등록")
     void createSuccessTests() {
-        Product newProduct = productService.create(new ProductRequest(testUserSeller1.getId(), "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)),emptyFile).getData();
+        Product newProduct = productService.create(new ProductRequest(testUserSeller1.getId(), "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
         Product product = productService.findById(newProduct.getId()).orElse(null);
         assertThat(product).isNotNull();
         assertThat(product.getName()).isEqualTo("루테인 베스트");
@@ -57,7 +57,7 @@ class ProductServiceTests {
     @Test
     @DisplayName("상품 목록")
     void getSuccessTests() {
-        Product newProduct = productService.create(new ProductRequest(testUserSeller1.getId(), "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)),emptyFile).getData();
+        Product newProduct = productService.create(new ProductRequest(testUserSeller1.getId(), "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
         RsData<Product> getRsData = productService.get(newProduct.getId());
         assertThat(getRsData.getResultCode()).isEqualTo("S-1");
 

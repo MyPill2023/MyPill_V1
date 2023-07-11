@@ -1,6 +1,5 @@
 package com.mypill.domain.member.controller;
 
-import com.mypill.domain.buyer.controller.BuyerController;
 import com.mypill.domain.member.service.MemberService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
