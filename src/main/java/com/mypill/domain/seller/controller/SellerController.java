@@ -45,7 +45,6 @@ public class SellerController {
         List<OrderItem> orderItems = orderService.findOrderItemBySellerId(rq.getMember().getId());
         Map<OrderStatus, Long> orderStatusCount = orderItems.stream()
                 .collect(Collectors.groupingBy(OrderItem::getStatus, Collectors.counting()));
-
         model.addAttribute("orders", orderResponses);
         model.addAttribute("orderStatusCount", orderStatusCount);
 
@@ -73,6 +72,7 @@ public class SellerController {
         }
         return rq.redirectWithMsg("/seller/certificate", rsData);
     }
+
     @PreAuthorize("hasAuthority('WAITER')")
     @PostMapping("/nBrnoCertificate")
     @Operation(summary = "건강기능식품 판매업 인증")
@@ -87,15 +87,13 @@ public class SellerController {
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/chart")
     @Operation(summary = "통계 페이지")
-    public String showChart(Model model){
+    public String showChart(Model model) {
         Map<YearMonth, Long> yearMonthLongMap = orderService.countOrderPrice(rq.getMember().getId());
         List<String> labels = yearMonthLongMap.keySet()
                 .stream()
                 .map(yearMonth -> yearMonth.getMonth().toString())
                 .collect(Collectors.toList());
-
         List<Long> salesData = new ArrayList<>(yearMonthLongMap.values());
-
         model.addAttribute("labels", labels);
         model.addAttribute("salesData", salesData);
         return "usr/seller/chart";

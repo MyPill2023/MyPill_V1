@@ -17,5 +17,4 @@ public class QuestionService {
     public List<Question> findByCategoryId(Long categoryId) {
         return questionRepository.findByCategoryId(categoryId);
     }
-
 }
