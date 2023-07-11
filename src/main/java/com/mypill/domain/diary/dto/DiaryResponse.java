@@ -13,7 +13,5 @@ public class DiaryResponse {
     private Member member;
     private String name;
     private LocalTime time;
-    private String type;
-    private String memo;
 
 }

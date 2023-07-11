@@ -36,8 +36,6 @@ public class DiaryService {
                 .member(member)
                 .name(diaryRequest.getName())
                 .time(diaryRequest.getTime())
-                .memo(diaryRequest.getMemo())
-                .type(diaryRequest.getType())
                 .build();
         diaryRepository.save(newDiary);
         return RsData.of("S-1","영양제 등록이 완료되었습니다.", newDiary);

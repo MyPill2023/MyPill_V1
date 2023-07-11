@@ -51,7 +51,7 @@ public class DiaryController {
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData);
         }
-        return rq.redirectWithMsg("/usr/diary/detail/%s".formatted(createRsData.getData().getId()), createRsData);
+        return rq.redirectWithMsg("/usr/diary/list", createRsData);
 
     }
 
@@ -62,21 +62,6 @@ public class DiaryController {
         List<Diary> diaries = diaryService.getList(rq.getMember().getId());
         model.addAttribute("diaries", diaries);
         return "usr/diary/list";
-    }
-
-    @PreAuthorize("hasAuthority('MEMBER')")
-    @GetMapping("/detail/{diaryId}")
-    @Operation(summary = "영양제 정보 상세")
-    public String showDetail(@PathVariable Long diaryId, Model model) {
-        Diary diary = diaryService.findById(diaryId).orElse(null);
-        if(diary == null) {
-            return rq.historyBack("존재하지 않는 영양제 정보입니다.");
-        }
-        if (diary.getDeleteDate() != null){
-            return rq.historyBack("삭제된 영양제 정보 입니다.");
-        }
-        model.addAttribute("diary",diary);
-        return "usr/diary/detail";
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")

@@ -27,11 +27,6 @@ public class Diary extends BaseEntity {
     @Column(nullable = false)
     private LocalTime time;
 
-    private String type;
-
-    @Column(columnDefinition = "TEXT")
-    private String memo;
-
     @Builder.Default
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<DiaryCheckLog> timeChecks = new ArrayList<>();

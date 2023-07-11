@@ -8,13 +8,13 @@
 <main layout:fragment="main">
 
     <div class="hero-content flex flex-col mb-10 2 w-[32rem] mt-5 max-w-lg">
-        <h1 class="text-2xl text-center font-bold mb-10"> 나의 영양제 등록하기
+        <h1 class="text-2xl text-center font-bold my-10"> 나의 영양제 등록하기
         </h1>
 
         <form th:action method="POST" class="flex flex-col gap-4" onsubmit="myPillRequestDto__submit(this, event); return false;">
             <input type="hidden" id="id" name="id" th:value="${@rq.member.id}">
             <div>
-                <label for="name" class="block text-gray-700 font-bold mb-2">영양제명</label>
+                <label for="name" class="block text-gray-700 font-bold mb-2">영양제 이름</label>
                 <input type="text" id="name" name="name" class="shadow input-success border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
             </div>
 
@@ -24,20 +24,6 @@
                     <input type="time" name="time" class="input input-bordered input-success" />
                 </div>
             </div>
-
-
-            <div>
-                <label for="type" class="block text-gray-70`0 font-bold mb-2">카테고리</label>
-                <input type="text" id="type" name="type" placeholder="ex) 눈, 위, 간..."
-                       class="shadow input-success border rounded py-2 px-3  focus:outline-none focus:shadow-outline">
-            </div>
-
-            <div class="flex flex-col">
-                <span class="text-gray-700 font-bold mb-2">메모</span>
-                <textarea id="memo" name="memo" placeholder="영양제에 대한 메모를 해주시면 됩니다"
-                          class="shadow textarea-success border rounded py-2 px-3  focus:outline-none focus:shadow-outline"></textarea>
-            </div>
-
 
             <button type="submit" class="btn btn-success">
                 등록하기
