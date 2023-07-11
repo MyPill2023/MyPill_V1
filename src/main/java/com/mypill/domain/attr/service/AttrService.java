@@ -23,14 +23,12 @@ public class AttrService {
         long relId = Long.parseLong(varNameBits[1]);
         String typeCode = varNameBits[2];
         String type2Code = varNameBits[3];
-
         set(relTypeCode, relId, typeCode, type2Code, value, expireDate);
     }
 
     @Transactional
     public void set(String relTypeCode, Long relId, String typeCode, String type2Code, String value, LocalDateTime expireDate) {
         Attr attr = findAttr(relTypeCode, relId, typeCode, type2Code);
-
         if (attr == null) {
             attr = Attr
                     .builder()
@@ -40,10 +38,8 @@ public class AttrService {
                     .type2Code(type2Code)
                     .build();
         }
-
         attr.setVal(value);
         attr.setExpireDate(expireDate);
-
         attrRepository.save(attr);
     }
 
@@ -57,21 +53,17 @@ public class AttrService {
         long relId = Integer.parseInt(varNameBits[1]);
         String typeCode = varNameBits[2];
         String type2Code = varNameBits[3];
-
         return findAttr(relTypeCode, relId, typeCode, type2Code);
     }
 
     public String get(String varName, String defaultValue) {
         Attr attr = findAttr(varName);
-
         if (attr == null) {
             return defaultValue;
         }
-
         if (attr.getExpireDate() != null && attr.getExpireDate().isBefore(LocalDateTime.now())) {
             return defaultValue;
         }
-
         return attr.getVal();
     }
 }
