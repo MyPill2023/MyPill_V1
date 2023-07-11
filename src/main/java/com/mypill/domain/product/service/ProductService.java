@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +46,7 @@ public class ProductService {
 
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
 
-        Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
+        Product product = Product.of(request, nutrients, categories, seller, new HashSet<>());
 
         productRepository.save(product);
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
@@ -61,7 +61,7 @@ public class ProductService {
 
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
 
-        Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
+        Product product = Product.of(request, nutrients, categories, seller, new HashSet<>());
 
         imageService.saveImage(multipartFile, product);
 
@@ -118,7 +118,7 @@ public class ProductService {
 
         imageService.updateImage(multipartFile, product);
         product.update(request, nutrients, categories);
-
+//        productRepository.save(product);
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
     }
 
