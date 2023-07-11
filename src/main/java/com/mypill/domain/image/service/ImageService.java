@@ -9,6 +9,8 @@ import com.mypill.global.aws.s3.service.AmazonS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -16,7 +18,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ImageService {
-
     private final AmazonS3Service amazonS3Service;
     private final ImageRepository imageRepository;
 
@@ -53,6 +54,7 @@ public class ImageService {
     }
 
     @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateImage(MultipartFile multipartFile, Object targetObject) {
         if (!multipartFile.isEmpty()) {
             try {

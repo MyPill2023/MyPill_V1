@@ -62,7 +62,7 @@ public class ProductController {
         Product product = productService.get(productId).getData();
         if (rq.isLogin() && product.getLikedMembers().contains(rq.getMember())) {
             model.addAttribute("product", ProductResponse.of(product, true));
-        }else {
+        } else {
             model.addAttribute("product", ProductResponse.of(product, false));
         }
 
@@ -121,7 +121,7 @@ public class ProductController {
     @Operation(summary = "상품 수정")
     public String update(@PathVariable Long productId, @Valid ProductRequest productRequest, @RequestParam(value = "imageFile") MultipartFile multipartFile) {
 
-        RsData<Product> updateRsData = productService.update(rq.getMember(), productId, productRequest,multipartFile);
+        RsData<Product> updateRsData = productService.update(rq.getMember(), productId, productRequest, multipartFile);
 
         return rq.redirectWithMsg("/product/detail/%s".formatted(productId), updateRsData);
     }
@@ -158,7 +158,7 @@ public class ProductController {
     @Operation(summary = "상품 좋아요 리스트에서 좋아요 삭제")
     public String unlike(@PathVariable("id") Long id) {
         productService.unlike(rq.getMember(), id);
-        return rq.redirectWithMsg("/usr/buyer/myLikes","관심 상품이 삭제되었습니다.");
+        return rq.redirectWithMsg("/usr/buyer/myLikes", "관심 상품이 삭제되었습니다.");
     }
 
     private List<ProductResponse> convertToResponse(List<Product> products) {
@@ -180,15 +180,15 @@ public class ProductController {
 
         model.addAttribute("page", productPageResult);
         model.addAttribute("products", convertToResponse(productPageResult.getContent()));
-        model.addAttribute("pagingUrl", getPagingUrl(request, pageNumber, pageSize));
+        model.addAttribute("pagingUrl", getPagingUrl(request));
 
     }
 
-    private String getPagingUrl(HttpServletRequest request, int pageNumber, int pageSize) {
+    private String getPagingUrl(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
 
         if (requestURI.contains("/list/all")) {
-            return String.format("/product/list/all?");
+            return "/product/list/all?";
         } else if (requestURI.contains("/list/nutrient/")) {
             String nutrientId = requestURI.substring(requestURI.lastIndexOf('/') + 1);
             return String.format("/product/list/nutrient/%s", nutrientId);

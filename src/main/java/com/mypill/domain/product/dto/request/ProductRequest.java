@@ -1,8 +1,5 @@
 package com.mypill.domain.product.dto.request;
 
-import com.mypill.domain.category.entity.Category;
-import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.nutrient.entity.Nutrient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

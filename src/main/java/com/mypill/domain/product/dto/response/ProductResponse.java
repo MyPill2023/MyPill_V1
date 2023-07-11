@@ -8,7 +8,9 @@ import com.mypill.domain.product.entity.Product;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -24,7 +26,7 @@ public class ProductResponse {
     private Long stock;
     private List<Nutrient> nutrients = new ArrayList<>();
     private List<Category> categories = new ArrayList<>();
-    private List<Member> likedMembers = new ArrayList<>();
+    private Set<Member> likedMembers = new HashSet<>();
     private boolean isLiked;
     private Image image;
 

@@ -34,5 +34,4 @@ public class AmazonS3Repository {
         String fullObjectName = "image/" + objectName;
         amazonS3.deleteObject(bucketName, fullObjectName);
     }
-
 }
