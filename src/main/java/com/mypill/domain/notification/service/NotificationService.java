@@ -1,5 +1,6 @@
 package com.mypill.domain.notification.service;
 
+import com.mypill.domain.diary.entity.Diary;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.notification.entity.Notification;
 import com.mypill.domain.notification.entity.NotificationTypeCode;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +55,16 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    public void whenBeforeDiaryCheck(Diary diary) {
+        Notification notification = Notification.builder()
+                .typeCode(NotificationTypeCode.Recode)
+                .member(diary.getMember())
+                .diaryName(diary.getName())
+                .diaryTime(diary.getTime())
+                .build();
+        notificationRepository.save(notification);
+    }
+
     @Transactional
     public RsData<Notification> makeAsRead(Member actor, Long notificationId) {
         Notification notification = findById(notificationId).orElseThrow();
@@ -62,10 +74,10 @@ public class NotificationService {
         notification.markAsRead();
         return RsData.of("S-1","");
     }
-
     public List<Notification> findByMemberId(Long memberId){
         return notificationRepository.findByMemberIdOrderByCreateDateDesc(memberId);
     }
+
     public Optional<Notification> findById(Long id){
         return notificationRepository.findById(id);
     }

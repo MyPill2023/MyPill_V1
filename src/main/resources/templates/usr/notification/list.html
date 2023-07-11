@@ -76,6 +76,27 @@
                         </div>
                     </a>
                 </div>
+                <div th:if="${notification.typeCode.value.equals('Recode')}">
+                    <a th:href="@{|/usr/diary/todolist|}" onclick="markNotificationAsRead(this)"
+                       th:data-notification-id="${notification.id}">
+                        <div th:class="'bg-base-100 border-b border-gray-200 p-5' + (${loop.first} ? ' border-t' : '')">
+                            <div class="flex flex-col gap-2">
+                                <div class="flex justify-between">
+                                    <span th:text="${#temporals.format(notification.createDate, 'yyyy-MM-dd')}"></span>
+                                    <span th:if="${notification.readDate == null}"
+                                          class="badge badge-warning">NEW</span>
+                                </div>
+                                <div>
+                                    <span class="badge badge-accent mx-1" th:text="${#temporals.format(notification.diaryTime, 'HH:mm')}"></span>
+                                    <span>
+                                        <span th:text="${notification.diaryName}" class="font-bold mt-1"></span>
+                                        복용시간입니다.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

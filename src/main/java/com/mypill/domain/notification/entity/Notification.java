@@ -10,6 +10,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -35,6 +36,9 @@ public class Notification extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
+
+    private String diaryName;
+    private LocalTime diaryTime;
 
     public void markAsRead() {
         readDate = LocalDateTime.now();

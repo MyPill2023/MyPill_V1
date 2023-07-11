@@ -52,7 +52,6 @@ public class ProductService {
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
     }
 
-
     @Transactional
     public RsData<Product> create(ProductRequest request, MultipartFile multipartFile) {
 
