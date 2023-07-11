@@ -39,10 +39,8 @@ class PostControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
+        emptyFile = new MockMultipartFile("imageFile", new byte[0]);
+
         testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
     }
 

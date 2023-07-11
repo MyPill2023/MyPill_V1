@@ -38,10 +38,8 @@ class PostServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
+        emptyFile = new MockMultipartFile("imageFile", new byte[0]);
+
         postRequest = new PostRequest();
         postRequest.setTitle("게시글 제목");
         postRequest.setContent("게시글 내용");
