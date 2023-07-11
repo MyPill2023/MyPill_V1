@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment;
 public class AppConfig {
     @Getter
     private static ApplicationContext context;
+    @Getter
     private static String activeProfile;
     @Getter
     private static String siteName;
@@ -36,17 +37,6 @@ public class AppConfig {
         AppConfig.context = context;
     }
 
-    //
-//    @Value("${custom.rebate.wholesalePriceRate}")
-//    public void setWholesalePriceRate(double value) {
-//        wholesalePriceRate = value;
-//    }
-//
-//    @Value("${custom.order.cancelAvailableSeconds}")
-//    public void setCancelAvailableSeconds(String value) {
-//        cancelAvailableSeconds = Integer.valueOf(value);
-//    }
-//
     @Value("${spring.profiles.active:}")
     public void setActiveProfile() {
         activeProfile = env.getActiveProfiles()[1];

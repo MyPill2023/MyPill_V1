@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,13 +49,18 @@ class OrderServiceTests {
     private Member testUser1;
     private CartProduct cartProduct1;
     private Address address;
+    private MockMultipartFile emptyFile;
 
     @BeforeEach
     void beforeEachTest() {
+        emptyFile = new MockMultipartFile(
+                "imageFile",
+                new byte[0]
+        );
         testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com", true).getData();
         Member testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
-        Product testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
-        Product testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
+        Product testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        Product testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
         cartProduct1 = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L)).getData();
         cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
         address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
@@ -98,7 +104,7 @@ class OrderServiceTests {
         Order order = orderService.createFromCart(testUser1).getData();
 
         //WHEN
-        orderService.updatePayment(order, "123","카드", 24000L, LocalDateTime.now(), "Done");
+        orderService.updatePayment(order, "123", "카드", 24000L, LocalDateTime.now(), "Done");
 
         //THEN
         assertThat(order).isNotNull();

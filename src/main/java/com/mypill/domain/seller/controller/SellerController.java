@@ -69,7 +69,7 @@ public class SellerController {
     public String brnoCertificate(@RequestParam("businessNumber") String businessNumber) {
         RsData<Member> rsData = sellerService.businessNumberCheck(businessNumber, rq.getMember());
         if (rsData.isFail()) {
-            rq.historyBack(rsData);
+            return rq.historyBack(rsData);
         }
         return rq.redirectWithMsg("/usr/seller/certificate", rsData);
     }
@@ -79,7 +79,7 @@ public class SellerController {
     public String nBrnoCertificate(@RequestParam("nutrientBusinessNumber") String nutrientBusinessNumber) {
         RsData<Member> rsData = sellerService.nutrientBusinessNumberCheck(nutrientBusinessNumber, rq.getMember());
         if (rsData.isFail()) {
-            rq.historyBack(rsData);
+            return rq.historyBack(rsData);
         }
         return rq.redirectWithMsg("/usr/seller/certificate", rsData);
     }

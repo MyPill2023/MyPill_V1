@@ -1,5 +1,6 @@
 package com.mypill.domain.post.service;
 
+import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
@@ -7,6 +8,7 @@ import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
+import com.mypill.global.aws.s3.dto.AmazonS3Dto;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,35 +40,19 @@ public class PostService {
         return postRepository.findByPosterIdAndDeleteDateIsNullOrderByIdDesc(member.getId());
     }
 
-    //NotProd용
-    @Transactional
-    public RsData<Post> create(PostRequest postRequest, Member member) {
-        if (member == null) {
-            return RsData.of("F-1", "존재하지 않는 회원입니다.");
-        }
-        Post newPost = Post.builder()
-                .title(postRequest.getTitle())
-                .content(postRequest.getContent())
-                .posterId(member.getId())
-                .build();
-
-        postRepository.save(newPost);
-        return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
-    }
-
     @Transactional
     public RsData<Post> create(PostRequest postRequest, Member member, MultipartFile multipartFile) {
         if (member == null) {
             return RsData.of("F-1", "존재하지 않는 회원입니다.");
         }
-        Post newPost = Post.builder()
-                .title(postRequest.getTitle())
-                .content(postRequest.getContent())
-                .posterId(member.getId())
-                .build();
-        imageService.saveImage(multipartFile, newPost);
-        postRepository.save(newPost);
-        return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
+        Post post = new Post(postRequest, member.getId(), new ArrayList<>());
+        if (!multipartFile.isEmpty()) {
+            AmazonS3Dto amazonS3ImageDto = imageService.saveImageOnServer(multipartFile, post);
+            Image image = new Image(amazonS3ImageDto, multipartFile, post);
+            post.addImage(image);
+        }
+        postRepository.save(post);
+        return RsData.of("S-1", "질문 등록이 완료되었습니다.", post);
     }
 
     public RsData<Post> showDetail(Long postId) {
@@ -91,23 +78,6 @@ public class PostService {
         return RsData.of("S-1", "게시글 수정 페이지로 이동합니다.", post);
     }
 
-    //test용
-    @Transactional
-    public RsData<Post> update(Long postId, PostRequest postRequest, Long memberId) {
-        RsData<Post> postRsData = beforeUpdate(postId, memberId);
-        if (postRsData.isFail()) {
-            return postRsData;
-        }
-        Post post = postRsData.getData();
-        post = post.toBuilder()
-                .title(postRequest.getTitle())
-                .content(postRequest.getContent())
-                .build();
-
-        postRepository.save(post);
-        return RsData.of("S-1", "게시글이 수정되었습니다.", post);
-    }
-
     @Transactional
     public RsData<Post> update(Long postId, PostRequest postRequest, Long memberId, MultipartFile multipartFile) {
         RsData<Post> postRsData = beforeUpdate(postId, memberId);
@@ -115,12 +85,18 @@ public class PostService {
             return postRsData;
         }
         Post post = postRsData.getData();
-        post = post.toBuilder()
-                .title(postRequest.getTitle())
-                .content(postRequest.getContent())
-                .build();
-        imageService.updateImage(multipartFile, post);
-        postRepository.save(post);
+
+        if (!multipartFile.isEmpty()) {
+            AmazonS3Dto amazonS3ImageDto = imageService.updateImageOnServer(multipartFile, post);
+            Image image = post.getImage();
+            if (image == null) {
+                post.addImage(new Image(amazonS3ImageDto, multipartFile, post));
+            }
+            else{
+                post.getImage().update(amazonS3ImageDto, multipartFile);
+            }
+        }
+        post.update(postRequest);
         return RsData.of("S-1", "게시글이 수정되었습니다.", post);
     }
 

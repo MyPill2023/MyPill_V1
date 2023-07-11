@@ -1,7 +1,6 @@
 package com.mypill.domain.cart.controller;
 
 import com.mypill.domain.cart.dto.request.CartProductRequest;
-import com.mypill.domain.cart.entity.Cart;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.domain.member.entity.Member;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,18 +42,19 @@ class CartControllerTests {
     @Autowired
     private ProductService productService;
 
-    private Member testUser1;
-    private Member testUserSeller1;
-    private Product product1;
     private Product product2;
     private CartProduct cartProduct;
 
     @BeforeEach
     void beforeEachTest() {
-        testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
-        testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
-        product1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
-        product2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 15000L, 100L, asList(3L, 4L), asList(3L, 4L))).getData();
+        MockMultipartFile emptyFile = new MockMultipartFile(
+                "imageFile",
+                new byte[0]
+        );
+        Member testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
+        Member testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
+        Product product1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        product2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 15000L, 100L, asList(3L, 4L), asList(3L, 4L)), emptyFile).getData();
         cartProduct = cartService.addProduct(testUser1, new CartProductRequest(product1.getId(), 1L)).getData();
     }
 
@@ -65,7 +66,7 @@ class CartControllerTests {
                 .perform(post("/cart/add")
                         .with(csrf())
                         .param("productId", String.valueOf(product2.getId()))
-                        .param("quantity","1")
+                        .param("quantity", "1")
                 )
                 .andDo(print());
 
@@ -87,8 +88,8 @@ class CartControllerTests {
         ResultActions resultActions = mvc
                 .perform(post("/cart/update")
                         .with(csrf())
-                        .param("cartProductId",String.valueOf(cartProduct.getId()))
-                        .param("newQuantity","3")
+                        .param("cartProductId", String.valueOf(cartProduct.getId()))
+                        .param("newQuantity", "3")
                 )
                 .andDo(print());
 
@@ -112,7 +113,7 @@ class CartControllerTests {
         ResultActions resultActions = mvc
                 .perform(post("/cart/delete")
                         .with(csrf())
-                        .param("cartProductId",String.valueOf(this.cartProduct.getId()))
+                        .param("cartProductId", String.valueOf(this.cartProduct.getId()))
                 )
                 .andDo(print());
 

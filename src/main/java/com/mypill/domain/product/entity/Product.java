@@ -11,7 +11,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -60,10 +62,10 @@ public class Product extends BaseEntity {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "member_id")
     )
-    private List<Member> likedMembers = new ArrayList<>();
+    private Set<Member> likedMembers = new HashSet<>();
 
     public static Product of(ProductRequest requestDto, List<Nutrient> nutrients, List<Category> categories,
-                             Member seller, List<Member> likedMembers) {
+                             Member seller, Set<Member> likedMembers) {
         return Product.builder()
                 .name(requestDto.getName())
                 .description(requestDto.getDescription())
@@ -86,12 +88,12 @@ public class Product extends BaseEntity {
         this.categories = categories;
     }
 
-    public void updateStockAndSalesByOrder(Long quantity){
+    public void updateStockAndSalesByOrder(Long quantity) {
         this.stock -= quantity;
         this.sales += quantity;
     }
 
-    public void updateStockAndSaleByOrderCancel(Long quantity){
+    public void updateStockAndSaleByOrderCancel(Long quantity) {
         this.stock += quantity;
         this.sales -= quantity;
     }
@@ -104,15 +106,11 @@ public class Product extends BaseEntity {
     }
 
     public void addLikedMember(Member member) {
-        if (!this.likedMembers.contains(member)) {
-            this.likedMembers.add(member);
-        }
+        this.likedMembers.add(member);
     }
 
     public void deleteLikedMember(Member member) {
-        if (this.likedMembers.contains(member)) {
-            this.likedMembers.remove(member);
-        }
+        this.likedMembers.remove(member);
     }
 
     public void addImage(Image image) {

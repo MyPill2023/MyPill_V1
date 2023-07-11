@@ -2,6 +2,7 @@ package com.mypill.domain.post.entity;
 
 import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.comment.entity.Comment;
+import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,13 @@ public class Post extends BaseEntity {
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
     private Image image;
 
+    public Post(PostRequest postRequest, Long id, List<Comment> comments) {
+        this.title = postRequest.getTitle();
+        this.content = postRequest.getContent();
+        this.posterId = id;
+        this.comments = comments;
+    }
+
     public Long getCommentCnt() {
         long count = 0;
         for (Comment comment : comments) {
@@ -42,6 +50,11 @@ public class Post extends BaseEntity {
             }
         }
         return count;
+    }
+
+    public void update(PostRequest postRequest) {
+        this.title = postRequest.getTitle();
+        this.content = postRequest.getContent();
     }
 
     public void addImage(Image image) {

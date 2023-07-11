@@ -18,6 +18,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -58,14 +59,19 @@ class OrderControllerTests {
     private Product testProduct1;
     private CartProduct cartProduct1;
     private Address address;
+    private MockMultipartFile emptyFile;
 
     @BeforeEach
     void beforeEachTest() {
+        emptyFile = new MockMultipartFile(
+                "imageFile",
+                new byte[0]
+        );
         testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com", true).getData();
         Member testUser2 = memberService.join("testUser2", "김영희", "1234", "1", "test2@test.com", true).getData();
         Member testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
-        testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
-        Product testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 12000L, 100L, asList(1L, 2L), asList(1L, 2L))).getData();
+        testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        Product testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
         cartProduct1 = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L)).getData();
         cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
         address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
@@ -144,6 +150,7 @@ class OrderControllerTests {
                 .andExpect(handler().methodName("getOrderForm"))
                 .andExpect(status().is2xxSuccessful());
     }
+
     @Test
     @DisplayName("주문 폼 가져오기 실패 - 다른 사람의 주문")
     @WithMockUser(username = "testUser2", authorities = "BUYER")
@@ -188,7 +195,7 @@ class OrderControllerTests {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
         orderService.payByTossPayments(order, order.getId() + "_1234", address.getId());
-        orderService.updatePayment(order,"123", "카드", 24000L, LocalDateTime.now(), "Done");
+        orderService.updatePayment(order, "123", "카드", 24000L, LocalDateTime.now(), "Done");
         OrderItem orderItem = order.getOrderItems().get(0);
 
         //WHEN
@@ -196,7 +203,7 @@ class OrderControllerTests {
                 .perform(post("/order/update/status/%s".formatted(String.valueOf(orderItem.getId())))
                         .with(csrf())
                         .param("orderId", String.valueOf(order.getId()))
-                        .param("newStatus","배송 중"))
+                        .param("newStatus", "배송 중"))
                 .andDo(print());
         //THEN
         resultActions

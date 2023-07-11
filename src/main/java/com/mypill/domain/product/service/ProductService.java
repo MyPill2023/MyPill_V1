@@ -1,5 +1,6 @@
 package com.mypill.domain.product.service;
 
+import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
@@ -10,6 +11,7 @@ import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
+import com.mypill.global.aws.s3.dto.AmazonS3Dto;
 import com.mypill.global.event.EventAfterLike;
 import com.mypill.global.event.EventAfterUnlike;
 import com.mypill.global.rsdata.RsData;
@@ -22,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,21 +39,6 @@ public class ProductService {
     private final ApplicationEventPublisher publisher;
     private final ImageService imageService;
 
-    //NotProd용
-    @Transactional
-    public RsData<Product> create(ProductRequest request) {
-
-        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
-        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
-
-        Member seller = memberService.findById(request.getSellerId()).orElse(null);
-
-        Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
-
-        productRepository.save(product);
-        return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
-    }
-
     @Transactional
     public RsData<Product> create(ProductRequest request, MultipartFile multipartFile) {
 
@@ -60,10 +47,13 @@ public class ProductService {
 
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
 
-        Product product = Product.of(request, nutrients, categories, seller, new ArrayList<>());
+        Product product = Product.of(request, nutrients, categories, seller, new HashSet<>());
 
-        imageService.saveImage(multipartFile, product);
-
+        if (!multipartFile.isEmpty()) {
+            AmazonS3Dto amazonS3ImageDto = imageService.saveImageOnServer(multipartFile, product);
+            Image image = new Image(amazonS3ImageDto, multipartFile, product);
+            product.addImage(image);
+        }
         productRepository.save(product);
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
     }
@@ -79,33 +69,13 @@ public class ProductService {
         return RsData.of("S-1", "존재하는 상품입니다.", product);
     }
 
-    //test용
-    @Transactional
-    public RsData<Product> update(Member actor, Long productId, ProductRequest request) {
-
-        Product product = findById(productId).orElse(null);
-        if (product == null) {
-            return RsData.of("F-1", "존재하지 않는 상품입니다.", product);
-        }
-
-        if (!actor.getId().equals(product.getSeller().getId())) {
-            return RsData.of("F-2", "수정 권한이 없습니다.", product);
-        }
-
-        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
-        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
-
-        product.update(request, nutrients, categories);
-
-        return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
-    }
 
     @Transactional
     public RsData<Product> update(Member actor, Long productId, ProductRequest request, MultipartFile multipartFile) {
 
         Product product = findById(productId).orElse(null);
         if (product == null) {
-            return RsData.of("F-1", "존재하지 않는 상품입니다.", product);
+            return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
 
         if (!actor.getId().equals(product.getSeller().getId())) {
@@ -115,9 +85,16 @@ public class ProductService {
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
 
-        imageService.updateImage(multipartFile, product);
+        if (!multipartFile.isEmpty()) {
+            AmazonS3Dto amazonS3ImageDto = imageService.updateImageOnServer(multipartFile, product);
+            Image image = product.getImage();
+            if (image == null) {
+                product.addImage(new Image(amazonS3ImageDto, multipartFile, product));
+            } else {
+                product.getImage().update(amazonS3ImageDto, multipartFile);
+            }
+        }
         product.update(request, nutrients, categories);
-
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
     }
 
@@ -141,10 +118,6 @@ public class ProductService {
 
     public Optional<Product> findById(Long productId) {
         return productRepository.findById(productId);
-    }
-
-    public List<Product> findAll() {
-        return productRepository.findAll();
     }
 
     public Page<Product> getAllProductList(Pageable pageable) {
