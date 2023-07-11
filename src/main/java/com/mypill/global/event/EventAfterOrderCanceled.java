@@ -11,10 +11,9 @@ public class EventAfterOrderCanceled extends ApplicationEvent {
     private final Member seller;
     private final Order order;
 
-    public EventAfterOrderCanceled(Object source, Member seller, Order order){
+    public EventAfterOrderCanceled(Object source, Member seller, Order order) {
         super(source);
         this.seller = seller;
         this.order = order;
     }
-
 }

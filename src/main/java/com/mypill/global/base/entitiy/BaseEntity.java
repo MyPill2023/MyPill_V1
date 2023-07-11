@@ -26,20 +26,13 @@ public class BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     protected Long id;
-
     @CreatedDate
     private LocalDateTime createDate;
-
     @LastModifiedDate
     private LocalDateTime modifyDate;
-
     private LocalDateTime deleteDate;
 
-    public void softDelete(){
+    public void softDelete() {
         this.deleteDate = LocalDateTime.now();
-    }
-
-    public void revive() {
-        this.deleteDate = null;
     }
 }

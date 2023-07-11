@@ -10,7 +10,7 @@ public class EventAfterOrderPayment extends ApplicationEvent {
     private final Member seller;
     private final Order order;
 
-    public EventAfterOrderPayment(Object source, Member seller, Order order){
+    public EventAfterOrderPayment(Object source, Member seller, Order order) {
         super(source);
         this.seller = seller;
         this.order = order;

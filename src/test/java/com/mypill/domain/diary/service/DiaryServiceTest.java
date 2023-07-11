@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("prod")
+@ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 class DiaryServiceTest {
 

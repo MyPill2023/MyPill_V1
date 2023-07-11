@@ -13,5 +13,4 @@ public class AmazonS3Dto {
 
     private String cdnUrl;
     private String originUrl;
-
 }

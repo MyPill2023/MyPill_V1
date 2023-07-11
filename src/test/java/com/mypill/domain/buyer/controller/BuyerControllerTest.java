@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("prod")
+@ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 class BuyerControllerTest {
     @Autowired

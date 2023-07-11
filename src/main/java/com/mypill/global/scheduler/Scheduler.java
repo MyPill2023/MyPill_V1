@@ -1,4 +1,4 @@
-package com.mypill.global.batch;
+package com.mypill.global.scheduler;
 
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
@@ -6,30 +6,25 @@ import com.mypill.domain.diary.entity.Diary;
 import com.mypill.domain.diary.service.DiaryService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.notification.entity.Notification;
-import com.mypill.domain.notification.service.NotificationService;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import com.mypill.global.event.EventBeforeDiaryCheck;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 @Component
-public class BatchJobScheduler {
+public class Scheduler {
     private final MemberService memberService;
     private final PostService postService;
     private final CommentService commentService;
     private final DiaryService diaryService;
     private final ApplicationEventPublisher publisher;
 
-    public BatchJobScheduler(MemberService memberService, PostService postService, CommentService commentService, DiaryService diaryService, ApplicationEventPublisher publisher) {
+    public Scheduler(MemberService memberService, PostService postService, CommentService commentService, DiaryService diaryService, ApplicationEventPublisher publisher) {
         this.memberService = memberService;
         this.postService = postService;
         this.commentService = commentService;
