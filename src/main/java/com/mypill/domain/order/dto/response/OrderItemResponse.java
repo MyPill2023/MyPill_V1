@@ -17,7 +17,7 @@ public class OrderItemResponse {
     private Long quantity;
     private OrderStatus orderStatus;
 
-    public static OrderItemResponse of(OrderItem orderItem){
+    public static OrderItemResponse of(OrderItem orderItem) {
         return OrderItemResponse.builder()
                 .id(orderItem.getId())
                 .product(orderItem.getProduct())

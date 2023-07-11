@@ -22,29 +22,21 @@ import java.util.List;
 public class Order extends BaseEntity {
 
     private String orderNumber;
-
     private String name;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Member buyer;
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @Builder.Default
     private List<CartProduct> cartProducts = new ArrayList<>();
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
-
     @Column(nullable = false)
     private Long totalPrice;
-
     @Embedded
     private Payment payment;
-
     @OneToOne(fetch = FetchType.LAZY)
     private Address deliveryAddress;
-
     private OrderStatus primaryOrderStatus;
 
     public Order(Member buyer) {
@@ -54,13 +46,13 @@ public class Order extends BaseEntity {
         this.totalPrice = 0L;
     }
 
-    public void addOrderItem(OrderItem orderItem){
+    public void addOrderItem(OrderItem orderItem) {
         this.orderItems.add(orderItem);
         this.totalPrice += orderItem.getTotalPrice();
         orderItem.connectOrder(this);
     }
 
-    public void addCartProduct(CartProduct cartProduct){
+    public void addCartProduct(CartProduct cartProduct) {
         cartProducts.add(cartProduct);
         cartProduct.connectOrder(this);
     }
@@ -68,26 +60,21 @@ public class Order extends BaseEntity {
     public void makeName() {
         StringBuilder sb = new StringBuilder();
         String productName;
-
-        if(orderItems.isEmpty()){
+        if (orderItems.isEmpty()) {
             productName = "";
-        }else{
+        } else {
             productName = orderItems.get(0).getProduct().getName();
         }
-
         int maxOrderNameLength = AppConfig.getMaxOrderNameLength();
-
         if (productName.length() > maxOrderNameLength) {
             sb.append(productName, 0, maxOrderNameLength + 1);
             sb.append("...");
         } else {
             sb.append(productName);
         }
-
         if (orderItems.size() > 1) {
             sb.append(" 외 %d".formatted(orderItems.size() - 1));
         }
-
         this.name = sb.toString();
     }
 
@@ -103,15 +90,14 @@ public class Order extends BaseEntity {
     }
 
     public void updatePayment(LocalDateTime cancelDate, String status) {
-       this.payment.updateCancelData(cancelDate, status);
+        this.payment.updateCancelData(cancelDate, status);
     }
 
-    public void updatePrimaryOrderStatus(OrderStatus orderStatus){
+    public void updatePrimaryOrderStatus(OrderStatus orderStatus) {
         this.primaryOrderStatus = orderStatus;
     }
 
-
-    public void addAddress(Address address){
+    public void addAddress(Address address) {
         this.deliveryAddress = address;
     }
 }

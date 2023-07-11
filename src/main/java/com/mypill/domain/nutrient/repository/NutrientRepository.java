@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface NutrientRepository extends JpaRepository<Nutrient, Long> {
     List<Nutrient> findAllByOrderByNameAsc();
-    List<Nutrient> findByIdIn(List<Long> nutrientIds);
-    Optional<Nutrient> findById(Long nutrientId);
 
+    List<Nutrient> findByIdIn(List<Long> nutrientIds);
+
+    Optional<Nutrient> findById(Long nutrientId);
 }

@@ -17,7 +17,7 @@ public class Payment {
     private LocalDateTime payDate;
     private LocalDateTime cancelDate;
 
-    public Payment(String paymentKey, String method, Long totalAmount, LocalDateTime payDate, String status){
+    public Payment(String paymentKey, String method, Long totalAmount, LocalDateTime payDate, String status) {
         this.paymentKey = paymentKey;
         this.method = method;
         this.totalAmount = totalAmount;
@@ -29,5 +29,4 @@ public class Payment {
         this.cancelDate = cancelDate;
         this.status = status;
     }
-
 }

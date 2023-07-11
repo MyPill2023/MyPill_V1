@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.mypill.domain.order.entity.QOrder.order;
 import static com.mypill.domain.order.entity.QOrderItem.orderItem;
 import static com.mypill.domain.product.entity.QProduct.product;
 
@@ -16,7 +15,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<OrderItem> findBySellerId(Long sellerId){
+    public List<OrderItem> findBySellerId(Long sellerId) {
         return jpaQueryFactory.selectFrom(orderItem)
                 .join(orderItem.product, product)
                 .where(product.seller.id.eq(sellerId)
@@ -25,7 +24,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     }
 
     @Override
-    public List<OrderItem> findByBuyerId(Long buyerId){
+    public List<OrderItem> findByBuyerId(Long buyerId) {
         return jpaQueryFactory.selectFrom(orderItem)
                 .where(orderItem.order.buyer.id.eq(buyerId)
                         .and(orderItem.status.ne(OrderStatus.BEFORE)))

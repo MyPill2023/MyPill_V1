@@ -28,11 +28,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/order")
-@Tag(name="OrderController", description = "주문")
+@Tag(name = "OrderController", description = "주문")
 public class OrderController {
 
     private final OrderService orderService;
@@ -49,8 +48,6 @@ public class OrderController {
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
-        model.addAttribute("order", OrderResponse.of(rsData.getData()));
-
         List<AddressResponse> addresses = addressService.findByMemberId(rq.getMember().getId()).stream()
                 .filter(address -> address.getDeleteDate() == null)
                 .map(AddressResponse::of)
@@ -58,10 +55,9 @@ public class OrderController {
         AddressResponse defaultAddress = addresses.stream()
                 .filter(AddressResponse::isDefault)
                 .findFirst().orElse(null);
-
+        model.addAttribute("order", OrderResponse.of(rsData.getData()));
         model.addAttribute("addresses", addresses);
         model.addAttribute("defaultAddress", defaultAddress);
-
         return "usr/order/form";
     }
 
@@ -71,11 +67,9 @@ public class OrderController {
     public String createFromCart() {
         Member buyer = rq.getMember();
         RsData<Order> orderRsData = orderService.createFromCart(buyer);
-
         if (orderRsData.isFail()) {
             return rq.historyBack(orderRsData);
         }
-
         return rq.redirectWithMsg("/order/form/%s".formatted(orderRsData.getData().getId()), orderRsData);
     }
 
@@ -84,16 +78,13 @@ public class OrderController {
     @Operation(summary = "장바구니에서 선택한 상품만 주문")
     public String createFromSelected(@RequestParam String[] selectedCartProductIds) {
         Member buyer = rq.getMember();
-
-        if(selectedCartProductIds.length == 0){
+        if (selectedCartProductIds.length == 0) {
             return rq.historyBack("선택된 상품이 없습니다.");
         }
-
         RsData<Order> orderRsData = orderService.createFromSelectedCartProduct(buyer, selectedCartProductIds);
         if (orderRsData.isFail()) {
             return rq.historyBack(orderRsData);
         }
-
         return rq.redirectWithMsg("/order/form/%s".formatted(orderRsData.getData().getId()), orderRsData);
     }
 
@@ -102,12 +93,10 @@ public class OrderController {
     @Operation(summary = "개별 상품 바로 주문")
     public String createFromSingleProduct(@RequestParam Long productId, @RequestParam Long quantity) {
         Member buyer = rq.getMember();
-
         RsData<Order> orderRsData = orderService.createSingleProduct(buyer, productId, quantity);
         if (orderRsData.isFail()) {
             return rq.historyBack(orderRsData);
         }
-
         return rq.redirectWithMsg("/order/form/%s".formatted(orderRsData.getData().getId()), orderRsData);
     }
 
@@ -115,32 +104,24 @@ public class OrderController {
     @GetMapping("/detail/{orderId}")
     @Operation(summary = "구매자의 주문 내역 조회 페이지")
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
-
         RsData<Order> rsData = orderService.getOrderDetail(orderId);
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
         model.addAttribute("order", OrderResponse.of(rsData.getData()));
-
         return "usr/order/detail";
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/{id}/success")
     @Operation(summary = "결제 성공")
-    public String confirmPayment(
-            @PathVariable long id,
-            @RequestParam String paymentKey,
-            @RequestParam String orderId,
-            @RequestParam Long amount,
-            @RequestParam("addressId") String addressId,
-            Model model) throws Exception {
-
+    public String confirmPayment(@PathVariable long id, @RequestParam String paymentKey,
+                                 @RequestParam String orderId, @RequestParam Long amount,
+                                 @RequestParam("addressId") String addressId, Model model) throws Exception {
         RsData<Order> validateRsData = orderService.validateOrder(id, orderId, amount);
-        if(validateRsData.isFail()){
+        if (validateRsData.isFail()) {
             return rq.historyBack(validateRsData);
         }
-
         Order order = validateRsData.getData();
 
         HttpHeaders headers = new HttpHeaders();
@@ -158,10 +139,8 @@ public class OrderController {
                 "https://api.tosspayments.com/v1/payments/confirm", request, JsonNode.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-
             orderService.payByTossPayments(order, orderId, Long.parseLong(addressId));
             extractMessageFromResponse(responseEntity, order);
-
             return rq.redirectWithMsg("/order/detail/%s".formatted(order.getId()), "주문이 완료되었습니다.");
         } else {
             JsonNode failNode = responseEntity.getBody();
@@ -179,16 +158,15 @@ public class OrderController {
         model.addAttribute("orderNumber", orderNumber);
         model.addAttribute("message", message);
         model.addAttribute("code", code);
-        return "order/fail";
+        return "usr/order/fail";
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/cancel/{orderId}")
     @Operation(summary = "주문 취소")
     public String cancel(@PathVariable Long orderId) throws Exception {
-
-        RsData<Order> checkRsData =  orderService.checkCanCancel(rq.getMember(), orderId);
-        if(checkRsData.isFail()){
+        RsData<Order> checkRsData = orderService.checkCanCancel(rq.getMember(), orderId);
+        if (checkRsData.isFail()) {
             return rq.historyBack(checkRsData);
         }
 
@@ -209,7 +187,6 @@ public class OrderController {
                 "https://api.tosspayments.com/v1/payments/%s/cancel".formatted(paymentKey), request, JsonNode.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-
             String approvedAt = responseEntity.getBody().get("approvedAt").asText();
             LocalDateTime cancelDate = LocalDateTime.parse(approvedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
             String status = responseEntity.getBody().get("status").asText();
@@ -229,36 +206,26 @@ public class OrderController {
     @GetMapping("/management/{orderId}")
     @Operation(summary = "판매자의 주문 관리 페이지")
     public String management(@PathVariable Long orderId, Model model) {
-
         RsData<Order> rsData = orderService.getOrderDetail(orderId);
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
-
         Order order = rsData.getData();
-
         List<OrderItemResponse> orderItemResponses = order.getOrderItems().stream()
                 .filter(orderItem -> orderItem.getProduct().getSeller().getId().equals(rq.getMember().getId()))
                 .map(OrderItemResponse::of)
                 .toList();
-
         model.addAttribute("order", OrderResponse.of(order));
         model.addAttribute("orderItems", orderItemResponses);
-
         List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.values());
         model.addAttribute("orderStatuses", orderStatuses);
-
         return "usr/order/management";
     }
 
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/update/status/{orderItemId}")
     @Operation(summary = "판매자의 주문 상태 업데이트")
-    public String updateOrderStatus(@PathVariable Long orderItemId,
-                                    @RequestParam Long orderId,
-                                    @RequestParam String newStatus,
-                                    Model model) {
-
+    public String updateOrderStatus(@PathVariable Long orderItemId, @RequestParam Long orderId, @RequestParam String newStatus) {
         RsData<OrderItem> updateRsData = orderService.updateOrderStatus(orderItemId, newStatus);
         if (updateRsData.isFail()) {
             rq.historyBack(updateRsData);
@@ -268,16 +235,12 @@ public class OrderController {
 
     private void extractMessageFromResponse(ResponseEntity<JsonNode> responseEntity, Order order) {
         JsonNode body = responseEntity.getBody();
-
         String requestedAt = body.get("requestedAt").asText();
         LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-
         String paymentKey = body.get("paymentKey").asText();
         String method = body.get("method").asText();
         Long totalAmount = body.get("totalAmount").asLong();
         String status = body.get("status").asText();
-
         orderService.updatePayment(order, paymentKey, method, totalAmount, payDate, status);
     }
-
 }
