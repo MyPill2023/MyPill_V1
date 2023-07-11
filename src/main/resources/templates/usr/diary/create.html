@@ -2,6 +2,7 @@
 
 <head>
     <title>영양제 등록하기</title>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 </head>
 
 <body>
@@ -21,7 +22,7 @@
             <div class="mb-4">
                 <div class="form-control">
                     <label class="block text-gray-700 font-bold mb-2">복용 시간</label>
-                    <input type="time" name="time" class="input input-bordered input-success" />
+                    <input type="text" id="timeInput" name="time" class="input input-bordered input-success" />
                 </div>
             </div>
 
@@ -33,6 +34,9 @@
                 목록가기
             </a>
         </form>
+
+
+
     </div>
 
 
@@ -62,7 +66,19 @@
             form.submit();
         }
     </script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+    <script>
+        $(function() {
+            $("#timeInput").timepicker({
+                timeFormat: "HH:mm",
+                interval: 30,
+                scrollbar: true,
+                dynamic: false
+            });
+        });
+    </script>
 
 </main>
 </body>

@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,10 +34,15 @@ public class DiaryService {
         if (member == null) {
             return RsData.of("F-1", "존재하지 않는 회원입니다");
         }
+
+        String timeString = diaryRequest.getTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime localTime = LocalTime.parse(timeString, formatter);
+
         Diary newDiary = Diary.builder()
                 .member(member)
                 .name(diaryRequest.getName())
-                .time(diaryRequest.getTime())
+                .time(localTime)
                 .build();
         diaryRepository.save(newDiary);
         return RsData.of("S-1","영양제 등록이 완료되었습니다.", newDiary);
