@@ -4,7 +4,6 @@ import com.mypill.domain.address.dto.response.AddressResponse;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.order.dto.response.OrderListResponse;
 import com.mypill.domain.order.entity.Order;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 public class BuyerController {
     private final OrderService orderService;
     private final AddressService addressService;
-    private final NutrientService nutrientService;
     private final Rq rq;
 
     @PreAuthorize("hasAuthority('BUYER')")
@@ -40,7 +38,6 @@ public class BuyerController {
     public String myLikes() {
         return "usr/buyer/myLikes";
     }
-
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/mySchedule")
@@ -53,7 +50,6 @@ public class BuyerController {
     @GetMapping("/myOrder")
     @Operation(summary = "내 주문 페이지")
     public String myOrder(Model model) {
-
         List<Order> orders = orderService.findByBuyerIdAndPaymentIsNotNull(rq.getMember().getId());
         List<OrderListResponse> orderListResponses = orders.stream()
                 .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
@@ -63,7 +59,6 @@ public class BuyerController {
         List<OrderItem> orderItems = orderService.findOrderItemByBuyerId(rq.getMember().getId());
         Map<OrderStatus, Long> orderStatusCount = orderItems.stream()
                 .collect(Collectors.groupingBy(OrderItem::getStatus, Collectors.counting()));
-
         model.addAttribute("orderStatusCount", orderStatusCount);
 
         OrderStatus[] filteredOrderStatus = Arrays.stream(OrderStatus.values())
@@ -78,26 +73,20 @@ public class BuyerController {
     @GetMapping("/myAddress")
     @Operation(summary = "내 배송지 페이지")
     public String myAddress(Model model) {
-
         List<Address> addresses = addressService.findByMemberId(rq.getMember().getId());
         List<AddressResponse> addressResponses = addresses.stream()
                 .filter(address -> address.getDeleteDate() == null)
                 .map(AddressResponse::of).toList();
         model.addAttribute("addresses",addressResponses);
-
         return "usr/buyer/myAddress";
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/mySurvey")
     public String mySurvey(Model model) {
-
         Member member = rq.getMember();
-
-        List<Nutrient> nutrientAnswers = member.getSurveyNutrients();
-
-        model.addAttribute("nutrientAnswers", nutrientAnswers);
-
+        List<Nutrient> nutrients = member.getSurveyNutrients();
+        model.addAttribute("nutrients", nutrients);
         return "usr/buyer/mySurvey";
     }
 
