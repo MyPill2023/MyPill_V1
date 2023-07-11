@@ -62,7 +62,7 @@ public class BuyerController {
         model.addAttribute("orderStatusCount", orderStatusCount);
 
         OrderStatus[] filteredOrderStatus = Arrays.stream(OrderStatus.values())
-                .filter(status -> status.getPriority() >=1 && status.getPriority() <= 4 )
+                .filter(status -> status.getPriority() >= 1 && status.getPriority() <= 4)
                 .toArray(OrderStatus[]::new);
         model.addAttribute("orderStatuses", filteredOrderStatus);
 
@@ -77,7 +77,7 @@ public class BuyerController {
         List<AddressResponse> addressResponses = addresses.stream()
                 .filter(address -> address.getDeleteDate() == null)
                 .map(AddressResponse::of).toList();
-        model.addAttribute("addresses",addressResponses);
+        model.addAttribute("addresses", addressResponses);
         return "usr/buyer/myAddress";
     }
 
@@ -89,5 +89,4 @@ public class BuyerController {
         model.addAttribute("nutrients", nutrients);
         return "usr/buyer/mySurvey";
     }
-
 }

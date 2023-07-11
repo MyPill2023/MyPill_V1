@@ -41,11 +41,11 @@ public class AddressController {
     @PostMapping("/create")
     @Operation(summary = "배송지 등록")
     public String create(@Valid AddressRequest addressRequest) {
-        RsData<Address> rsData = addressService.create(addressRequest);
-        if (rsData.isFail()) {
-            return rq.historyBack(rsData);
+        RsData<Address> createRsData = addressService.create(addressRequest);
+        if (createRsData.isFail()) {
+            return rq.historyBack(createRsData);
         }
-        return rq.redirectWithMsg("/buyer/myAddress", rsData);
+        return rq.redirectWithMsg("/buyer/myAddress", createRsData);
     }
 
     @PreAuthorize("hasAuthority('BUYER')")

@@ -32,7 +32,7 @@ public class Address extends BaseEntity {
     private String phoneNumber;
     private boolean isDefault;
 
-    public static Address of(Member member, AddressRequest addressRequest){
+    public static Address of(Member member, AddressRequest addressRequest) {
         return Address.builder()
                 .member(member)
                 .name(addressRequest.getName())
@@ -45,7 +45,7 @@ public class Address extends BaseEntity {
                 .build();
     }
 
-    public void updateAddress(AddressRequest addressRequest){
+    public void updateAddress(AddressRequest addressRequest) {
         this.name = addressRequest.getName();
         this.receiverName = addressRequest.getReceiverName();
         this.address = addressRequest.getAddress();
@@ -54,15 +54,15 @@ public class Address extends BaseEntity {
         this.phoneNumber = addressRequest.getPhoneNumber();
     }
 
-    public void setDefaultName(){
+    public void setDefaultName() {
         this.name = this.receiverName + "의 배송지";
     }
 
-    public void changeDefaultTrue(){
+    public void changeDefaultTrue() {
         this.isDefault = true;
     }
 
-    public void changeDefaultFalse(){
+    public void changeDefaultFalse() {
         this.isDefault = false;
     }
 
