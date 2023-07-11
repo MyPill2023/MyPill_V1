@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/usr/diary")
+@RequestMapping("/diary")
 @Tag(name = "DiaryController", description = "복약관리")
 public class DiaryController {
 
@@ -51,7 +51,7 @@ public class DiaryController {
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData);
         }
-        return rq.redirectWithMsg("/usr/diary/list", createRsData);
+        return rq.redirectWithMsg("/diary/list", createRsData);
 
     }
 
@@ -73,7 +73,7 @@ public class DiaryController {
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData);
         }
-        return rq.redirectWithMsg("/usr/diary/list", deleteRsData);
+        return rq.redirectWithMsg("/diary/list", deleteRsData);
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
@@ -113,6 +113,6 @@ public class DiaryController {
         if (diaryRsData.isFail()) {
             return rq.historyBack(diaryRsData);
         }
-        return rq.redirectWithMsg("/usr/diary/todolist", diaryRsData);
+        return rq.redirectWithMsg("/diary/todolist", diaryRsData);
     }
 }

@@ -27,7 +27,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/usr/member")
+@RequestMapping("/member")
 @Tag(name = "MemberController", description = "회원")
 public class MemberController {
 
@@ -44,7 +44,7 @@ public class MemberController {
             return rq.historyBack(exception);
         }
         String uri = request.getHeader("Referer");
-        if (uri != null && !uri.contains("/usr/member/login")) {
+        if (uri != null && !uri.contains("/member/login")) {
             request.getSession().setAttribute("prevPage", uri);
         }
         return "usr/member/login";
@@ -69,7 +69,7 @@ public class MemberController {
         } catch (NumberFormatException e) {
             return rq.historyBack("회원 유형이 올바르지 않습니다.");
         }
-        return rq.redirectWithMsg("/usr/member/login", "인증 이메일이 발송되었습니다.");
+        return rq.redirectWithMsg("/member/login", "인증 이메일이 발송되었습니다.");
     }
 
     @ResponseBody

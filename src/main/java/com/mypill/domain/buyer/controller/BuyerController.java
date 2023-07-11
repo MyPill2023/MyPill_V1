@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/usr/buyer")
+@RequestMapping("/buyer")
 @Tag(name = "BuyerController", description = "구매자 회원")
 public class BuyerController {
     private final OrderService orderService;

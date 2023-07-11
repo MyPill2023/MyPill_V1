@@ -27,7 +27,7 @@ public class EmailVerificationController {
         }
         String successMsg = verifyEmailRsData.getMsg();
         if (rq.isLogout()) {
-            return rq.redirectWithMsg("/usr/member/login", successMsg);
+            return rq.redirectWithMsg("/member/login", successMsg);
         }
         return rq.redirectWithMsg("/", successMsg);
     }

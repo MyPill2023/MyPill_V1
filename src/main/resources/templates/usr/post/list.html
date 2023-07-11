@@ -12,7 +12,7 @@
             <span>영양제 복용, 건강관리 등에 대해 물어보세요!</span>
         </div>
         <div class="flex justify-center mb-5">
-            <form th:action="@{/usr/post/list}" class="flex flex-row">
+            <form th:action="@{/post/list}" class="flex flex-row">
                 <div class="flex border border-gray-300" style="border-right:none;">
                     <label for="searchType"></label>
                     <select id="searchType" name="searchType" class="h-full text-sm mx-1">
@@ -48,7 +48,7 @@
                     <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         <div class="flex flex-row items-center">
                             <div style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                <a th:text="${postRepsonse.post.title}" th:href="@{/usr/post/detail/{id}(id=${postRepsonse.post.id})}"></a>
+                                <a th:text="${postRepsonse.post.title}" th:href="@{/post/detail/{id}(id=${postRepsonse.post.id})}"></a>
                             </div>
                             <span class="ml-2"
                                   th:text="${(postRepsonse.post.getCommentCnt() >= 1 ? ' (' + postRepsonse.post.getCommentCnt() + ')' : '')}"></span>
@@ -66,13 +66,13 @@
                 <ul class="flex justify-center">
                     <li>
                         <a th:if="${page.hasPrevious()} and ${page.number != 0}"
-                           th:href="@{/usr/post/list(pageNumber=0, pageSize=${page.size})}"
+                           th:href="@{/post/list(pageNumber=0, pageSize=${page.size})}"
                            class="text-blue-500 hover:text-blue-700 mr-4">
                             처음
                         </a>
                     </li>
                     <li th:if="${page.hasPrevious()}">
-                        <a th:href="@{/usr/post/list(pageNumber=${page.number - 1}, pageSize=${page.size})}"
+                        <a th:href="@{/post/list(pageNumber=${page.number - 1}, pageSize=${page.size})}"
                            class="text-blue-500 hover:text-blue-700 mr-4">
                             이전
                         </a>
@@ -80,21 +80,21 @@
                     <li th:each="pageNum : ${#numbers.sequence(0, page.totalPages - 1)}"
                         th:class="${page.totalPages > 1 and pageNum >= page.number - 2 and pageNum <= page.number + 2} ? 'mr-4' : ''">
                         <a th:if="${page.totalPages > 1 and pageNum >= page.number - 2 and pageNum <= page.number + 2}"
-                           th:href="@{/usr/post/list(pageNumber=${pageNum}, pageSize=${page.size})}"
+                           th:href="@{/post/list(pageNumber=${pageNum}, pageSize=${page.size})}"
                            class="text-blue-500 hover:text-blue-700 font-bold"
                            th:class="${pageNum == page.number ? 'text-blue-700' : ''}">
                             <span th:text="${pageNum + 1}"></span>
                         </a>
                     </li>
                     <li th:if="${page.hasNext()}">
-                        <a th:href="@{/usr/post/list(pageNumber=${page.number + 1}, pageSize=${page.size})}"
+                        <a th:href="@{/post/list(pageNumber=${page.number + 1}, pageSize=${page.size})}"
                            class="text-blue-500 hover:text-blue-700">
                             다음
                         </a>
                     </li>
                     <li>
                         <a th:if="${page.hasNext()} and ${page.number != page.totalPages - 1}"
-                           th:href="@{/usr/post/list(pageNumber=${page.totalPages - 1}, pageSize=${page.size})}"
+                           th:href="@{/post/list(pageNumber=${page.totalPages - 1}, pageSize=${page.size})}"
                            class="text-blue-500 hover:text-blue-700 ml-4">
                             마지막
                         </a>
@@ -102,7 +102,7 @@
                 </ul>
             </div>
             <div class="flex justify-end">
-                <a href="/usr/post/create" class="btn">질문 작성하기</a>
+                <a href="/post/create" class="btn">질문 작성하기</a>
             </div>
 
         </div>

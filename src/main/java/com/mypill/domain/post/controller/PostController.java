@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RequestMapping("/usr/post")
+@RequestMapping("/post")
 @RequiredArgsConstructor
 @Controller
 @Tag(name = "PostController", description = "게시판")
@@ -61,7 +61,7 @@ public class PostController {
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData.getMsg());
         }
-        return rq.redirectWithMsg("/usr/post/detail/%s".formatted(createRsData.getData().getId()), createRsData);
+        return rq.redirectWithMsg("/post/detail/%s".formatted(createRsData.getData().getId()), createRsData);
     }
 
     @GetMapping("/detail/{postId}")
@@ -104,7 +104,7 @@ public class PostController {
         if (updateRsData.isFail()) {
             return rq.historyBack(updateRsData.getMsg());
         }
-        return rq.redirectWithMsg("/usr/post/detail/%s".formatted(updateRsData.getData().getId()), updateRsData);
+        return rq.redirectWithMsg("/post/detail/%s".formatted(updateRsData.getData().getId()), updateRsData);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -115,6 +115,6 @@ public class PostController {
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData.getMsg());
         }
-        return rq.redirectWithMsg("/usr/post/list", deleteRsData);
+        return rq.redirectWithMsg("/post/list", deleteRsData);
     }
 }

@@ -32,19 +32,19 @@
                     </div>
                     <th:block th:if="${@rq.isLogin()}">
                         <div th:if="${poster.id}==${@rq.member.id}" class="flex justify-end gap-2">
-                            <a th:href="@{/usr/post/update/{id}(id=${post.id})}"
+                            <a th:href="@{/post/update/{id}(id=${post.id})}"
                                class="btn  btn-outline flex gap-1 btn-xs">수정</a>
                             <a class="btn  btn-outline flex gap-1 btn-xs" href="javascript:"
                                onclick="if ( confirm('게시글을 삭제하시겠습니까?') ) $(this).next().submit();">
                                 삭제</a>
-                            <form hidden th:action="@{/usr/post/delete/{id}(id=${post.id})}" method="POST">
+                            <form hidden th:action="@{/post/delete/{id}(id=${post.id})}" method="POST">
                                 <input type="hidden" name="_method" value="delete">
                             </form>
                         </div>
                     </th:block>
                 </div>
             </div>
-            <form id="CommentRequest" th:action="@{/usr/comment/create/{id}(id=${post.id})}" method="POST"
+            <form id="CommentRequest" th:action="@{/comment/create/{id}(id=${post.id})}" method="POST"
                   class="flex flex-col gap-4 w-full whitespace-normal mt-3"
                   onsubmit="CreateCommentForm__submit(this); return false;">
                 <label class="block text-gray-700 font-bold mb-1" for="newContent">
@@ -132,7 +132,7 @@
                                    onclick="if ( confirm('댓글을 삭제하시겠습니까?') ) $(this).next().submit();">
                                     삭제</a>
                                 <form hidden
-                                      th:action="@{/usr/comment/delete/{postId}/{commentId}(commentId=${commentResponse.comment.id}, postId=${post.id})}"
+                                      th:action="@{/comment/delete/{postId}/{commentId}(commentId=${commentResponse.comment.id}, postId=${post.id})}"
                                       method="POST"></form>
                             </div>
                         </th:block>
@@ -176,7 +176,7 @@
             const responseCode = undefined;
             const errorMsg = undefined;
 
-            const url = '/usr/comment/update/' + commentId;
+            const url = '/comment/update/' + commentId;
             const csrfToken = $('meta[name=csrf-token]').attr('content'); // 메타 태그에서 CSRF 토큰 가져오기
 
             // Ajax 요청을 사용하여 댓글 수정 API 호출

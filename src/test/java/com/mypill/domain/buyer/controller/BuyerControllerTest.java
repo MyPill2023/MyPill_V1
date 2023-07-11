@@ -52,7 +52,7 @@ class BuyerControllerTest {
     void myLikesTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myLikes"))
+                .perform(get("/buyer/myLikes"))
                 .andDo(print());
 
         // THEN

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/usr/notification")
+@RequestMapping("/notification")
 @RequiredArgsConstructor
 @Tag(name = "NotificationController", description = "알림")
 public class NotificationController {

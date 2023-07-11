@@ -72,7 +72,7 @@ class CommentControllerTest {
     void createTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/comment/create/" + savedPost.getId())
+                .perform(post("/comment/create/" + savedPost.getId())
                         .with(csrf()) // CSRF 키 생성
                         .param("newContent", commentRequest.getNewContent())
                 )
@@ -94,7 +94,7 @@ class CommentControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/comment/update/" + comment.getId())
+                .perform(post("/comment/update/" + comment.getId())
                         .with(csrf()) // CSRF 키 생성
                         .param("newContent", commentRequest.getNewContent())
                 )
@@ -115,7 +115,7 @@ class CommentControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/comment/delete/" + savedPost.getId() + "/" + comment.getId())
+                .perform(post("/comment/delete/" + savedPost.getId() + "/" + comment.getId())
                         .with(csrf()) // CSRF 키 생성
                 )
                 .andDo(print());

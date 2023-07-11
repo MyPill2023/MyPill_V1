@@ -158,7 +158,7 @@ public class ProductController {
     @Operation(summary = "상품 좋아요 리스트에서 좋아요 삭제")
     public String unlike(@PathVariable("id") Long id) {
         productService.unlike(rq.getMember(), id);
-        return rq.redirectWithMsg("/usr/buyer/myLikes", "관심 상품이 삭제되었습니다.");
+        return rq.redirectWithMsg("/buyer/myLikes", "관심 상품이 삭제되었습니다.");
     }
 
     private List<ProductResponse> convertToResponse(List<Product> products) {

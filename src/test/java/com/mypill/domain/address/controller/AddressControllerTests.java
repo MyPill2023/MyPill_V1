@@ -56,7 +56,7 @@ class AddressControllerTests {
     void testCreateSuccess() throws Exception {
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/create")
+                .perform(post("/buyer/myAddress/create")
                         .with(csrf())
                         .param("memberId", String.valueOf(testUser1.getId()))
                         .param("name", "주소 이름")
@@ -73,7 +73,7 @@ class AddressControllerTests {
                 .andExpect(handler().handlerType(AddressController.class))
                 .andExpect(handler().methodName("create"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/usr/buyer/myAddress**"));
+                .andExpect(redirectedUrlPattern("/buyer/myAddress**"));
 
         Address address = addressService.findByMemberId(testUser1.getId()).get(0);
         assertThat(address.getName()).isEqualTo("주소 이름");
@@ -92,7 +92,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/create")
+                .perform(post("/buyer/myAddress/create")
                         .with(csrf())
                         .param("memberId", String.valueOf(testUser1.getId()))
                         .param("name", "주소 이름")
@@ -122,7 +122,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/update/%s".formatted(address.getId()))
+                .perform(post("/buyer/myAddress/update/%s".formatted(address.getId()))
                         .with(csrf())
                         .param("memberId", String.valueOf(testUser1.getId()))
                         .param("name", "주소 이름")
@@ -139,7 +139,7 @@ class AddressControllerTests {
                 .andExpect(handler().handlerType(AddressController.class))
                 .andExpect(handler().methodName("update"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/usr/buyer/myAddress**"));
+                .andExpect(redirectedUrlPattern("/buyer/myAddress**"));
 
         Address newAddress = addressService.findById(address.getId()).orElse(null);
         assertThat(newAddress).isNotNull();
@@ -156,7 +156,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/update/%s".formatted(address.getId()))
+                .perform(post("/buyer/myAddress/update/%s".formatted(address.getId()))
                         .with(csrf())
                         .param("memberId", String.valueOf(testUser2.getId()))
                         .param("name", "주소 이름")
@@ -189,7 +189,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/delete/%s".formatted(address.getId()))
+                .perform(post("/buyer/myAddress/delete/%s".formatted(address.getId()))
                         .with(csrf())
                 )
                 .andDo(print());
@@ -198,7 +198,7 @@ class AddressControllerTests {
                 .andExpect(handler().handlerType(AddressController.class))
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/usr/buyer/myAddress**"));
+                .andExpect(redirectedUrlPattern("/buyer/myAddress**"));
 
         Address deletedAddress = addressService.findById(address.getId()).orElse(null);
         assertThat(deletedAddress).isNotNull();
@@ -214,7 +214,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/delete/%s".formatted(address.getId()))
+                .perform(post("/buyer/myAddress/delete/%s".formatted(address.getId()))
                         .with(csrf())
                 )
                 .andDo(print());
@@ -238,7 +238,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myAddress/getAddressDetails")
+                .perform(get("/buyer/myAddress/getAddressDetails")
                         .param("addressId", String.valueOf(address.getId()))
                 )
                 .andDo(print());
@@ -259,7 +259,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myAddress/getAddressDetails")
+                .perform(get("/buyer/myAddress/getAddressDetails")
                         .param("addressId", String.valueOf(addressId))
                 )
                 .andDo(print());

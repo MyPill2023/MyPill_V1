@@ -57,7 +57,7 @@ class PostControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/post/list")
+                .perform(get("/post/list")
                         .with(csrf())
                         .param("keyword", keyword)
                         .param("searchType", searchType)
@@ -80,7 +80,7 @@ class PostControllerTest {
     void createGetTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/post/create")
+                .perform(get("/post/create")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -107,7 +107,7 @@ class PostControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc.perform(
-                multipart("/usr/post/create")
+                multipart("/post/create")
                         .file(emptyFile)
                         .param("title", title)
                         .param("content", content)
@@ -134,7 +134,7 @@ class PostControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/post/detail/" + post.getId())
+                .perform(get("/post/detail/" + post.getId())
                         .with(csrf())
                 )
                 .andDo(print());
@@ -159,7 +159,7 @@ class PostControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/post/update/" + post.getId())
+                .perform(get("/post/update/" + post.getId())
                         .with(csrf())
                 )
                 .andDo(print());
@@ -188,7 +188,7 @@ class PostControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc.perform(
-                multipart("/usr/post/update/" + post.getId())
+                multipart("/post/update/" + post.getId())
                         .file(emptyFile)
                         .param("title", post.getTitle())
                         .param("content", post.getContent())
@@ -215,7 +215,7 @@ class PostControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/post/delete/" + post.getId())
+                .perform(post("/post/delete/" + post.getId())
                         .with(csrf())
                 )
                 .andDo(print());

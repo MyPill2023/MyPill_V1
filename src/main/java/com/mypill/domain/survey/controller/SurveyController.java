@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @Controller
-@RequestMapping("/usr/survey")
+@RequestMapping("/survey")
 @RequiredArgsConstructor
 @Tag(name = "SurveyController", description = "설문조사")
 public class SurveyController {
@@ -44,7 +44,7 @@ public class SurveyController {
     @Operation(summary = "설문 가이드 페이지")
     public String guide(Model model) {
         if(rq.isLogin()){
-            return "redirect:/usr/survey/start";
+            return "redirect:/survey/start";
         }
         return "usr/survey/guide";
     }
@@ -57,7 +57,7 @@ public class SurveyController {
             Member member = rq.getMember();
             if (!member.getSurveyNutrients().isEmpty()){
                 RsData<Member> memberRsData = memberService.surveyDelete(member);
-                return rq.redirectWithMsg("/usr/survey/start", memberRsData);
+                return rq.redirectWithMsg("/survey/start", memberRsData);
             }
         }
         List<Category> categoryItems = categoryService.findAll();
@@ -78,7 +78,7 @@ public class SurveyController {
         RsData<String> startSurveyRsData = surveyService.validStartSurvey(stepParam.getCategoryItemIds());
 
         if (startSurveyRsData.isFail()){
-            return "redirect:/usr/survey/start";
+            return "redirect:/survey/start";
         }
 
         List<Question> questions = questionService.findByCategoryId(categoryItemId);
@@ -102,7 +102,7 @@ public class SurveyController {
         RsData<String> completeSurveyRsData = surveyService.validCompleteSurvey(questionIds);
 
         if (completeSurveyRsData.isFail()){
-            return "redirect:/usr/survey/step";
+            return "redirect:/survey/step";
         }
 
         Set<Long> answers = new HashSet<>();

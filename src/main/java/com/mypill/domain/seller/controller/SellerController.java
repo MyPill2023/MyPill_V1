@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/usr/seller")
+@RequestMapping("/seller")
 @Tag(name = "SellerController", description = "판매자 회원")
 public class SellerController {
     private final SellerService sellerService;
@@ -71,7 +71,7 @@ public class SellerController {
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
-        return rq.redirectWithMsg("/usr/seller/certificate", rsData);
+        return rq.redirectWithMsg("/seller/certificate", rsData);
     }
     @PreAuthorize("hasAuthority('WAITER')")
     @PostMapping("/nBrnoCertificate")
@@ -81,7 +81,7 @@ public class SellerController {
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
-        return rq.redirectWithMsg("/usr/seller/certificate", rsData);
+        return rq.redirectWithMsg("/seller/certificate", rsData);
     }
 
     @PreAuthorize("hasAuthority('SELLER')")

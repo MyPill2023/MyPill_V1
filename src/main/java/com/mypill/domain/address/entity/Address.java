@@ -30,7 +30,6 @@ public class Address extends BaseEntity {
     private String postCode;
     @Column(nullable = false)
     private String phoneNumber;
-
     private boolean isDefault;
 
     public static Address of(Member member, AddressRequest addressRequest){

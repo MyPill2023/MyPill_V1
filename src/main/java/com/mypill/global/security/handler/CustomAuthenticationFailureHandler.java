@@ -31,7 +31,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         } else {
             errorMessage = exception.getMessage();
         }
-        redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/usr/member/login", errorMessage));
+        redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/member/login", errorMessage));
         rq.invalidateSession();
     }
 }

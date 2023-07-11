@@ -14,10 +14,10 @@
         <div class="flex flex-col p-5 w-full">
             <div class="flex justify-center gap-2">
                 <div class="w-1/3">
-                    <a href="/usr/diary/list" class="btn btn-block btn-success">영양제 목록</a>
+                    <a href="/diary/list" class="btn btn-block btn-success">영양제 목록</a>
                 </div>
                 <div class="w-1/3">
-                    <a href="/usr/diary/create" class="btn btn-block btn-success">영양제 등록</a>
+                    <a href="/diary/create" class="btn btn-block btn-success">영양제 등록</a>
                 </div>
             </div>
 
@@ -42,7 +42,7 @@
                             <div class="flex flex-auto justify-end">
                                 <input th:checked="${diary.isCheckedWhen(today)}" type="checkbox" class="checkbox checkbox-info"
                                        onclick="$(this).next().submit(); return false;"/>
-                                <form hidden th:action="@{|/usr/diary/todolist/toggleCheck/${diary.id}|}" method="POST">
+                                <form hidden th:action="@{|/diary/todolist/toggleCheck/${diary.id}|}" method="POST">
                                     <input type="hidden" name="_method" value="POST"/>
                                 </form>
                             </div>

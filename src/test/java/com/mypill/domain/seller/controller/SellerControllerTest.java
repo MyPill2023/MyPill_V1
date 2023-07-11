@@ -48,7 +48,7 @@ class SellerControllerTest {
     void certificateTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/seller/certificate"))
+                .perform(get("/seller/certificate"))
                 .andDo(print());
 
         // THEN
@@ -67,7 +67,7 @@ class SellerControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/seller/brnoCertificate")
+                .perform(post("/seller/brnoCertificate")
                         .with(csrf())
                         .param("businessNumber", businessNumber)
                 )
@@ -89,7 +89,7 @@ class SellerControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/seller/nBrnoCertificate")
+                .perform(post("/seller/nBrnoCertificate")
                         .with(csrf())
                         .param("nutrientBusinessNumber", nutrientBusinessNumber)
                 )
