@@ -36,7 +36,7 @@ public class DiaryController {
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/create")
-    @Operation(summary = "영양제 등록 폼")
+    @Operation(summary = "영양제 등록 페이지")
     public String create() {
 
         return "usr/diary/create";
@@ -57,7 +57,7 @@ public class DiaryController {
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/list")
-    @Operation(summary = "영양제 목록")
+    @Operation(summary = "영양제 목록 페이지")
     public String showList(Model model) {
         List<Diary> diaries = diaryService.getList(rq.getMember().getId());
         model.addAttribute("diaries", diaries);
@@ -78,7 +78,7 @@ public class DiaryController {
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/todolist")
-    @Operation(summary = "영양제 기록 체크 폼")
+    @Operation(summary = "영양제 기록 체크 페이지")
     public String todolist(Model model, String dateStr) {
 
         Member writer = rq.getMember();

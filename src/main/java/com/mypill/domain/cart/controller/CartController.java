@@ -30,7 +30,7 @@ public class CartController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("")
-    @Operation(summary = "장바구니 보여주기")
+    @Operation(summary = "장바구니 페이지")
     public String showCart(Model model){
         Cart cart =  cartService.cartView(rq.getMember());
         model.addAttribute("cartResponse",CartResponse.of(cart));
