@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +45,7 @@ class DiaryServiceTest {
         diary = Diary.builder()
                 .member(testUser1)
                 .name("루테인")
-                .time("morning")
+                .time(LocalTime.now())
                 .type("간")
                 .memo("x")
                 .build();

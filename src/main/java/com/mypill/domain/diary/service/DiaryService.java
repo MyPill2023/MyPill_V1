@@ -73,15 +73,11 @@ public class DiaryService {
         return RsData.of("S-1","영양제가 삭제 되었습니다.",diary);
     }
 
-    public List<Diary> findHistory(Member member, LocalDate date) {
+    public List<DiaryCheckLog> findHistory(Member member) {
 
-        List<DiaryCheckLog> diaryCheckLogs = diaryCheckLogRepository.findByCheckDate(date);
+        List<DiaryCheckLog> diaryCheckLogs = diaryCheckLogRepository.findByMemberId(member.getId());
 
-        return diaryCheckLogs
-                .stream()
-                .filter(e -> Objects.equals(e.getDiary().getMember().getId(), member.getId()))
-                .map(DiaryCheckLog::getDiary)
-                .toList();
+        return diaryCheckLogs;
     }
 
     public List<Diary> findByMemberId (Long memberId) {

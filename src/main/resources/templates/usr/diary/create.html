@@ -7,8 +7,8 @@
 <body>
 <main layout:fragment="main">
 
-    <div class="hero-content flex flex-col justify-center my-10 w-full ">
-        <h1 class="text-2xl text-center font-bold "> 나의 영양제 등록하기 💊
+    <div class="hero-content flex flex-col mb-10 2 w-[32rem] mt-5 max-w-lg">
+        <h1 class="text-2xl text-center font-bold mb-10"> 나의 영양제 등록하기
         </h1>
 
         <form th:action method="POST" class="flex flex-col gap-4" onsubmit="myPillRequestDto__submit(this, event); return false;">
@@ -21,13 +21,7 @@
             <div class="mb-4">
                 <div class="form-control">
                     <label class="block text-gray-700 font-bold mb-2">복용 시간</label>
-                    <select id="time" name="time" class="select select-success">
-                        <option disabled selected value="">복용 시간</option>
-                        <option value="morning">아침</option>
-                        <option value="lunch">점심</option>
-                        <option value="dinner">저녁</option>
-                        <option value="bedtime">자기전</option>
-                    </select>
+                    <input type="time" name="time" class="input input-bordered input-success" />
                 </div>
             </div>
 

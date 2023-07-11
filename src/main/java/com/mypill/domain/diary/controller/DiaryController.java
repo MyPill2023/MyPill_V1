@@ -2,6 +2,7 @@ package com.mypill.domain.diary.controller;
 
 import com.mypill.domain.diary.dto.DiaryRequest;
 import com.mypill.domain.diary.entity.Diary;
+import com.mypill.domain.diary.entity.DiaryCheckLog;
 import com.mypill.domain.diary.service.DiaryService;
 import com.mypill.domain.member.entity.Member;
 
@@ -17,7 +18,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -95,14 +99,22 @@ public class DiaryController {
         Member writer = rq.getMember();
         String today = LocalDate.now().toString();
 
-        List<Diary> diaries = diaryService.findByMemberId(writer.getId());
+        List<Diary> diaries = diaryService.getList(writer.getId());
 
         model.addAttribute("today", today);
         model.addAttribute("diaries", diaries);
 
         LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr);
-        List<Diary> history = diaryService.findHistory(writer,date);
+        List<DiaryCheckLog> history = diaryService.findHistory(writer);
 
+        Map<LocalDate, List<DiaryCheckLog>> groupedData  = history.stream()
+                        .collect(Collectors.groupingBy(DiaryCheckLog::getCheckDate));
+
+        List<LocalDate> sortedDates = groupedData.keySet().stream()
+                        .sorted(Comparator.reverseOrder()).toList();
+
+        model.addAttribute("groupedData", groupedData);
+        model.addAttribute("sortedDates", sortedDates);
         model.addAttribute("history", history);
 
         return "usr/diary/todolist";        

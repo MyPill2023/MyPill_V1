@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,21 +25,12 @@ public class Diary extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private String time;
+    private LocalTime time;
 
     private String type;
 
     @Column(columnDefinition = "TEXT")
     private String memo;
-
-    public String getTimeDisplayName() {
-        return switch (time) {
-            case "morning" -> "아침";
-            case "lunch" -> "점심";
-            case "dinner" -> "저녁";
-            default -> "자기전";
-        };
-    }
 
     @Builder.Default
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
