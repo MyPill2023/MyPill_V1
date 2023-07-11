@@ -5,7 +5,6 @@ import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
@@ -24,7 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.mypill.domain.order.entity.OrderStatus.DELIVERED;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +40,6 @@ public class OrderService {
     private final ProductService productService;
     private final Rq rq;
     private final ApplicationEventPublisher publisher;
-
 
     public RsData<Order> getOrderForm(Member actor, Long orderId) {
         Order order = findById(orderId).orElse(null);
@@ -296,6 +298,25 @@ public class OrderService {
     private void addCartProductsToOrder(Order order, List<CartProduct> cartProducts) {
         for (CartProduct cartProduct : cartProducts) {
             order.addCartProduct(cartProduct);
+        }
+    }
+
+    public Map<YearMonth, Long> countOrderPrice (Long sellerId) {
+        List<OrderItem> orderItems = findOrderItemBySellerId(sellerId);
+
+        Map<YearMonth, Long> monthlySales = SalesCalculator.calculateMonthlySales(orderItems);
+
+        return monthlySales;
+    }
+
+    public static class SalesCalculator {
+        public static Map<YearMonth, Long> calculateMonthlySales(List<OrderItem> orderItems) {
+            return orderItems.stream()
+                    .filter(orderItem -> orderItem.getStatus()==DELIVERED)
+                    .collect(Collectors.groupingBy(
+                            orderItem -> YearMonth.from(orderItem.getCreateDate()),
+                            Collectors.summingLong(OrderItem::getTotalPrice)
+                    ));
         }
     }
 }

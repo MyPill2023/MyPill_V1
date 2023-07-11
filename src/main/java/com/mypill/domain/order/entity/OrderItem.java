@@ -10,7 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static com.mypill.domain.order.entity.OrderStatus.DELIVERED;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -31,13 +36,13 @@ public class OrderItem extends BaseEntity {
     @Column(nullable = false)
     private Long quantity;
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status; //물건 하나하나의 주문 - 상품 - 프라이
 
     public OrderItem(Product product, Long quantity){
         this.product = product;
         this.price = product.getPrice();
         this.quantity = quantity;
-        this.totalPrice = this.price * this.quantity;
+        this.totalPrice = this.price * this.quantity; //판매된량
     }
 
     public void connectOrder(Order order) {
@@ -50,5 +55,9 @@ public class OrderItem extends BaseEntity {
 
     public void setPaymentDone() {
         status = OrderStatus.ORDERED;
+    }
+
+    public Long getTotalPrice() {
+        return totalPrice;
     }
 }
