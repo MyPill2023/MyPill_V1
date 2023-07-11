@@ -21,7 +21,6 @@ public class CustomOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
         if (rq.getMember().getDeleteDate() != null) {
             redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/member/login", "아이디 또는 비밀번호가 일치하지 않습니다."));
             clearAuthenticationAttributes(request);

@@ -60,7 +60,6 @@ public class Scheduler {
     public void sendNotifications() {
         List<Diary> diaries = diaryService.findAll();
         LocalTime now = LocalTime.now();
-
         for (Diary diary : diaries) {
             LocalTime diaryTime = diary.getTime();
             if (now.getHour() == diaryTime.getHour() && now.getMinute() == diaryTime.getMinute()) {
