@@ -6,12 +6,16 @@ import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.service.OrderService;
+import com.mypill.domain.product.entity.Product;
+import com.mypill.domain.product.service.ProductService;
 import com.mypill.domain.seller.service.SellerService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +35,7 @@ import java.util.stream.Collectors;
 public class SellerController {
     private final SellerService sellerService;
     private final OrderService orderService;
+    private final ProductService productService;
     private final Rq rq;
 
     @PreAuthorize("hasAuthority('SELLER')")
@@ -82,6 +87,17 @@ public class SellerController {
             return rq.historyBack(rsData);
         }
         return rq.redirectWithMsg("/usr/seller/certificate", rsData);
+    }
+
+    @PreAuthorize("hasAuthority('SELLER')")
+    @GetMapping("/myProduct")
+    @Operation(summary = "상품 관리 페이지")
+    public String showMyProduct(@RequestParam(defaultValue = "0") int pageNumber,
+                                @RequestParam(defaultValue = "10") int pageSize,
+                                Model model){
+        Page<Product> products = productService.getAllProductBySellerId(rq.getMember().getId(), PageRequest.of(pageNumber, pageSize));
+        model.addAttribute("product", products);
+        return "usr/seller/myProduct";
     }
 
     @PreAuthorize("hasAuthority('SELLER')")
