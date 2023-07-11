@@ -14,13 +14,13 @@ import static com.mypill.domain.category.entity.QCategory.category;
 import static com.mypill.domain.product.entity.QProduct.product;
 
 @RequiredArgsConstructor
-public class ProductRepositoryImpl implements ProductRepositoryCustom{
+public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public List<Product> findTop5ProductsBySales() {
-        List<Product>  top10Products  = jpaQueryFactory.selectFrom(product)
+        return jpaQueryFactory.selectFrom(product)
                 .where(
                         product.deleteDate.isNull(),
                         product.stock.gt(0)
@@ -28,8 +28,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
                 .orderBy(product.sales.desc())
                 .limit(5)
                 .fetch();
-
-        return top10Products ;
     }
 
 
@@ -52,7 +50,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
 
     @Override
     public Page<Product> findAllProductByNutrientId(Long nutrientId, Pageable pageable) {
-        QueryResults<Product> results =  jpaQueryFactory.selectFrom(product)
+        QueryResults<Product> results = jpaQueryFactory.selectFrom(product)
                 .where(
                         product.nutrients.any().id.eq(nutrientId),
                         product.deleteDate.isNull(),
