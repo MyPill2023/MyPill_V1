@@ -2,6 +2,7 @@ package com.mypill.domain.post.entity;
 
 import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.comment.entity.Comment;
+import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,11 @@ public class Post extends BaseEntity {
             }
         }
         return count;
+    }
+
+    public void update(PostRequest postRequest) {
+        this.title = postRequest.getTitle();
+        this.content = postRequest.getContent();
     }
 
     public void addImage(Image image) {

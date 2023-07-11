@@ -9,8 +9,6 @@ import com.mypill.global.aws.s3.service.AmazonS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -54,40 +52,20 @@ public class ImageService {
     }
 
     @Async
-    public void updateImage(MultipartFile multipartFile, Object targetObject) {
-        if (!multipartFile.isEmpty()) {
-            try {
-                if (targetObject instanceof Product product) {
-
-                    Image image = product.getImage();
-                    amazonS3Service.deleteImage(image.getOriginalUrl());
-                    AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
-                    image = image.toBuilder()
-                            .filename(multipartFile.getOriginalFilename())
-                            .filepath(amazonS3ImageDto.getCdnUrl())
-                            .originalUrl(amazonS3ImageDto.getOriginUrl())
-                            .product(product)
-                            .build();
-                    product.addImage(image);
-                    imageRepository.save(image);
-                }
-                if (targetObject instanceof Post post) {
-                    Image image = post.getImage();
-                    amazonS3Service.deleteImage(image.getOriginalUrl());
-                    AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
-                    image = image.toBuilder()
-                            .filename(multipartFile.getOriginalFilename())
-                            .filepath(amazonS3ImageDto.getCdnUrl())
-                            .originalUrl(amazonS3ImageDto.getOriginUrl())
-                            .post(post)
-                            .build();
-                    post.addImage(image);
-                    imageRepository.save(image);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException("이미지 수정에 실패하였습니다", e);
+    public AmazonS3Dto updateImageOnServer(MultipartFile multipartFile, Object object) {
+        try {
+            if (object instanceof Product product) {
+                amazonS3Service.deleteImage(product.getImage().getOriginalUrl());
+                return amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
+            } else if (object instanceof Post post) {
+                amazonS3Service.deleteImage(post.getImage().getOriginalUrl());
+                return amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
+            } else {
+                return null;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("이미지 수정에 실패하였습니다", e);
         }
     }
 

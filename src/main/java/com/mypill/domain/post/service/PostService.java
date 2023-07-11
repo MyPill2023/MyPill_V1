@@ -7,6 +7,7 @@ import com.mypill.domain.post.dto.PostResponse;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
+import com.mypill.global.aws.s3.dto.AmazonS3Dto;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -115,12 +116,12 @@ public class PostService {
             return postRsData;
         }
         Post post = postRsData.getData();
-        post = post.toBuilder()
-                .title(postRequest.getTitle())
-                .content(postRequest.getContent())
-                .build();
-        imageService.updateImage(multipartFile, post);
-        postRepository.save(post);
+
+        if (!multipartFile.isEmpty()) {
+            AmazonS3Dto amazonS3ImageDto = imageService.updateImageOnServer(multipartFile, post);
+            post.getImage().update(amazonS3ImageDto, multipartFile);
+        }
+        post.update(postRequest);
         return RsData.of("S-1", "게시글이 수정되었습니다.", post);
     }
 

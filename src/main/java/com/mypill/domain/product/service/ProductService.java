@@ -10,6 +10,8 @@ import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
+import com.mypill.global.aws.s3.dto.AmazonS3Dto;
+import com.mypill.global.aws.s3.service.AmazonS3Service;
 import com.mypill.global.event.EventAfterLike;
 import com.mypill.global.event.EventAfterUnlike;
 import com.mypill.global.rsdata.RsData;
@@ -36,6 +38,7 @@ public class ProductService {
     private final MemberService memberService;
     private final ApplicationEventPublisher publisher;
     private final ImageService imageService;
+    private final AmazonS3Service amazonS3Service;
 
     //NotProd용
     @Transactional
@@ -96,29 +99,32 @@ public class ProductService {
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
 
-        product.update(request, nutrients, categories);
+//        product.update(request, nutrients, categories);
 
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
     }
+
 
     @Transactional
     public RsData<Product> update(Member actor, Long productId, ProductRequest request, MultipartFile multipartFile) {
 
         Product product = findById(productId).orElse(null);
         if (product == null) {
-            return RsData.of("F-1", "존재하지 않는 상품입니다.", product);
+            return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
 
         if (!actor.getId().equals(product.getSeller().getId())) {
-            return RsData.of("F-2", "수정 권한이 없습니다.", product);
+            return RsData.of("F-2", "수정 권한이 없습니다.");
         }
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
 
-        imageService.updateImage(multipartFile, product);
+        if (!multipartFile.isEmpty()) {
+            AmazonS3Dto amazonS3ImageDto = imageService.updateImageOnServer(multipartFile, product);
+            product.getImage().update(amazonS3ImageDto, multipartFile);
+        }
         product.update(request, nutrients, categories);
-//        productRepository.save(product);
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
     }
 
