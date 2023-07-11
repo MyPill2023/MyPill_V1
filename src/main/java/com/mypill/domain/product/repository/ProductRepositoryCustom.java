@@ -15,4 +15,6 @@ public interface ProductRepositoryCustom {
     Page<Product> findAllProductByNutrientId(Long nutrientId, Pageable pageable);
 
     Page<Product> findAllProductByCategoryId(Long categoryId, Pageable pageable);
+
+    Page<Product> findAllProductBySellerId(Long sellerId, Pageable pageable);
 }

@@ -91,6 +91,14 @@
                 return;
             }
 
+            if (!form.isDefault.checked) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'isDefault';
+                input.value = 'false';
+                form.appendChild(input);
+            }
+
             form.submit();
         }
     </script>

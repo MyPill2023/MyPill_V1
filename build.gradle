@@ -72,8 +72,16 @@ dependencies {
     implementation 'org.apache.tika:tika-core:2.5.0'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    // 스프링 배치
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    //모니터링, 프로메테우스
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+
+    //레디스
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.session:spring-session-core'
+    implementation 'org.springframework.session:spring-session-data-redis'
+
 }
 
 tasks.named('test') {

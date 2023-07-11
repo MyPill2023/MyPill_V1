@@ -85,4 +85,22 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    @Override
+    public Page<Product> findAllProductBySellerId(Long sellerId, Pageable pageable) {
+        QueryResults<Product> results = jpaQueryFactory.selectFrom(product)
+                .where(
+                        product.seller.id.eq(sellerId),
+                        product.deleteDate.isNull(),
+                        product.stock.gt(0)
+                )
+                .orderBy(product.sales.desc())
+                .offset(pageable.getOffset()).limit(pageable.getPageSize())
+                .fetchResults();
+
+        long total = results.getTotal();
+        List<Product> content = results.getResults();
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
 }

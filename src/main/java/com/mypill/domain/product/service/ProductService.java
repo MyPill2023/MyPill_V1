@@ -122,6 +122,10 @@ public class ProductService {
         return productRepository.findAllProductByCategoryId(categoryId, pageable);
     }
 
+    public Page<Product> getAllProductBySellerId(Long sellerId, Pageable pageable) {
+        return productRepository.findAllProductBySellerId(sellerId, pageable);
+    }
+
     @Transactional
     public int like(Member member, Long productId) {
         if (member == null) {

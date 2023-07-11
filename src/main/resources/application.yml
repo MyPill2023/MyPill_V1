@@ -7,6 +7,10 @@ spring:
   profiles:
     active: dev
     include: secret
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.session.SessionAutoConfiguration
   security:
     oauth2:
       client:
@@ -72,6 +76,14 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:  "*"
 custom:
   survey:
     startMaxLength: 3
