@@ -72,6 +72,10 @@ dependencies {
     implementation 'org.apache.tika:tika-core:2.5.0'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+    // 모니터링, 프로메테우스
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+
 }
 
 tasks.named('test') {

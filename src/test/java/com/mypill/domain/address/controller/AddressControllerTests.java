@@ -56,7 +56,7 @@ class AddressControllerTests {
     void testCreateSuccess() throws Exception {
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/create")
+                .perform(post("/buyer/myAddress/create")
                         .with(csrf())
                         .param("memberId", String.valueOf(testUser1.getId()))
                         .param("name", "주소 이름")
@@ -92,7 +92,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/create")
+                .perform(post("/buyer/myAddress/create")
                         .with(csrf())
                         .param("memberId", String.valueOf(testUser1.getId()))
                         .param("name", "주소 이름")
@@ -122,7 +122,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/update/%s".formatted(address.getId()))
+                .perform(post("/buyer/myAddress/update/%s".formatted(address.getId()))
                         .with(csrf())
                         .param("memberId", String.valueOf(testUser1.getId()))
                         .param("name", "주소 이름")
@@ -156,7 +156,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/update/%s".formatted(address.getId()))
+                .perform(post("/buyer/myAddress/update/%s".formatted(address.getId()))
                         .with(csrf())
                         .param("memberId", String.valueOf(testUser2.getId()))
                         .param("name", "주소 이름")
@@ -189,7 +189,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/delete/%s".formatted(address.getId()))
+                .perform(post("/buyer/myAddress/delete/%s".formatted(address.getId()))
                         .with(csrf())
                 )
                 .andDo(print());
@@ -214,7 +214,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/buyer/myAddress/delete/%s".formatted(address.getId()))
+                .perform(post("/buyer/myAddress/delete/%s".formatted(address.getId()))
                         .with(csrf())
                 )
                 .andDo(print());
@@ -238,7 +238,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myAddress/getAddressDetails")
+                .perform(get("/buyer/myAddress/getAddressDetails")
                         .param("addressId", String.valueOf(address.getId()))
                 )
                 .andDo(print());
@@ -259,7 +259,7 @@ class AddressControllerTests {
 
         //WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myAddress/getAddressDetails")
+                .perform(get("/buyer/myAddress/getAddressDetails")
                         .param("addressId", String.valueOf(addressId))
                 )
                 .andDo(print());
