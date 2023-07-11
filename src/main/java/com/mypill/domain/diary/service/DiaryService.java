@@ -83,7 +83,7 @@ public class DiaryService {
     }
 
     public List<Diary> getList (Long memberId) {
-          return diaryRepository.findByMemberIdAndDeleteDateIsNullOrderByCreateDateDesc(memberId);
+          return diaryRepository.findByMemberIdAndDeleteDateIsNullOrderByTimeAsc(memberId);
     }
 
     public Optional<Diary> findById (Long diaryId) {

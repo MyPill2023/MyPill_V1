@@ -12,17 +12,21 @@
         <h1 class="text-2xl text-center font-bold ">영양제 체크 리스트 📝</h1>
 
         <div class="flex flex-col p-5 w-full">
-            <div class="flex justify-around gap-2">
-                <div class="w-1/2">
+            <div class="flex justify-center gap-2">
+                <div class="w-1/3">
                     <a href="/usr/diary/list" class="btn btn-block btn-success">영양제 목록</a>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/3">
                     <a href="/usr/diary/create" class="btn btn-block btn-success">영양제 등록</a>
                 </div>
             </div>
 
 
-            <div class="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300 w-full">
+            <div class="text-black p-2 flex justify-center my-10" th:if="${diaries.isEmpty()}">
+                복용해야할 영양제가 없습니다.
+            </div>
+
+            <div th:unless="${diaries.isEmpty()}" class="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300 w-full">
                 <div class="flex flex-row justify-between items-center">
                     <div>
                         <h4 id="currentDateInput" class="text-xl font-bold"></h4>
@@ -30,22 +34,20 @@
                 </div>
                 <p class="text-slate-500">오늘 복용해야할 영양제 입니다!</p>
 
-
                 <div id="tasks" class="my-5">
                     <div id="task1"
-                         class="flex justify-between items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent"
+                         class="flex items-center border-b border-slate-200 py-3 px-2 border-l-4  border-l-transparent"
                          th:each="diary: ${diaries}">
-                        <div class="inline-flex items-center space-x-2">
-                            <div class="text-black p-2 flex justify-center" th:if="${diaries.isEmpty()}">
-                                <i class="fa-sharp fa-light fa-pills"></i> 등록하신 영양제가 없네요!
+                        <div class="flex items-center gap-2">
+                            <div class="flex flex-auto justify-end">
+                                <input th:checked="${diary.isCheckedWhen(today)}" type="checkbox" class="checkbox checkbox-info"
+                                       onclick="$(this).next().submit(); return false;"/>
+                                <form hidden th:action="@{|/usr/diary/todolist/toggleCheck/${diary.id}|}" method="POST">
+                                    <input type="hidden" name="_method" value="POST"/>
+                                </form>
                             </div>
-                            <div class="badge badge-accent" th:text="${diary.time}"></div>
-                            <input th:checked="${diary.isCheckedWhen(today)}" type="checkbox" class="checkbox"
-                                   onclick="$(this).next().submit(); return false;"/>
-                            <form hidden th:action="@{|/usr/diary/todolist/toggleCheck/${diary.id}|}" method="POST">
-                                <input type="hidden" name="_method" value="POST"/>
-                            </form>
-                            <div class="text-slate-500 name" th:text="${diary.name}"></div>
+                            <span class="badge badge-accent" th:text="${#temporals.format(diary.time, 'HH시 mm분')}"></span>
+                            <span class="text-bold" th:text="${diary.name}"></span>
                         </div>
                     </div>
                 </div>
@@ -68,7 +70,7 @@
                         <div class=" card mt-5 flex flex-row gap-4 border border-gray-200">
                             <div class="card-body">
                                     <div th:each="diaryCheckLog : ${entry.value}" class="flex gap-3 mt-2">
-                                        <span class="badge badge-accent" th:text="${#temporals.format(diaryCheckLog.createDate, 'a hh시 mm분')}"></span>
+                                        <span class="badge badge-accent" th:text="${#temporals.format(diaryCheckLog.createDate, 'HH시 mm분')}"></span>
                                         <span th:text="${diaryCheckLog.diary.name}"></span>
                                     </div>
                             </div>

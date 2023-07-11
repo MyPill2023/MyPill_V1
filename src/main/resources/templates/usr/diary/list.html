@@ -12,23 +12,15 @@
         <h1 class="text-2xl text-center font-bold "> 나의 영양제 목록 📂
         </h1>
 
-        <div class="flex flex-col p-5 w-full gap-5">
-            <div class="flex justify-around gap-2">
-                <div class="w-1/2">
-                    <a href="/usr/diary/todolist" class="btn btn-block btn-success">체크리스트</a>
-                </div>
-                <div class="w-1/2">
-                    <a href="/usr/diary/create" class="btn btn-block btn-success">영양제 등록</a>
-                </div>
-            </div>
+        <div class="flex flex-col p-5 w-full gap-5 mt-5">
             <div class="text-black p-2 flex justify-center items-center gap-2" th:if="${diaries.isEmpty()}">
                 <i class="fa-regular fa-face-laugh"></i> 등록한 영양제가 없습니다.
             </div>
             <div class="flex flex-col justify-center items-center w-full" th:each="diary:${diaries}">
                 <div class="flex justify-start items-center gap-4 border border-gray-200 rounded-lg p-5 w-full">
-                    <span class="badge badge-accent  w-2/5" th:text="${#temporals.format(diary.time, 'a hh시 mm분')}"></span>
+                    <span class="badge badge-accent" th:text="${#temporals.format(diary.time, 'HH시 mm분')}"></span>
                     <span th:text="${diary.name}" class="text-lg font-bold  w-2/5"></span>
-                    <div class="flex justify-end w-1/5">
+                    <div class="flex flex-auto justify-end">
                         <button class="delete-button" style="margin-right: 15px"
                                 onclick="if ( !confirm('삭제하시겠습니까?') ) return false; $(this).next().submit();">❌
                         </button>
@@ -37,7 +29,14 @@
                         </form>
                     </div>
                 </div>
-
+            </div>
+            <div class="flex justify-center gap-2 mt-10">
+                <div class="w-1/3">
+                    <a href="/usr/diary/todolist" class="btn btn-block btn-success">체크리스트</a>
+                </div>
+                <div class="w-1/3">
+                    <a href="/usr/diary/create" class="btn btn-block btn-success">영양제 등록</a>
+                </div>
             </div>
         </div>
     </div>

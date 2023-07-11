@@ -73,7 +73,7 @@ public class DiaryController {
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData);
         }
-        return rq.redirectWithMsg("/usr/diary/list",deleteRsData);
+        return rq.redirectWithMsg("/usr/diary/list", deleteRsData);
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
@@ -89,29 +89,28 @@ public class DiaryController {
         model.addAttribute("today", today);
         model.addAttribute("diaries", diaries);
 
-        LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr);
         List<DiaryCheckLog> history = diaryService.findHistory(writer);
 
-        Map<LocalDate, List<DiaryCheckLog>> groupedData  = history.stream()
-                        .collect(Collectors.groupingBy(DiaryCheckLog::getCheckDate));
+        Map<LocalDate, List<DiaryCheckLog>> groupedData = history.stream()
+                .sorted(Comparator.comparing(DiaryCheckLog::getCreateDate))
+                .collect(Collectors.groupingBy(DiaryCheckLog::getCheckDate));
 
         List<LocalDate> sortedDates = groupedData.keySet().stream()
-                        .sorted(Comparator.reverseOrder()).toList();
+                .sorted(Comparator.reverseOrder()).toList();
 
         model.addAttribute("groupedData", groupedData);
         model.addAttribute("sortedDates", sortedDates);
-        model.addAttribute("history", history);
 
-        return "usr/diary/todolist";        
+        return "usr/diary/todolist";
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
-    @PostMapping ("/todolist/toggleCheck/{diaryId}")
+    @PostMapping("/todolist/toggleCheck/{diaryId}")
     @Operation(summary = "영양제 체크 등록")
     public String toggleCheck(@PathVariable Long diaryId) {
         Member writer = rq.getMember();
         RsData<Diary> diaryRsData = diaryService.toggleCheck(writer, diaryId, LocalDate.now());
-        if (diaryRsData.isFail()){
+        if (diaryRsData.isFail()) {
             return rq.historyBack(diaryRsData);
         }
         return rq.redirectWithMsg("/usr/diary/todolist", diaryRsData);
