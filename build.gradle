@@ -72,8 +72,6 @@ dependencies {
     implementation 'org.apache.tika:tika-core:2.5.0'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    // 스프링 배치
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
 }
 
 tasks.named('test') {
