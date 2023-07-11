@@ -13,5 +13,4 @@ public class NotificationResponse {
     private LocalDateTime createDate;
     private NotificationTypeCode typeCode;
     private LocalDateTime readDate;
-
 }

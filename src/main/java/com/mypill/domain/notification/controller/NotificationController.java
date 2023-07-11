@@ -34,8 +34,7 @@ public class NotificationController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     @Operation(summary = "알림 목록 페이지")
-    public String list(Model model){
-
+    public String list(Model model) {
         List<NotificationResponse> notificationsResponse = new ArrayList<>();
         List<Notification> notifications = notificationService.findByMemberId(rq.getMember().getId());
         for (Notification notification : notifications) {
@@ -46,16 +45,15 @@ public class NotificationController {
             }
         }
         model.addAttribute("notifications", notificationsResponse);
-
         return "usr/notification/list";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/read/{notificationId}")
     @Operation(summary = "알림 읽음 처리")
-    public String list(@PathVariable Long notificationId){
+    public String list(@PathVariable Long notificationId) {
         RsData<Notification> readRsData = notificationService.makeAsRead(rq.getMember(), notificationId);
-        if(readRsData.isFail()){
+        if (readRsData.isFail()) {
             return rq.historyBack(readRsData);
         }
         return "usr/notification/list";

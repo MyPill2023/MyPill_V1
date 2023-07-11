@@ -1,7 +1,6 @@
 package com.mypill.domain.notification.dto.response;
 
 import com.mypill.domain.notification.entity.Notification;
-import com.mypill.domain.notification.entity.NotificationTypeCode;
 import com.mypill.domain.order.entity.OrderStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,13 +9,13 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class OrderStatusUpdateNotificationResponse extends NotificationResponse{
+public class OrderStatusUpdateNotificationResponse extends NotificationResponse {
 
     private Long orderId;
     private OrderStatus newStatus;
     private String productName;
 
-    public static OrderStatusUpdateNotificationResponse of(Notification notification){
+    public static OrderStatusUpdateNotificationResponse of(Notification notification) {
         return OrderStatusUpdateNotificationResponse.builder()
                 .id(notification.getId())
                 .typeCode(notification.getTypeCode())
@@ -27,5 +26,4 @@ public class OrderStatusUpdateNotificationResponse extends NotificationResponse{
                 .readDate(notification.getReadDate())
                 .build();
     }
-
 }
