@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.time.YearMonth;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -84,5 +82,22 @@ public class SellerController {
             return rq.historyBack(rsData);
         }
         return rq.redirectWithMsg("/usr/seller/certificate", rsData);
+    }
+
+    @PreAuthorize("hasAuthority('SELLER')")
+    @GetMapping("/chart")
+    @Operation(summary = "통계 페이지")
+    public String showChart(Model model){
+        Map<YearMonth, Long> yearMonthLongMap = orderService.countOrderPrice(rq.getMember().getId());
+        List<String> labels = yearMonthLongMap.keySet()
+                .stream()
+                .map(yearMonth -> yearMonth.getMonth().toString())
+                .collect(Collectors.toList());
+
+        List<Long> salesData = new ArrayList<>(yearMonthLongMap.values());
+
+        model.addAttribute("labels", labels);
+        model.addAttribute("salesData", salesData);
+        return "usr/seller/chart";
     }
 }

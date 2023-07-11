@@ -36,4 +36,14 @@ public class DiaryCheckLog extends BaseEntity {
                 .checkDate(LocalDate.now())
                 .build();
     }
+
+    @Override
+    public String toString() {
+        return "DiaryCheckLog{" +
+                "member=" + member +
+                ", diary=" + diary +
+                ", name='" + name + '\'' +
+                ", checkDate=" + checkDate +
+                '}';
+    }
 }

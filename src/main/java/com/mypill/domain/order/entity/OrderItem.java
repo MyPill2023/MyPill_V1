@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -50,5 +48,9 @@ public class OrderItem extends BaseEntity {
 
     public void setPaymentDone() {
         status = OrderStatus.ORDERED;
+    }
+
+    public Long getTotalPrice() {
+        return totalPrice;
     }
 }

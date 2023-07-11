@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,9 +45,7 @@ class DiaryServiceTest {
         diary = Diary.builder()
                 .member(testUser1)
                 .name("루테인")
-                .time("morning")
-                .type("간")
-                .memo("x")
+                .time(LocalTime.now())
                 .build();
         savedDiary = diaryRepository.save(diary);
 
@@ -59,15 +58,10 @@ class DiaryServiceTest {
     }
 
     @Test
-    @DisplayName("당일 날짜에 해당하는 체크한 기록 불러오기")
+    @DisplayName("체크한 기록 불러오기")
     void findHistoryTests() {
-        LocalDate currentDate = LocalDate.of(2023, 7, 9);
-        List<Diary> history = diaryService.findHistory(testUser1, LocalDate.now());
-        List<Diary> history1 = diaryService.findHistory(testUser1, currentDate);
-
-        assertThat(history1.size()).isEqualTo(0);
+        List<DiaryCheckLog> history = diaryService.findHistory(testUser1);
         assertThat(history.size()).isEqualTo(1);
-
     }
 
 }

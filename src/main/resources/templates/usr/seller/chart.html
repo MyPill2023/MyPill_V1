@@ -1,0 +1,55 @@
+<html layout:decorate="~{usr/layout/layout.html}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>통계</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <div class="hero-content flex flex-col w-[32rem] max-w-lg mt-5">
+        <div class="flex flex-col items-center justify-center">
+            <h1 class="text-2xl font-bold mb-4">통계</h1>
+            <span>월별 매출 통계를 확인하실 수 있습니다.</span>
+            <span class="text-xs"> *pc에 최적화 되어 있습니다</span>
+        </div>
+        <div class="flex flex-col gap-5 px-5 mt-10 w-full">
+            <canvas id="myChart" width="400" height="400"></canvas>
+            <script th:inline="javascript">
+                var chartArea = document.getElementById('myChart').getContext('2d');
+                var myChart = new Chart(chartArea, {
+                    type: 'bar',
+                    data: {
+                        labels: [[${labels}]],
+                        datasets: [{
+                            label: '매출',
+                            data: [[${salesData}]],
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: '월'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: '매출'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
+
+        </div>
+    </div>
+</main>
+</body>
+</html>
