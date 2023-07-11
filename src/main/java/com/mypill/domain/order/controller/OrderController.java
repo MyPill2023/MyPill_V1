@@ -43,7 +43,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/form/{orderId}")
-    @Operation(summary = "주문하기 폼")
+    @Operation(summary = "주문하기 페이지")
     public String getOrderForm(@PathVariable Long orderId, Model model) {
         RsData<Order> rsData = orderService.getOrderForm(rq.getMember(), orderId);
         if (rsData.isFail()) {
@@ -113,7 +113,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/detail/{orderId}")
-    @Operation(summary = "구매자의 주문 내역 조회")
+    @Operation(summary = "구매자의 주문 내역 조회 페이지")
     public String getOrderDetail(@PathVariable Long orderId, Model model) {
 
         RsData<Order> rsData = orderService.getOrderDetail(orderId);
@@ -227,7 +227,7 @@ public class OrderController {
 
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/management/{orderId}")
-    @Operation(summary = "판매자의 주문 관리")
+    @Operation(summary = "판매자의 주문 관리 페이지")
     public String management(@PathVariable Long orderId, Model model) {
 
         RsData<Order> rsData = orderService.getOrderDetail(orderId);

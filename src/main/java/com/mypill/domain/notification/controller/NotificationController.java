@@ -33,7 +33,7 @@ public class NotificationController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
-    @Operation(summary = "알림 목록")
+    @Operation(summary = "알림 목록 페이지")
     public String list(Model model){
 
         List<NotificationResponse> notificationsResponse = new ArrayList<>();

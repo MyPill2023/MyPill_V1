@@ -7,6 +7,8 @@ import com.mypill.domain.address.service.AddressService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsdata.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/usr/buyer/myAddress")
+@RequestMapping("/buyer/myAddress")
+@Tag(name="AddressController", description = "배송지")
 public class AddressController {
 
     private final AddressService addressService;
@@ -26,6 +29,7 @@ public class AddressController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/create")
+    @Operation(summary = "배송지 등록 페이지")
     public String createForm(){
 
         if(!addressService.checkCanCreate(rq.getMember().getId())){
@@ -37,6 +41,7 @@ public class AddressController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create")
+    @Operation(summary = "배송지 등록")
     public String create(@Valid AddressRequest addressRequest){
         RsData<Address> createRsData = addressService.create(addressRequest);
         if(createRsData.isFail()){
@@ -47,6 +52,7 @@ public class AddressController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/update/{addressId}")
+    @Operation(summary = "배송지 수정 페이지")
     public String updateForm(@PathVariable Long addressId, Model model){
 
         RsData<Address> rsData = addressService.get(rq.getMember(), addressId);
@@ -60,6 +66,7 @@ public class AddressController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/update/{addressId}")
+    @Operation(summary = "배송지 수정")
     public String update(@PathVariable Long addressId, @Valid AddressRequest addressRequest){
 
         RsData<Address> rsData = addressService.get(rq.getMember(), addressId);
@@ -73,6 +80,7 @@ public class AddressController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/delete/{addressId}")
+    @Operation(summary = "배송지 삭제")
     public String delete(@PathVariable Long addressId){
 
         RsData<Address> rsData = addressService.get(rq.getMember(), addressId);
@@ -88,6 +96,7 @@ public class AddressController {
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/getAddressDetails")
     @ResponseBody
+    @Operation(summary = "배송지 세부사항 가져오기")
     public ResponseEntity<?> getAddressDetails(@RequestParam Long addressId) {
         Address address = addressService.findById(addressId).orElse(null);
         if (address == null) {

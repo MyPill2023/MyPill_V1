@@ -34,7 +34,7 @@ public class PostController {
     private final Rq rq;
 
     @GetMapping("/list")
-    @Operation(summary = "게시글 목록")
+    @Operation(summary = "게시글 목록 페이지")
     public String showList(String keyword, String searchType,
                            @RequestParam(defaultValue = "0") int pageNumber,
                            @RequestParam(defaultValue = "10") int pageSize,
@@ -65,7 +65,7 @@ public class PostController {
     }
 
     @GetMapping("/detail/{postId}")
-    @Operation(summary = "게시글 상세")
+    @Operation(summary = "게시글 상세 페이지")
     public String showPost(@PathVariable Long postId, Model model) {
         RsData<Post> postRsData = postService.showDetail(postId);
         if (postRsData.isFail()) {

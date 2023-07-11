@@ -102,7 +102,7 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPosts")
-    @Operation(summary = "내 게시글 목록")
+    @Operation(summary = "내 게시글 목록 페이지")
     public String myPosts(Model model) {
         List<Post> posts = postService.getMyPosts(rq.getMember());
         model.addAttribute("posts", posts);
@@ -111,7 +111,7 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myComments")
-    @Operation(summary = "내 댓글 목록")
+    @Operation(summary = "내 댓글 목록 페이지")
     public String myComments(Model model) {
         List<Comment> comments = commentService.getMyComments(rq.getMember());
         model.addAttribute("comments", comments);

@@ -41,7 +41,7 @@ public class SurveyController {
 
     @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @GetMapping("/guide")
-    @Operation(summary = "설문 가이드 폼")
+    @Operation(summary = "설문 가이드 페이지")
     public String guide(Model model) {
         if(rq.isLogin()){
             return "redirect:/usr/survey/start";
@@ -51,7 +51,7 @@ public class SurveyController {
 
     @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @GetMapping("/start")
-    @Operation(summary = "설문 시작 폼")
+    @Operation(summary = "설문 시작 페이지")
     public String start(Model model) {
         if (rq.isLogin()) {
             Member member = rq.getMember();
@@ -68,7 +68,7 @@ public class SurveyController {
 
     @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @GetMapping("/step")
-    @Operation(summary = "설문 질문 폼")
+    @Operation(summary = "설문 질문 페이지")
     public String step(Model model, @RequestParam Map<String, String> param, @RequestParam(defaultValue = "1") Long stepNo) {
 
 
@@ -93,7 +93,7 @@ public class SurveyController {
     @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @Transactional
     @GetMapping("/complete")
-    @Operation(summary = "설문 결과 폼")
+    @Operation(summary = "설문 결과 페이지")
     public String complete(Model model, @RequestParam Map<String, String> param) {
         StepParam stepParam = new StepParam(param, 1L);
 

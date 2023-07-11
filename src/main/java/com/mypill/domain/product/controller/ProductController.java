@@ -37,7 +37,7 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/create")
-    @Operation(summary = "상품 등록 폼")
+    @Operation(summary = "상품 등록 페이지")
     public String showCreate(Model model) {
 
         populateModel(model);
@@ -56,7 +56,7 @@ public class ProductController {
     }
 
     @GetMapping("/detail/{productId}")
-    @Operation(summary = "상품 상세")
+    @Operation(summary = "상품 상세 페이지")
     public String showProduct(@PathVariable Long productId, Model model) {
 
         Product product = productService.get(productId).getData();
@@ -70,7 +70,7 @@ public class ProductController {
     }
 
     @GetMapping("/list/all")
-    @Operation(summary = "상품 전체 목록")
+    @Operation(summary = "상품 전체 목록 페이지")
     public String list(Model model, HttpServletRequest request,
                        @RequestParam(defaultValue = "0") int pageNumber,
                        @RequestParam(defaultValue = "10") int pageSize) {
@@ -81,7 +81,7 @@ public class ProductController {
     }
 
     @GetMapping("/list/nutrient/{nutrientId}")
-    @Operation(summary = "영양 성분별 상품 목록")
+    @Operation(summary = "영양 성분별 상품 목록 페이지")
     public String listByNutrition(@PathVariable Long nutrientId,
                                   @RequestParam(defaultValue = "0") int pageNumber,
                                   @RequestParam(defaultValue = "10") int pageSize,
@@ -93,7 +93,7 @@ public class ProductController {
     }
 
     @GetMapping("/list/category/{categorytId}")
-    @Operation(summary = "주요 기능별 상품 목록")
+    @Operation(summary = "주요 기능별 상품 목록 페이지")
     public String listByCategory(@PathVariable Long categorytId,
                                  @RequestParam(defaultValue = "0") int pageNumber,
                                  @RequestParam(defaultValue = "10") int pageSize,
@@ -106,7 +106,7 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/update/{productId}")
-    @Operation(summary = "상품 수정 폼")
+    @Operation(summary = "상품 수정 페이지")
     public String updateBefore(@PathVariable Long productId, Model model) {
 
         ProductResponse response = ProductResponse.of(productService.get(productId).getData());

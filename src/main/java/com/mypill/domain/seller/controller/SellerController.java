@@ -35,7 +35,7 @@ public class SellerController {
 
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/order")
-    @Operation(summary = "주문 관리")
+    @Operation(summary = "주문 관리 페이지")
     public String orderManagement(Model model) {
         List<OrderListResponse> orderResponses = orderService.findBySellerId(rq.getMember().getId())
                 .stream()
