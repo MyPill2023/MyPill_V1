@@ -54,11 +54,11 @@ public class ImageService {
     }
 
     @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updateImage(MultipartFile multipartFile, Object targetObject) {
         if (!multipartFile.isEmpty()) {
             try {
                 if (targetObject instanceof Product product) {
+
                     Image image = product.getImage();
                     amazonS3Service.deleteImage(image.getOriginalUrl());
                     AmazonS3Dto amazonS3ImageDto = amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
