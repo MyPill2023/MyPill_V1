@@ -27,8 +27,6 @@ import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.mypill.domain.order.entity.OrderStatus.DELIVERED;
-import static com.mypill.domain.order.entity.OrderStatus.ORDERED;
 
 @Service
 @RequiredArgsConstructor
@@ -121,14 +119,14 @@ public class OrderService {
         Set<Member> uniqueSellers = new HashSet<>();
         order.getOrderItems()
                 .forEach(orderItem -> {
-                    orderItem.updateStatus(ORDERED);
+                    orderItem.updateStatus(OrderStatus.ORDERED);
                     orderItem.getProduct().updateStockByOrder(orderItem.getQuantity()); // 재고 업데이트
                     Member seller = orderItem.getProduct().getSeller();
                     if (uniqueSellers.add(seller)) {
                         publisher.publishEvent(new EventAfterOrderPayment(this, seller, order)); // 이벤트 - 판매자에게 알림
                     }
                 });
-        order.updatePrimaryOrderStatus(ORDERED);
+        order.updatePrimaryOrderStatus(OrderStatus.ORDERED);
         order.getCartProducts().forEach(CartProduct::softDelete); // 장바구니에서 삭제
 
         orderRepository.save(order);
@@ -171,7 +169,7 @@ public class OrderService {
         }
 
         for(OrderItem orderItem : order.getOrderItems()){
-            if(!orderItem.getStatus().equals(ORDERED)) {
+            if(!orderItem.getStatus().equals(OrderStatus.ORDERED)) {
                 return RsData.of("F-4", "%s인 상품이 있어 </br>주문 취소가 불가합니다".formatted(orderItem.getStatus().getValue()));
             }
         }
@@ -313,7 +311,7 @@ public class OrderService {
     public static class SalesCalculator {
         public static Map<YearMonth, Long> calculateMonthlySales(List<OrderItem> orderItems) {
             return orderItems.stream()
-                    .filter(orderItem -> orderItem.getStatus()==DELIVERED)
+                    .filter(orderItem -> orderItem.getStatus().equals(OrderStatus.DELIVERED))
                     .collect(Collectors.groupingBy(
                             orderItem -> YearMonth.from(orderItem.getCreateDate()),
                             Collectors.summingLong(OrderItem::getTotalPrice)
