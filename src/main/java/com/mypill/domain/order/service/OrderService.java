@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.mypill.domain.order.entity.OrderStatus.DELIVERED;
+import static com.mypill.domain.order.entity.OrderStatus.ORDERED;
 
 @Service
 @RequiredArgsConstructor
@@ -120,14 +121,14 @@ public class OrderService {
         Set<Member> uniqueSellers = new HashSet<>();
         order.getOrderItems()
                 .forEach(orderItem -> {
-                    orderItem.updateStatus(OrderStatus.ORDERED);
+                    orderItem.updateStatus(ORDERED);
                     orderItem.getProduct().updateStockByOrder(orderItem.getQuantity()); // 재고 업데이트
                     Member seller = orderItem.getProduct().getSeller();
                     if (uniqueSellers.add(seller)) {
                         publisher.publishEvent(new EventAfterOrderPayment(this, seller, order)); // 이벤트 - 판매자에게 알림
                     }
                 });
-        order.updatePrimaryOrderStatus(OrderStatus.ORDERED);
+        order.updatePrimaryOrderStatus(ORDERED);
         order.getCartProducts().forEach(CartProduct::softDelete); // 장바구니에서 삭제
 
         orderRepository.save(order);
@@ -170,7 +171,7 @@ public class OrderService {
         }
 
         for(OrderItem orderItem : order.getOrderItems()){
-            if(!orderItem.getStatus().equals(OrderStatus.ORDERED)) {
+            if(!orderItem.getStatus().equals(ORDERED)) {
                 return RsData.of("F-4", "%s인 상품이 있어 </br>주문 취소가 불가합니다".formatted(orderItem.getStatus().getValue()));
             }
         }

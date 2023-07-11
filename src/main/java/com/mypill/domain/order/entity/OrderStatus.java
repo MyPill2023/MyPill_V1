@@ -27,6 +27,3 @@ public enum OrderStatus {
         return null;
     }
 }
-
-//캔슬이랑 비포 빼기
-//아니면 딜리버리

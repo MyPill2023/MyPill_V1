@@ -91,10 +91,9 @@ public class SellerController {
         Map<YearMonth, Long> yearMonthLongMap = orderService.countOrderPrice(rq.getMember().getId());
         List<String> labels = yearMonthLongMap.keySet()
                 .stream()
-                .map(yearMonth -> yearMonth.getMonth().toString()) // 월 정보만 추출
+                .map(yearMonth -> yearMonth.getMonth().toString())
                 .collect(Collectors.toList());
 
-        // 매출 데이터 추출
         List<Long> salesData = new ArrayList<>(yearMonthLongMap.values());
 
         model.addAttribute("labels", labels);
