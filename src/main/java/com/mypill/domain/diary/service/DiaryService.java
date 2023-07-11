@@ -36,8 +36,6 @@ public class DiaryService {
                 .member(member)
                 .name(diaryRequest.getName())
                 .time(diaryRequest.getTime())
-                .memo(diaryRequest.getMemo())
-                .type(diaryRequest.getType())
                 .build();
         diaryRepository.save(newDiary);
         return RsData.of("S-1","영양제 등록이 완료되었습니다.", newDiary);
@@ -73,15 +71,11 @@ public class DiaryService {
         return RsData.of("S-1","영양제가 삭제 되었습니다.",diary);
     }
 
-    public List<Diary> findHistory(Member member, LocalDate date) {
+    public List<DiaryCheckLog> findHistory(Member member) {
 
-        List<DiaryCheckLog> diaryCheckLogs = diaryCheckLogRepository.findByCheckDate(date);
+        List<DiaryCheckLog> diaryCheckLogs = diaryCheckLogRepository.findByMemberId(member.getId());
 
-        return diaryCheckLogs
-                .stream()
-                .filter(e -> Objects.equals(e.getDiary().getMember().getId(), member.getId()))
-                .map(DiaryCheckLog::getDiary)
-                .toList();
+        return diaryCheckLogs;
     }
 
     public List<Diary> findByMemberId (Long memberId) {
@@ -89,7 +83,7 @@ public class DiaryService {
     }
 
     public List<Diary> getList (Long memberId) {
-          return diaryRepository.findByMemberIdAndDeleteDateIsNullOrderByCreateDateDesc(memberId);
+          return diaryRepository.findByMemberIdAndDeleteDateIsNullOrderByTimeAsc(memberId);
     }
 
     public Optional<Diary> findById (Long diaryId) {
