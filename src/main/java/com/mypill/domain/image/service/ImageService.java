@@ -38,10 +38,14 @@ public class ImageService {
     public AmazonS3Dto updateImageOnServer(MultipartFile multipartFile, Object object) {
         try {
             if (object instanceof Product product) {
-                amazonS3Service.deleteImage(product.getImage().getOriginalUrl());
+                if (product.getImage() != null) {
+                    amazonS3Service.deleteImage(product.getImage().getOriginalUrl());
+                }
                 return amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
             } else if (object instanceof Post post) {
-                amazonS3Service.deleteImage(post.getImage().getOriginalUrl());
+                if (post.getImage() != null) {
+                    amazonS3Service.deleteImage(post.getImage().getOriginalUrl());
+                }
                 return amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
             } else {
                 return null;

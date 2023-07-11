@@ -124,7 +124,12 @@ public class ProductService {
 
         if (!multipartFile.isEmpty()) {
             AmazonS3Dto amazonS3ImageDto = imageService.updateImageOnServer(multipartFile, product);
-            product.getImage().update(amazonS3ImageDto, multipartFile);
+            Image image = product.getImage();
+            if (image == null) {
+                product.addImage(new Image(amazonS3ImageDto, multipartFile, product));
+            } else {
+                product.getImage().update(amazonS3ImageDto, multipartFile);
+            }
         }
         product.update(request, nutrients, categories);
         return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);

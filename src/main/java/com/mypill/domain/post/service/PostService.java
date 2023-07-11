@@ -121,7 +121,13 @@ public class PostService {
 
         if (!multipartFile.isEmpty()) {
             AmazonS3Dto amazonS3ImageDto = imageService.updateImageOnServer(multipartFile, post);
-            post.getImage().update(amazonS3ImageDto, multipartFile);
+            Image image = post.getImage();
+            if (image == null) {
+                post.addImage(new Image(amazonS3ImageDto, multipartFile, post));
+            }
+            else{
+                post.getImage().update(amazonS3ImageDto, multipartFile);
+            }
         }
         post.update(postRequest);
         return RsData.of("S-1", "게시글이 수정되었습니다.", post);
