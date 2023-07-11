@@ -1,4 +1,4 @@
-package com.mypill.domain.emailverification.controller;
+package com.mypill.domain.email.emailverification.controller;
 
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;

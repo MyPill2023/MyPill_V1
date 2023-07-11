@@ -1,7 +1,6 @@
 package com.mypill.domain.image.service;
 
 import com.mypill.domain.image.entity.Image;
-import com.mypill.domain.image.repository.ImageRepository;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.aws.s3.dto.AmazonS3Dto;
