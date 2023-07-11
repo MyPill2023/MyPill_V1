@@ -1,5 +1,6 @@
 package com.mypill.domain.post.service;
 
+import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,14 +61,14 @@ public class PostService {
         if (member == null) {
             return RsData.of("F-1", "존재하지 않는 회원입니다.");
         }
-        Post newPost = Post.builder()
-                .title(postRequest.getTitle())
-                .content(postRequest.getContent())
-                .posterId(member.getId())
-                .build();
-        imageService.saveImage(multipartFile, newPost);
-        postRepository.save(newPost);
-        return RsData.of("S-1", "질문 등록이 완료되었습니다.", newPost);
+        Post post = new Post(postRequest, member.getId(), new ArrayList<>());
+        if (!multipartFile.isEmpty()) {
+            AmazonS3Dto amazonS3ImageDto = imageService.saveImageOnServer(multipartFile, post);
+            Image image = new Image(amazonS3ImageDto, multipartFile, post);
+            post.addImage(image);
+        }
+        postRepository.save(post);
+        return RsData.of("S-1", "질문 등록이 완료되었습니다.", post);
     }
 
     public RsData<Post> showDetail(Long postId) {

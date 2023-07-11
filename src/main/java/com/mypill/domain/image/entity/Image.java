@@ -33,6 +33,20 @@ public class Image extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public Image(AmazonS3Dto amazonS3ImageDto, MultipartFile multipartFile, Product product) {
+        this.filename = multipartFile.getOriginalFilename();
+        this.filepath = amazonS3ImageDto.getCdnUrl();
+        this.originalUrl = amazonS3ImageDto.getOriginUrl();
+        this.product = product;
+    }
+
+    public Image(AmazonS3Dto amazonS3ImageDto, MultipartFile multipartFile, Post post) {
+        this.filename = multipartFile.getOriginalFilename();
+        this.filepath = amazonS3ImageDto.getCdnUrl();
+        this.originalUrl = amazonS3ImageDto.getOriginUrl();
+        this.post = post;
+    }
+
     public void setProduct(Product product) {
         this.product = product;
     }

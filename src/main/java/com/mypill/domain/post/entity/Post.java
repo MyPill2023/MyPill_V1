@@ -35,6 +35,13 @@ public class Post extends BaseEntity {
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
     private Image image;
 
+    public Post(PostRequest postRequest, Long id, List<Comment> comments) {
+        this.title = postRequest.getTitle();
+        this.content = postRequest.getContent();
+        this.posterId = id;
+        this.comments = comments;
+    }
+
     public Long getCommentCnt() {
         long count = 0;
         for (Comment comment : comments) {

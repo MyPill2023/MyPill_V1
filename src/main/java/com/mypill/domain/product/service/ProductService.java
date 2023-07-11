@@ -1,5 +1,6 @@
 package com.mypill.domain.product.service;
 
+import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
@@ -11,7 +12,6 @@ import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
 import com.mypill.global.aws.s3.dto.AmazonS3Dto;
-import com.mypill.global.aws.s3.service.AmazonS3Service;
 import com.mypill.global.event.EventAfterLike;
 import com.mypill.global.event.EventAfterUnlike;
 import com.mypill.global.rsdata.RsData;
@@ -38,7 +38,6 @@ public class ProductService {
     private final MemberService memberService;
     private final ApplicationEventPublisher publisher;
     private final ImageService imageService;
-    private final AmazonS3Service amazonS3Service;
 
     //NotProd용
     @Transactional
@@ -66,8 +65,11 @@ public class ProductService {
 
         Product product = Product.of(request, nutrients, categories, seller, new HashSet<>());
 
-        imageService.saveImage(multipartFile, product);
-
+        if (!multipartFile.isEmpty()) {
+            AmazonS3Dto amazonS3ImageDto = imageService.saveImageOnServer(multipartFile, product);
+            Image image = new Image(amazonS3ImageDto, multipartFile, product);
+            product.addImage(image);
+        }
         productRepository.save(product);
         return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
     }
@@ -89,11 +91,11 @@ public class ProductService {
 
         Product product = findById(productId).orElse(null);
         if (product == null) {
-            return RsData.of("F-1", "존재하지 않는 상품입니다.", product);
+            return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
 
         if (!actor.getId().equals(product.getSeller().getId())) {
-            return RsData.of("F-2", "수정 권한이 없습니다.", product);
+            return RsData.of("F-2", "수정 권한이 없습니다.");
         }
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
