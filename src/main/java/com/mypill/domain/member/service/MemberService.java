@@ -29,7 +29,7 @@ public class MemberService {
     private final EmailVerificationService emailVerificationService;
     private final ApplicationEventPublisher publisher;
 
-    //NotProd 용 메소드, 개발 끝나면 삭제 예정    @Transactional
+    @Transactional
     public RsData<Member> join(String username, String name, String password, String userTypeStr, String email, boolean emailVerified) {
         Integer userType = Integer.parseInt(userTypeStr);
         Member member = Member.builder()
@@ -49,7 +49,6 @@ public class MemberService {
         if (memberRepository.findByUsername(username).isPresent()) {
             throw new AlreadyJoinException("%s(은)는 이미 사용중인 아이디 입니다.".formatted(username));
         }
-
         Member member = Member.builder()
                 .username(username)
                 .name(name)
@@ -58,9 +57,7 @@ public class MemberService {
                 .userType(userType)
                 .build();
         Member savedMember = memberRepository.save(member);
-
         sendEmail(savedMember);
-
         return RsData.of("S-1", "회원가입이 완료되었습니다.", savedMember);
     }
 
@@ -78,7 +75,6 @@ public class MemberService {
     @Transactional
     public RsData<Member> whenSocialLogin(String providerTypeCode, String username, String name, String email) {
         Optional<Member> opMember = findByUsername(username);
-
         return opMember.map(member -> RsData.of("S-2", "로그인 되었습니다.", member))
                 .orElseGet(() -> oauthJoin(providerTypeCode, username, name, email));
     }
@@ -91,7 +87,6 @@ public class MemberService {
         if (opMember.isPresent()) {
             return RsData.of("F-2", "이미 가입된 이메일입니다.");
         }
-
         Member member = Member.builder()
                 .providerTypeCode(providerTypeCode)
                 .username(username)
@@ -100,7 +95,6 @@ public class MemberService {
                 .userType(1)
                 .email(email)
                 .build();
-
         memberRepository.save(member);
         return RsData.of("S-1", "회원가입이 완료되었습니다.", member);
     }
@@ -157,15 +151,11 @@ public class MemberService {
     }
 
     private boolean isValidEmailForm(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-
 
     public void whenAfterLike(Member member, Product product) {
         member.like(product);
@@ -181,15 +171,12 @@ public class MemberService {
         return RsData.of("S-1", "설문이 초기화 되었습니다");
     }
 
-
     @Transactional
     public RsData verifyEmail(Long id, String verificationCode) {
         RsData verifyVerificationCodeRs = emailVerificationService.verifyVerificationCode(id, verificationCode);
-
         if (!verifyVerificationCodeRs.isSuccess()) {
             return verifyVerificationCodeRs;
         }
-
         Optional<Member> opMember = memberRepository.findById(id);
         if (opMember.isEmpty()) {
             return RsData.of("F-1", "이메일 인증에 실패했습니다.");
