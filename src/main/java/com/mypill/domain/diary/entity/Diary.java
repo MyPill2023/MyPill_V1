@@ -36,7 +36,7 @@ public class Diary extends BaseEntity {
         timeChecks.remove(diaryCheckLog);
     }
 
-    public DiaryCheckLog addDiaryCheckLog (LocalDate now) {
+    public DiaryCheckLog addDiaryCheckLog(LocalDate now) {
         return DiaryCheckLog.builder()
                 .diary(this)
                 .checkDate(now)
@@ -49,7 +49,6 @@ public class Diary extends BaseEntity {
                 .filter(e -> e.getCheckDate().equals(checkDate))
                 .findFirst()
                 .orElse(null);
-
         if (diaryCheckLog == null) {
             diaryCheckLog = addDiaryCheckLog(checkDate);
             timeChecks.add(diaryCheckLog);
@@ -62,5 +61,4 @@ public class Diary extends BaseEntity {
         return timeChecks.stream()
                 .anyMatch(e -> e.getCheckDate().toString().equals(checkDate));
     }
-
 }

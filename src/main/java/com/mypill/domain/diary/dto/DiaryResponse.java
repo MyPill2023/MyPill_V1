@@ -13,5 +13,4 @@ public class DiaryResponse {
     private Member member;
     private String name;
     private LocalTime time;
-
 }
