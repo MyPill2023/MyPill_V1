@@ -1,5 +1,6 @@
 package com.mypill.domain.notification.controller;
 
+import com.mypill.domain.notification.dto.response.DiaryCheckResponse;
 import com.mypill.domain.notification.dto.response.NotificationResponse;
 import com.mypill.domain.notification.dto.response.OrderPaymentNotificationResponse;
 import com.mypill.domain.notification.dto.response.OrderStatusUpdateNotificationResponse;
@@ -40,6 +41,7 @@ public class NotificationController {
         for (Notification notification : notifications) {
             switch (notification.getTypeCode()) {
                 case OrderStatus -> notificationsResponse.add(OrderStatusUpdateNotificationResponse.of(notification));
+                case Recode -> notificationsResponse.add(DiaryCheckResponse.of(notification));
                 default -> notificationsResponse.add(OrderPaymentNotificationResponse.of(notification));
             }
         }

@@ -85,6 +85,9 @@ public class DiaryService {
         return diaryCheckLogs;
     }
 
+    public List<Diary> findAll() {
+        return diaryRepository.findAll();
+    }
     public List<Diary> findByMemberId (Long memberId) {
         return diaryRepository.findByMemberId(memberId);
     }
