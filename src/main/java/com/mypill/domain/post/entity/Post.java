@@ -24,14 +24,11 @@ public class Post extends BaseEntity {
     private Long posterId;
     @Column(nullable = false)
     private String title;
-
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
-
     @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
     private Image image;
 

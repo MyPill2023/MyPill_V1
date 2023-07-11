@@ -17,5 +17,4 @@ public class PostEventListener {
     public void listen(EventAfterDeleteMember event) {
         postService.whenAfterDeleteMember(event.getMember());
     }
-
 }
