@@ -39,22 +39,6 @@ public class ProductService {
     private final ApplicationEventPublisher publisher;
     private final ImageService imageService;
 
-    //NotProd용
-    @Transactional
-    public RsData<Product> create(ProductRequest request) {
-
-        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
-        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
-
-        Member seller = memberService.findById(request.getSellerId()).orElse(null);
-
-        Product product = Product.of(request, nutrients, categories, seller, new HashSet<>());
-
-        productRepository.save(product);
-        return RsData.of("S-1", "상품 등록이 완료되었습니다.", product);
-    }
-
-
     @Transactional
     public RsData<Product> create(ProductRequest request, MultipartFile multipartFile) {
 
@@ -85,27 +69,6 @@ public class ProductService {
         return RsData.of("S-1", "존재하는 상품입니다.", product);
     }
 
-    //test용
-    @Transactional
-    public RsData<Product> update(Member actor, Long productId, ProductRequest request) {
-
-        Product product = findById(productId).orElse(null);
-        if (product == null) {
-            return RsData.of("F-1", "존재하지 않는 상품입니다.");
-        }
-
-        if (!actor.getId().equals(product.getSeller().getId())) {
-            return RsData.of("F-2", "수정 권한이 없습니다.");
-        }
-
-        List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
-        List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
-
-//        product.update(request, nutrients, categories);
-
-        return RsData.of("S-1", "상품 수정이 완료되었습니다.", product);
-    }
-
 
     @Transactional
     public RsData<Product> update(Member actor, Long productId, ProductRequest request, MultipartFile multipartFile) {
@@ -116,7 +79,7 @@ public class ProductService {
         }
 
         if (!actor.getId().equals(product.getSeller().getId())) {
-            return RsData.of("F-2", "수정 권한이 없습니다.");
+            return RsData.of("F-2", "수정 권한이 없습니다.", product);
         }
 
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
@@ -155,10 +118,6 @@ public class ProductService {
 
     public Optional<Product> findById(Long productId) {
         return productRepository.findById(productId);
-    }
-
-    public List<Product> findAll() {
-        return productRepository.findAll();
     }
 
     public Page<Product> getAllProductList(Pageable pageable) {

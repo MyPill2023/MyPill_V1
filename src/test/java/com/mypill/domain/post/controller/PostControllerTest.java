@@ -35,9 +35,14 @@ class PostControllerTest {
     @Autowired
     private PostService postService;
     private Member testUser1;
+    private MockMultipartFile emptyFile;
 
     @BeforeEach
     void beforeEach() {
+        emptyFile = new MockMultipartFile(
+                "imageFile",
+                new byte[0]
+        );
         testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
     }
 
@@ -125,7 +130,7 @@ class PostControllerTest {
         PostRequest postRequest = new PostRequest();
         postRequest.setTitle("title");
         postRequest.setContent("content");
-        Post post = postService.create(postRequest, testUser1).getData();
+        Post post = postService.create(postRequest, testUser1,emptyFile).getData();
 
         // WHEN
         ResultActions resultActions = mvc
@@ -150,7 +155,7 @@ class PostControllerTest {
         PostRequest postRequest = new PostRequest();
         postRequest.setTitle("title");
         postRequest.setContent("content");
-        Post post = postService.create(postRequest, testUser1).getData();
+        Post post = postService.create(postRequest, testUser1,emptyFile).getData();
 
         // WHEN
         ResultActions resultActions = mvc
@@ -175,7 +180,7 @@ class PostControllerTest {
         PostRequest postRequest = new PostRequest();
         postRequest.setTitle("title");
         postRequest.setContent("content");
-        Post post = postService.create(postRequest, testUser1).getData();
+        Post post = postService.create(postRequest, testUser1,emptyFile).getData();
         MockMultipartFile emptyFile = new MockMultipartFile(
                 "imageFile",
                 new byte[0]
@@ -206,7 +211,7 @@ class PostControllerTest {
         PostRequest postRequest = new PostRequest();
         postRequest.setTitle("title");
         postRequest.setContent("content");
-        Post post = postService.create(postRequest, testUser1).getData();
+        Post post = postService.create(postRequest, testUser1,emptyFile).getData();
 
         // WHEN
         ResultActions resultActions = mvc
