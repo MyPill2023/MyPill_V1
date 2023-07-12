@@ -2,8 +2,8 @@ spring:
   data:
     redis:
       host: 172.17.0.1
-    autoconfigure:
-      exclude:
+  autoconfigure:
+    exclude:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://172.17.0.1:3306/${custom.prod_db.dbName}?useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true&serverTimezone=Asia/Seoul
