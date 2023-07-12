@@ -122,7 +122,7 @@ public class ProductController {
     @Operation(summary = "상품 삭제")
     public String delete(@PathVariable Long productId) {
         RsData<Product> deleteRsData = productService.delete(rq.getMember(), productId);
-        return rq.redirectWithMsg("/product/list/all", deleteRsData);
+        return rq.redirectWithMsg("/seller/myProduct", deleteRsData);
     }
 
     @ResponseBody

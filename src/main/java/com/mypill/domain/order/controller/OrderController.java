@@ -37,7 +37,6 @@ public class OrderController {
     @GetMapping("/form/{orderId}")
     @Operation(summary = "주문하기 페이지")
     public String getOrderForm(@PathVariable Long orderId, Model model) {
-        System.out.println(orderId);
         RsData<Order> rsData = orderService.getOrderForm(rq.getMember(), orderId);
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
