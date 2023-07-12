@@ -21,11 +21,16 @@
         </div>
 
         <div class="flex flex-col justify-center items-center w-full px-5 gap-3" th:each="entry:${answers.entrySet()}">
-            <span class="flex justify-center items-center text-green-400 text-2xl font-bold" th:text="${entry.key}"></span>
-            <div class="collapse collapse-arrow bg-base-200 " th:each="nutrient:${entry.value}">
-                <input type="radio" name="my-accordion-2" />
-                <div class="collapse-title text-lg font-bold" th:text="${nutrient.name}"></div>
-                <div class="collapse-content" th:text="${nutrient.description}"></div>
+            <div class="card w-full bg-base-100 border border-gray-200">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-5" th:text="${entry.key}"></h2>
+                    <div class="collapse collapse-arrow bg-gray-100" th:each="nutrient:${entry.value}">
+                        <input type="radio" name="my-accordion-2" />
+                        <div class="collapse-title text-lg" th:text="${nutrient.name}"></div>
+                        <div class="collapse-content" th:text="${nutrient.description}"></div>
+                    </div>
+
+                </div>
             </div>
         </div>
 
