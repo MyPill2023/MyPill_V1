@@ -8,9 +8,9 @@
 <main layout:fragment="main">
     <div class="hero-content flex flex-col mb-10 2 w-[32rem] mt-5">
         <div class="flex justify-center mb-5 gap-1">
-            <a href="/usr/member/myPosts" class="text-2xl font-bold text-center text-primary">내 질문</a>
+            <a href="/member/myPosts" class="text-2xl font-bold text-center">내 질문</a>
             <div class="divider divider-horizontal !mx-1"></div>
-            <a href="/usr/member/myComments" class="text-2xl text-center">내 답변</a>
+            <a href="/member/myComments" class="text-2xl  text-center">내 답변</a>
         </div>
         <div th:if="${posts.size()==0}" class="mt-10">
             <span class="flex items-center justify-center">등록한 질문이 없습니다.</span>
@@ -32,7 +32,7 @@
                     <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         <div class="flex flex-row items-center">
                             <div style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                <a th:text="${post.title}" th:href="@{/usr/post/detail/{id}(id=${post.id})}"></a>
+                                <a th:text="${post.title}" th:href="@{/post/detail/{id}(id=${post.id})}"></a>
                             </div>
                             <span class="ml-2"
                                   th:text="${(post.getCommentCnt() >= 1 ? ' (' + post.getCommentCnt() + ')' : '')}"></span>

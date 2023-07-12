@@ -63,5 +63,4 @@ public class SellerService {
         }
         return member;
     }
-
 }

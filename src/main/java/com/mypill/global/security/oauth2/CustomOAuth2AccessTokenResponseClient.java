@@ -24,9 +24,7 @@ import org.springframework.web.client.RestTemplate;
 public class CustomOAuth2AccessTokenResponseClient
         implements OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> {
     private static final String INVALID_TOKEN_RESPONSE_ERROR_CODE = "invalid_token_response";
-
     private final Converter<OAuth2AuthorizationCodeGrantRequest, RequestEntity<?>> requestEntityConverter = new OAuth2AuthorizationCodeGrantRequestEntityConverter();
-
     private final RestOperations restOperations;
 
     public CustomOAuth2AccessTokenResponseClient() {
@@ -39,10 +37,8 @@ public class CustomOAuth2AccessTokenResponseClient
     @Override
     public OAuth2AccessTokenResponse getTokenResponse(OAuth2AuthorizationCodeGrantRequest authorizationCodeGrantRequest) {
         Assert.notNull(authorizationCodeGrantRequest, "authorizationCodeGrantRequest cannot be null");
-
         RequestEntity<?> request = this.requestEntityConverter.convert(authorizationCodeGrantRequest);
         ResponseEntity<OAuth2AccessTokenResponse> response = getResponse(request);
-
         return response.getBody();
     }
 

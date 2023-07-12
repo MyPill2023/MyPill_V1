@@ -38,10 +38,8 @@ class PostServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
+        emptyFile = new MockMultipartFile("imageFile", new byte[0]);
+
         postRequest = new PostRequest();
         postRequest.setTitle("게시글 제목");
         postRequest.setContent("게시글 내용");
@@ -61,7 +59,7 @@ class PostServiceTest {
     @DisplayName("게시글 작성 테스트(구매자 회원)")
     void createTest() {
         // WHEN
-        Post post = postService.create(postRequest, buyer,emptyFile).getData();
+        Post post = postService.create(postRequest, buyer, emptyFile).getData();
 
         // THEN
         assertTrue(postRepository.findById(post.getId()).isPresent());
@@ -74,12 +72,12 @@ class PostServiceTest {
     @DisplayName("게시글 수정 테스트(구매자 회원")
     void updateTest() {
         // GIVEN
-        Post post = postService.create(postRequest, buyer,emptyFile).getData();
+        Post post = postService.create(postRequest, buyer, emptyFile).getData();
 
         // WHEN
         postRequest.setTitle("제목 업데이트");
         postRequest.setContent("내용 업데이트");
-        postService.update(post.getId(), postRequest, buyer.getId(),emptyFile);
+        postService.update(post.getId(), postRequest, buyer.getId(), emptyFile);
 
         // THEN
         assertTrue(postRepository.findById(post.getId()).isPresent());
@@ -92,7 +90,7 @@ class PostServiceTest {
     @DisplayName("게시글 삭제 테스트(구매자 회원)")
     void deleteTest() {
         // GIVEN
-        Post post = postService.create(postRequest, buyer,emptyFile).getData();
+        Post post = postService.create(postRequest, buyer, emptyFile).getData();
 
         // WHEN
         postService.softDelete(post.getId(), buyer);
@@ -115,9 +113,9 @@ class PostServiceTest {
                 .email("yh@test.com")
                 .build();
         buyer2 = memberRepository.save(buyer2);
-        postService.create(postRequest, buyer,emptyFile);
-        postService.create(postRequest, buyer,emptyFile);
-        postService.create(postRequest, buyer2,emptyFile);
+        postService.create(postRequest, buyer, emptyFile);
+        postService.create(postRequest, buyer, emptyFile);
+        postService.create(postRequest, buyer2, emptyFile);
 
         // WHEN
         List<Post> posts = postService.getList();
@@ -139,9 +137,9 @@ class PostServiceTest {
                 .email("yh@test.com")
                 .build();
         buyer2 = memberRepository.save(buyer2);
-        postService.create(postRequest, buyer,emptyFile);
-        postService.create(postRequest, buyer,emptyFile);
-        postService.create(postRequest, buyer2,emptyFile);
+        postService.create(postRequest, buyer, emptyFile);
+        postService.create(postRequest, buyer, emptyFile);
+        postService.create(postRequest, buyer2, emptyFile);
 
         // WHEN
         List<Post> posts1 = postService.getMyPosts(buyer);
@@ -159,12 +157,12 @@ class PostServiceTest {
         // GIVEN
         String keyword = "키워드";
         postRequest.setTitle(keyword);
-        postService.create(postRequest, buyer,emptyFile);
+        postService.create(postRequest, buyer, emptyFile);
         postRequest.setTitle("무시");
-        postService.create(postRequest, buyer,emptyFile);
+        postService.create(postRequest, buyer, emptyFile);
 
         // WHEN
-        Page<PostResponse> postResponse = postService.searchTitle(keyword, PageRequest.of(0,10));
+        Page<PostResponse> postResponse = postService.searchTitle(keyword, PageRequest.of(0, 10));
 
         // THEN
         assertThat(postResponse.getTotalElements()).isEqualTo(1);
@@ -177,12 +175,12 @@ class PostServiceTest {
         // GIVEN
         String keyword = "키워드";
         postRequest.setContent(keyword);
-        postService.create(postRequest, buyer,emptyFile);
+        postService.create(postRequest, buyer, emptyFile);
         postRequest.setContent("무시");
-        postService.create(postRequest, buyer,emptyFile);
+        postService.create(postRequest, buyer, emptyFile);
 
         // WHEN
-        Page<PostResponse> postResponse = postService.searchContent(keyword, PageRequest.of(0,10));
+        Page<PostResponse> postResponse = postService.searchContent(keyword, PageRequest.of(0, 10));
 
         // THEN
         assertThat(postResponse.getTotalElements()).isEqualTo(1);

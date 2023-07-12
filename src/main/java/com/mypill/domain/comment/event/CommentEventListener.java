@@ -17,5 +17,4 @@ public class CommentEventListener {
     public void listen(EventAfterDeleteMember event) {
         commentService.whenAfterDeleteMember(event.getMember());
     }
-
 }

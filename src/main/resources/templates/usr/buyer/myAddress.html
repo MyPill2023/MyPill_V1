@@ -10,7 +10,6 @@
         <h1 class="text-2xl font-bold">
             나의 배송지 관리
         </h1>
-
         <div class="flex flex-col w-full max-w-md mb-10 mt-5 gap-6">
             <div th:if="${addresses.size() == 0}" class="flex justify-center my-16">
                 <span >등록된 배송지가 없습니다.</span>
@@ -38,11 +37,11 @@
                         </div>
                     </div>
                     <div class="flex justify-end gap-2 mt-2">
-                        <a th:href="@{|/usr/buyer/myAddress/update/${address.id}|}" class="btn btn-sm">수정</a>
+                        <a th:href="@{|/buyer/myAddress/update/${address.id}|}" class="btn btn-sm">수정</a>
                         <a class="btn btn-sm" href="javascript:;"
                            onclick="if ( confirm('배송지를 삭제하시겠습니까?') ) $(this).next().submit();">
                             삭제</a>
-                        <form hidden th:action="@{|/usr/buyer/myAddress/delete/${address.id}|}" method="POST">
+                        <form hidden th:action="@{|/buyer/myAddress/delete/${address.id}|}" method="POST">
                             <input type="hidden" name="_method" value="delete">
                         </form>
 
@@ -50,12 +49,10 @@
                 </div>
             </div>
             <div class="flex justify-center mt-5">
-                <a th:href="@{/usr/buyer/myAddress/create}" class="btn w-1/2">배송지 추가하기</a>
+                <a th:href="@{/buyer/myAddress/create}" class="btn w-1/2">배송지 추가하기</a>
             </div>
         </div>
     </div>
-
-
 </main>
 </body>
 

@@ -22,7 +22,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException{
+                                        AuthenticationException exception) throws IOException {
         String errorMessage;
         if (exception instanceof BadCredentialsException) {
             errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
@@ -31,7 +31,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
         } else {
             errorMessage = exception.getMessage();
         }
-        redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/usr/member/login", errorMessage));
+        redirectStrategy.sendRedirect(request, response, Rq.urlWithErrorMsg("/member/login", errorMessage));
         rq.invalidateSession();
     }
 }

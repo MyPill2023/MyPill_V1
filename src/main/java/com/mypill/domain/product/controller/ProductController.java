@@ -39,9 +39,7 @@ public class ProductController {
     @GetMapping("/create")
     @Operation(summary = "상품 등록 페이지")
     public String showCreate(Model model) {
-
         populateModel(model);
-
         return "usr/product/create";
     }
 
@@ -49,23 +47,19 @@ public class ProductController {
     @PostMapping("/create")
     @Operation(summary = "상품 등록")
     public String create(@Valid ProductRequest productRequest, @RequestParam("imageFile") MultipartFile multiPartFile) {
-
         RsData<Product> createRsData = productService.create(productRequest, multiPartFile);
-
         return rq.redirectWithMsg("/product/detail/%s".formatted(createRsData.getData().getId()), createRsData);
     }
 
     @GetMapping("/detail/{productId}")
     @Operation(summary = "상품 상세 페이지")
     public String showProduct(@PathVariable Long productId, Model model) {
-
         Product product = productService.get(productId).getData();
         if (rq.isLogin() && product.getLikedMembers().contains(rq.getMember())) {
             model.addAttribute("product", ProductResponse.of(product, true));
         } else {
             model.addAttribute("product", ProductResponse.of(product, false));
         }
-
         return "usr/product/detail";
     }
 
@@ -76,7 +70,7 @@ public class ProductController {
                        @RequestParam(defaultValue = "10") int pageSize) {
         Page<Product> productPageResult = productService.getAllProductList(PageRequest.of(pageNumber, pageSize));
         model.addAttribute("title", "전체보기");
-        populateModel(model, productPageResult, request, pageNumber, pageSize);
+        populateModel(model, productPageResult, request);
         return "usr/product/list";
     }
 
@@ -88,19 +82,19 @@ public class ProductController {
                                   Model model, HttpServletRequest request) {
         Page<Product> productPageResult = productService.getAllProductListByNutrientId(nutrientId, PageRequest.of(pageNumber, pageSize));
         nutrientService.findById(nutrientId).ifPresent(nutrient -> model.addAttribute("title", nutrient.getName()));
-        populateModel(model, productPageResult, request, pageNumber, pageSize);
+        populateModel(model, productPageResult, request);
         return "usr/product/list";
     }
 
-    @GetMapping("/list/category/{categorytId}")
+    @GetMapping("/list/category/{categoryId}")
     @Operation(summary = "주요 기능별 상품 목록 페이지")
-    public String listByCategory(@PathVariable Long categorytId,
+    public String listByCategory(@PathVariable Long categoryId,
                                  @RequestParam(defaultValue = "0") int pageNumber,
                                  @RequestParam(defaultValue = "10") int pageSize,
                                  Model model, HttpServletRequest request) {
-        Page<Product> productPageResult = productService.getAllProductListByCategoryId(categorytId, PageRequest.of(pageNumber, pageSize));
-        categoryService.findById(categorytId).ifPresent(category -> model.addAttribute("title", category.getName()));
-        populateModel(model, productPageResult, request, pageNumber, pageSize);
+        Page<Product> productPageResult = productService.getAllProductListByCategoryId(categoryId, PageRequest.of(pageNumber, pageSize));
+        categoryService.findById(categoryId).ifPresent(category -> model.addAttribute("title", category.getName()));
+        populateModel(model, productPageResult, request);
         return "usr/product/list";
     }
 
@@ -108,11 +102,9 @@ public class ProductController {
     @GetMapping("/update/{productId}")
     @Operation(summary = "상품 수정 페이지")
     public String updateBefore(@PathVariable Long productId, Model model) {
-
         ProductResponse response = ProductResponse.of(productService.get(productId).getData());
         model.addAttribute("product", response);
         populateModel(model);
-
         return "usr/product/update";
     }
 
@@ -120,9 +112,7 @@ public class ProductController {
     @PostMapping("/update/{productId}")
     @Operation(summary = "상품 수정")
     public String update(@PathVariable Long productId, @Valid ProductRequest productRequest, @RequestParam(value = "imageFile") MultipartFile multipartFile) {
-
         RsData<Product> updateRsData = productService.update(rq.getMember(), productId, productRequest, multipartFile);
-
         return rq.redirectWithMsg("/product/detail/%s".formatted(productId), updateRsData);
     }
 
@@ -131,9 +121,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "상품 삭제")
     public String delete(@PathVariable Long productId) {
-
         RsData<Product> deleteRsData = productService.delete(rq.getMember(), productId);
-
         return rq.redirectWithMsg("/product/list/all", deleteRsData);
     }
 
@@ -158,7 +146,7 @@ public class ProductController {
     @Operation(summary = "상품 좋아요 리스트에서 좋아요 삭제")
     public String unlike(@PathVariable("id") Long id) {
         productService.unlike(rq.getMember(), id);
-        return rq.redirectWithMsg("/usr/buyer/myLikes", "관심 상품이 삭제되었습니다.");
+        return rq.redirectWithMsg("/buyer/myLikes", "관심 상품이 삭제되었습니다.");
     }
 
     private List<ProductResponse> convertToResponse(List<Product> products) {
@@ -172,12 +160,11 @@ public class ProductController {
         model.addAttribute("categories", categories);
     }
 
-    private void populateModel(Model model, Page<Product> productPageResult, HttpServletRequest request, int pageNumber, int pageSize) {
+    private void populateModel(Model model, Page<Product> productPageResult, HttpServletRequest request) {
         List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
         List<Category> categories = categoryService.findAllByOrderByNameAsc();
         model.addAttribute("nutrients", nutrients);
         model.addAttribute("categories", categories);
-
         model.addAttribute("page", productPageResult);
         model.addAttribute("products", convertToResponse(productPageResult.getContent()));
         model.addAttribute("pagingUrl", getPagingUrl(request));
@@ -186,7 +173,6 @@ public class ProductController {
 
     private String getPagingUrl(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-
         if (requestURI.contains("/list/all")) {
             return "/product/list/all?";
         } else if (requestURI.contains("/list/nutrient/")) {
@@ -199,6 +185,4 @@ public class ProductController {
             return "";
         }
     }
-
-
 }

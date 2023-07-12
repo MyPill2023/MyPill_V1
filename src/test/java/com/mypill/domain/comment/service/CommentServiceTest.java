@@ -37,7 +37,6 @@ class CommentServiceTest {
 
     @BeforeEach()
     void beforeEach() {
-
         commentRequest = new CommentRequest();
         commentRequest.setNewContent("새 댓글");
 
@@ -78,7 +77,6 @@ class CommentServiceTest {
     void updateTest() {
         // GIVEN
         Comment comment = commentService.create(commentRequest, buyer, savedPost.getId()).getData();
-
 
         // WHEN
         commentRequest.setNewContent("댓글 업데이트");

@@ -18,9 +18,9 @@ public class MemberEventListener {
     public void listen(EventAfterLike event) {
         memberService.whenAfterLike(event.getMember(), event.getProduct());
     }
+
     @EventListener
     public void listen(EventAfterUnlike event) {
         memberService.whenAfterUnlike(event.getMember(), event.getProduct());
     }
-
 }

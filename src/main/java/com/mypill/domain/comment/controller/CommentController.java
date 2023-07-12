@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
-@RequestMapping("/usr/comment")
+@RequestMapping("/comment")
 @RequiredArgsConstructor
 @Controller
 @Tag(name = "CommentController", description = "댓글")
@@ -35,7 +35,7 @@ public class CommentController {
         if (commentRsData.isFail()) {
             return rq.historyBack(commentRsData.getMsg());
         }
-        return rq.redirectWithMsg("/usr/post/detail/%s".formatted(postId), commentRsData);
+        return rq.redirectWithMsg("/post/detail/%s".formatted(postId), commentRsData);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -54,6 +54,6 @@ public class CommentController {
         if (commentRsData.isFail()) {
             return rq.historyBack(commentRsData.getMsg());
         }
-        return rq.redirectWithMsg("/usr/post/detail/%s".formatted(postId), commentRsData);
+        return rq.redirectWithMsg("/post/detail/%s".formatted(postId), commentRsData);
     }
 }

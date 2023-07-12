@@ -98,13 +98,6 @@ public class Product extends BaseEntity {
         this.sales -= quantity;
     }
 
-    public Long getLikedCount() {
-        if (likedMembers == null) {
-            return 0L;
-        }
-        return (long) likedMembers.size();
-    }
-
     public void addLikedMember(Member member) {
         this.likedMembers.add(member);
     }

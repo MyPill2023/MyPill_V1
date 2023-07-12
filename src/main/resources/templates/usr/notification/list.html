@@ -77,7 +77,7 @@
                     </a>
                 </div>
                 <div th:if="${notification.typeCode.value.equals('Recode')}">
-                    <a th:href="@{|/usr/diary/todolist|}" onclick="markNotificationAsRead(this)"
+                    <a th:href="@{|/diary/todolist|}" onclick="markNotificationAsRead(this)"
                        th:data-notification-id="${notification.id}">
                         <div th:class="'bg-base-100 border-b border-gray-200 p-5' + (${loop.first} ? ' border-t' : '')">
                             <div class="flex flex-col gap-2">
@@ -106,7 +106,7 @@
             console.log(notificationId)
             const csrfToken = $('meta[name=csrf-token]').attr('content');
 
-            var url = '/usr/notification/read/' + notificationId;
+            var url = '/notification/read/' + notificationId;
             $.ajax({
                 type: 'POST',
                 url: url,

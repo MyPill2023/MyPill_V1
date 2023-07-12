@@ -10,7 +10,9 @@ import java.util.Optional;
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
     List<Diary> findByMemberIdAndDeleteDateIsNullOrderByTimeAsc(Long memberId);
+
     Optional<Diary> findByDeleteDateNullAndId(Long diaryId);
-    List<Diary> findByMemberId (Long memberId);
+
+    List<Diary> findByMemberId(Long memberId);
 
 }

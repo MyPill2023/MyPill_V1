@@ -41,14 +41,10 @@ public class ProductService {
 
     @Transactional
     public RsData<Product> create(ProductRequest request, MultipartFile multipartFile) {
-
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
-
         Member seller = memberService.findById(request.getSellerId()).orElse(null);
-
         Product product = Product.of(request, nutrients, categories, seller, new HashSet<>());
-
         if (!multipartFile.isEmpty()) {
             AmazonS3Dto amazonS3ImageDto = imageService.saveImageOnServer(multipartFile, product);
             Image image = new Image(amazonS3ImageDto, multipartFile, product);
@@ -61,30 +57,24 @@ public class ProductService {
 
     public RsData<Product> get(Long productId) {
         Product product = findById(productId).orElse(null);
-
         if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
-
         return RsData.of("S-1", "존재하는 상품입니다.", product);
     }
 
 
     @Transactional
     public RsData<Product> update(Member actor, Long productId, ProductRequest request, MultipartFile multipartFile) {
-
         Product product = findById(productId).orElse(null);
         if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
-
         if (!actor.getId().equals(product.getSeller().getId())) {
             return RsData.of("F-2", "수정 권한이 없습니다.", product);
         }
-
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
         List<Category> categories = categoryService.findByIdIn(request.getCategoryIds());
-
         if (!multipartFile.isEmpty()) {
             AmazonS3Dto amazonS3ImageDto = imageService.updateImageOnServer(multipartFile, product);
             Image image = product.getImage();
@@ -100,19 +90,15 @@ public class ProductService {
 
     @Transactional
     public RsData<Product> delete(Member actor, Long productId) {
-
         Product product = findById(productId).orElse(null);
         if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
-
         if (!actor.getId().equals(product.getSeller().getId())) {
             return RsData.of("F-2", "삭제 권한이 없습니다.", product);
         }
-
         product = product.toBuilder().deleteDate(LocalDateTime.now()).build();
         productRepository.save(product);
-
         return RsData.of("S-1", "상품 삭제가 완료되었습니다.", product);
     }
 

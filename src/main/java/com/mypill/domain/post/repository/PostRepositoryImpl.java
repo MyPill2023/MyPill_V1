@@ -23,29 +23,23 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     public Page<PostResponse> findPostsWithMembers(Pageable pageable) {
         QPost qPost = QPost.post;
         QMember qMember = QMember.member;
-
         BooleanExpression condition = qPost.deleteDate.isNull();
-
         return getPostPagingResponses(pageable, qPost, qMember, condition);
     }
 
     public Page<PostResponse> findPostsWithMembersAndTitleContaining(String keyword, Pageable pageable) {
         QPost qPost = QPost.post;
         QMember qMember = QMember.member;
-
         BooleanExpression condition = qPost.deleteDate.isNull()
                 .and(qPost.title.likeIgnoreCase("%" + keyword + "%"));
-
         return getPostPagingResponses(pageable, qPost, qMember, condition);
     }
 
     public Page<PostResponse> findPostsWithMembersAndContentContaining(String keyword, Pageable pageable) {
         QPost qPost = QPost.post;
         QMember qMember = QMember.member;
-
         BooleanExpression condition = qPost.deleteDate.isNull()
                 .and(qPost.content.likeIgnoreCase("%" + keyword + "%"));
-
         return getPostPagingResponses(pageable, qPost, qMember, condition);
     }
 
@@ -63,16 +57,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
     private Page<PostResponse> getPostPagingResponses(Pageable pageable, QPost qPost, QMember qMember, BooleanExpression condition) {
         List<Tuple> tuples = getTuples(qPost, qMember, condition, pageable);
-
         List<PostResponse> postResponse = tuples.stream()
                 .map(tuple -> new PostResponse(tuple.get(qPost), tuple.get(qMember)))
                 .collect(Collectors.toList());
-
         long total = jpaQueryFactory
                 .selectFrom(qPost)
                 .where(condition)
                 .fetch().size();
-
         return new PageImpl<>(postResponse, pageable, total);
     }
 }

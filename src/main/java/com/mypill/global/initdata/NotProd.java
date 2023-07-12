@@ -73,7 +73,6 @@ public class NotProd {
                 public void transferTo(File dest) throws IllegalStateException {
                 }
             };
-
             Member memberUser1 = memberService.join("user1", "김철수", "1234", "1", "cs@test.com", true).getData();
             Member memberUser2 = memberService.join("user2", "김영희", "1234", "1", "yh@test.com", true).getData();
             Member memberUser3 = memberService.join("user3", "김짱구", "1234", "2", "zzang@test.com", true).getData();

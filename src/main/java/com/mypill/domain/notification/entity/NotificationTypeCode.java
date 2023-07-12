@@ -9,11 +9,10 @@ public enum NotificationTypeCode {
     OrderCanceled("OrderCanceled", "주문 취소"),
     Recode("Recode", "복약 기록 알림");
 
-    private String value;
-    private String description;
+    private final String value;
+    private final String description;
 
-
-    NotificationTypeCode(String value, String description){
+    NotificationTypeCode(String value, String description) {
         this.value = value;
         this.description = description;
     }

@@ -17,7 +17,7 @@ public class AddressResponse {
     private String phoneNumber;
     private boolean isDefault;
 
-    public static AddressResponse of(Address address){
+    public static AddressResponse of(Address address) {
         return AddressResponse.builder()
                 .id(address.getId())
                 .name(address.getName())

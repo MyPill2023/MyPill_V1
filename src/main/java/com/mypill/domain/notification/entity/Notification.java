@@ -21,27 +21,20 @@ public class Notification extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-
     @Enumerated
     @Column(nullable = false)
     private NotificationTypeCode typeCode;
-
     @Column
     private LocalDateTime readDate;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderItem orderItem;
-
     private OrderStatus newStatus;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
-
     private String diaryName;
     private LocalTime diaryTime;
 
     public void markAsRead() {
         readDate = LocalDateTime.now();
     }
-
 }

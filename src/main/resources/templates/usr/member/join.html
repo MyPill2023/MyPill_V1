@@ -107,7 +107,7 @@
                 $.ajax({
                     type: "get",
                     async: false,
-                    url: "/usr/member/join/idCheck",
+                    url: "/member/join/idCheck",
                     data: {username: validUsername},
                     success: function (data) {
                         if (data === 1) {
@@ -137,7 +137,7 @@
                 $.ajax({
                     type: "get",
                     async: false,
-                    url: "/usr/member/join/emailCheck",
+                    url: "/member/join/emailCheck",
                     data: {email: validEmail},
                     success: function (data) {
                         if (data === 1) {

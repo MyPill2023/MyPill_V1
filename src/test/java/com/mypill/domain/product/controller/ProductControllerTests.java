@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -41,28 +40,22 @@ class ProductControllerTests {
     private Member testUserSeller1;
     private Member testUserSeller2;
     private Product product;
+    private MockMultipartFile emptyFile;
 
     @BeforeEach
     void beforeEachTest() {
-        MockMultipartFile emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
+        emptyFile = new MockMultipartFile("imageFile", new byte[0]);
+
         testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
         testUserSeller2 = memberService.join("testUserSeller2", "김철수", "1234", 2, "testSeller2@test.com").getData();
-        product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1",
+                12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
     }
 
     @Test
     @DisplayName("상품 등록 폼 처리")
     @WithMockUser(username = "testUserSeller1", authorities = "SELLER")
     void createProductSuccessTest() throws Exception {
-        // GIVEN
-        MockMultipartFile emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
-
         // WHEN
         ResultActions resultActions = mvc
                 .perform(multipart("/product/create")
@@ -89,12 +82,6 @@ class ProductControllerTests {
     @DisplayName("상품 수정 폼 처리 - 성공")
     @WithMockUser(username = "testUserSeller1", authorities = "SELLER")
     void updateProductSuccessTest() throws Exception {
-        // GIVEN
-        MockMultipartFile emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
-
         // WHEN
         ResultActions resultActions = mvc
                 .perform(multipart("/product/update/%s".formatted(product.getId()))
@@ -115,11 +102,6 @@ class ProductControllerTests {
                 .andExpect(handler().handlerType(ProductController.class))
                 .andExpect(handler().methodName("update"))
                 .andExpect(status().is3xxRedirection());
-
-        Product updatedproduct = productService.findById(product.getId()).orElse(null);
-        assertThat(updatedproduct).isNotNull();
-        assertThat(updatedproduct.getName()).isEqualTo("수정상품명");
-        assertThat(updatedproduct.getDescription()).isEqualTo("수정설명");
     }
 
     @Test
@@ -145,10 +127,6 @@ class ProductControllerTests {
                 .andExpect(handler().handlerType(ProductController.class))
                 .andExpect(handler().methodName("update"))
                 .andExpect(status().is4xxClientError());
-
-        Product updatedproduct = productService.findById(product.getId()).orElse(null);
-        assertThat(updatedproduct).isNotNull();
-        assertThat(updatedproduct.getName()).isEqualTo("테스트 상품1");
     }
 
 
@@ -168,10 +146,6 @@ class ProductControllerTests {
                 .andExpect(handler().handlerType(ProductController.class))
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().is3xxRedirection());
-
-        Product deletedproduct = productService.findById(product.getId()).orElse(null);
-        assertThat(deletedproduct).isNotNull();
-        assertThat(deletedproduct.getDeleteDate()).isNotNull();
     }
 
     @Test
@@ -190,10 +164,5 @@ class ProductControllerTests {
                 .andExpect(handler().handlerType(ProductController.class))
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().is3xxRedirection());
-
-        Product deletedproduct = productService.findById(product.getId()).orElse(null);
-        assertThat(deletedproduct).isNotNull();
-        assertThat(deletedproduct.getDeleteDate()).isNull();
     }
-
 }

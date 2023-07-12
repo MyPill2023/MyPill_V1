@@ -1,4 +1,4 @@
-package com.mypill.domain.emailverification.service;
+package com.mypill.domain.email.emailverification.service;
 
 import com.mypill.domain.attr.service.AttrService;
 import com.mypill.domain.email.service.EmailService;

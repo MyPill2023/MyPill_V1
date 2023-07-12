@@ -19,10 +19,8 @@ public class Nutrient {
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
-    @Column(name="description", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
-
     @ManyToMany(mappedBy = "nutrients")
     private List<Product> products = new ArrayList<>();
-
 }

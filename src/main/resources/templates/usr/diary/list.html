@@ -24,7 +24,7 @@
                         <button class="delete-button" style="margin-right: 15px"
                                 onclick="if ( !confirm('삭제하시겠습니까?') ) return false; $(this).next().submit();">❌
                         </button>
-                        <form class="hidden" th:action="@{|/usr/diary/list/delete/${diary.id}|}" method="POST">
+                        <form class="hidden" th:action="@{|/diary/list/delete/${diary.id}|}" method="POST">
                             <input type="hidden" name="_method" value="POST"/>
                         </form>
                     </div>
@@ -32,10 +32,10 @@
             </div>
             <div class="flex justify-center gap-2 mt-10">
                 <div class="w-1/3">
-                    <a href="/usr/diary/todolist" class="btn btn-block btn-success">체크리스트</a>
+                    <a href="/diary/todolist" class="btn btn-block btn-success">체크리스트</a>
                 </div>
                 <div class="w-1/3">
-                    <a href="/usr/diary/create" class="btn btn-block btn-success">영양제 등록</a>
+                    <a href="/diary/create" class="btn btn-block btn-success">영양제 등록</a>
                 </div>
             </div>
         </div>

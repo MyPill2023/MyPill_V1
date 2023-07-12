@@ -48,7 +48,7 @@ class SellerControllerTest {
     void certificateTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/seller/certificate"))
+                .perform(get("/seller/certificate"))
                 .andDo(print());
 
         // THEN
@@ -58,6 +58,7 @@ class SellerControllerTest {
                 .andExpect(status().is2xxSuccessful())
         ;
     }
+
     @Test
     @WithMockUser(username = "testUser1", authorities = "WAITER")
     @DisplayName("통신판매업 인증")
@@ -67,7 +68,7 @@ class SellerControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/seller/brnoCertificate")
+                .perform(post("/seller/brnoCertificate")
                         .with(csrf())
                         .param("businessNumber", businessNumber)
                 )
@@ -80,6 +81,7 @@ class SellerControllerTest {
                 .andExpect(status().is3xxRedirection())
         ;
     }
+
     @Test
     @WithMockUser(username = "testUser1", authorities = "WAITER")
     @DisplayName("건강기능식품 판매업 인증")
@@ -89,7 +91,7 @@ class SellerControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/seller/nBrnoCertificate")
+                .perform(post("/seller/nBrnoCertificate")
                         .with(csrf())
                         .param("nutrientBusinessNumber", nutrientBusinessNumber)
                 )

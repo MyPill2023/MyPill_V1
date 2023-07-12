@@ -21,28 +21,20 @@ public class AmazonS3Service {
     private final AmazonS3Repository amazonS3Repository;
 
     public AmazonS3Dto imageUpload(MultipartFile file, String name) {
-
         String mimeType = MimeTypeUtils.getMimeType(file);
         name = AppConfig.getActiveProfile() + "/" + name;
-
         if (!MimeTypeUtils.isImage(mimeType)) {
             throw new IllegalArgumentException("잘못된 경로입니다.");
         }
-
         String fileExtension = MimeTypeUtils.extractFileExtension(mimeType);
-
         String objectName = IMAGE_FOLDER_NAME + name + "." + fileExtension;
-
         amazonS3Repository.upload(amazonS3Properties.getBucketName(), objectName, file, mimeType);
-
         String cndUrl = amazonS3Properties.getCdnEndPoint() + objectName;
         String originUrl = amazonS3Properties.getEndPoint() + "/" + amazonS3Properties.getBucketName() + "/" + objectName;
-
         return AmazonS3Dto.builder()
                 .cdnUrl(cndUrl)
                 .originUrl(originUrl)
                 .build();
-
     }
 
     public String extractObjectNameFromImageUrl(String imageUrl) {
@@ -54,14 +46,13 @@ public class AmazonS3Service {
                     + "/" + pathSegments[pathSegments.length - 2]
                     + "/" + pathSegments[pathSegments.length - 1];
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("잘못된 이미지 URL입니다.", e);
+            throw new IllegalArgumentException("잘못된 이미지 URL 입니다.", e);
         }
     }
 
-    // 이미지 삭제 메서드
     public void deleteImage(String imageUrl) {
-        String objectName = extractObjectNameFromImageUrl(imageUrl); // 사진 URL에서 objectName 추출
-        String bucketName = amazonS3Properties.getBucketName(); // 버킷 이름을 가져옴
-        amazonS3Repository.deleteObject(bucketName, objectName); // 사진 삭제
+        String objectName = extractObjectNameFromImageUrl(imageUrl);
+        String bucketName = amazonS3Properties.getBucketName();
+        amazonS3Repository.deleteObject(bucketName, objectName);
     }
 }

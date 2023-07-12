@@ -1,6 +1,5 @@
 package com.mypill.domain.home.controller;
 
-import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +29,8 @@ class HomeControllerTest {
     @Autowired
     private MemberService memberService;
 
-    private Member testUser1;
     @BeforeEach
     void beforeEach() {
-        testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
     }
 
     @Test
@@ -54,10 +51,14 @@ class HomeControllerTest {
                 .andExpect(status().is2xxSuccessful())
         ;
     }
+
     @Test
     @WithMockUser(username = "testUser1", authorities = "MEMBER")
     @DisplayName("메인페이지 이동 - 로그인")
     void showMainTest2() throws Exception {
+        // GIVEN
+        memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com");
+
         // WHEN
         ResultActions resultActions = mvc
                 .perform(get("/")

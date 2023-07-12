@@ -2,11 +2,9 @@ package com.mypill.domain.order.dto.response;
 
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.order.entity.Order;
-import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.entity.Payment;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class OrderResponse {
     private Payment payment;
     private OrderStatus primaryOrderStatus;
 
-    public static OrderResponse of(Order order){
+    public static OrderResponse of(Order order) {
         return OrderResponse.builder()
                 .orderId(order.getId())
                 .orderNumber(order.getOrderNumber())

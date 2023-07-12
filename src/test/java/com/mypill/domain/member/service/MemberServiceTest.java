@@ -316,9 +316,4 @@ class MemberServiceTest {
         assertTrue(memberRepository.findById(savedMember.getId()).isPresent());
         assertTrue(memberRepository.findById(savedMember.getId()).get().isEmailVerified());
     }
-
-    @Test
-    void surveyDelete() {
-
-    }
 }

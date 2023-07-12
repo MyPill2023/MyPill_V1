@@ -52,14 +52,14 @@ public class SecurityConfig {
                 )
                 .formLogin(
                         formLogin -> formLogin
-                                .loginPage("/usr/member/login") // GET
-                                .loginProcessingUrl("/usr/member/login") // POST
+                                .loginPage("/member/login") // GET
+                                .loginProcessingUrl("/member/login") // POST
                                 .successHandler(customAuthenticationSuccessHandler)
                                 .failureHandler(customAuthenticationFailureHandler)
                 )
                 .oauth2Login(
                         oauth2Login -> oauth2Login
-                                .loginPage("/usr/member/login")
+                                .loginPage("/member/login")
                                 .tokenEndpoint(t -> t
                                         .accessTokenResponseClient(oAuth2AccessTokenResponseClient)
                                 )
@@ -68,7 +68,7 @@ public class SecurityConfig {
                 )
                 .logout(
                         logout -> logout
-                                .logoutUrl("/usr/member/logout")
+                                .logoutUrl("/member/logout")
                 );
 
         return http.build();

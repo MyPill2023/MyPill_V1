@@ -1,4 +1,4 @@
-package com.mypill.global.batch;
+package com.mypill.global.scheduler;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.repository.MemberRepository;
@@ -16,10 +16,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.MethodName.class)
-class BatchJobSchedulerTest {
+class SchedulerTest {
 
     @Autowired
-    private BatchJobScheduler batchJobScheduler;
+    private Scheduler scheduler;
     @Autowired
     private MemberRepository memberRepository;
 
@@ -55,7 +55,7 @@ class BatchJobSchedulerTest {
         memberRepository.save(member3);
 
         // WHEN
-        batchJobScheduler.deleteUnverifiedMembers();
+        scheduler.deleteUnverifiedMembers();
 
         // THEN
         assertThat(memberRepository.count()).isEqualTo(1);

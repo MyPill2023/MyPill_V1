@@ -85,14 +85,12 @@ public class PostService {
             return postRsData;
         }
         Post post = postRsData.getData();
-
         if (!multipartFile.isEmpty()) {
             AmazonS3Dto amazonS3ImageDto = imageService.updateImageOnServer(multipartFile, post);
             Image image = post.getImage();
             if (image == null) {
                 post.addImage(new Image(amazonS3ImageDto, multipartFile, post));
-            }
-            else{
+            } else {
                 post.getImage().update(amazonS3ImageDto, multipartFile);
             }
         }

@@ -7,5 +7,4 @@ import java.util.List;
 public interface CommentRepositoryCustom {
 
     List<CommentResponse> findCommentsWithMembers(Long postId);
-
 }

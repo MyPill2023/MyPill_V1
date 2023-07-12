@@ -21,13 +21,14 @@ public class AddressService {
     private final AddressRepository addressRepository;
 
     @Transactional
-    public RsData<Address> create(AddressRequest addressRequest){
+    public RsData<Address> create(AddressRequest addressRequest) {
         Member member = memberService.findById(addressRequest.getMemberId()).orElse(null);
-
-        if(!checkCanCreate(member.getId())){
-            return RsData.of("F-1", "배송지는 최대 "+ AppConfig.getMaxAddressCount() +"개 까지 등록 가능합니다.");
+        if (member == null) {
+            return RsData.of("F-1", "로그인 후 이용 가능합니다.");
         }
-
+        if (cannotCreate(member.getId())) {
+            return RsData.of("F-2", "배송지는 최대 " + AppConfig.getMaxAddressCount() + "개 까지 등록 가능합니다.");
+        }
         Address address = Address.of(member, addressRequest);
         setDefaultNameIfEmpty(address, addressRequest);
         changeDefaultStatus(address, addressRequest);
@@ -35,52 +36,46 @@ public class AddressService {
         return RsData.of("S-1", "배송지가 추가되었습니다", address);
     }
 
-    public RsData<Address> get(Member actor, Long addressId){
+    public RsData<Address> get(Member actor, Long addressId) {
         Address address = findById(addressId).orElse(null);
-
-        if(address == null){
+        if (address == null) {
             return RsData.of("F-1", "존재하지 않는 배송지입니다.");
         }
-
-        if(address.getDeleteDate() != null){
+        if (address.getDeleteDate() != null) {
             return RsData.of("F-2", "삭제된 배송지입니다.");
         }
-
-        if(!address.getMember().getId().equals(actor.getId())){
+        if (!address.getMember().getId().equals(actor.getId())) {
             return RsData.of("F-3", "수정 및 삭제 권한이 없습니다");
         }
-
-        return RsData.of("S-1" ,"접근 가능한 배송지입니다.", address);
+        return RsData.of("S-1", "접근 가능한 배송지입니다.", address);
     }
 
     @Transactional
     public RsData<Address> update(Address address, AddressRequest addressRequest) {
-
         address.updateAddress(addressRequest);
         setDefaultNameIfEmpty(address, addressRequest);
         changeDefaultStatus(address, addressRequest);
-
-        return RsData.of("S-1" ,"배송지 수정이 완료되었습니다.", address);
+        return RsData.of("S-1", "배송지 수정이 완료되었습니다.", address);
     }
 
     @Transactional
     public RsData<Address> softDelete(Address address) {
         address.softDelete();
-        return RsData.of("S-1" ,"배송지가 삭제되었습니다.", address);
+        return RsData.of("S-1", "배송지가 삭제되었습니다.", address);
     }
 
-
-    public List<Address> findByMemberId(Long memberId){
+    public List<Address> findByMemberId(Long memberId) {
         return addressRepository.findByMemberId(memberId);
     }
 
-    public Optional<Address> findById(Long addressId){
+    public Optional<Address> findById(Long addressId) {
         return addressRepository.findById(addressId);
     }
 
-    public boolean checkCanCreate(Long memberId){
-        return countAddressesByMemberId(memberId) < AppConfig.getMaxAddressCount();
+    public boolean cannotCreate(Long memberId) {
+        return countAddressesByMemberId(memberId) >= AppConfig.getMaxAddressCount();
     }
+
     private int countAddressesByMemberId(Long memberId) {
         return addressRepository.countByMemberIdAndDeleteDateIsNull(memberId);
     }
@@ -91,14 +86,14 @@ public class AddressService {
         }
     }
 
-    private void changeDefaultStatus(Address address, AddressRequest addressRequest){
-        if(addressRequest.isDefault()){
+    private void changeDefaultStatus(Address address, AddressRequest addressRequest) {
+        if (addressRequest.isDefault()) {
             List<Address> myAddresses = findByMemberId(addressRequest.getMemberId());
             myAddresses.stream()
                     .filter(myAddress -> myAddress.getDeleteDate() == null)
                     .forEach(Address::changeDefaultFalse);
             address.changeDefaultTrue();
-        }else {
+        } else {
             address.changeDefaultFalse();
         }
     }

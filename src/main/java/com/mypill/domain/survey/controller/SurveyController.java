@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @Controller
-@RequestMapping("/usr/survey")
+@RequestMapping("/survey")
 @RequiredArgsConstructor
 @Tag(name = "SurveyController", description = "설문조사")
 public class SurveyController {
@@ -42,9 +42,9 @@ public class SurveyController {
     @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @GetMapping("/guide")
     @Operation(summary = "설문 가이드 페이지")
-    public String guide(Model model) {
-        if(rq.isLogin()){
-            return "redirect:/usr/survey/start";
+    public String guide() {
+        if (rq.isLogin()) {
+            return "redirect:/survey/start";
         }
         return "usr/survey/guide";
     }
@@ -55,9 +55,9 @@ public class SurveyController {
     public String start(Model model) {
         if (rq.isLogin()) {
             Member member = rq.getMember();
-            if (!member.getSurveyNutrients().isEmpty()){
+            if (!member.getSurveyNutrients().isEmpty()) {
                 RsData<Member> memberRsData = memberService.surveyDelete(member);
-                return rq.redirectWithMsg("/usr/survey/start", memberRsData);
+                return rq.redirectWithMsg("/survey/start", memberRsData);
             }
         }
         List<Category> categoryItems = categoryService.findAll();
@@ -70,23 +70,17 @@ public class SurveyController {
     @GetMapping("/step")
     @Operation(summary = "설문 질문 페이지")
     public String step(Model model, @RequestParam Map<String, String> param, @RequestParam(defaultValue = "1") Long stepNo) {
-
-
         StepParam stepParam = new StepParam(param, stepNo);
         Long categoryItemId = stepParam.getCategoryItemId();
-
         RsData<String> startSurveyRsData = surveyService.validStartSurvey(stepParam.getCategoryItemIds());
-
-        if (startSurveyRsData.isFail()){
-            return "redirect:/usr/survey/start";
+        if (startSurveyRsData.isFail()) {
+            return "redirect:/survey/start";
         }
-
         List<Question> questions = questionService.findByCategoryId(categoryItemId);
         Optional<Category> category = categoryService.findById(categoryItemId);
         model.addAttribute("questions", questions);
-        model.addAttribute("category",category);
+        model.addAttribute("category", category);
         model.addAttribute("stepParam", stepParam);
-
         return "usr/survey/step";
     }
 
@@ -96,38 +90,28 @@ public class SurveyController {
     @Operation(summary = "설문 결과 페이지")
     public String complete(Model model, @RequestParam Map<String, String> param) {
         StepParam stepParam = new StepParam(param, 1L);
-
         Long[] questionIds = stepParam.getQuestionIds();
-
         RsData<String> completeSurveyRsData = surveyService.validCompleteSurvey(questionIds);
-
-        if (completeSurveyRsData.isFail()){
-            return "redirect:/usr/survey/step";
+        if (completeSurveyRsData.isFail()) {
+            return "redirect:/survey/step";
         }
-
         Set<Long> answers = new HashSet<>();
         for (Long id : questionIds) {
             List<NutrientQuestion> nutrientQuestions = nutrientQuestionService.findByQuestionId(id);
-
             for (NutrientQuestion nutrientQuestion : nutrientQuestions) {
                 answers.add(nutrientQuestion.getNutrient().getId());
             }
         }
-
         List<Nutrient> nutrientAnswers = new ArrayList<>();
         for (Long id : answers) {
             Optional<Nutrient> nutrient = nutrientService.findById(id);
-
             nutrient.ifPresent(nutrientAnswers::add);
         }
-
         if (rq.isLogin()) {
             Member member = rq.getMember();
             member.getSurveyNutrients().addAll(nutrientAnswers);
         }
-
-        model.addAttribute("nutrientAnswers",nutrientAnswers);
-
+        model.addAttribute("nutrientAnswers", nutrientAnswers);
         return "usr/survey/complete";
     }
 }
@@ -142,7 +126,7 @@ class StepParam {
     private final boolean isFirst;
     private final boolean isLast;
 
-    public StepParam (Map<String, String> param, Long stepNo) {
+    public StepParam(Map<String, String> param, Long stepNo) {
         this.param = param;
         this.stepNo = stepNo;
         categoryItemIds = param
@@ -152,7 +136,6 @@ class StepParam {
                 .map(key -> Long.parseLong(key.replace("category_", "")))
                 .sorted()
                 .toArray(Long[]::new);
-
         questionIds = param
                 .keySet()
                 .stream()
@@ -160,7 +143,6 @@ class StepParam {
                 .map(key -> Long.parseLong(key.replace("question_", "")))
                 .sorted()
                 .toArray(Long[]::new);
-
         isFirst = stepNo == 1L;
         isLast = stepNo == categoryItemIds.length;
     }
@@ -169,16 +151,7 @@ class StepParam {
         return categoryItemIds[stepNo.intValue() - 1];
     }
 
-    public Long getNextStepNo() {
-        return stepNo + 1L;
-    }
-
-    public Long getPrevStepNo() {
-        return stepNo - 1L;
-    }
-
     public boolean isChecked(Long questionId) {
         return param.containsKey("question_" + questionId);
     }
-
 }

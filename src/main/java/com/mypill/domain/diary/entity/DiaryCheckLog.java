@@ -28,7 +28,7 @@ public class DiaryCheckLog extends BaseEntity {
     private String name;
 
     private LocalDate checkDate;
-  
+
     public static DiaryCheckLog of(Diary diary, Member member) {
         return DiaryCheckLog.builder()
                 .diary(diary)

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
@@ -38,24 +37,25 @@ class CartServiceTests {
 
     @BeforeEach
     void beforeEachTest() {
-        MockMultipartFile emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
+        MockMultipartFile emptyFile = new MockMultipartFile("imageFile", new byte[0]);
         testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com", true).getData();
         testUser2 = memberService.join("testUser2", "김영희", "1234", "1", "test2@test.com", true).getData();
         Member testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
-        testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
-        testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1",
+                12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2",
+                12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
     }
 
     @Test
     @DisplayName("장바구니에 추가 성공")
     void addProductSuccessTest01() {
+        // WHEN
         RsData<CartProduct> addRsData = cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
-        assertThat(addRsData.getResultCode()).isEqualTo("S-1");
-
         CartProduct cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
+
+        // THEN
+        assertThat(addRsData.getResultCode()).isEqualTo("S-1");
         assertThat(cartProduct).isNotNull();
         assertThat(cartProduct.getProduct().getId()).isEqualTo(testProduct2.getId());
     }
@@ -63,11 +63,15 @@ class CartServiceTests {
     @Test
     @DisplayName("장바구니에 추가 성공 - 이미 담긴 상품")
     void addProductSuccessTest02() {
+        // GIVEN
         cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
-        RsData<CartProduct> addRsData = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
-        assertThat(addRsData.getResultCode()).isEqualTo("S-1");
 
+        // WHEN
+        RsData<CartProduct> addRsData = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
         CartProduct cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
+
+        // THEN
+        assertThat(addRsData.getResultCode()).isEqualTo("S-1");
         assertThat(cartProduct).isNotNull();
         assertThat(cartProduct.getQuantity()).isEqualTo(2);
     }
@@ -75,7 +79,10 @@ class CartServiceTests {
     @Test
     @DisplayName("장바구니에 추가 실패 - 존재하지 않는 상품")
     void addProductFailTest() {
+        // WHEN
         RsData<CartProduct> addRsData = cartService.addProduct(testUser1, new CartProductRequest(0L, 1L));
+
+        // THEN
         assertThat(addRsData.getResultCode()).isEqualTo("F-1");
     }
 
@@ -83,11 +90,15 @@ class CartServiceTests {
     @Test
     @DisplayName("장바구니에서 상품 수량 변경 성공")
     void updateQuantitySuccessTest() {
+        // GIVEN
         CartProduct cartProduct = cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L)).getData();
-        RsData<CartProduct> updateRsData = cartService.updateQuantity(testUser1, cartProduct.getId(), 3L);
-        assertThat(updateRsData.getResultCode()).isEqualTo("S-1");
 
+        // WHEN
+        RsData<CartProduct> updateRsData = cartService.updateQuantity(testUser1, cartProduct.getId(), 3L);
         CartProduct updatedCartProduct = cartService.findCartProductById(updateRsData.getData().getId()).orElse(null);
+
+        // THEN
+        assertThat(updateRsData.getResultCode()).isEqualTo("S-1");
         assertThat(updatedCartProduct).isNotNull();
         assertThat(updatedCartProduct.getQuantity()).isEqualTo(3);
     }
@@ -95,21 +106,27 @@ class CartServiceTests {
     @Test
     @DisplayName("장바구니에서 상품 수량 변경 실패 - 장바구니에 없는 상품")
     void updateQuantityFailTest() {
+        // WHEN
         RsData<CartProduct> updateRsData = cartService.updateQuantity(testUser2, 0L, 3L);
-        assertThat(updateRsData.getResultCode()).isEqualTo("F-1");
-
         CartProduct updatedCartProduct = cartService.findCartProductById(0L).orElse(null);
+
+        // THEN
+        assertThat(updateRsData.getResultCode()).isEqualTo("F-1");
         assertThat(updatedCartProduct).isNull();
     }
 
     @Test
     @DisplayName("장바구니에서 상품 삭제 성공")
     void softDeleteCartProductSuccessTest() {
+        // GIVEN
         RsData<CartProduct> addRsData = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
-        RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(testUser1, addRsData.getData().getId());
-        assertThat(deleteRsData.getResultCode()).isEqualTo("S-1");
 
+        // WHEN
+        RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(testUser1, addRsData.getData().getId());
         CartProduct cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
+
+        // THEN
+        assertThat(deleteRsData.getResultCode()).isEqualTo("S-1");
         assertThat(cartProduct).isNotNull();
         assertThat(cartProduct.getDeleteDate()).isNotNull();
     }
@@ -117,8 +134,10 @@ class CartServiceTests {
     @Test
     @DisplayName("장바구니에서 상품 삭제 실패 - 장바구니에 없는 상품")
     void softDeleteCartProductFailTest() {
+        // WHEN
         RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(testUser1, testProduct1.getId());
+
+        // THEN
         assertThat(deleteRsData.getResultCode()).isEqualTo("F-1");
     }
-
 }

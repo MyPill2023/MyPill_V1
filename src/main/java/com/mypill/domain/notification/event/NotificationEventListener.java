@@ -28,6 +28,7 @@ public class NotificationEventListener {
     public void listen(EventAfterOrderPayment event) {
         notificationService.whenAfterOrderPayment(event.getSeller(), event.getOrder());
     }
+
     @EventListener
     public void listen(EventAfterOrderCanceled event) {
         notificationService.whenAfterOrderCanceled(event.getSeller(), event.getOrder());

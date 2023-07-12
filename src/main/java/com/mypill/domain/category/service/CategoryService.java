@@ -15,19 +15,19 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public List<Category> findAll () {
+    public List<Category> findAll() {
         return categoryRepository.findAll();
     }
 
-    public List<Category> findAllByOrderByNameAsc () {
+    public List<Category> findAllByOrderByNameAsc() {
         return categoryRepository.findAllByOrderByNameAsc();
     }
 
-    public List<Category> findByIdIn (List<Long> categoryIds) {
+    public List<Category> findByIdIn(List<Long> categoryIds) {
         return categoryRepository.findByIdIn(categoryIds);
     }
 
-    public Optional<Category> findById (Long categoryId) {
+    public Optional<Category> findById(Long categoryId) {
         if (categoryRepository.findById(categoryId).isEmpty()) {
             return Optional.empty();
         }

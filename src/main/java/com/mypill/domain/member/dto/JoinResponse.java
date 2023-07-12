@@ -10,6 +10,6 @@ import java.util.concurrent.CompletableFuture;
 @Getter
 @AllArgsConstructor
 public class JoinResponse {
-    private final Member member;
-    private final CompletableFuture<RsData<Long>> sendRsFuture;
+    private Member member;
+    private CompletableFuture<RsData<Long>> sendRsFuture;
 }

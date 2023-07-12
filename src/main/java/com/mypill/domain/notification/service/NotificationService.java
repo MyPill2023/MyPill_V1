@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +35,7 @@ public class NotificationService {
     }
 
     @Transactional
-    public void whenAfterOrderPayment(Member seller, Order order){
+    public void whenAfterOrderPayment(Member seller, Order order) {
         Notification notification = Notification.builder()
                 .typeCode(NotificationTypeCode.OrderPayment)
                 .member(seller)
@@ -46,7 +45,7 @@ public class NotificationService {
     }
 
     @Transactional
-    public void whenAfterOrderCanceled(Member seller, Order order){
+    public void whenAfterOrderCanceled(Member seller, Order order) {
         Notification notification = Notification.builder()
                 .typeCode(NotificationTypeCode.OrderCanceled)
                 .member(seller)
@@ -68,17 +67,18 @@ public class NotificationService {
     @Transactional
     public RsData<Notification> makeAsRead(Member actor, Long notificationId) {
         Notification notification = findById(notificationId).orElseThrow();
-        if(!notification.getMember().getId().equals(actor.getId())){
+        if (!notification.getMember().getId().equals(actor.getId())) {
             return RsData.of("F-1", "권한이 없습니다.");
         }
         notification.markAsRead();
-        return RsData.of("S-1","");
+        return RsData.of("S-1", "");
     }
-    public List<Notification> findByMemberId(Long memberId){
+
+    public List<Notification> findByMemberId(Long memberId) {
         return notificationRepository.findByMemberIdOrderByCreateDateDesc(memberId);
     }
 
-    public Optional<Notification> findById(Long id){
+    public Optional<Notification> findById(Long id) {
         return notificationRepository.findById(id);
     }
 

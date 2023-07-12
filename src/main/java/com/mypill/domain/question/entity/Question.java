@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Builder
 @Getter
 @Table(name = "questions")
-public class Question extends BaseEntity{
+public class Question extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
@@ -25,5 +25,4 @@ public class Question extends BaseEntity{
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
-
 }

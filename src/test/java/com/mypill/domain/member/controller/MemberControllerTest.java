@@ -1,6 +1,5 @@
 package com.mypill.domain.member.controller;
 
-import com.mypill.domain.buyer.controller.BuyerController;
 import com.mypill.domain.member.service.MemberService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +39,7 @@ class MemberControllerTest {
     void loginTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/member/login")
+                .perform(get("/member/login")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -59,7 +58,7 @@ class MemberControllerTest {
     void joinGetTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/member/join")
+                .perform(get("/member/join")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -85,7 +84,7 @@ class MemberControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/member/join")
+                .perform(post("/member/join")
                         .with(csrf())
                         .param("username", username)
                         .param("name", name)
@@ -111,7 +110,7 @@ class MemberControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/member/join/idCheck")
+                .perform(get("/member/join/idCheck")
                         .with(csrf())
                         .param("username", username)
                 )
@@ -133,7 +132,7 @@ class MemberControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/member/join/emailCheck")
+                .perform(get("/member/join/emailCheck")
                         .with(csrf())
                         .param("email", email)
                 )
@@ -161,7 +160,7 @@ class MemberControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/member/myPage")
+                .perform(get("/member/myPage")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -188,7 +187,7 @@ class MemberControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/member/myInfo")
+                .perform(get("/member/myInfo")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -215,7 +214,7 @@ class MemberControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/member/deleteAccount")
+                .perform(get("/member/deleteAccount")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -242,7 +241,7 @@ class MemberControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/usr/member/name/update")
+                .perform(post("/member/name/update")
                         .with(csrf())
                         .param("newName", newName)
                 )

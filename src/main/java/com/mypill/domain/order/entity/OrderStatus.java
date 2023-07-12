@@ -10,8 +10,8 @@ public enum OrderStatus {
     SHIPPING("배송 중", 3),
     DELIVERED("배송 완료", 4),
     CANCELED("주문 취소", 5);
-    private String value;
-    private int priority;
+    private final String value;
+    private final int priority;
 
     OrderStatus(String value, int priority) {
         this.value = value;

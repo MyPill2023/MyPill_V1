@@ -28,7 +28,7 @@ public class CartProduct extends BaseEntity {
     @Column(nullable = false)
     private Long quantity;
 
-    public static CartProduct of(Cart cart, Product product, Long quantity){
+    public static CartProduct of(Cart cart, Product product, Long quantity) {
         return CartProduct.builder()
                 .cart(cart)
                 .product(product)
@@ -36,7 +36,7 @@ public class CartProduct extends BaseEntity {
                 .build();
     }
 
-    public void addCart(CartProduct cartProduct){
+    public void addCart(CartProduct cartProduct) {
         this.cart.getCartProducts().add(cartProduct);
         this.cart.updateCart();
     }

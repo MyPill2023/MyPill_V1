@@ -1,4 +1,4 @@
-package com.mypill.domain.emailsender.service;
+package com.mypill.domain.email.emailsender.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;

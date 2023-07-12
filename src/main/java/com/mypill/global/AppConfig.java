@@ -20,17 +20,17 @@ public class AppConfig {
     private static String siteName;
     @Getter
     private static String siteBaseUrl;
-
     @Getter
     public static double wholesalePriceRate;
-
     @Getter
     public static int cancelAvailableSeconds;
-
     @Getter
     public static int changePasswordCycleDays;
-    @Autowired
-    private Environment env;
+    private final Environment env;
+
+    public AppConfig(Environment env) {
+        this.env = env;
+    }
 
     @Autowired
     public void setContext(ApplicationContext context) {
@@ -42,7 +42,6 @@ public class AppConfig {
         activeProfile = env.getActiveProfiles()[1];
     }
 
-
     @Value("${custom.site.name}")
     public void setSiteName(String siteName) {
         AppConfig.siteName = siteName;
@@ -51,26 +50,6 @@ public class AppConfig {
     @Value("${custom.site.baseUrl}")
     public void setSiteBaseUrl(String siteBaseUrl) {
         AppConfig.siteBaseUrl = siteBaseUrl;
-    }
-
-    public static boolean isNotProd() {
-        return isProd() == false;
-    }
-
-    public static boolean isProd() {
-        return activeProfile.equals("prod");
-    }
-
-    public static boolean isNotDev() {
-        return isLocal() == false;
-    }
-
-    public static boolean isLocal() {
-        return activeProfile.equals("local");
-    }
-
-    public static boolean isNotTest() {
-        return isLocal() == false;
     }
 
     public static boolean isTest() {

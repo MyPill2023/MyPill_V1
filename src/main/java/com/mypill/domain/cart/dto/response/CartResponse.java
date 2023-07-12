@@ -1,8 +1,6 @@
 package com.mypill.domain.cart.dto.response;
 
-import com.mypill.domain.cart.dto.request.CartProductRequest;
 import com.mypill.domain.cart.entity.Cart;
-import com.mypill.domain.cart.entity.CartProduct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,12 +14,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartResponse {
-    Long id;
-    List<CartProductResponse> cartProducts;
-    Long totalQuantity;
-    Long totalPrice;
+    private Long id;
+    private List<CartProductResponse> cartProducts;
+    private Long totalQuantity;
+    private Long totalPrice;
 
-    public static CartResponse of(Cart cart){
+    public static CartResponse of(Cart cart) {
         return CartResponse.builder()
                 .id(cart.getId())
                 .cartProducts(cart.getCartProducts().stream()
@@ -32,5 +30,4 @@ public class CartResponse {
                 .totalPrice(cart.getTotalPrice())
                 .build();
     }
-
 }

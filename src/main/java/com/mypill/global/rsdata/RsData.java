@@ -16,6 +16,7 @@ public class RsData<T> {
     public static <T> RsData<T> of(String resultCode, String msg, T data) {
         return new RsData<>(resultCode, msg, data);
     }
+
     public static <T> RsData<T> of(String resultCode, T data) {
         return new RsData<>(resultCode, null, data);
     }
@@ -33,5 +34,4 @@ public class RsData<T> {
     public boolean isFail() {
         return !isSuccess();
     }
-
 }

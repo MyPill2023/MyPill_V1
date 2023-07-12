@@ -26,19 +26,17 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/usr/diary")
+@RequestMapping("/diary")
 @Tag(name = "DiaryController", description = "복약관리")
 public class DiaryController {
 
     private final DiaryService diaryService;
     private final Rq rq;
 
-
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/create")
     @Operation(summary = "영양제 등록 페이지")
     public String create() {
-
         return "usr/diary/create";
     }
 
@@ -46,13 +44,11 @@ public class DiaryController {
     @PostMapping("/create")
     @Operation(summary = "영양제 등록")
     public String create(@Valid DiaryRequest diaryRequest) {
-
         RsData<Diary> createRsData = diaryService.create(diaryRequest, rq.getMember());
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData);
         }
-        return rq.redirectWithMsg("/usr/diary/list", createRsData);
-
+        return rq.redirectWithMsg("/diary/list", createRsData);
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
@@ -69,18 +65,16 @@ public class DiaryController {
     @Operation(summary = "영양제 정보 삭제")
     public String delete(@PathVariable Long diaryId) {
         RsData<Diary> deleteRsData = diaryService.delete(diaryId, rq.getMember());
-
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData);
         }
-        return rq.redirectWithMsg("/usr/diary/list", deleteRsData);
+        return rq.redirectWithMsg("/diary/list", deleteRsData);
     }
 
     @PreAuthorize("hasAuthority('MEMBER')")
     @GetMapping("/todolist")
     @Operation(summary = "영양제 기록 체크 페이지")
-    public String todolist(Model model, String dateStr) {
-
+    public String todolist(Model model) {
         Member writer = rq.getMember();
         String today = LocalDate.now().toString();
 
@@ -100,7 +94,6 @@ public class DiaryController {
 
         model.addAttribute("groupedData", groupedData);
         model.addAttribute("sortedDates", sortedDates);
-
         return "usr/diary/todolist";
     }
 
@@ -113,6 +106,6 @@ public class DiaryController {
         if (diaryRsData.isFail()) {
             return rq.historyBack(diaryRsData);
         }
-        return rq.redirectWithMsg("/usr/diary/todolist", diaryRsData);
+        return rq.redirectWithMsg("/diary/todolist", diaryRsData);
     }
 }

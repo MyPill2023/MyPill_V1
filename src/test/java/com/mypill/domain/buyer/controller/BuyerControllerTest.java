@@ -12,10 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -24,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("prod")
+@ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 class BuyerControllerTest {
     @Autowired
@@ -34,7 +32,7 @@ class BuyerControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        Member testUser1  = Member.builder()
+        Member testUser1 = Member.builder()
                 .username("testUser1")
                 .name("김철수")
                 .password("1234")
@@ -52,7 +50,7 @@ class BuyerControllerTest {
     void myLikesTest() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/usr/buyer/myLikes"))
+                .perform(get("/buyer/myLikes"))
                 .andDo(print());
 
         // THEN

@@ -18,19 +18,16 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("prod")
+@ActiveProfiles("test")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 class DiaryServiceTest {
 
     @Autowired
     private MemberService memberService;
-    private Member testUser1;
-    private Diary diary;
     @Autowired
     private DiaryRepository diaryRepository;
     @Autowired
@@ -38,6 +35,9 @@ class DiaryServiceTest {
     private Diary savedDiary;
     @Autowired
     private DiaryCheckLogRepository diaryCheckLogRepository;
+
+    private Member testUser1;
+    private Diary diary;
 
     @BeforeEach
     void beforeEachTest() {
@@ -60,9 +60,10 @@ class DiaryServiceTest {
     @Test
     @DisplayName("체크한 기록 불러오기")
     void findHistoryTests() {
+        // WHEN
         List<DiaryCheckLog> history = diaryService.findHistory(testUser1);
+
+        // THEN
         assertThat(history.size()).isEqualTo(1);
     }
-
 }
-

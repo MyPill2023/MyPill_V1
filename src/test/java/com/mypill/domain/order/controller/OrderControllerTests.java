@@ -43,7 +43,6 @@ class OrderControllerTests {
 
     @Autowired
     private MockMvc mvc;
-
     @Autowired
     private CartService cartService;
     @Autowired
@@ -59,22 +58,25 @@ class OrderControllerTests {
     private Product testProduct1;
     private CartProduct cartProduct1;
     private Address address;
-    private MockMultipartFile emptyFile;
 
     @BeforeEach
     void beforeEachTest() {
-        emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
+        MockMultipartFile emptyFile = new MockMultipartFile("imageFile", new byte[0]);
+
         testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com", true).getData();
-        Member testUser2 = memberService.join("testUser2", "김영희", "1234", "1", "test2@test.com", true).getData();
+        memberService.join("testUser2", "김영희", "1234", "1", "test2@test.com", true);
         Member testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
-        testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
-        Product testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+
+        testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1",
+                12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        Product testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2",
+                12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+
         cartProduct1 = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L)).getData();
         cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
-        address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+
+        address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수",
+                "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
     }
 
     @Test
@@ -86,13 +88,13 @@ class OrderControllerTests {
                 .perform(post("/order/create/all")
                         .with(csrf()))
                 .andDo(print());
+
         //THEN
         resultActions
                 .andExpect(handler().handlerType(OrderController.class))
                 .andExpect(handler().methodName("createFromCart"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/order/form/**"));
-
     }
 
     @Test
@@ -103,15 +105,15 @@ class OrderControllerTests {
         ResultActions resultActions = mvc
                 .perform(post("/order/create/selected")
                         .with(csrf())
-                        .param("selectedCartProductIds", new String[]{String.valueOf(cartProduct1.getProduct().getId())}))
+                        .param("selectedCartProductIds", String.valueOf(cartProduct1.getProduct().getId())))
                 .andDo(print());
+
         //THEN
         resultActions
                 .andExpect(handler().handlerType(OrderController.class))
                 .andExpect(handler().methodName("createFromSelected"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/order/form/**"));
-
     }
 
     @Test
@@ -125,6 +127,7 @@ class OrderControllerTests {
                         .param("productId", String.valueOf(testProduct1.getId()))
                         .param("quantity", "1"))
                 .andDo(print());
+
         //THEN
         resultActions
                 .andExpect(handler().handlerType(OrderController.class))
@@ -140,10 +143,12 @@ class OrderControllerTests {
     void testGetOrderFormSuccess() throws Exception {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
+
         //WHEN
         ResultActions resultActions = mvc
                 .perform(get("/order/form/%s".formatted(String.valueOf(order.getId()))))
                 .andDo(print());
+
         //THEN
         resultActions
                 .andExpect(handler().handlerType(OrderController.class))
@@ -157,10 +162,12 @@ class OrderControllerTests {
     void testGetOrderFormFail() throws Exception {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
+
         //WHEN
         ResultActions resultActions = mvc
                 .perform(get("/order/form/%s".formatted(String.valueOf(order.getId()))))
                 .andDo(print());
+
         //THEN
         resultActions
                 .andExpect(handler().handlerType(OrderController.class))
@@ -205,13 +212,12 @@ class OrderControllerTests {
                         .param("orderId", String.valueOf(order.getId()))
                         .param("newStatus", "배송 중"))
                 .andDo(print());
+
         //THEN
         resultActions
                 .andExpect(handler().handlerType(OrderController.class))
                 .andExpect(handler().methodName("updateOrderStatus"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/order/management/%s**".formatted(order.getId())));
-
     }
-
 }

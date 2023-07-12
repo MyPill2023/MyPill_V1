@@ -31,7 +31,7 @@ public class OrderItem extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    public OrderItem(Product product, Long quantity){
+    public OrderItem(Product product, Long quantity) {
         this.product = product;
         this.price = product.getPrice();
         this.quantity = quantity;
@@ -42,7 +42,7 @@ public class OrderItem extends BaseEntity {
         this.order = order;
     }
 
-    public void updateStatus(OrderStatus status){
+    public void updateStatus(OrderStatus status) {
         this.status = status;
     }
 

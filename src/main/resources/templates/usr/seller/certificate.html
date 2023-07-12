@@ -19,7 +19,7 @@
                 </th:block>
                 <th:block th:unless="${@rq.member.businessNumber != null}">
                     <span>통신판매 사업자번호를 입력하세요</span>
-                    <form th:action="@{/usr/seller/brnoCertificate}" method="POST" class="flex gap-3 flex-grow">
+                    <form th:action="@{/seller/brnoCertificate}" method="POST" class="flex gap-3 flex-grow">
                         <input type="text" name="businessNumber" placeholder="숫자만 입력해주세요"
                                class="input input-bordered w-3/4"/>
                         <button class="btn btn-accent hover:bg-gray-300 " type="submit">
@@ -37,7 +37,7 @@
                     </th:block>
                     <th:block th:unless="${@rq.member.nutrientBusinessNumber != null}">
                         <span>건강기능식품 판매업 인허가번호를 입력하세요</span>
-                        <form th:action="@{/usr/seller/nBrnoCertificate}" method="POST" class="flex gap-3 flex-grow">
+                        <form th:action="@{/seller/nBrnoCertificate}" method="POST" class="flex gap-3 flex-grow">
                             <input type="text" name="nutrientBusinessNumber" placeholder="숫자만 입력해주세요"
                                    class="input input-bordered w-3/4"/>
                             <button class="btn btn-accent hover:bg-gray-300" type="submit">

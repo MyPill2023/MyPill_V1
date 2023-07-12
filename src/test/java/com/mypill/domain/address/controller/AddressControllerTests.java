@@ -73,7 +73,7 @@ class AddressControllerTests {
                 .andExpect(handler().handlerType(AddressController.class))
                 .andExpect(handler().methodName("create"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/usr/buyer/myAddress**"));
+                .andExpect(redirectedUrlPattern("/buyer/myAddress**"));
 
         Address address = addressService.findByMemberId(testUser1.getId()).get(0);
         assertThat(address.getName()).isEqualTo("주소 이름");
@@ -139,7 +139,7 @@ class AddressControllerTests {
                 .andExpect(handler().handlerType(AddressController.class))
                 .andExpect(handler().methodName("update"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/usr/buyer/myAddress**"));
+                .andExpect(redirectedUrlPattern("/buyer/myAddress**"));
 
         Address newAddress = addressService.findById(address.getId()).orElse(null);
         assertThat(newAddress).isNotNull();
@@ -198,7 +198,7 @@ class AddressControllerTests {
                 .andExpect(handler().handlerType(AddressController.class))
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/usr/buyer/myAddress**"));
+                .andExpect(redirectedUrlPattern("/buyer/myAddress**"));
 
         Address deletedAddress = addressService.findById(address.getId()).orElse(null);
         assertThat(deletedAddress).isNotNull();
@@ -270,6 +270,4 @@ class AddressControllerTests {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("배송지를 찾을 수 없습니다."));
     }
-
-
 }
