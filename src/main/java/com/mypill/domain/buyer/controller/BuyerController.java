@@ -70,6 +70,7 @@ public class BuyerController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/mySurvey")
+    @Operation(summary = "내 설문 페이지")
     public String mySurvey(Model model) {
         Member member = rq.getMember();
         List<Nutrient> nutrients = member.getSurveyNutrients();

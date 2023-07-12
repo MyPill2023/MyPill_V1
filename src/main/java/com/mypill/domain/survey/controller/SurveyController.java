@@ -4,11 +4,8 @@ import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
-import com.mypill.domain.question.entity.NutrientQuestion;
 import com.mypill.domain.question.entity.Question;
-import com.mypill.domain.question.service.NutrientQuestionService;
 import com.mypill.domain.question.service.QuestionService;
 import com.mypill.domain.survey.service.SurveyService;
 import com.mypill.global.rq.Rq;
@@ -33,8 +30,6 @@ import java.util.*;
 public class SurveyController {
     private final CategoryService categoryService;
     private final QuestionService questionService;
-    private final NutrientQuestionService nutrientQuestionService;
-    private final NutrientService nutrientService;
     private final MemberService memberService;
     private final Rq rq;
     private final SurveyService surveyService;
@@ -42,7 +37,7 @@ public class SurveyController {
     @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @GetMapping("/guide")
     @Operation(summary = "설문 가이드 페이지")
-    public String guide(Model model) {
+    public String guide() {
         if (rq.isLogin()) {
             return "redirect:/survey/start";
         }
@@ -95,24 +90,18 @@ public class SurveyController {
         if (completeSurveyRsData.isFail()) {
             return "redirect:/survey/step";
         }
-        Set<Long> answers = new HashSet<>();
-        for (Long id : questionIds) {
-            List<NutrientQuestion> nutrientQuestions = nutrientQuestionService.findByQuestionId(id);
-            for (NutrientQuestion nutrientQuestion : nutrientQuestions) {
-                answers.add(nutrientQuestion.getNutrient().getId());
-            }
-        }
-        List<Nutrient> nutrientAnswers = new ArrayList<>();
-        for (Long id : answers) {
-            Optional<Nutrient> nutrient = nutrientService.findById(id);
-            nutrient.ifPresent(nutrientAnswers::add);
-        }
+        Map<String, List<Nutrient>> answers = surveyService.getAnswers(questionIds);
         if (rq.isLogin()) {
             Member member = rq.getMember();
-            member.getSurveyNutrients().addAll(nutrientAnswers);
+            extracted(answers, member);
         }
-        model.addAttribute("nutrientAnswers", nutrientAnswers);
+        model.addAttribute("answers", answers);
         return "usr/survey/complete";
+    }
+    private static void extracted (Map<String, List<Nutrient>> answers, Member member) {
+        List<Nutrient> allNutrients = new ArrayList<>();
+        answers.values().forEach(allNutrients::addAll);
+        member.setSurveyNutrients(allNutrients);
     }
 }
 

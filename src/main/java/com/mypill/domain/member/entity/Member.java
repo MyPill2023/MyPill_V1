@@ -92,4 +92,7 @@ public class Member extends BaseEntity {
     public void unLike(Product product) {
         likedProducts.remove(product);
     }
+
+    public void setSurveyNutrients(List<Nutrient> surveyNutrients) {
+        this.surveyNutrients = surveyNutrients;}
 }
