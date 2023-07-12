@@ -2,6 +2,91 @@
 
 <body>
 
+
+<div layout:fragment="introduce">
+    <div class="flex flex-col justify-center items-center gap-2 mt-5">
+        <span class="text-4xl font-bold">My💊Pill</span>
+        <span class="text-xl font-bold">맞춤 영양제 추천 및 이커머스 플랫폼</span>
+    </div>
+
+    <div class="flex flex-col items-center gap-4">
+        <span>🦁 멋쟁이 사자처럼 백엔드스쿨 3기</span>
+        <span>개발기간 : 23/06/19 ~ 23/07/14(4주)</span>
+    </div>
+
+    <div class="flex flex-col gap-4 items-center">
+        <a href="https://github.com/MyPill2023/MyPill">
+            <i class="fab fa-github"></i>
+            <span class="underline text-lg font-bold">팀 GitHub</span>
+        </a>
+        <div class="flex gap-2">
+            <span>BackEnd</span>
+            <span>송호준</span>
+            <span>
+                <a href="https://github.com/hojunking96">
+                    <i class="fab fa-github"></i>
+                </a>
+            </span>
+        </div>
+        <div class="flex gap-2">
+            <span>BackEnd</span>
+            <span>박진영</span>
+            <span>
+                <a href="https://github.com/jny0">
+                    <i class="fab fa-github"></i>
+                </a>
+            </span>
+        </div>
+        <div class="flex gap-2">
+            <span>BackEnd</span>
+            <span>이미정</span>
+            <span>
+                <a href="https://github.com/leemimi">
+                    <i class="fab fa-github"></i>
+                </a>
+            </span>
+        </div>
+
+    </div>
+
+    <div class="w-3/4 flex flex-col gap-3 items-center">
+        <span class="font-bold">테스트 계정 정보</span>
+        <table class="table">
+            <thead class="text-center">
+            <tr>
+                <th>회원유형</th>
+                <th>아이디</th>
+                <th>비밀번호</th>
+            </tr>
+            </thead>
+            <tbody class="text-center">
+            <tr>
+                <td>구매자</td>
+                <td>buyer1</td>
+                <td>buyer1234</td>
+            </tr>
+            <tr>
+                <td>판매자(인증)</td>
+                <td>seller1</td>
+                <td>seller1234</td>
+            </tr>
+            <tr>
+                <td>판매자(인증)</td>
+                <td>seller2</td>
+                <td>seller1234</td>
+            </tr>
+            <tr>
+                <td>판매자(미인증)</td>
+                <td>seller3</td>
+                <td>seller1234</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <span>* 상품 결제 기능은 실제 결제가 되지 않는 테스트입니다.</span>
+</div>
+
 <!-- 공통 상단 -->
 <header layout:fragment="header">
     <div class="navbar bg-base-100 shadow-sm">
