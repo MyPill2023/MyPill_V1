@@ -40,6 +40,7 @@ public class Product extends BaseEntity {
     private Long sales;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @Builder.Default
     @JoinTable(
             name = "product_nutrient", // 연결테이블
             joinColumns = @JoinColumn(name = "product_id"),  // Product 기본키
@@ -49,6 +50,7 @@ public class Product extends BaseEntity {
 
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @Builder.Default
     @JoinTable(
             name = "product_category", // 연결테이블
             joinColumns = @JoinColumn(name = "product_id"),  // Product 기본키
