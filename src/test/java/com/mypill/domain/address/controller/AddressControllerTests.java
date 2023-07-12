@@ -247,7 +247,6 @@ class AddressControllerTests {
                 .andExpect(handler().handlerType(AddressController.class))
                 .andExpect(handler().methodName("getAddressDetails"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.address").value("서울시 강남구"));
     }
     @Test

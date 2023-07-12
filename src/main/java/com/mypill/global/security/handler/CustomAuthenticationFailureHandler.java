@@ -24,7 +24,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
         String errorMessage;
-        if (exception instanceof BadCredentialsException) {
+        if (exception instanceof BadCredentialsException) { 
             errorMessage = "아이디 또는 비밀번호가 일치하지 않습니다.";
         } else if (exception instanceof OAuth2AuthenticationException) {
             errorMessage = ((OAuth2AuthenticationException) exception).getError().getErrorCode();
