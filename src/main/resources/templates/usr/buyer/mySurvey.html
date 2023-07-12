@@ -20,7 +20,7 @@
     </div>
 
     <div class="flex justify-center items-center w-full px-5" th:each="nutrient:${nutrients}" >
-      <div class="collapse collapse-arrow bg-gray-100">
+      <div class="collapse collapse-arrow bg-base-200" >
         <input type="radio" name="my-accordion-2"/>
         <div class="collapse-title text-lg font-bold" th:text="${nutrient.name}"></div>
         <div class="collapse-content" th:text="${nutrient.description}">

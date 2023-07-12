@@ -10,7 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -48,10 +47,8 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String nutrientBusinessNumber;
     @ManyToMany(mappedBy = "likedMembers")
-    @Builder.Default
     private Set<Product> likedProducts = new HashSet<>();
     @ManyToMany(cascade = CascadeType.ALL)
-    @Builder.Default
     @JoinTable(name = "member_nutrients",
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "nutrient_id")

@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Table(name = "categories")
 public class Category {
     @Id
@@ -31,6 +32,5 @@ public class Category {
     private List<Question> questions = new ArrayList<>();
 
     @ManyToMany(mappedBy = "categories")
-    @Builder.Default
     private List<Product> products = new ArrayList<>();
 }

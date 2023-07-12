@@ -24,11 +24,8 @@ public class ProductResponse {
     private String description;
     private Long price;
     private Long stock;
-    @Builder.Default
     private List<Nutrient> nutrients = new ArrayList<>();
-    @Builder.Default
     private List<Category> categories = new ArrayList<>();
-    @Builder.Default
     private Set<Member> likedMembers = new HashSet<>();
     private boolean isLiked;
     private Image image;
