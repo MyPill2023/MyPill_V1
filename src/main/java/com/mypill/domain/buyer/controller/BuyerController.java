@@ -6,8 +6,6 @@ import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.order.dto.response.OrderListResponse;
-import com.mypill.domain.order.entity.Order;
-import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.global.rq.Rq;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -50,22 +47,12 @@ public class BuyerController {
     @GetMapping("/myOrder")
     @Operation(summary = "내 주문 페이지")
     public String myOrder(Model model) {
-        List<Order> orders = orderService.findByBuyerIdAndPaymentIsNotNull(rq.getMember().getId());
-        List<OrderListResponse> orderListResponses = orders.stream()
-                .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
-                .map(OrderListResponse::of).toList();
+        List<OrderListResponse> orderListResponses = orderService.getOrderListResponses(rq.getMember().getId());
         model.addAttribute("orders", orderListResponses);
-
-        List<OrderItem> orderItems = orderService.findOrderItemByBuyerId(rq.getMember().getId());
-        Map<OrderStatus, Long> orderStatusCount = orderItems.stream()
-                .collect(Collectors.groupingBy(OrderItem::getStatus, Collectors.counting()));
+        Map<OrderStatus, Long> orderStatusCount = orderService.getOrderStatusCount(rq.getMember().getId());
         model.addAttribute("orderStatusCount", orderStatusCount);
-
-        OrderStatus[] filteredOrderStatus = Arrays.stream(OrderStatus.values())
-                .filter(status -> status.getPriority() >= 1 && status.getPriority() <= 4)
-                .toArray(OrderStatus[]::new);
+        OrderStatus[] filteredOrderStatus = orderService.getFilteredOrderStatus();
         model.addAttribute("orderStatuses", filteredOrderStatus);
-
         return "usr/buyer/myOrder";
     }
 

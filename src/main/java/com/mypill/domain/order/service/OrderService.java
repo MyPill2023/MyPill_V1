@@ -1,10 +1,15 @@
 package com.mypill.domain.order.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.order.dto.request.PayRequest;
+import com.mypill.domain.order.dto.response.OrderListResponse;
+import com.mypill.domain.order.dto.response.PayResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
@@ -12,6 +17,7 @@ import com.mypill.domain.order.repository.OrderItemRepository;
 import com.mypill.domain.order.repository.OrderRepository;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
+import com.mypill.global.AppConfig;
 import com.mypill.global.event.EventAfterOrderCanceled;
 import com.mypill.global.event.EventAfterOrderPayment;
 import com.mypill.global.event.EventAfterOrderStatusUpdate;
@@ -19,11 +25,14 @@ import com.mypill.global.rq.Rq;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +46,8 @@ public class OrderService {
     private final AddressService addressService;
     private final ProductService productService;
     private final Rq rq;
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher publisher;
 
     public RsData<Order> getOrderForm(Member actor, Long orderId) {
@@ -157,19 +168,49 @@ public class OrderService {
     }
 
     @Transactional
-    public void cancel(Order order, LocalDateTime cancelDate, String status) {
-        order.updatePayment(cancelDate, status);
-        Set<Member> uniqueSeller = new HashSet<>();
-        order.getOrderItems()
-                .forEach(orderItem -> {
-                    orderItem.updateStatus(OrderStatus.CANCELED);
-                    orderItem.getProduct().updateStockAndSaleByOrderCancel(orderItem.getQuantity()); // 재고 업데이트
-                    if (uniqueSeller.add(orderItem.getProduct().getSeller())) {
-                        publisher.publishEvent(new EventAfterOrderCanceled(this, orderItem.getProduct().getSeller(), order));
-                    }
-                });
-        order.updatePrimaryOrderStatus(OrderStatus.CANCELED);
-        orderRepository.save(order);
+    public RsData<?> cancel(Order order) {
+        try {
+            String paymentKey = order.getPayment().getPaymentKey();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((AppConfig.getTossPaymentSecretKey() + ":").getBytes()));
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, String> payloadMap = new HashMap<>();
+            payloadMap.put("PaymentKey", order.getPayment().getPaymentKey());
+            payloadMap.put("cancelReason", "");
+
+            HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(payloadMap), headers);
+
+            ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(
+                    "https://api.tosspayments.com/v1/payments/%s/cancel".formatted(paymentKey), request, JsonNode.class);
+
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                String approvedAt = responseEntity.getBody().get("approvedAt").asText();
+                LocalDateTime cancelDate = LocalDateTime.parse(approvedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                String status = responseEntity.getBody().get("status").asText();
+
+                order.updatePayment(cancelDate, status);
+                Set<Member> uniqueSeller = new HashSet<>();
+                order.getOrderItems()
+                        .forEach(orderItem -> {
+                            orderItem.updateStatus(OrderStatus.CANCELED);
+                            orderItem.getProduct().updateStockAndSaleByOrderCancel(orderItem.getQuantity()); // 재고 업데이트
+                            if (uniqueSeller.add(orderItem.getProduct().getSeller())) {
+                                publisher.publishEvent(new EventAfterOrderCanceled(this, orderItem.getProduct().getSeller(), order));
+                            }
+                        });
+                order.updatePrimaryOrderStatus(OrderStatus.CANCELED);
+                orderRepository.save(order);
+                return RsData.of("S-1", "주문번호 %s의 </br> 주문 및 결제가 취소되었습니다.".formatted(order.getOrderNumber()), order);
+            } else {
+                JsonNode failNode = responseEntity.getBody();
+                PayResponse payResponse = PayResponse.of(failNode);
+                return RsData.of("F-2", "%s </br> %s".formatted(payResponse.getCode(), payResponse.getMessage()), PayResponse.of(failNode));
+            }
+        } catch (Exception e) {
+            return RsData.of("F-1", "결제취소 실패");
+        }
     }
 
     @Transactional
@@ -276,6 +317,64 @@ public class OrderService {
     public Map<YearMonth, Long> countOrderPrice(Long sellerId) {
         List<OrderItem> orderItems = findOrderItemBySellerId(sellerId);
         return SalesCalculator.calculateMonthlySales(orderItems);
+    }
+
+    public List<OrderListResponse> getOrderListResponses(Long memberId) {
+        List<Order> orders = findByBuyerIdAndPaymentIsNotNull(memberId);
+        return orders.stream()
+                .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
+                .map(OrderListResponse::of).toList();
+    }
+
+    public Map<OrderStatus, Long> getOrderStatusCount(Long memberId) {
+        List<OrderItem> orderItems = findOrderItemByBuyerId(memberId);
+        return orderItems.stream()
+                .collect(Collectors.groupingBy(OrderItem::getStatus, Collectors.counting()));
+    }
+
+    public OrderStatus[] getFilteredOrderStatus() {
+        return Arrays.stream(OrderStatus.values())
+                .filter(status -> status.getPriority() >= 1 && status.getPriority() <= 4)
+                .toArray(OrderStatus[]::new);
+    }
+
+    public RsData<?> pay(Order order, PayRequest payRequest) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((AppConfig.getTossPaymentSecretKey() + ":").getBytes()));
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, String> payloadMap = new HashMap<>();
+            payloadMap.put("orderId", payRequest.getOrderId());
+            payloadMap.put("amount", String.valueOf(payRequest.getAmount()));
+            payloadMap.put("paymentKey", payRequest.getPaymentKey());
+
+            HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(payloadMap), headers);
+
+            ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(
+                    "https://api.tosspayments.com/v1/payments/confirm", request, JsonNode.class);
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                payByTossPayments(order, payRequest.getOrderId(), Long.parseLong(payRequest.getAddressId()));
+                extractMessageFromResponse(responseEntity, order);
+                return RsData.of("S-1", "주문이 완료되었습니다.", order);
+            } else {
+                JsonNode failNode = responseEntity.getBody();
+                return RsData.of("F-2", "결제 실패", PayResponse.of(payRequest, failNode));
+            }
+        } catch (Exception e) {
+            return RsData.of("F-1", "결제 실패");
+        }
+    }
+
+    private void extractMessageFromResponse(ResponseEntity<JsonNode> responseEntity, Order order) {
+        JsonNode body = responseEntity.getBody();
+        String requestedAt = body.get("requestedAt").asText();
+        LocalDateTime payDate = LocalDateTime.parse(requestedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        String paymentKey = body.get("paymentKey").asText();
+        String method = body.get("method").asText();
+        Long totalAmount = body.get("totalAmount").asLong();
+        String status = body.get("status").asText();
+        updatePayment(order, paymentKey, method, totalAmount, payDate, status);
     }
 
     public static class SalesCalculator {
