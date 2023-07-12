@@ -20,9 +20,9 @@ INSERT INTO nutrients (name, description) VALUES ('콜라겐', '콜라겐은 피
 INSERT INTO nutrients (name, description) VALUES ('세라마이드', '세라마이드는 피부 장벽을 만드는 영양성분으로, 수분이 빠져나가는 것을 막아 피부 보습에 도움을 줄 수 있습니다.');
 INSERT INTO nutrients (name, description) VALUES ('셀레늄', '세포를 늙게 만드는 활성산소를 없애 노화를 늦춰줄 수 있고 피부가 손상되지 않도록 지켜주는 효과가 있습니다.');
 INSERT INTO nutrients (name, description) VALUES ('판토텐산', '비타민B5라고도 불리는 판토텐산은 피지를 억제하고 염증을 조절하는 기능이 있기 때문에 여드름 치료에 도움을 줄 수 있습니다.');
-INSERT INTO nutrients (name, description) VALUES ('가르시니아캄보지아(HCA)', '탄수화물이 지방으로 바뀌는 것을 막아, 체지방 감소에 도움을 줄 수 있습니다.');
-INSERT INTO nutrients (name, description) VALUES ('키토산(키토올리고당)', '음식으로 섭취한 지방이 잘 흡수되지 않도록 방해해, 체지방 감소에 도움을 줄 수 있습니다. 콜레스테롤 흡수를 방해해 혈중 콜레스테롤 수치를 개선하는데 효과가 있습니다.');
-INSERT INTO nutrients (name, description) VALUES ('녹차추출물(카테킨)', '체내 지방 대사를 활발하게 하여, 체지방 감소를 도움을 줍니다. 콜레스테롤 흡수를 방해해, 혈중 콜레스테롤 수치를 개선하는데 도움을 줄 수 있습니다.');
+INSERT INTO nutrients (name, description) VALUES ('가르시니아캄보지아', '탄수화물이 지방으로 바뀌는 것을 막아, 체지방 감소에 도움을 줄 수 있습니다.');
+INSERT INTO nutrients (name, description) VALUES ('키토산', '음식으로 섭취한 지방이 잘 흡수되지 않도록 방해해, 체지방 감소에 도움을 줄 수 있습니다. 콜레스테롤 흡수를 방해해 혈중 콜레스테롤 수치를 개선하는데 효과가 있습니다.');
+INSERT INTO nutrients (name, description) VALUES ('녹차추출물', '체내 지방 대사를 활발하게 하여, 체지방 감소를 도움을 줍니다. 콜레스테롤 흡수를 방해해, 혈중 콜레스테롤 수치를 개선하는데 도움을 줄 수 있습니다.');
 INSERT INTO nutrients (name, description) VALUES ('비타민 B6', '단백질을 만드는 ‘아미노산’의 대사에 필요한 영양소로, 혈관을 손상시킬 수 있는 ‘호모시스테인’이 많아지지 안도록 조절해줍니다.');
 INSERT INTO nutrients (name, description) VALUES ('밀크씨슬', '활성산소로부터 간 세포를 보호하는 향산화 작용이 있어서 간 건강에 도움을 줍니다.');
 INSERT INTO nutrients (name, description) VALUES ('미네랄', '인체에 필요한 미량의 무기질 영양소로. 신진대사를 촉진하거나 억제시켜줍니다.');
