@@ -42,7 +42,7 @@ public class SurveyController {
     @PreAuthorize("hasAuthority('BUYER') or isAnonymous()")
     @GetMapping("/guide")
     @Operation(summary = "설문 가이드 페이지")
-    public String guide() {
+    public String guide(Model model) {
         if (rq.isLogin()) {
             return "redirect:/survey/start";
         }
@@ -149,6 +149,14 @@ class StepParam {
 
     public Long getCategoryItemId() {
         return categoryItemIds[stepNo.intValue() - 1];
+    }
+
+    public Long getNextStepNo() {
+        return stepNo + 1L;
+    }
+
+    public Long getPrevStepNo() {
+        return stepNo - 1L;
     }
 
     public boolean isChecked(Long questionId) {
