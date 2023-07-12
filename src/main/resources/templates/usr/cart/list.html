@@ -25,7 +25,7 @@
                                     <div class="flex justify-around gap-5">
                                         <input name="selectedItems" type="checkbox" checked="checked" class="checkbox checkbox-success"
                                                th:data-product-price="${cartProduct.product.price}"
-                                               th:data-product-id="${cartProduct.product.id}"
+                                               th:data-product-id="${cartProduct.id}"
                                                th:data-product-quantity="${cartProduct.quantity}"
                                                onclick="updateSelectedItem(this)">
                                         <div style="width: 100px; height: 100px;">
@@ -123,7 +123,7 @@
         let cartProductInfo;
         /*[# th:each="cartProduct : ${cartResponse.cartProducts}"]*/
         cartProductInfo = {
-            id: /*[[${cartProduct.product.id}]]*/null,
+            id: /*[[${cartProduct.id}]]*/null,
             price: /*[[${cartProduct.product.price}]]*/null,
             quantity: /*[[${cartProduct.quantity}]]*/null,
         };
