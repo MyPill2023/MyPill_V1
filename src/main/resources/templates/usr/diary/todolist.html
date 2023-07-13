@@ -29,7 +29,7 @@
             <div th:unless="${diaries.isEmpty()}" class="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300 w-full">
                 <div class="flex flex-row justify-between items-center">
                     <div>
-                        <h4 id="currentDateInput" class="text-xl font-bold"></h4>
+                        <h4 class="text-xl font-bold" th:text="${today}"></h4>
                     </div>
                 </div>
                 <p class="text-slate-500">오늘 복용해야할 영양제 입니다!</p>
@@ -83,11 +83,6 @@
 
     </div>
 
-    <script>
-        var currentDate = new Date();
-        var currentDateInput = document.getElementById("currentDateInput");
-        currentDateInput.textContent = currentDate.toISOString().split('T')[0];
-    </script>
 </main>
 </body>
 </html>
