@@ -58,7 +58,7 @@ public class Scheduler {
 
     @Scheduled(cron = "0 */30 * * * ?") // 매 30분마다
     public void sendNotifications() {
-        List<Diary> diaries = diaryService.findAll();
+        List<Diary> diaries = diaryService.findByDeleteDateNull();
         LocalTime now = LocalTime.now();
         for (Diary diary : diaries) {
             LocalTime diaryTime = diary.getTime();

@@ -12,6 +12,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<Diary> findByMemberIdAndDeleteDateIsNullOrderByTimeAsc(Long memberId);
 
     Optional<Diary> findByDeleteDateNullAndId(Long diaryId);
+    List<Diary> findByDeleteDateNull();
 
     List<Diary> findByMemberId(Long memberId);
 
