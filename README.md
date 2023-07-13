@@ -39,9 +39,77 @@ MyPill에서는 설문 기반 맞춤형 영양소를 추천하고, 복약 관리
 ![016](https://github.com/MyPill2023/MyPill/assets/64017307/5fcba384-7f75-43b2-9ea5-03e1ce98d566)
 
 ## 📌 기술 스택
+<details>
+<summary>기술 스택</summary>
+  
+### Front
+
+- HTML, CSS, JS
+- 타임리프
+- 제이쿼리
+- 테일윈드
+- 데이지UI
+
+### BackEnd
+
+- SpringBoot 3.xx
+- java 17
+- mariaDB
+- Spring Oauth 2.0
+- 스프링 시큐리티
+- 공공데이터 API
+- 토스페이먼츠 결제 모듈
+
+### Infra
+
+- NGINX
+- 젠킨스
+- 도커
+- 레디스
+- 네이버 클라우드 플랫폼
+- 네이버 오브젝트 스토리지
+- 네이버 CDN+
+
+</details>
+
 ![020](https://github.com/MyPill2023/MyPill/assets/64017307/55ae15a1-f06d-4920-867f-1f5cf3d5b4fb)
 
 ## ⚙️ 시스템 아키텍처
+
+<details>
+<summary>시스템 아키텍처</summary>
+
+- 스프링부트 3.XX
+- JAVA 17
+- MariaDB
+- 네이버 클라우드 플랫폼
+- 네이버 오브젝트 스토리지
+- 네이버 CDN+
+- Jenkins
+- Redis
+- 토스페이먼츠 결제 모듈
+- Spring Oauth 2.0
+    - 네이버
+    - 카카오
+- API들
+    - 위치 정보
+        - 카카오 Map API
+    - 공공데이터
+        - 영양소 정보 있는것들 - 기본 데이터 쌓아둔것들 어디서 가져왔더라?
+        - 건강기능식품 판매업
+            
+            [데이터활용서비스](https://www.foodsafetykorea.go.kr/api/openApiInfo.do?menu_grp=MENU_GRP31&menu_no=656&show_cnt=10&start_idx=1&svc_no=I1290&svc_type_cd=API_TYPE06)
+            
+        - 공정거래위원회_통신판매사업자 등록현황 제공 조회 서비스
+            
+            [공정거래위원회_통신판매사업자 등록현황 제공 조회 서비스](https://www.data.go.kr/data/15112404/openapi.do)
+            
+
+- Swagger
+- DDD(Domain-Driven-Design)
+
+</details>
+
 ![ad5673640218fbc8](https://github.com/MyPill2023/MyPill/assets/64017307/5f4d29f8-89be-4518-9d75-6af04c8b3211)
 
 ## 📄 ERD
