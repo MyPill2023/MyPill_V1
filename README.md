@@ -113,6 +113,8 @@ MyPill에서는 설문 기반 맞춤형 영양소를 추천하고, 복약 관리
 ![ad5673640218fbc8](https://github.com/MyPill2023/MyPill/assets/64017307/5f4d29f8-89be-4518-9d75-6af04c8b3211)
 
 ## 📄 ERD
+![mypill_prod_ERD](https://github.com/MyPill2023/MyPill/assets/99067128/8ca92327-0348-4036-a1ff-7d7623f2ac27)
+
 
 ## 📂 개발 자료
 
