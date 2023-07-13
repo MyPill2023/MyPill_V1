@@ -76,8 +76,8 @@ public class DiaryService {
         return diaryCheckLogRepository.findByMemberId(member.getId());
     }
 
-    public List<Diary> findByDeleteDateNull() {
-        return diaryRepository.findByDeleteDateNull();
+    public List<Diary> findByDeleteDateNullAndTime(LocalTime time) {
+        return diaryRepository.findByDeleteDateNullAndTime(time);
     }
 
     public List<Diary> findByMemberId(Long memberId) {
