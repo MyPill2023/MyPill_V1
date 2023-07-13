@@ -12,6 +12,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static com.mypill.domain.order.entity.QOrderItem.orderItem;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -130,4 +135,63 @@ class ProductServiceTests {
         assertThat(deletedProduct).isNotNull();
         assertThat(deletedProduct.getDeleteDate()).isNull();
     }
+
+
+
+    @Test
+    @DisplayName("주문에 의한 재고 업데이트 동시성 이슈")
+    void testUpdateStockAndSalesByOrderSuccess() throws InterruptedException{
+
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                        try {
+                            productService.updateStockAndSalesByOrder(product, 1L);
+                        }
+                        finally {
+                            latch.countDown();
+                        }
+                    }
+            );
+        }
+        latch.await();
+
+        Product newProduct = productService.findById(product.getId()).orElse(null);
+        assertThat(newProduct).isNotNull();
+        assertThat(newProduct.getStock()).isZero();
+        assertThat(newProduct.getSales()).isEqualTo(100L);
+    }
+
+    @Test
+    @DisplayName("주문취소 의한 재고 업데이트 동시성 이슈")
+    void testUpdateStockAndSalesByOrderCancelSuccess() throws InterruptedException{
+
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                        try {
+                            productService.updateStockAndSaleByOrderCancel(product, 1L);
+                        }
+                        finally {
+                            latch.countDown();
+                        }
+                    }
+            );
+        }
+        latch.await();
+
+        Product newProduct = productService.findById(product.getId()).orElse(null);
+        assertThat(newProduct).isNotNull();
+        assertThat(newProduct.getStock()).isEqualTo(200L);
+        assertThat(newProduct.getSales()).isEqualTo(-100L);
+    }
+
+
 }
+
