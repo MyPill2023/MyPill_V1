@@ -16,6 +16,7 @@ import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.repository.OrderItemRepository;
 import com.mypill.domain.order.repository.OrderRepository;
 import com.mypill.domain.product.entity.Product;
+import com.mypill.domain.product.repository.ProductRepository;
 import com.mypill.domain.product.service.ProductService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.event.EventAfterOrderCanceled;
@@ -49,6 +50,7 @@ public class OrderService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher publisher;
+    private final ProductRepository productRepository;
 
     public RsData<Order> getOrderForm(Member actor, Long orderId) {
         Order order = findById(orderId).orElse(null);
@@ -119,7 +121,7 @@ public class OrderService {
         order.getOrderItems()
                 .forEach(orderItem -> {
                     orderItem.updateStatus(OrderStatus.ORDERED);
-                    orderItem.getProduct().updateStockAndSalesByOrder(orderItem.getQuantity()); // 재고 업데이트
+                    productService.updateStockAndSalesByOrder(orderItem.getProduct(), orderItem.getQuantity()); // 재고 업데이트
                     Member seller = orderItem.getProduct().getSeller();
                     if (uniqueSellers.add(seller)) {
                         publisher.publishEvent(new EventAfterOrderPayment(this, seller, order)); // 이벤트 - 판매자에게 알림
@@ -195,7 +197,7 @@ public class OrderService {
                 order.getOrderItems()
                         .forEach(orderItem -> {
                             orderItem.updateStatus(OrderStatus.CANCELED);
-                            orderItem.getProduct().updateStockAndSaleByOrderCancel(orderItem.getQuantity()); // 재고 업데이트
+                            productService.updateStockAndSaleByOrderCancel(orderItem.getProduct(), orderItem.getQuantity()); // 재고 업데이트
                             if (uniqueSeller.add(orderItem.getProduct().getSeller())) {
                                 publisher.publishEvent(new EventAfterOrderCanceled(this, orderItem.getProduct().getSeller(), order));
                             }
