@@ -48,7 +48,7 @@ MyPill에서는 설문 기반 맞춤형 영양소를 추천하고, 복약 관리
 
 ## 📂 개발 자료
 
-- [🔗 API명세서]([https://youtu.be/VYYzGUSq1Hk](https://www.mypill.shop/swagger-ui/index.html#/))
+- [🔗 API명세서](https://www.mypill.shop/swagger-ui/index.html#/)
 
 <details>
 <summary>요구사항 명세서</summary>
