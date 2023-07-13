@@ -64,6 +64,7 @@ public class Product extends BaseEntity {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "member_id")
     )
+    @Builder.Default
     private Set<Member> likedMembers = new HashSet<>();
 
     public static Product of(ProductRequest requestDto, List<Nutrient> nutrients, List<Category> categories,

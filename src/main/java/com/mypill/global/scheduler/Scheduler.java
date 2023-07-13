@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Component
@@ -58,13 +59,12 @@ public class Scheduler {
 
     @Scheduled(cron = "0 */30 * * * ?") // 매 30분마다
     public void sendNotifications() {
-        List<Diary> diaries = diaryService.findAll();
         LocalTime now = LocalTime.now();
+        LocalTime startTime = now.truncatedTo(ChronoUnit.MINUTES);
+        List<Diary> diaries = diaryService.findByDeleteDateNullAndTime(startTime);
+
         for (Diary diary : diaries) {
-            LocalTime diaryTime = diary.getTime();
-            if (now.getHour() == diaryTime.getHour() && now.getMinute() == diaryTime.getMinute()) {
-                publisher.publishEvent(new EventBeforeDiaryCheck(this, diary));
-            }
+            publisher.publishEvent(new EventBeforeDiaryCheck(this, diary));
         }
     }
 }

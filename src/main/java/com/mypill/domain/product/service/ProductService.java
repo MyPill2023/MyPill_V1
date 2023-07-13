@@ -8,6 +8,7 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
+import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
@@ -100,6 +101,18 @@ public class ProductService {
         product = product.toBuilder().deleteDate(LocalDateTime.now()).build();
         productRepository.save(product);
         return RsData.of("S-1", "상품 삭제가 완료되었습니다.", product);
+    }
+
+    @Transactional
+    public synchronized void updateStockAndSalesByOrder(Product product, Long quantity){
+        product.updateStockAndSalesByOrder(quantity);
+        productRepository.saveAndFlush(product);
+    }
+
+    @Transactional
+    public synchronized void updateStockAndSaleByOrderCancel(Product product, Long quantity){
+        product.updateStockAndSaleByOrderCancel(quantity);
+        productRepository.saveAndFlush(product);
     }
 
     public Optional<Product> findById(Long productId) {
