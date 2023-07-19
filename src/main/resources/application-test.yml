@@ -8,6 +8,16 @@ spring:
     hibernate:
       ddl-auto: create
 custom:
+  naver:
+    clientId: 'CLIENT ID'
+    secret-key: 'SECRET-KEY'
+  kakao:
+    clientId: 'CLIENT ID'
+  toss_payment:
+    secretKey : 'SECRET KEY'
+  mail:
+    username: 'EMAIL'
+    password: 'EMAIL KEY'
   amazonS3:
     end-point: 'https://end.point/'
     region-name: 'REGION NAME'
