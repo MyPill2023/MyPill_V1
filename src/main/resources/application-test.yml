@@ -7,3 +7,16 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+custom:
+  amazonS3:
+    end-point: 'https://end.point/'
+    region-name: 'REGION NAME'
+    access-key: 'ACCESS KEY'
+    secret-key: 'SECRET KEY'
+    cdn-end-point: 'http://end.point/'
+    bucket-name: 'BUCKET NAME'
+api:
+  brno:
+    key: 'SECRET KEY'
+  n_brno:
+    key: 'SECRET KEY'
