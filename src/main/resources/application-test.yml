@@ -14,7 +14,7 @@ custom:
   kakao:
     clientId: 'CLIENT ID'
   toss_payment:
-    secretKey : 'SECRET KEY'
+    secretKey: 'SECRET KEY'
   mail:
     username: 'EMAIL'
     password: 'EMAIL KEY'
@@ -25,8 +25,6 @@ custom:
     secret-key: 'SECRET KEY'
     cdn-end-point: 'http://end.point/'
     bucket-name: 'BUCKET NAME'
-api:
-  brno:
-    key: 'SECRET KEY'
-  n_brno:
-    key: 'SECRET KEY'
+  api:
+    business-register-number: 'SECRET KEY'
+    nutrient-business-register-number: 'SECRET KEY'
