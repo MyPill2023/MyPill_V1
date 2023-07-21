@@ -10,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@Builder
 @Getter
 @Table(name = "questions")
 public class Question extends BaseEntity {

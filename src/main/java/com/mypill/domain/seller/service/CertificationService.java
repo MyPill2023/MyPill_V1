@@ -2,7 +2,8 @@ package com.mypill.domain.seller.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
+import com.mypill.domain.seller.properties.CertificateProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -12,20 +13,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Service
+@RequiredArgsConstructor
 public class CertificationService {
-
-    @Value("${api.brno.key}")
-    private String BUSINESS_SERVICE_KEY;
-
-    @Value("${api.n_brno.key}")
-    private String NUTRIENT_BUSINESS_SERVICE_KEY;
+    private final CertificateProperties certificateProperties;
 
     public boolean businessNumberCertificated(String number) {
         String requestUrl = "http://apis.data.go.kr/1130000/MllBs_1Service/getMllBsBiznoInfo_1";
         String pageNo = "1";
         String numOfRows = "30";
         String resultType = "json";
-        String urlWithQuery = requestUrl + "?serviceKey=" + BUSINESS_SERVICE_KEY +
+        String urlWithQuery = requestUrl + "?serviceKey=" + certificateProperties.getBusinessRegisterNumber() +
                 "&pageNo=" + pageNo +
                 "&numOfRows=" + numOfRows +
                 "&resultType=" + resultType +
@@ -50,7 +47,7 @@ public class CertificationService {
         String resultType = "json";
         String startIndex = "1";
         String endIndex = "1";
-        String urlWithQuery = url1 + "/" + NUTRIENT_BUSINESS_SERVICE_KEY
+        String urlWithQuery = url1 + "/" + certificateProperties.getNutrientBusinessRegisterNumber()
                 + "/" + serviceNumber
                 + "/" + resultType
                 + "/" + startIndex

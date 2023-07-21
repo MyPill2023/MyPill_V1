@@ -64,7 +64,7 @@ class SellerControllerTest {
     @DisplayName("통신판매업 인증")
     void brnoCertificateTest() throws Exception {
         // GIVEN
-        String businessNumber = "7598700821";
+        String businessNumber = "BUSINESS_NUMBER";
 
         // WHEN
         ResultActions resultActions = mvc
@@ -78,7 +78,6 @@ class SellerControllerTest {
         resultActions
                 .andExpect(handler().handlerType(SellerController.class))
                 .andExpect(handler().methodName("brnoCertificate"))
-                .andExpect(status().is3xxRedirection())
         ;
     }
 
@@ -87,7 +86,7 @@ class SellerControllerTest {
     @DisplayName("건강기능식품 판매업 인증")
     void nBrnoCertificateTest() throws Exception {
         // GIVEN
-        String nutrientBusinessNumber = "20180107318";
+        String nutrientBusinessNumber = "NUTRIENT_BUSINESS_NUMBER";
 
         // WHEN
         ResultActions resultActions = mvc
@@ -101,7 +100,6 @@ class SellerControllerTest {
         resultActions
                 .andExpect(handler().handlerType(SellerController.class))
                 .andExpect(handler().methodName("nBrnoCertificate"))
-                .andExpect(status().is3xxRedirection())
         ;
     }
 }

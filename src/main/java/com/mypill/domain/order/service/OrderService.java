@@ -50,7 +50,6 @@ public class OrderService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher publisher;
-    private final ProductRepository productRepository;
 
     public RsData<Order> getOrderForm(Member actor, Long orderId) {
         Order order = findById(orderId).orElse(null);
