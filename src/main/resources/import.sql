@@ -190,3 +190,6 @@ INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (45,30);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (46,29);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (47,29);
 INSERT INTO nutrient_questions (question_id,nutrient_id) VALUES (47,30);
+
+DROP TABLE IF EXISTS shedlock;
+CREATE TABLE shedlock (name VARCHAR(64), lock_until TIMESTAMP(3) NULL, locked_at  TIMESTAMP(3) NULL, locked_by  VARCHAR(255), PRIMARY KEY (name));

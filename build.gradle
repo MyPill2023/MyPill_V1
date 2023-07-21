@@ -82,6 +82,9 @@ dependencies {
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-data-redis'
 
+    //스케줄러 shedlock
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:4.29.0'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:4.29.0'
 }
 
 tasks.named('test') {
