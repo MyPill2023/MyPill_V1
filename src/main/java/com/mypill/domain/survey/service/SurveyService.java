@@ -3,7 +3,7 @@ package com.mypill.domain.survey.service;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.question.entity.NutrientQuestion;
 import com.mypill.domain.question.service.NutrientQuestionService;
-import com.mypill.global.AppConfig;
+import com.mypill.domain.survey.properties.SurveyProperties;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,28 +15,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SurveyService {
     private final NutrientQuestionService nutrientQuestionService;
+    private final SurveyProperties surveyProperties;
 
     public RsData<String> validStartSurvey(Long[] categoryItemIds) {
-        if (categoryItemIds.length > AppConfig.getStartMaxLength()) {
+        if (categoryItemIds.length > surveyProperties.getStartMaxLength()) {
             return RsData.of("F-1", "3개 이하로 선택해주세요.");
         }
-        if (categoryItemIds.length < AppConfig.getStartMinLength()) {
+        if (categoryItemIds.length < surveyProperties.getStartMinLength()) {
             return RsData.of("F-2", "1개 이상으로 선택해주세요.");
         }
         return RsData.of("S-1", "설문 완료");
     }
 
     public RsData<String> validCompleteSurvey(Long[] questionIds) {
-        if (questionIds.length > AppConfig.getCompleteMaxLength()) {
+        if (questionIds.length > surveyProperties.getCompleteMaxLength()) {
             return RsData.of("F-1", "9개 이하로 선택해주세요.");
         }
-        if (questionIds.length < AppConfig.getCompleteMinLength()) {
+        if (questionIds.length < surveyProperties.getCompleteMinLength()) {
             return RsData.of("F-2", "1개 이상으로 선택해주세요.");
         }
         return RsData.of("S-1", "질문 완료");
     }
 
-    public Map<String, List<Nutrient>> getAnswers (Long[] questionIds) {
+    public Map<String, List<Nutrient>> getAnswers(Long[] questionIds) {
         Map<String, List<Nutrient>> answers = new HashMap<>();
         for (Long id : questionIds) {
             List<NutrientQuestion> nutrientQuestions = nutrientQuestionService.findByQuestionId(id);

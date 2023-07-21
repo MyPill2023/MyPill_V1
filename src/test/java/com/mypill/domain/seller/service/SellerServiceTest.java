@@ -21,13 +21,13 @@ class SellerServiceTest {
     @Autowired
     private MemberRepository memberRepository;
     private Member testUser1;
-    private final String brno = "7598700821";
-    private final String nBrno = "20180107318";
+    private final String brno = "BUSINESS_NUMBER";
+    private final String nBrno = "NUTRIENT_BUSINESS_NUMBER";
 
     @Test
     @WithMockUser(username = "testUser1", authorities = "WAITER")
-    @DisplayName("통신판매업 검증")
-    void certificateBRNOTest1() {
+    @DisplayName("통신판매업 검증 실패")
+    void certificateBRNOFailTest1() {
         // GIVEN
         testUser1 = Member.builder()
                 .username("testUser1")
@@ -42,13 +42,13 @@ class SellerServiceTest {
         sellerService.businessNumberCheck(brno, testUser1);
 
         // THEN
-        assertThat(testUser1.getBusinessNumber()).isNotNull();
+        assertThat(testUser1.getBusinessNumber()).isNull();
     }
 
     @Test
     @WithMockUser(username = "testUser1", authorities = "WAITER")
-    @DisplayName("통신판매업 검증 후 판매자 자격 변경")
-    void certificateBRNOTest2() {
+    @DisplayName("통신판매업 검증 실패 후 대기자 자격 그대로")
+    void certificateBRNOFailTest2() {
         // GIVEN
         testUser1 = Member.builder()
                 .username("testUser1")
@@ -64,14 +64,14 @@ class SellerServiceTest {
         sellerService.businessNumberCheck(brno, testUser1);
 
         // THEN
-        assertThat(testUser1.getBusinessNumber()).isNotNull();
-        assertThat(testUser1.getUserType()).isEqualTo(2);
+        assertThat(testUser1.getBusinessNumber()).isNull();
+        assertThat(testUser1.getUserType()).isEqualTo(3);
     }
 
     @Test
     @WithMockUser(username = "testUser1", authorities = "WAITER")
-    @DisplayName("건강기능식품 판매업 검증")
-    void certificateNBRNOTest1() {
+    @DisplayName("건강기능식품 판매업 검증 실패")
+    void certificateNBRNOFailTest1() {
         // GIVEN
         testUser1 = Member.builder()
                 .username("testUser1")
@@ -86,13 +86,13 @@ class SellerServiceTest {
         sellerService.nutrientBusinessNumberCheck(nBrno, testUser1);
 
         // THEN
-        assertThat(testUser1.getNutrientBusinessNumber()).isEqualTo(nBrno);
+        assertThat(testUser1.getNutrientBusinessNumber()).isNull();
     }
 
     @Test
     @WithMockUser(username = "testUser1", authorities = "WAITER")
-    @DisplayName("건강기능식품 판매업 검증 후 판매자 자격 변경")
-    void certificateNBRNOTest2() {
+    @DisplayName("건강기능식품 판매업 검증 실패 후 대기자 자격 그대로")
+    void certificateNBRNOFailTest2() {
         // GIVEN
         testUser1 = Member.builder()
                 .username("testUser1")
@@ -108,7 +108,7 @@ class SellerServiceTest {
         sellerService.nutrientBusinessNumberCheck(nBrno, testUser1);
 
         // THEN
-        assertThat(testUser1.getNutrientBusinessNumber()).isEqualTo(nBrno);
-        assertThat(testUser1.getUserType()).isEqualTo(2);
+        assertThat(testUser1.getNutrientBusinessNumber()).isNull();
+        assertThat(testUser1.getUserType()).isEqualTo(3);
     }
 }
