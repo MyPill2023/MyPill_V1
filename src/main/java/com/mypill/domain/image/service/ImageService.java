@@ -25,11 +25,11 @@ public class ImageService {
             } else if (object instanceof Post) {
                 return amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
             } else {
-                return null;
+                throw new RuntimeException("이미지 업로드에 실패하였습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("이미지 업로드에 실패하였습니다", e);
+            throw  new RuntimeException("이미지 업로드에 실패하였습니다", e);
         }
     }
 
@@ -47,7 +47,7 @@ public class ImageService {
                 }
                 return amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
             } else {
-                return null;
+                throw new RuntimeException("이미지 업로드에 실패하였습니다");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -23,8 +23,7 @@ public class HomeController {
     @GetMapping("/")
     @Operation(summary = "메인 페이지")
     public String showMain(Model model) {
-        List<ProductResponse> productList = productService.findTop5ProductsBySales()
-                .stream().map(ProductResponse::of).toList();
+        List<ProductResponse> productList = productService.findTop5ProductsBySales();
         model.addAttribute("products", productList);
         return "usr/home/main";
     }

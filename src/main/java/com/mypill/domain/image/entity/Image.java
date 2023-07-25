@@ -18,9 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 @SuperBuilder(toBuilder = true)
 public class Image extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String filepath;
     private String filename;
     private String originalUrl;
@@ -44,14 +41,6 @@ public class Image extends BaseEntity {
         this.filename = multipartFile.getOriginalFilename();
         this.filepath = amazonS3ImageDto.getCdnUrl();
         this.originalUrl = amazonS3ImageDto.getOriginUrl();
-        this.post = post;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public void setPost(Post post) {
         this.post = post;
     }
 

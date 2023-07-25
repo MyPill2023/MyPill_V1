@@ -9,6 +9,7 @@ import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.product.dto.request.ProductRequest;
+import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
 import com.mypill.global.aws.s3.dto.AmazonS3Dto;
@@ -120,8 +121,8 @@ public class ProductService {
         return productRepository.findAllProduct(pageable);
     }
 
-    public List<Product> findTop5ProductsBySales() {
-        return productRepository.findTop5ProductsBySales();
+    public List<ProductResponse> findTop5ProductsBySales() {
+        return productRepository.findTop5ProductsBySales().stream().map(ProductResponse::of).toList();
     }
 
     public Page<Product> getAllProductListByNutrientId(Long nutrientId, Pageable pageable) {
