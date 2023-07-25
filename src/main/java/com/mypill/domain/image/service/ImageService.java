@@ -1,6 +1,7 @@
 package com.mypill.domain.image.service;
 
 import com.mypill.domain.image.entity.Image;
+import com.mypill.domain.image.entity.ImageOperator;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.aws.s3.dto.AmazonS3Dto;
@@ -18,18 +19,13 @@ public class ImageService {
     private final AmazonS3Service amazonS3Service;
 
     @Async
-    public AmazonS3Dto saveImageOnServer(MultipartFile multipartFile, Object object) {
+    public AmazonS3Dto saveImageOnServer(MultipartFile multipartFile, ImageOperator imageOperator) {
         try {
-            if (object instanceof Product) {
-                return amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
-            } else if (object instanceof Post) {
-                return amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
-            } else {
-                throw new RuntimeException("이미지 업로드에 실패하였습니다");
-            }
+            String folderName = imageOperator.getObjectFolderName();
+            return amazonS3Service.imageUpload(multipartFile, folderName + "/" + UUID.randomUUID());
         } catch (Exception e) {
             e.printStackTrace();
-            throw  new RuntimeException("이미지 업로드에 실패하였습니다", e);
+            throw new RuntimeException("이미지 업로드에 실패하였습니다", e);
         }
     }
 

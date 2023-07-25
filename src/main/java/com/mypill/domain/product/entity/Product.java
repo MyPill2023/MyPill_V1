@@ -2,6 +2,7 @@ package com.mypill.domain.product.entity;
 
 import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.category.entity.Category;
+import com.mypill.domain.image.entity.ImageOperator;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
@@ -20,7 +21,7 @@ import java.util.Set;
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Product extends BaseEntity {
+public class Product extends BaseEntity implements ImageOperator {
 
     @Column(nullable = false)
     private String name;
@@ -106,5 +107,10 @@ public class Product extends BaseEntity {
 
     public void addImage(Image image) {
         this.image = image;
+    }
+
+    @Override
+    public String getObjectFolderName() {
+        return "product";
     }
 }
