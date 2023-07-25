@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -28,9 +27,6 @@ public class CategoryService {
     }
 
     public Optional<Category> findById(Long categoryId) {
-        if (categoryRepository.findById(categoryId).isEmpty()) {
-            return Optional.empty();
-        }
         return categoryRepository.findById(categoryId);
     }
 }
