@@ -3,7 +3,6 @@ package com.mypill.domain.question.entity;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "nutrient_questions")
 public class NutrientQuestion {
 
