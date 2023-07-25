@@ -110,7 +110,7 @@ public class Product extends BaseEntity implements ImageOperator {
     }
 
     @Override
-    public String getObjectFolderName() {
+    public String getFolderName() {
         return "product";
     }
 }

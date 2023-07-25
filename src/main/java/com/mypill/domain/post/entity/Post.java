@@ -60,7 +60,7 @@ public class Post extends BaseEntity implements ImageOperator {
     }
 
     @Override
-    public String getObjectFolderName() {
+    public String getFolderName() {
         return "post";
     }
 }

@@ -21,7 +21,7 @@ public class ImageService {
     @Async
     public AmazonS3Dto saveImageOnServer(MultipartFile multipartFile, ImageOperator imageOperator) {
         try {
-            String folderName = imageOperator.getObjectFolderName();
+            String folderName = imageOperator.getFolderName();
             return amazonS3Service.imageUpload(multipartFile, folderName + "/" + UUID.randomUUID());
         } catch (Exception e) {
             e.printStackTrace();
@@ -30,21 +30,13 @@ public class ImageService {
     }
 
     @Async
-    public AmazonS3Dto updateImageOnServer(MultipartFile multipartFile, Object object) {
+    public AmazonS3Dto updateImageOnServer(MultipartFile multipartFile, ImageOperator imageOperator) {
         try {
-            if (object instanceof Product product) {
-                if (product.getImage() != null) {
-                    amazonS3Service.deleteImage(product.getImage().getOriginalUrl());
-                }
-                return amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
-            } else if (object instanceof Post post) {
-                if (post.getImage() != null) {
-                    amazonS3Service.deleteImage(post.getImage().getOriginalUrl());
-                }
-                return amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
-            } else {
-                throw new RuntimeException("이미지 업로드에 실패하였습니다");
+            String folderName = imageOperator.getFolderName();
+            if (imageOperator.getImage() != null) {
+                amazonS3Service.deleteImage(imageOperator.getImage().getOriginalUrl());
             }
+            return amazonS3Service.imageUpload(multipartFile, folderName + "/" + UUID.randomUUID());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("이미지 수정에 실패하였습니다", e);
@@ -52,8 +44,8 @@ public class ImageService {
     }
 
     @Async
-    public void deleteImageFromServer(Post post) {
-        Image image = post.getImage();
+    public void deleteImageFromServer(ImageOperator imageOperator) {
+        Image image = imageOperator.getImage();
         if (image == null) {
             return;
         }
