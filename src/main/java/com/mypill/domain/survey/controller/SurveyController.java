@@ -73,7 +73,6 @@ public class SurveyController {
         }
         List<Question> questions = questionService.findByCategoryId(categoryItemId);
         Optional<Category> category = categoryService.findById(categoryItemId);
-        category.get().getId();
         model.addAttribute("questions", questions);
         model.addAttribute("category", category);
         model.addAttribute("stepParam", stepParam);
