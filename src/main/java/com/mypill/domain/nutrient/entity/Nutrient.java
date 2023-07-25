@@ -2,6 +2,7 @@ package com.mypill.domain.nutrient.entity;
 
 import com.mypill.domain.product.entity.Product;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,11 +16,11 @@ import java.util.List;
 public class Nutrient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "nutrient_id")
     private Long id;
-    @Column(name = "name", nullable = false)
+    @NotNull
     private String name;
-    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
+    @NotNull
     private String description;
     @ManyToMany(mappedBy = "nutrients")
     private List<Product> products = new ArrayList<>();
