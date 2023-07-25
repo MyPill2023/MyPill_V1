@@ -2,8 +2,6 @@ package com.mypill.domain.image.service;
 
 import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.image.entity.ImageOperator;
-import com.mypill.domain.post.entity.Post;
-import com.mypill.domain.product.entity.Product;
 import com.mypill.global.aws.s3.dto.AmazonS3Dto;
 import com.mypill.global.aws.s3.service.AmazonS3Service;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +31,7 @@ public class ImageService {
     public AmazonS3Dto updateImageOnServer(MultipartFile multipartFile, ImageOperator imageOperator) {
         try {
             String folderName = imageOperator.getFolderName();
-            if (imageOperator.getImage() != null) {
-                amazonS3Service.deleteImage(imageOperator.getImage().getOriginalUrl());
-            }
+            deleteImageFromServer(imageOperator);
             return amazonS3Service.imageUpload(multipartFile, folderName + "/" + UUID.randomUUID());
         } catch (Exception e) {
             e.printStackTrace();
