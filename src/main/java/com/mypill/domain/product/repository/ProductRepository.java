@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
     @Lock(value = LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from Product p where p.id = :id")
-    Product findByWithPessimisticLock(final Long id);
+    Product findByIdWithPessimisticLock(final Long id);
 }

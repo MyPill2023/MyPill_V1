@@ -104,7 +104,7 @@ public class ProductService {
 
     @Transactional
     public void updateStockAndSalesByOrder(Long productId, Long quantity) {
-        Product lockedProduct = findByWithPessimisticLock(productId);
+        Product lockedProduct = findByIdWithPessimisticLock(productId);
         lockedProduct.updateStockAndSalesByOrder(quantity);
         productRepository.saveAndFlush(lockedProduct);
     }
@@ -112,8 +112,8 @@ public class ProductService {
     public Optional<Product> findById(Long productId) {
         return productRepository.findById(productId);
     }
-    public Product findByWithPessimisticLock(Long productId) {
-        return productRepository.findByWithPessimisticLock(productId);
+    public Product findByIdWithPessimisticLock(Long productId) {
+        return productRepository.findByIdWithPessimisticLock(productId);
     }
 
     public Page<Product> getAllProductList(Pageable pageable) {
