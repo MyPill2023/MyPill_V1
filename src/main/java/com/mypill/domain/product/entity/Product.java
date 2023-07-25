@@ -96,11 +96,6 @@ public class Product extends BaseEntity {
         this.sales += quantity;
     }
 
-    public void updateStockAndSaleByOrderCancel(Long quantity) {
-        this.stock += quantity;
-        this.sales -= quantity;
-    }
-
     public void addLikedMember(Member member) {
         this.likedMembers.add(member);
     }

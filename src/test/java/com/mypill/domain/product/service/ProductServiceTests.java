@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.mypill.domain.order.entity.QOrderItem.orderItem;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProductServiceTests {
 
     @Autowired
@@ -48,6 +48,7 @@ class ProductServiceTests {
 
     @Test
     @DisplayName("상품 등록")
+    @Order(1)
     void createSuccessTests() {
         // WHEN
         Product newProduct = productService.create(new ProductRequest(testUserSeller1.getId(), "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
@@ -62,6 +63,7 @@ class ProductServiceTests {
 
     @Test
     @DisplayName("상품 목록")
+    @Order(2)
     void getSuccessTests() {
         // GIVEN
         Product newProduct = productService.create(new ProductRequest(testUserSeller1.getId(), "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
@@ -78,6 +80,7 @@ class ProductServiceTests {
 
     @Test
     @DisplayName("상품 수정 - 성공")
+    @Order(3)
     void updateSuccessTests() {
         // GIVEN
         ProductRequest productRequest = new ProductRequest(3L, "테스트 상품 수정", "테스트 설명 수정",
@@ -95,6 +98,7 @@ class ProductServiceTests {
 
     @Test
     @DisplayName("상품 수정 - 권한 없음 실패")
+    @Order(4)
     void updateFailTests() {
         // GIVEN
         ProductRequest productRequest = new ProductRequest(3L, "테스트 상품 수정", "테스트 설명 수정",
@@ -112,6 +116,7 @@ class ProductServiceTests {
 
     @Test
     @DisplayName("상품 삭제 - 성공")
+    @Order(5)
     void deleteSuccessTests() {
         // WHEN
         RsData<Product> deleteRsData = productService.delete(testUserSeller1, product.getId());
@@ -125,6 +130,7 @@ class ProductServiceTests {
 
     @Test
     @DisplayName("상품 삭제 - 권한 없음 실패")
+    @Order(6)
     void deleteFailTests() {
         //WHEN
         RsData<Product> deleteRsData = productService.delete(testUserSeller2, product.getId());
@@ -137,19 +143,20 @@ class ProductServiceTests {
     }
 
 
-
     @Test
     @DisplayName("주문에 의한 재고 업데이트 동시성 이슈")
+    @Order(7)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     void testUpdateStockAndSalesByOrderSuccess() throws InterruptedException{
 
         int threadCount = 100;
-        ExecutorService executorService = Executors.newFixedThreadPool(32);
-        CountDownLatch latch = new CountDownLatch(threadCount);
+        ExecutorService executorService = Executors.newFixedThreadPool(32); // ThreadPool 구성
+        CountDownLatch latch = new CountDownLatch(threadCount); // 다른 스레드에서 작업이 완료될 때까지 대기
 
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
                         try {
-                            productService.updateStockAndSalesByOrder(product, 1L);
+                            productService.updateStockAndSalesByOrder(product.getId(), 1L);
                         }
                         finally {
                             latch.countDown();
@@ -164,34 +171,6 @@ class ProductServiceTests {
         assertThat(newProduct.getStock()).isZero();
         assertThat(newProduct.getSales()).isEqualTo(100L);
     }
-
-    @Test
-    @DisplayName("주문취소 의한 재고 업데이트 동시성 이슈")
-    void testUpdateStockAndSalesByOrderCancelSuccess() throws InterruptedException{
-
-        int threadCount = 100;
-        ExecutorService executorService = Executors.newFixedThreadPool(32);
-        CountDownLatch latch = new CountDownLatch(threadCount);
-
-        for (int i = 0; i < threadCount; i++) {
-            executorService.submit(() -> {
-                        try {
-                            productService.updateStockAndSaleByOrderCancel(product, 1L);
-                        }
-                        finally {
-                            latch.countDown();
-                        }
-                    }
-            );
-        }
-        latch.await();
-
-        Product newProduct = productService.findById(product.getId()).orElse(null);
-        assertThat(newProduct).isNotNull();
-        assertThat(newProduct.getStock()).isEqualTo(200L);
-        assertThat(newProduct.getSales()).isEqualTo(-100L);
-    }
-
 
 }
 

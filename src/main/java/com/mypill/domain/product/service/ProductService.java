@@ -1,14 +1,13 @@
 package com.mypill.domain.product.service;
 
-import com.mypill.domain.image.entity.Image;
-import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.category.entity.Category;
 import com.mypill.domain.category.service.CategoryService;
+import com.mypill.domain.image.entity.Image;
+import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.nutrient.entity.Nutrient;
-import com.mypill.domain.order.entity.OrderItem;
+import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
@@ -104,19 +103,17 @@ public class ProductService {
     }
 
     @Transactional
-    public synchronized void updateStockAndSalesByOrder(Product product, Long quantity){
-        product.updateStockAndSalesByOrder(quantity);
-        productRepository.saveAndFlush(product);
-    }
-
-    @Transactional
-    public synchronized void updateStockAndSaleByOrderCancel(Product product, Long quantity){
-        product.updateStockAndSaleByOrderCancel(quantity);
-        productRepository.saveAndFlush(product);
+    public void updateStockAndSalesByOrder(Long productId, Long quantity) {
+        Product lockedProduct = findByIdWithPessimisticLock(productId);
+        lockedProduct.updateStockAndSalesByOrder(quantity);
+        productRepository.saveAndFlush(lockedProduct);
     }
 
     public Optional<Product> findById(Long productId) {
         return productRepository.findById(productId);
+    }
+    public Product findByIdWithPessimisticLock(Long productId) {
+        return productRepository.findByIdWithPessimisticLock(productId);
     }
 
     public Page<Product> getAllProductList(Pageable pageable) {
