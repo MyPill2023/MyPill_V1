@@ -3,10 +3,10 @@ package com.mypill.domain.address.entity;
 import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.base.entitiy.BaseEntity;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -20,15 +20,15 @@ public class Address extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
     private String name;
-    @Column(nullable = false)
+    @NotNull
     private String receiverName;
-    @Column(nullable = false)
+    @NotNull
     private String address;
-    @Column(nullable = false)
+    @NotNull
     private String detailAddress;
-    @Column(nullable = false)
+    @NotNull
     private String postCode;
-    @Column(nullable = false)
+    @NotNull
     private String phoneNumber;
     private boolean isDefault;
 
@@ -64,10 +64,5 @@ public class Address extends BaseEntity {
 
     public void changeDefaultFalse() {
         this.isDefault = false;
-    }
-
-    @Override
-    public void softDelete() {
-        super.softDelete();
     }
 }

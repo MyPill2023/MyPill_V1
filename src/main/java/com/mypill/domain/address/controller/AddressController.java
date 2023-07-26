@@ -30,8 +30,8 @@ public class AddressController {
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/create")
     @Operation(summary = "배송지 등록 페이지")
-    public String createForm() {
-        if (addressService.cannotCreate(rq.getMember().getId())) {
+    public String showCreateForm() {
+        if (addressService.isFull(rq.getMember().getId())) {
             return rq.historyBack("배송지는 최대 " + AppConfig.getMaxAddressCount() + "개 까지 등록 가능합니다.");
         }
         return "usr/address/create";
@@ -56,7 +56,8 @@ public class AddressController {
         if (rsData.isFail()) {
             return rq.historyBack(rsData);
         }
-        model.addAttribute("address", AddressResponse.of(rsData.getData()));
+        AddressResponse addressResponse = AddressResponse.of(rsData.getData());
+        model.addAttribute("address", addressResponse);
         return "usr/address/update";
     }
 
@@ -64,11 +65,10 @@ public class AddressController {
     @PostMapping("/update/{addressId}")
     @Operation(summary = "배송지 수정")
     public String update(@PathVariable Long addressId, @Valid AddressRequest addressRequest) {
-        RsData<Address> rsData = addressService.get(rq.getMember(), addressId);
-        if (rsData.isFail()) {
-            return rq.historyBack(rsData);
+        RsData<Address> updateRsData = addressService.update(rq.getMember(), addressId, addressRequest);
+        if (updateRsData.isFail()) {
+            return rq.historyBack(updateRsData);
         }
-        RsData<Address> updateRsData = addressService.update(rsData.getData(), addressRequest);
         return rq.redirectWithMsg("/buyer/myAddress", updateRsData);
     }
 
@@ -76,11 +76,10 @@ public class AddressController {
     @PostMapping("/delete/{addressId}")
     @Operation(summary = "배송지 삭제")
     public String delete(@PathVariable Long addressId) {
-        RsData<Address> rsData = addressService.get(rq.getMember(), addressId);
-        if (rsData.isFail()) {
-            return rq.historyBack(rsData);
+        RsData<Address> deleteRsData = addressService.softDelete(rq.getMember(), addressId);
+        if (deleteRsData.isFail()) {
+            return rq.historyBack(deleteRsData);
         }
-        RsData<Address> deleteRsData = addressService.softDelete(rsData.getData());
         return rq.redirectWithMsg("/buyer/myAddress", deleteRsData);
     }
 

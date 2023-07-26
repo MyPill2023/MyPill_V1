@@ -26,7 +26,7 @@ public class AddressService {
         if (member == null) {
             return RsData.of("F-1", "로그인 후 이용 가능합니다.");
         }
-        if (cannotCreate(member.getId())) {
+        if (isFull(member.getId())) {
             return RsData.of("F-2", "배송지는 최대 " + AppConfig.getMaxAddressCount() + "개 까지 등록 가능합니다.");
         }
         Address address = Address.of(member, addressRequest);
@@ -51,7 +51,12 @@ public class AddressService {
     }
 
     @Transactional
-    public RsData<Address> update(Address address, AddressRequest addressRequest) {
+    public RsData<Address> update(Member actor, Long addressId, AddressRequest addressRequest) {
+        RsData<Address> rsData = get(actor, addressId);
+        if(rsData.isFail()){
+            return RsData.of(rsData.getResultCode(), rsData.getMsg());
+        }
+        Address address = rsData.getData();
         address.updateAddress(addressRequest);
         setDefaultNameIfEmpty(address, addressRequest);
         changeDefaultStatus(address, addressRequest);
@@ -59,7 +64,12 @@ public class AddressService {
     }
 
     @Transactional
-    public RsData<Address> softDelete(Address address) {
+    public RsData<Address> softDelete(Member actor, Long addressId) {
+        RsData<Address> rsData = get(actor, addressId);
+        if(rsData.isFail()){
+            return RsData.of(rsData.getResultCode(), rsData.getMsg());
+        }
+        Address address = rsData.getData();
         address.softDelete();
         return RsData.of("S-1", "배송지가 삭제되었습니다.", address);
     }
@@ -72,7 +82,7 @@ public class AddressService {
         return addressRepository.findById(addressId);
     }
 
-    public boolean cannotCreate(Long memberId) {
+    public boolean isFull(Long memberId) {
         return countAddressesByMemberId(memberId) >= AppConfig.getMaxAddressCount();
     }
 
