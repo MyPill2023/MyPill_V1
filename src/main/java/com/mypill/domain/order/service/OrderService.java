@@ -135,7 +135,7 @@ public class OrderService {
         order.updatePayment(paymentKey, method, totalAmount, payDate, status);
         orderRepository.save(order);
     }
-
+    @Transactional(readOnly = true)
     public RsData<Order> getOrderDetail(Long orderId) {
         Order order = findById(orderId).orElse(null);
         if (!isOrderValidAndDonePayment(order)) {
@@ -147,7 +147,7 @@ public class OrderService {
         }
         return RsData.of("S-1", order);
     }
-
+    @Transactional(readOnly = true)
     public RsData<Order> checkCanCancel(Member buyer, Long orderId) {
         Order order = findByIdAndPaymentIsNotNull(orderId).orElse(null);
         if (order == null) {
@@ -244,7 +244,7 @@ public class OrderService {
                 .min(Comparator.comparing(OrderStatus::getPriority))
                 .orElse(null);
     }
-
+    @Transactional(readOnly = true)
     public RsData<Order> validateOrder(Long id, String orderId, Long amount) {
         Order order = findById(id).orElse(null);
         if (order == null) {
