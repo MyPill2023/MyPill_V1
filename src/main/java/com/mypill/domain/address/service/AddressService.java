@@ -75,7 +75,7 @@ public class AddressService {
     }
 
     public List<Address> findByMemberId(Long memberId) {
-        return addressRepository.findByMemberId(memberId);
+        return addressRepository.findByMemberIdAndDeleteDateIsNull(memberId);
     }
 
     public Optional<Address> findById(Long addressId) {
@@ -99,9 +99,7 @@ public class AddressService {
     private void changeDefaultStatus(Address address, AddressRequest addressRequest) {
         if (addressRequest.isDefault()) {
             List<Address> myAddresses = findByMemberId(addressRequest.getMemberId());
-            myAddresses.stream()
-                    .filter(myAddress -> myAddress.getDeleteDate() == null)
-                    .forEach(Address::changeDefaultFalse);
+            myAddresses.forEach(Address::changeDefaultFalse);
             address.changeDefaultTrue();
         } else {
             address.changeDefaultFalse();

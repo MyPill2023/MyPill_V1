@@ -62,7 +62,6 @@ public class BuyerController {
     public String myAddress(Model model) {
         List<Address> addresses = addressService.findByMemberId(rq.getMember().getId());
         List<AddressResponse> addressResponses = addresses.stream()
-                .filter(address -> address.getDeleteDate() == null)
                 .map(AddressResponse::of).toList();
         model.addAttribute("addresses", addressResponses);
         return "usr/buyer/myAddress";
