@@ -42,7 +42,6 @@ public class OrderController {
             return rq.historyBack(rsData);
         }
         List<AddressResponse> addresses = addressService.findByMemberId(rq.getMember().getId()).stream()
-                .filter(address -> address.getDeleteDate() == null)
                 .map(AddressResponse::of)
                 .toList();
         AddressResponse defaultAddress = addresses.stream()

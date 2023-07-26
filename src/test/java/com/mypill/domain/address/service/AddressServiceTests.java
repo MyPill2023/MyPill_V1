@@ -1,8 +1,7 @@
-package com.mypill.domain.address.servcie;
+package com.mypill.domain.address.service;
 
 import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.entity.Address;
-import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.AppConfig;
@@ -58,8 +57,10 @@ class AddressServiceTests {
         for (int i = 0; i < AppConfig.getMaxAddressCount(); i++) {
             addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", false));
         }
+
         //WHEN
         RsData<Address> createRsData = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true));
+
         //THEN
         assertThat(createRsData.getResultCode()).isEqualTo("F-2");
         assertThat(addressService.findByMemberId(testUser1.getId())).hasSize(AppConfig.getMaxAddressCount());
@@ -71,6 +72,7 @@ class AddressServiceTests {
     void testGetSuccess() {
         //WHEN
         Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+
         //THEN
         assertThat(addressService.get(testUser1, address.getId()).getData()).isEqualTo(address);
     }
@@ -80,8 +82,10 @@ class AddressServiceTests {
     void testGetFail03() {
         //GIVEN
         Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+
         //WHEN
         RsData<Address> getRsData = addressService.get(testUser2, address.getId());
+
         //THEN
         assertThat(getRsData.getResultCode()).isEqualTo("F-3");
         assertThat(getRsData.getData()).isNull();
@@ -92,8 +96,10 @@ class AddressServiceTests {
     void testUpdateSuccess() {
         //GIVEN
         Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+
         //WHEN
-        Address newAddress = addressService.update(address, new AddressRequest(testUser1.getId(), "수정 주소 이름", "수정 이름", "수정 주소", "수정 상세 주소", "11111", "01056785678", true)).getData();
+        Address newAddress = addressService.update(testUser1, address.getId(), new AddressRequest(testUser1.getId(), "수정 주소 이름", "수정 이름", "수정 주소", "수정 상세 주소", "11111", "01056785678", true)).getData();
+
         //THEN
         assertThat(newAddress.getName()).isEqualTo("수정 주소 이름");
         assertThat(newAddress.getReceiverName()).isEqualTo("수정 이름");
@@ -107,8 +113,10 @@ class AddressServiceTests {
     void testDeleteSuccess() {
         //GIVEN
         Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+
         //WHEN
-        Address deletedAddress = addressService.softDelete(address).getData();
+        Address deletedAddress = addressService.softDelete(testUser1, address.getId()).getData();
+
         //THEN
         assertThat(deletedAddress.getDeleteDate()).isNotNull();
     }
