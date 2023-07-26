@@ -1,8 +1,7 @@
 package com.mypill.domain.image.service;
 
 import com.mypill.domain.image.entity.Image;
-import com.mypill.domain.post.entity.Post;
-import com.mypill.domain.product.entity.Product;
+import com.mypill.domain.image.entity.ImageOperator;
 import com.mypill.global.aws.s3.dto.AmazonS3Dto;
 import com.mypill.global.aws.s3.service.AmazonS3Service;
 import lombok.RequiredArgsConstructor;
@@ -18,37 +17,22 @@ public class ImageService {
     private final AmazonS3Service amazonS3Service;
 
     @Async
-    public AmazonS3Dto saveImageOnServer(MultipartFile multipartFile, Object object) {
+    public AmazonS3Dto saveImageOnServer(MultipartFile multipartFile, ImageOperator imageOperator) {
         try {
-            if (object instanceof Product) {
-                return amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
-            } else if (object instanceof Post) {
-                return amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
-            } else {
-                throw new RuntimeException("이미지 업로드에 실패하였습니다");
-            }
+            String folderName = imageOperator.getFolderName();
+            return amazonS3Service.imageUpload(multipartFile, folderName + "/" + UUID.randomUUID());
         } catch (Exception e) {
             e.printStackTrace();
-            throw  new RuntimeException("이미지 업로드에 실패하였습니다", e);
+            throw new RuntimeException("이미지 업로드에 실패하였습니다", e);
         }
     }
 
     @Async
-    public AmazonS3Dto updateImageOnServer(MultipartFile multipartFile, Object object) {
+    public AmazonS3Dto updateImageOnServer(MultipartFile multipartFile, ImageOperator imageOperator) {
         try {
-            if (object instanceof Product product) {
-                if (product.getImage() != null) {
-                    amazonS3Service.deleteImage(product.getImage().getOriginalUrl());
-                }
-                return amazonS3Service.imageUpload(multipartFile, "product/" + UUID.randomUUID());
-            } else if (object instanceof Post post) {
-                if (post.getImage() != null) {
-                    amazonS3Service.deleteImage(post.getImage().getOriginalUrl());
-                }
-                return amazonS3Service.imageUpload(multipartFile, "post/" + UUID.randomUUID());
-            } else {
-                throw new RuntimeException("이미지 업로드에 실패하였습니다");
-            }
+            String folderName = imageOperator.getFolderName();
+            deleteImageFromServer(imageOperator);
+            return amazonS3Service.imageUpload(multipartFile, folderName + "/" + UUID.randomUUID());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("이미지 수정에 실패하였습니다", e);
@@ -56,8 +40,8 @@ public class ImageService {
     }
 
     @Async
-    public void deleteImageFromServer(Post post) {
-        Image image = post.getImage();
+    public void deleteImageFromServer(ImageOperator imageOperator) {
+        Image image = imageOperator.getImage();
         if (image == null) {
             return;
         }

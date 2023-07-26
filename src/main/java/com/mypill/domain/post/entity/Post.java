@@ -2,6 +2,7 @@ package com.mypill.domain.post.entity;
 
 import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.comment.entity.Comment;
+import com.mypill.domain.image.entity.ImageOperator;
 import com.mypill.domain.post.dto.PostRequest;
 import com.mypill.global.base.entitiy.BaseEntity;
 import jakarta.persistence.*;
@@ -19,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class Post extends BaseEntity {
+public class Post extends BaseEntity implements ImageOperator {
     @Column
     private Long posterId;
     @Column(nullable = false)
@@ -56,5 +57,10 @@ public class Post extends BaseEntity {
 
     public void addImage(Image image) {
         this.image = image;
+    }
+
+    @Override
+    public String getFolderName() {
+        return "post";
     }
 }
