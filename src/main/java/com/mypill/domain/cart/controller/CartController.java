@@ -32,7 +32,7 @@ public class CartController {
     @GetMapping("")
     @Operation(summary = "장바구니 페이지")
     public String showCart(Model model) {
-        Cart cart = cartService.getCart(rq.getMember());
+        Cart cart = cartService.getOrCreateCart(rq.getMember());
         model.addAttribute("cartResponse", CartResponse.of(cart));
         return "usr/cart/list";
     }
@@ -41,7 +41,7 @@ public class CartController {
     @PostMapping("/add")
     @Operation(summary = "장바구니에 상품 추가")
     public String addCartProduct(@Valid CartProductRequest request) {
-        RsData<CartProduct> addRsData = cartService.addProduct(rq.getMember(), request);
+        RsData<CartProduct> addRsData = cartService.addCartProduct(rq.getMember(), request);
         if (addRsData.isFail()) {
             return rq.historyBack(addRsData);
         }
@@ -52,7 +52,7 @@ public class CartController {
     @PostMapping("/update")
     @Operation(summary = "장바구니에서 상품 수량 업데이트")
     public String updateQuantity(@RequestParam Long cartProductId, @RequestParam Long newQuantity) {
-        RsData<CartProduct> updateRsData = cartService.updateQuantity(rq.getMember(), cartProductId, newQuantity);
+        RsData<CartProduct> updateRsData = cartService.updateCartProductQuantity(rq.getMember(), cartProductId, newQuantity);
         if (updateRsData.getResultCode().equals("F-2")) {
             return rq.redirectWithMsg("/cart", updateRsData);
         }
