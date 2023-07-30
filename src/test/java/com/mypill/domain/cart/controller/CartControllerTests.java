@@ -84,7 +84,7 @@ class CartControllerTests {
         // GIVEN
         Product product1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1",
                 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
-        CartProduct cartProduct = cartService.addProduct(testUser1, new CartProductRequest(product1.getId(), 1L)).getData();
+        CartProduct cartProduct = cartService.addCartProduct(testUser1, new CartProductRequest(product1.getId(), 1L)).getData();
 
         // WHEN
         ResultActions resultActions = mvc
@@ -110,7 +110,7 @@ class CartControllerTests {
         // GIVEN
         Product product1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1",
                 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
-        CartProduct cartProduct = cartService.addProduct(testUser1, new CartProductRequest(product1.getId(), 1L)).getData();
+        CartProduct cartProduct = cartService.addCartProduct(testUser1, new CartProductRequest(product1.getId(), 1L)).getData();
 
         // WHEN
         ResultActions resultActions = mvc

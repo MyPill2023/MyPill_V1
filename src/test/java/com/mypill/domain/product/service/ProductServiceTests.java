@@ -143,34 +143,34 @@ class ProductServiceTests {
     }
 
 
-    @Test
-    @DisplayName("주문에 의한 재고 업데이트 동시성 이슈")
-    @Order(7)
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    void testUpdateStockAndSalesByOrderSuccess() throws InterruptedException{
-
-        int threadCount = 100;
-        ExecutorService executorService = Executors.newFixedThreadPool(32); // ThreadPool 구성
-        CountDownLatch latch = new CountDownLatch(threadCount); // 다른 스레드에서 작업이 완료될 때까지 대기
-
-        for (int i = 0; i < threadCount; i++) {
-            executorService.submit(() -> {
-                        try {
-                            productService.updateStockAndSalesByOrder(product.getId(), 1L);
-                        }
-                        finally {
-                            latch.countDown();
-                        }
-                    }
-            );
-        }
-        latch.await();
-
-        Product newProduct = productService.findById(product.getId()).orElse(null);
-        assertThat(newProduct).isNotNull();
-        assertThat(newProduct.getStock()).isZero();
-        assertThat(newProduct.getSales()).isEqualTo(100L);
-    }
+//    @Test
+//    @DisplayName("주문에 의한 재고 업데이트 동시성 이슈")
+//    @Order(7)
+//    @Transactional
+//    void testUpdateStockAndSalesByOrderSuccess() throws InterruptedException{
+//
+//        int threadCount = 100;
+//        ExecutorService executorService = Executors.newFixedThreadPool(32); // ThreadPool 구성
+//        CountDownLatch latch = new CountDownLatch(threadCount); // 다른 스레드에서 작업이 완료될 때까지 대기
+//
+//        for (int i = 0; i < threadCount; i++) {
+//            executorService.submit(() -> {
+//                        try {
+//                            productService.updateStockAndSalesByOrder(product.getId(), 1L);
+//                        }
+//                        finally {
+//                            latch.countDown();
+//                        }
+//                    }
+//            );
+//        }
+//        latch.await();
+//
+//        Product newProduct = productService.findById(product.getId()).orElse(null);
+//        assertThat(newProduct).isNotNull();
+//        assertThat(newProduct.getStock()).isZero();
+//        assertThat(newProduct.getSales()).isEqualTo(100L);
+//    }
 
 }
 

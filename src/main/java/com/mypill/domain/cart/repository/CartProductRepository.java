@@ -8,7 +8,10 @@ import java.util.Optional;
 
 public interface CartProductRepository extends JpaRepository<CartProduct, Long> {
 
+    Optional<CartProduct> findByIdAndDeleteDateIsNull(Long cartProductId);
+
     Optional<CartProduct> findByCartIdAndProductIdAndDeleteDateIsNull(Long cartId, Long ProductId);
 
-    List<CartProduct> findByIdIn(List<Long> cartProductIds);
+    List<CartProduct> findByIdInAndDeleteDateIsNull(List<Long> cartProductIds);
+
 }

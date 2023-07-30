@@ -66,7 +66,7 @@ public class OrderService {
 
     @Transactional
     public RsData<Order> createFromCart(Member buyer) {
-        List<CartProduct> cartProducts = cartService.getCart(buyer).getCartProducts();
+        List<CartProduct> cartProducts = cartService.getOrCreateCart(buyer).getCartProducts();
         return createAndConnect(buyer, cartProducts);
     }
 
@@ -303,7 +303,6 @@ public class OrderService {
 
     private List<OrderItem> createOrderItemsFromCartProducts(List<CartProduct> cartProducts) {
         return cartProducts.stream()
-                .filter(cartProduct -> cartProduct.getDeleteDate() == null)
                 .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
                 .toList();
     }

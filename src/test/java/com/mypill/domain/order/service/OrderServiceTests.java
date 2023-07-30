@@ -25,9 +25,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,8 +61,8 @@ class OrderServiceTests {
                 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
         Product testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2",
                 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
-        cartProduct1 = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L)).getData();
-        cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
+        cartProduct1 = cartService.addCartProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L)).getData();
+        cartService.addCartProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
 
         address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수",
                 "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();

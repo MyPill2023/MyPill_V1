@@ -51,7 +51,7 @@ class CartServiceTests {
     @DisplayName("장바구니에 추가 성공")
     void addProductSuccessTest01() {
         // WHEN
-        RsData<CartProduct> addRsData = cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
+        RsData<CartProduct> addRsData = cartService.addCartProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
         CartProduct cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
 
         // THEN
@@ -64,10 +64,10 @@ class CartServiceTests {
     @DisplayName("장바구니에 추가 성공 - 이미 담긴 상품")
     void addProductSuccessTest02() {
         // GIVEN
-        cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
+        cartService.addCartProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
 
         // WHEN
-        RsData<CartProduct> addRsData = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
+        RsData<CartProduct> addRsData = cartService.addCartProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
         CartProduct cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
 
         // THEN
@@ -80,7 +80,7 @@ class CartServiceTests {
     @DisplayName("장바구니에 추가 실패 - 존재하지 않는 상품")
     void addProductFailTest() {
         // WHEN
-        RsData<CartProduct> addRsData = cartService.addProduct(testUser1, new CartProductRequest(0L, 1L));
+        RsData<CartProduct> addRsData = cartService.addCartProduct(testUser1, new CartProductRequest(0L, 1L));
 
         // THEN
         assertThat(addRsData.getResultCode()).isEqualTo("F-1");
@@ -91,10 +91,10 @@ class CartServiceTests {
     @DisplayName("장바구니에서 상품 수량 변경 성공")
     void updateQuantitySuccessTest() {
         // GIVEN
-        CartProduct cartProduct = cartService.addProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L)).getData();
+        CartProduct cartProduct = cartService.addCartProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L)).getData();
 
         // WHEN
-        RsData<CartProduct> updateRsData = cartService.updateQuantity(testUser1, cartProduct.getId(), 3L);
+        RsData<CartProduct> updateRsData = cartService.updateCartProductQuantity(testUser1, cartProduct.getId(), 3L);
         CartProduct updatedCartProduct = cartService.findCartProductById(updateRsData.getData().getId()).orElse(null);
 
         // THEN
@@ -107,7 +107,7 @@ class CartServiceTests {
     @DisplayName("장바구니에서 상품 수량 변경 실패 - 장바구니에 없는 상품")
     void updateQuantityFailTest() {
         // WHEN
-        RsData<CartProduct> updateRsData = cartService.updateQuantity(testUser2, 0L, 3L);
+        RsData<CartProduct> updateRsData = cartService.updateCartProductQuantity(testUser2, 0L, 3L);
         CartProduct updatedCartProduct = cartService.findCartProductById(0L).orElse(null);
 
         // THEN
@@ -119,7 +119,7 @@ class CartServiceTests {
     @DisplayName("장바구니에서 상품 삭제 성공")
     void softDeleteCartProductSuccessTest() {
         // GIVEN
-        RsData<CartProduct> addRsData = cartService.addProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
+        RsData<CartProduct> addRsData = cartService.addCartProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
 
         // WHEN
         RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(testUser1, addRsData.getData().getId());
@@ -127,8 +127,7 @@ class CartServiceTests {
 
         // THEN
         assertThat(deleteRsData.getResultCode()).isEqualTo("S-1");
-        assertThat(cartProduct).isNotNull();
-        assertThat(cartProduct.getDeleteDate()).isNotNull();
+        assertThat(cartProduct).isNull();
     }
 
     @Test
