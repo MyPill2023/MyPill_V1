@@ -4,7 +4,7 @@ import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.AppConfig;
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

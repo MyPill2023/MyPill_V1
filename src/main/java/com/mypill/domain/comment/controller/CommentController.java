@@ -1,7 +1,6 @@
 package com.mypill.domain.comment.controller;
 
-import com.mypill.domain.comment.dto.CommentRequest;
-import com.mypill.domain.comment.dto.CommentAJAXResponse;
+import com.mypill.domain.comment.dto.request.CommentRequest;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.global.rq.Rq;
@@ -33,7 +32,7 @@ public class CommentController {
     public String create(@PathVariable Long postId, @Valid CommentRequest commentRequest) {
         RsData<Comment> commentRsData = commentService.create(commentRequest, rq.getMember(), postId);
         if (commentRsData.isFail()) {
-            return rq.historyBack(commentRsData.getMsg());
+            return rq.historyBack(commentRsData);
         }
         return rq.redirectWithMsg("/post/detail/%s".formatted(postId), commentRsData);
     }
@@ -42,18 +41,18 @@ public class CommentController {
     @ResponseBody
     @PostMapping("/update/{commentId}")
     @Operation(summary = "댓글 수정")
-    public CommentAJAXResponse update(CommentRequest commentRequest, @PathVariable("commentId") String commentId) {
-        return commentService.update(commentRequest, rq.getMember(), Long.parseLong(commentId));
+    public RsData<String> update(CommentRequest commentRequest, @PathVariable Long commentId) {
+        return commentService.update(commentRequest, rq.getMember(), commentId);
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/delete/{postId}/{commentId}")
     @Operation(summary = "댓글 삭제")
-    public String delete(@PathVariable("postId") String postId, @PathVariable("commentId") String commentId) {
-        RsData<Comment> commentRsData = commentService.delete(rq.getMember(), Long.parseLong(commentId));
-        if (commentRsData.isFail()) {
-            return rq.historyBack(commentRsData.getMsg());
+    public String delete(@PathVariable Long postId, @PathVariable Long commentId) {
+        RsData<Comment> deleteRsData = commentService.softDelete(rq.getMember(), commentId);
+        if (deleteRsData.isFail()) {
+            return rq.historyBack(deleteRsData);
         }
-        return rq.redirectWithMsg("/post/detail/%s".formatted(postId), commentRsData);
+        return rq.redirectWithMsg("/post/detail/%s".formatted(postId), deleteRsData);
     }
 }

@@ -1,6 +1,6 @@
 package com.mypill.domain.post.repository;
 
-import com.mypill.domain.post.dto.PostResponse;
+import com.mypill.domain.post.dto.response.PostResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

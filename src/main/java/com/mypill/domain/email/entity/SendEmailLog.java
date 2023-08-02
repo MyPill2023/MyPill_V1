@@ -1,6 +1,6 @@
 package com.mypill.domain.email.entity;
 
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

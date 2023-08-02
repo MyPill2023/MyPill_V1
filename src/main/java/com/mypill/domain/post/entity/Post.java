@@ -3,9 +3,10 @@ package com.mypill.domain.post.entity;
 import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.image.entity.ImageOperator;
-import com.mypill.domain.post.dto.PostRequest;
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.domain.post.dto.request.PostRequest;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,33 +22,28 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class Post extends BaseEntity implements ImageOperator {
-    @Column
     private Long posterId;
-    @Column(nullable = false)
+    @NotNull
     private String title;
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
+    @NotNull
     private String content;
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Image image;
 
-    public Post(PostRequest postRequest, Long id, List<Comment> comments) {
-        this.title = postRequest.getTitle();
-        this.content = postRequest.getContent();
-        this.posterId = id;
-        this.comments = comments;
+    public static Post createPost(PostRequest postRequest, Long posterId) {
+        return Post.builder()
+                .title(postRequest.getTitle())
+                .content(postRequest.getContent())
+                .posterId(posterId)
+                .build();
     }
 
     public Long getCommentCnt() {
-        long count = 0;
-        for (Comment comment : comments) {
-            if (comment.getDeleteDate() == null) {
-                count++;
-            }
-        }
-        return count;
+        return comments.stream().filter(comment -> comment.getDeleteDate() == null).count();
     }
 
     public void update(PostRequest postRequest) {

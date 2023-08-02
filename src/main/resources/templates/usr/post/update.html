@@ -34,7 +34,6 @@
                 return;
             }
 
-
             form.content.value = form.content.value.trim();
 
             if (form.content.value.length === 0) {
@@ -66,12 +65,12 @@
         <h1 class="text-2xl font-bold">
             질문 수정
         </h1>
-        <form th:action method="POST" th:object="${post}" class="flex flex-col gap-4 w-full px-5" enctype="multipart/form-data"
+        <form th:action method="POST" class="flex flex-col gap-4 w-full px-5" enctype="multipart/form-data"
               onsubmit="CreateForm__submit(this); return false;">
             <div>
                 <label for="title" class="block text-gray-700 font-bold mb-2 text-xl">제목</label>
-                <input type="text" id="title" name="title" placeholder="제목을 입력하세요."
-                          th:field="${post.title}"
+                <input type="text" id="title" name="title"
+                          th:value="${postResponse.post.title}"
                           class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline
                         whitespace-normal" rows="2">
             </div>
@@ -80,10 +79,10 @@
                     내용
                 </label>
                 <div class="relative">
-                    <textarea id="content" name="content" placeholder="질문사항을 자세히 입력해주세요."
+                    <textarea id="content" name="content"
                               class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
-                              th:field="${post.content}" style="height: 200px;"></textarea>
-                    <div id="contentCount" class="absolute right-5 bottom-5" th:text="'(' + ${post.content.length()} + '/1000)'"></div>
+                              th:text="${postResponse.post.content}" style="height: 200px;"></textarea>
+                    <div id="contentCount" class="absolute right-5 bottom-5" th:text="'(' + ${postResponse.post.content.length()} + '/1000)'"></div>
                 </div>
             </div>
 

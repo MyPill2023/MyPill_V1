@@ -2,7 +2,7 @@ package com.mypill.domain.post.controller;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.post.dto.PostRequest;
+import com.mypill.domain.post.dto.request.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import org.junit.jupiter.api.*;
@@ -86,7 +86,7 @@ class PostControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(PostController.class))
-                .andExpect(handler().methodName("create"))
+                .andExpect(handler().methodName("showCreateForm"))
                 .andExpect(status().is2xxSuccessful())
         ;
     }
@@ -98,10 +98,6 @@ class PostControllerTest {
         // GIVEN
         String title = "title";
         String content = "content";
-        MockMultipartFile emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
 
         // WHEN
         ResultActions resultActions = mvc.perform(
@@ -128,7 +124,8 @@ class PostControllerTest {
         PostRequest postRequest = new PostRequest();
         postRequest.setTitle("title");
         postRequest.setContent("content");
-        Post post = postService.create(postRequest, testUser1, emptyFile).getData();
+        postRequest.setImageFile(emptyFile);
+        Post post = postService.create(postRequest, testUser1);
 
         // WHEN
         ResultActions resultActions = mvc
@@ -153,7 +150,8 @@ class PostControllerTest {
         PostRequest postRequest = new PostRequest();
         postRequest.setTitle("title");
         postRequest.setContent("content");
-        Post post = postService.create(postRequest, testUser1, emptyFile).getData();
+        postRequest.setImageFile(emptyFile);
+        Post post = postService.create(postRequest, testUser1);
 
         // WHEN
         ResultActions resultActions = mvc
@@ -165,7 +163,7 @@ class PostControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(PostController.class))
-                .andExpect(handler().methodName("update"))
+                .andExpect(handler().methodName("showUpdateForm"))
                 .andExpect(status().is2xxSuccessful())
         ;
     }
@@ -178,11 +176,8 @@ class PostControllerTest {
         PostRequest postRequest = new PostRequest();
         postRequest.setTitle("title");
         postRequest.setContent("content");
-        Post post = postService.create(postRequest, testUser1, emptyFile).getData();
-        MockMultipartFile emptyFile = new MockMultipartFile(
-                "imageFile",
-                new byte[0]
-        );
+        postRequest.setImageFile(emptyFile);
+        Post post = postService.create(postRequest, testUser1);
 
         // WHEN
         ResultActions resultActions = mvc.perform(
@@ -209,7 +204,8 @@ class PostControllerTest {
         PostRequest postRequest = new PostRequest();
         postRequest.setTitle("title");
         postRequest.setContent("content");
-        Post post = postService.create(postRequest, testUser1, emptyFile).getData();
+        postRequest.setImageFile(emptyFile);
+        Post post = postService.create(postRequest, testUser1);
 
         // WHEN
         ResultActions resultActions = mvc

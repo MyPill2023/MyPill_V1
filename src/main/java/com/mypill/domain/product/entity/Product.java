@@ -6,7 +6,7 @@ import com.mypill.domain.image.entity.ImageOperator;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.dto.request.ProductRequest;
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -35,7 +35,7 @@ public class Product extends BaseEntity implements ImageOperator {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member seller;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Image image;
 
     private Long sales;

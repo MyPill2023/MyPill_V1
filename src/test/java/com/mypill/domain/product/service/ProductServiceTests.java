@@ -41,8 +41,8 @@ class ProductServiceTests {
     void beforeEachTest() {
         emptyFile = new MockMultipartFile("imageFile", new byte[0]);
 
-        testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
-        testUserSeller2 = memberService.join("testUserSeller2", "김철수", "1234", 2, "testSeller2@test.com").getData();
+        testUserSeller1 = memberService.join("testUserSeller123", "김철수", "1234", 2, "testSeller123@test.com").getData();
+        testUserSeller2 = memberService.join("testUserSeller223", "김철수", "1234", 2, "testSeller223@test.com").getData();
         product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
     }
 
@@ -143,34 +143,34 @@ class ProductServiceTests {
     }
 
 
-//    @Test
-//    @DisplayName("주문에 의한 재고 업데이트 동시성 이슈")
-//    @Order(7)
-//    @Transactional
-//    void testUpdateStockAndSalesByOrderSuccess() throws InterruptedException{
-//
-//        int threadCount = 100;
-//        ExecutorService executorService = Executors.newFixedThreadPool(32); // ThreadPool 구성
-//        CountDownLatch latch = new CountDownLatch(threadCount); // 다른 스레드에서 작업이 완료될 때까지 대기
-//
-//        for (int i = 0; i < threadCount; i++) {
-//            executorService.submit(() -> {
-//                        try {
-//                            productService.updateStockAndSalesByOrder(product.getId(), 1L);
-//                        }
-//                        finally {
-//                            latch.countDown();
-//                        }
-//                    }
-//            );
-//        }
-//        latch.await();
-//
-//        Product newProduct = productService.findById(product.getId()).orElse(null);
-//        assertThat(newProduct).isNotNull();
-//        assertThat(newProduct.getStock()).isZero();
-//        assertThat(newProduct.getSales()).isEqualTo(100L);
-//    }
+    @Test
+    @DisplayName("주문에 의한 재고 업데이트 동시성 이슈")
+    @Order(7)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    void testUpdateStockAndSalesByOrderSuccess() throws InterruptedException{
+
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32); // ThreadPool 구성
+        CountDownLatch latch = new CountDownLatch(threadCount); // 다른 스레드에서 작업이 완료될 때까지 대기
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                        try {
+                            productService.updateStockAndSalesByOrder(product.getId(), 1L);
+                        }
+                        finally {
+                            latch.countDown();
+                        }
+                    }
+            );
+        }
+        latch.await();
+
+        Product newProduct = productService.findById(product.getId()).orElse(null);
+        assertThat(newProduct).isNotNull();
+        assertThat(newProduct.getStock()).isZero();
+        assertThat(newProduct.getSales()).isEqualTo(100L);
+    }
 
 }
 

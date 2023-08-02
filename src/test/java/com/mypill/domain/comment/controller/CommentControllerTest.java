@@ -1,6 +1,6 @@
 package com.mypill.domain.comment.controller;
 
-import com.mypill.domain.comment.dto.CommentRequest;
+import com.mypill.domain.comment.dto.request.CommentRequest;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.member.entity.Member;

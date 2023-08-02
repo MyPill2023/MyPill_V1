@@ -1,11 +1,9 @@
 package com.mypill.domain.post.controller;
 
-import com.mypill.domain.comment.dto.CommentResponse;
+import com.mypill.domain.comment.dto.response.CommentResponse;
 import com.mypill.domain.comment.service.CommentService;
-import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.member.service.MemberService;
-import com.mypill.domain.post.dto.PostResponse;
-import com.mypill.domain.post.dto.PostRequest;
+import com.mypill.domain.post.dto.response.PostResponse;
+import com.mypill.domain.post.dto.request.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import com.mypill.global.rq.Rq;
@@ -19,7 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,7 +27,6 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
     private final CommentService commentService;
-    private final MemberService memberService;
     private final Rq rq;
 
     @GetMapping("/list")
@@ -49,37 +45,27 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     @Operation(summary = "게시글 작성 페이지")
-    public String create() {
+    public String showCreateForm() {
         return "usr/post/create";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     @Operation(summary = "게시글 작성")
-    public String create(@Valid PostRequest postRequest, @RequestParam("imageFile") MultipartFile multiPartFile) {
-        RsData<Post> createRsData = postService.create(postRequest, rq.getMember(), multiPartFile);
-        if (createRsData.isFail()) {
-            return rq.historyBack(createRsData.getMsg());
-        }
-        return rq.redirectWithMsg("/post/detail/%s".formatted(createRsData.getData().getId()), createRsData);
+    public String create(@Valid PostRequest postRequest) {
+        Post post = postService.create(postRequest, rq.getMember());
+        return rq.redirectWithMsg("/post/detail/%s".formatted(post.getId()), "게시글 작성이 완료되었습니다.");
     }
 
     @GetMapping("/detail/{postId}")
     @Operation(summary = "게시글 상세 페이지")
     public String showPost(@PathVariable Long postId, Model model) {
-        RsData<Post> postRsData = postService.showDetail(postId);
-        if (postRsData.isFail()) {
-            return rq.historyBack(postRsData.getMsg());
-        }
-        Post post = postRsData.getData();
-        Long posterId = post.getPosterId();
-        Member poster = memberService.findById(posterId).orElse(null);
-        if (poster == null) {
-            return rq.historyBack("존재하지 않는 게시글입니다.");
+        RsData<PostResponse> postResponseRsData = postService.showDetail(postId);
+        if (postResponseRsData.isFail()) {
+            return rq.historyBack(postResponseRsData);
         }
         List<CommentResponse> commentResponses = commentService.getCommentsWithMembers(postId);
-        model.addAttribute("post", postRsData.getData());
-        model.addAttribute("poster", poster);
+        model.addAttribute("postResponse", postResponseRsData.getData());
         model.addAttribute("commentResponses", commentResponses);
         return "usr/post/detail";
     }
@@ -87,22 +73,22 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/update/{postId}")
     @Operation(summary = "게시글 수정 페이지")
-    public String update(@PathVariable Long postId, Model model) {
+    public String showUpdateForm(@PathVariable Long postId, Model model) {
         RsData<Post> post = postService.beforeUpdate(postId, rq.getMember().getId());
         if (post.isFail()) {
             return rq.historyBack(post);
         }
-        model.addAttribute("post", post.getData());
+        model.addAttribute("postResponse", PostResponse.of(post.getData(), rq.getMember()));
         return "usr/post/update";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/update/{postId}")
     @Operation(summary = "게시글 수정")
-    public String update(@PathVariable Long postId, @Valid PostRequest postRequest, @RequestParam(value = "imageFile") MultipartFile multipartFile) {
-        RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember().getId(), multipartFile);
+    public String update(@PathVariable Long postId, @Valid PostRequest postRequest) {
+        RsData<Post> updateRsData = postService.update(postId, postRequest, rq.getMember().getId());
         if (updateRsData.isFail()) {
-            return rq.historyBack(updateRsData.getMsg());
+            return rq.historyBack(updateRsData);
         }
         return rq.redirectWithMsg("/post/detail/%s".formatted(updateRsData.getData().getId()), updateRsData);
     }
@@ -113,7 +99,7 @@ public class PostController {
     public String delete(@PathVariable Long postId) {
         RsData<Post> deleteRsData = postService.softDelete(postId, rq.getMember());
         if (deleteRsData.isFail()) {
-            return rq.historyBack(deleteRsData.getMsg());
+            return rq.historyBack(deleteRsData);
         }
         return rq.redirectWithMsg("/post/list", deleteRsData);
     }

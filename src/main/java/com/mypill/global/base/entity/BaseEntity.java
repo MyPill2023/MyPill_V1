@@ -1,4 +1,4 @@
-package com.mypill.global.base.entitiy;
+package com.mypill.global.base.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;

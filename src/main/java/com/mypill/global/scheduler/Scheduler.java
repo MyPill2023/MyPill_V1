@@ -71,7 +71,7 @@ public class Scheduler {
     public void deleteComments() {
         List<Comment> deletedComments = commentService.getDeletedComments();
         for (Comment comment : deletedComments) {
-            commentService.deleteComment(comment);
+            commentService.hardDelete(comment);
         }
     }
 

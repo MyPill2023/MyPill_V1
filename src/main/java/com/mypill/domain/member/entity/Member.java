@@ -4,7 +4,7 @@ import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.address.entity.Address;
 import jakarta.persistence.*;
 import com.mypill.domain.product.entity.Product;
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;

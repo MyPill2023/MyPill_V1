@@ -2,8 +2,8 @@ package com.mypill.domain.post.service;
 
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.repository.MemberRepository;
-import com.mypill.domain.post.dto.PostRequest;
-import com.mypill.domain.post.dto.PostResponse;
+import com.mypill.domain.post.dto.request.PostRequest;
+import com.mypill.domain.post.dto.response.PostResponse;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
 import org.junit.jupiter.api.*;
@@ -43,6 +43,7 @@ class PostServiceTest {
         postRequest = new PostRequest();
         postRequest.setTitle("게시글 제목");
         postRequest.setContent("게시글 내용");
+        postRequest.setImageFile(emptyFile);
 
         buyer = Member.builder()
                 .id(1L)
@@ -59,7 +60,7 @@ class PostServiceTest {
     @DisplayName("게시글 작성 테스트(구매자 회원)")
     void createTest() {
         // WHEN
-        Post post = postService.create(postRequest, buyer, emptyFile).getData();
+        Post post = postService.create(postRequest, buyer);
 
         // THEN
         assertTrue(postRepository.findById(post.getId()).isPresent());
@@ -72,12 +73,12 @@ class PostServiceTest {
     @DisplayName("게시글 수정 테스트(구매자 회원")
     void updateTest() {
         // GIVEN
-        Post post = postService.create(postRequest, buyer, emptyFile).getData();
+        Post post = postService.create(postRequest, buyer);
 
         // WHEN
         postRequest.setTitle("제목 업데이트");
         postRequest.setContent("내용 업데이트");
-        postService.update(post.getId(), postRequest, buyer.getId(), emptyFile);
+        postService.update(post.getId(), postRequest, buyer.getId());
 
         // THEN
         assertTrue(postRepository.findById(post.getId()).isPresent());
@@ -90,7 +91,7 @@ class PostServiceTest {
     @DisplayName("게시글 삭제 테스트(구매자 회원)")
     void deleteTest() {
         // GIVEN
-        Post post = postService.create(postRequest, buyer, emptyFile).getData();
+        Post post = postService.create(postRequest, buyer);
 
         // WHEN
         postService.softDelete(post.getId(), buyer);
@@ -113,9 +114,9 @@ class PostServiceTest {
                 .email("yh@test.com")
                 .build();
         buyer2 = memberRepository.save(buyer2);
-        postService.create(postRequest, buyer, emptyFile);
-        postService.create(postRequest, buyer, emptyFile);
-        postService.create(postRequest, buyer2, emptyFile);
+        postService.create(postRequest, buyer);
+        postService.create(postRequest, buyer);
+        postService.create(postRequest, buyer2);
 
         // WHEN
         List<Post> posts = postService.getList();
@@ -137,9 +138,9 @@ class PostServiceTest {
                 .email("yh@test.com")
                 .build();
         buyer2 = memberRepository.save(buyer2);
-        postService.create(postRequest, buyer, emptyFile);
-        postService.create(postRequest, buyer, emptyFile);
-        postService.create(postRequest, buyer2, emptyFile);
+        postService.create(postRequest, buyer);
+        postService.create(postRequest, buyer);
+        postService.create(postRequest, buyer2);
 
         // WHEN
         List<Post> posts1 = postService.getMyPosts(buyer);
@@ -157,9 +158,9 @@ class PostServiceTest {
         // GIVEN
         String keyword = "키워드";
         postRequest.setTitle(keyword);
-        postService.create(postRequest, buyer, emptyFile);
+        postService.create(postRequest, buyer);
         postRequest.setTitle("무시");
-        postService.create(postRequest, buyer, emptyFile);
+        postService.create(postRequest, buyer);
 
         // WHEN
         Page<PostResponse> postResponse = postService.searchTitle(keyword, PageRequest.of(0, 10));
@@ -175,9 +176,9 @@ class PostServiceTest {
         // GIVEN
         String keyword = "키워드";
         postRequest.setContent(keyword);
-        postService.create(postRequest, buyer, emptyFile);
+        postService.create(postRequest, buyer);
         postRequest.setContent("무시");
-        postService.create(postRequest, buyer, emptyFile);
+        postService.create(postRequest, buyer);
 
         // WHEN
         Page<PostResponse> postResponse = postService.searchContent(keyword, PageRequest.of(0, 10));
