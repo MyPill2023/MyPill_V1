@@ -10,41 +10,41 @@
     <div class="hero-content flex flex-col mb-10 2 w-[32rem] max-w-lg mt-5 !mb-28">
         <h1 class="text-2xl font-bold mb-4">
             <span class="font-bold" style="white-space: pre-wrap;"
-                  th:text="${post.title}"></span>
+                  th:text="${postResponse.post.title}"></span>
         </h1>
         <div class="flex flex-col gap-5 w-full max-w-md mb-10 px-5">
 
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
-                    <img class="mb-2" th:if="${post.image != null}" th:src="${post.image.filepath}" alt="post_image" style="width: 500px; height: 300px;" />
+                    <img class="mb-2" th:if="${postResponse.post.image != null}" th:src="${postResponse.post.image.filepath}" alt="post_image" style="width: 500px; height: 300px;" />
                     <div class="flex w-full mt-2 whitespace-normal"
                          style="word-wrap: break-word; word-break: break-all;">
                         <span style="white-space: pre-wrap;"
-                              th:text="${post.content}"></span>
+                              th:text="${postResponse.post.content}"></span>
                     </div>
                     <div class="flex flex-col gap-1 items-end">
                         <span class="text-gray-500 text-sm" style="word-wrap: break-word; word-break: break-all;"
-                              th:text="${#strings.length(poster.name) >= 2 ?
-                           poster.name.substring(0, 1) + '*' + poster.name.substring(2) : poster.name}">
+                              th:text="${#strings.length(postResponse.poster.name) >= 2 ?
+                           postResponse.poster.name.substring(0, 1) + '*' + postResponse.poster.name.substring(2) : postResponse.poster.name}">
                         </span>
                         <span class="text-gray-500 text-sm"
-                              th:text="'작성 : ' + ${#temporals.format(post.createDate, 'yy-MM-dd hh:mm')}"></span>
+                              th:text="'작성 : ' + ${#temporals.format(postResponse.post.createDate, 'yy-MM-dd hh:mm')}"></span>
                     </div>
                     <th:block th:if="${@rq.isLogin()}">
-                        <div th:if="${poster.id}==${@rq.member.id}" class="flex justify-end gap-2">
-                            <a th:href="@{/post/update/{id}(id=${post.id})}"
+                        <div th:if="${postResponse.poster.id}==${@rq.member.id}" class="flex justify-end gap-2">
+                            <a th:href="@{/post/update/{id}(id=${postResponse.post.id})}"
                                class="btn  btn-outline flex gap-1 btn-xs">수정</a>
                             <a class="btn  btn-outline flex gap-1 btn-xs" href="javascript:"
                                onclick="if ( confirm('게시글을 삭제하시겠습니까?') ) $(this).next().submit();">
                                 삭제</a>
-                            <form hidden th:action="@{/post/delete/{id}(id=${post.id})}" method="POST">
+                            <form hidden th:action="@{/post/delete/{id}(id=${postResponse.post.id})}" method="POST">
                                 <input type="hidden" name="_method" value="delete">
                             </form>
                         </div>
                     </th:block>
                 </div>
             </div>
-            <form id="CommentRequest" th:action="@{/comment/create/{id}(id=${post.id})}" method="POST"
+            <form id="CommentRequest" th:action="@{/comment/create/{id}(id=${postResponse.post.id})}" method="POST"
                   class="flex flex-col gap-4 w-full whitespace-normal mt-3"
                   onsubmit="CreateCommentForm__submit(this); return false;">
                 <label class="block text-gray-700 font-bold mb-1" for="newContent">
@@ -70,7 +70,7 @@
                 <span class="text-xl font-bold">등록된 답변</span>
             </div>
             <div class="divider !my-1"></div>
-            <div th:if="${post.getCommentCnt() == 0}" class="text-center mt-2">
+            <div th:if="${postResponse.post.getCommentCnt() == 0}" class="text-center mt-2">
                 등록된 답변이 없습니다.
             </div>
             <div th:each="commentResponse : ${commentResponses}" class="flex flex-col gap-1">
@@ -132,7 +132,7 @@
                                    onclick="if ( confirm('댓글을 삭제하시겠습니까?') ) $(this).next().submit();">
                                     삭제</a>
                                 <form hidden
-                                      th:action="@{/comment/delete/{postId}/{commentId}(commentId=${commentResponse.comment.id}, postId=${post.id})}"
+                                      th:action="@{/comment/delete/{postId}/{commentId}(commentId=${commentResponse.comment.id}, postId=${postResponse.post.id})}"
                                       method="POST"></form>
                             </div>
                         </th:block>

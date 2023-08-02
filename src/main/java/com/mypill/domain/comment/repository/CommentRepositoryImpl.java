@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+import static com.mypill.domain.member.entity.QMember.member;
+import static com.mypill.domain.comment.entity.QComment.comment;
+
 @RequiredArgsConstructor
 public class CommentRepositoryImpl implements CommentRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;

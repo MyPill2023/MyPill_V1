@@ -12,4 +12,11 @@ import lombok.experimental.SuperBuilder;
 public class CommentResponse {
     private Comment comment;
     private Member commenter;
+
+    public CommentResponse of(Comment comment, Member commenter){
+        return CommentResponse.builder()
+                .comment(comment)
+                .commenter(commenter)
+                .build();
+    }
 }
