@@ -2,7 +2,7 @@ package com.mypill.domain.address.entity;
 
 import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.member.entity.Member;
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;

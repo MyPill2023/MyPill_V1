@@ -3,7 +3,7 @@ package com.mypill.domain.image.entity;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.aws.s3.dto.AmazonS3Dto;
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

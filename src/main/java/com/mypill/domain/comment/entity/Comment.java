@@ -1,7 +1,7 @@
 package com.mypill.domain.comment.entity;
 
 import com.mypill.domain.post.entity.Post;
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

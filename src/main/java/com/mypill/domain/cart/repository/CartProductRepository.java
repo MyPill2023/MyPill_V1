@@ -10,7 +10,7 @@ public interface CartProductRepository extends JpaRepository<CartProduct, Long> 
 
     Optional<CartProduct> findByIdAndDeleteDateIsNull(Long cartProductId);
 
-    Optional<CartProduct> findByCartIdAndProductIdAndDeleteDateIsNull(Long cartId, Long ProductId);
+    Optional<CartProduct> findByCartIdAndProductIdAndDeleteDateIsNull(Long cartId, Long productId);
 
     List<CartProduct> findByIdInAndDeleteDateIsNull(List<Long> cartProductIds);
 

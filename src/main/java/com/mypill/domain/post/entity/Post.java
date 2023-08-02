@@ -4,7 +4,7 @@ import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.image.entity.ImageOperator;
 import com.mypill.domain.post.dto.PostRequest;
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

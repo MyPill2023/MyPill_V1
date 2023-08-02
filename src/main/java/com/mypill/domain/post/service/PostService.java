@@ -54,6 +54,7 @@ public class PostService {
         postRepository.save(post);
         return RsData.of("S-1", "질문 등록이 완료되었습니다.", post);
     }
+
     @Transactional(readOnly = true)
     public RsData<Post> showDetail(Long postId) {
         Post post = postRepository.findByIdAndDeleteDateIsNull(postId).orElse(null);
@@ -62,6 +63,7 @@ public class PostService {
         }
         return RsData.of("S-1", "게시글이 존재합니다.", post);
     }
+
     @Transactional(readOnly = true)
     public RsData<Post> beforeUpdate(Long postId, Long memberId) {
         Post post = postRepository.findByIdAndDeleteDateIsNull(postId).orElse(null);
@@ -113,6 +115,7 @@ public class PostService {
         postRepository.save(post);
         return RsData.of("S-1", "게시글이 삭제되었습니다.");
     }
+
     @Transactional(readOnly = true)
     public Page<PostResponse> getPosts(String keyword, String searchType, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);

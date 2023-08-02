@@ -1,15 +1,13 @@
 package com.mypill.domain.order.entity;
 
 import com.mypill.domain.product.entity.Product;
-import com.mypill.global.base.entitiy.BaseEntity;
+import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
