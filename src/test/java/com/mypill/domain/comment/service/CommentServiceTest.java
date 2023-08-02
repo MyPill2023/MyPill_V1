@@ -1,6 +1,6 @@
 package com.mypill.domain.comment.service;
 
-import com.mypill.domain.comment.dto.CommentRequest;
+import com.mypill.domain.comment.dto.request.CommentRequest;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.repository.CommentRepository;
 import com.mypill.domain.member.entity.Member;
@@ -96,7 +96,7 @@ class CommentServiceTest {
         Comment comment = commentService.create(commentRequest, buyer, savedPost.getId()).getData();
 
         // WHEN
-        commentService.delete(buyer, comment.getId());
+        commentService.softDelete(buyer, comment.getId());
 
         // THEN
         assertTrue(commentRepository.findById(comment.getId()).isPresent());

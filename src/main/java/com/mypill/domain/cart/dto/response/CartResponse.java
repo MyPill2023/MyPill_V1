@@ -2,18 +2,12 @@ package com.mypill.domain.cart.dto.response;
 
 import com.mypill.domain.cart.entity.Cart;
 import com.mypill.domain.cart.entity.CartProduct;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class CartResponse {
     private Long id;
     private List<CartProductResponse> cartProducts;

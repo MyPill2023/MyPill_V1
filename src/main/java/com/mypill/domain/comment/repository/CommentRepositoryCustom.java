@@ -1,6 +1,6 @@
 package com.mypill.domain.comment.repository;
 
-import com.mypill.domain.comment.dto.CommentResponse;
+import com.mypill.domain.comment.dto.response.CommentResponse;
 
 import java.util.List;
 

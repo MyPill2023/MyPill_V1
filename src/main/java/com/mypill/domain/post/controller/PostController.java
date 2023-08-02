@@ -1,6 +1,6 @@
 package com.mypill.domain.post.controller;
 
-import com.mypill.domain.comment.dto.CommentResponse;
+import com.mypill.domain.comment.dto.response.CommentResponse;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.post.dto.response.PostResponse;
 import com.mypill.domain.post.dto.request.PostRequest;
