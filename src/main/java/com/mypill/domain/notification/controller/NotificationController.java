@@ -1,9 +1,6 @@
 package com.mypill.domain.notification.controller;
 
-import com.mypill.domain.notification.dto.response.DiaryCheckResponse;
-import com.mypill.domain.notification.dto.response.NotificationResponse;
-import com.mypill.domain.notification.dto.response.OrderPaymentNotificationResponse;
-import com.mypill.domain.notification.dto.response.OrderStatusUpdateNotificationResponse;
+import com.mypill.domain.notification.dto.response.*;
 import com.mypill.domain.notification.entity.Notification;
 import com.mypill.domain.notification.service.NotificationService;
 import com.mypill.global.rq.Rq;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -34,25 +30,17 @@ public class NotificationController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     @Operation(summary = "알림 목록 페이지")
-    public String list(Model model) {
-        List<NotificationResponse> notificationsResponse = new ArrayList<>();
+    public String showList(Model model) {
         List<Notification> notifications = notificationService.findByMemberId(rq.getMember().getId());
-        for (Notification notification : notifications) {
-            switch (notification.getTypeCode()) {
-                case OrderStatus -> notificationsResponse.add(OrderStatusUpdateNotificationResponse.of(notification));
-                case Recode -> notificationsResponse.add(DiaryCheckResponse.of(notification));
-                default -> notificationsResponse.add(OrderPaymentNotificationResponse.of(notification));
-            }
-        }
-        model.addAttribute("notifications", notificationsResponse);
+        model.addAttribute("response", NotificationsResponse.of(notifications));
         return "usr/notification/list";
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/read/{notificationId}")
     @Operation(summary = "알림 읽음 처리")
-    public String list(@PathVariable Long notificationId) {
-        RsData<Notification> readRsData = notificationService.makeAsRead(rq.getMember(), notificationId);
+    public String read(@PathVariable Long notificationId) {
+        RsData<Notification> readRsData = notificationService.markAsRead(rq.getMember(), notificationId);
         if (readRsData.isFail()) {
             return rq.historyBack(readRsData);
         }

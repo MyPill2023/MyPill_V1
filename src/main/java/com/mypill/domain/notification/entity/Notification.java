@@ -5,8 +5,15 @@ import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.global.base.entity.BaseEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -22,9 +29,8 @@ public class Notification extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
     @Enumerated
-    @Column(nullable = false)
+    @NotNull
     private NotificationTypeCode typeCode;
-    @Column
     private LocalDateTime readDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderItem orderItem;
