@@ -4,17 +4,15 @@ import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Setter
 @Getter
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @ToString(callSuper = true)
 public class SendEmailLog extends BaseEntity {
     private String resultCode;
@@ -24,4 +22,12 @@ public class SendEmailLog extends BaseEntity {
     private String body;
     private LocalDateTime sendEndDate;
     private LocalDateTime failDate;
+
+    public static SendEmailLog of(String email, String subject, String body){
+        return SendEmailLog.builder()
+                .email(email)
+                .subject(subject)
+                .body(body)
+                .build();
+    }
 }

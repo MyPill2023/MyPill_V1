@@ -31,7 +31,6 @@ public class Diary extends BaseEntity {
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<DiaryCheckLog> timeChecks = new ArrayList<>();
 
-
     public void removeDiaryCheckLog(DiaryCheckLog diaryCheckLog) {
         timeChecks.remove(diaryCheckLog);
     }

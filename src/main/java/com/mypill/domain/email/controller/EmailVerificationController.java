@@ -1,4 +1,4 @@
-package com.mypill.domain.email.emailverification.controller;
+package com.mypill.domain.email.controller;
 
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.rq.Rq;
@@ -25,10 +25,9 @@ public class EmailVerificationController {
         if (verifyEmailRsData.isFail()) {
             return rq.redirectWithMsg("/", verifyEmailRsData);
         }
-        String successMsg = verifyEmailRsData.getMsg();
         if (rq.isLogout()) {
-            return rq.redirectWithMsg("/member/login", successMsg);
+            return rq.redirectWithMsg("/member/login", verifyEmailRsData);
         }
-        return rq.redirectWithMsg("/", successMsg);
+        return rq.redirectWithMsg("/", verifyEmailRsData);
     }
 }

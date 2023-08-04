@@ -94,6 +94,8 @@ custom:
     maxOrderNameLength : 20
   address:
     maxAddressCount : 5
+  email:
+    expiredTime: "#{60 * 60}"
   site:
     name: 'MyPill'
     baseUrl: http://localhost

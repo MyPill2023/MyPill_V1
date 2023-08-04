@@ -2,7 +2,6 @@ package com.mypill.domain.email.service;
 
 import com.mypill.domain.email.entity.SendEmailLog;
 import com.mypill.domain.email.repository.SendEmailLogRepository;
-import com.mypill.domain.email.emailsender.service.EmailSenderService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
@@ -14,19 +13,13 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class EmailService {
     private final SendEmailLogRepository emailLogRepository;
     private final EmailSenderService emailSenderService;
 
     @Transactional
     public RsData<Long> sendEmail(String email, String subject, String body) {
-        SendEmailLog sendEmailLog = SendEmailLog
-                .builder()
-                .email(email)
-                .subject(subject)
-                .body(body)
-                .build();
+        SendEmailLog sendEmailLog = SendEmailLog.of(email, subject, body);
         emailLogRepository.save(sendEmailLog);
         RsData trySendRs = trySend(email, subject, body);
         setCompleted(sendEmailLog, trySendRs.getResultCode(), trySendRs.getMsg());
@@ -48,12 +41,14 @@ public class EmailService {
     @Transactional
     public void setCompleted(SendEmailLog sendEmailLog, String resultCode, String message) {
         if (resultCode.startsWith("S-")) {
-            sendEmailLog.setSendEndDate(LocalDateTime.now());
+            sendEmailLog.toBuilder().sendEndDate(LocalDateTime.now()).build();
         } else {
-            sendEmailLog.setFailDate(LocalDateTime.now());
+            sendEmailLog.toBuilder().failDate(LocalDateTime.now()).build();
         }
-        sendEmailLog.setResultCode(resultCode);
-        sendEmailLog.setMessage(message);
+        sendEmailLog.toBuilder()
+                .resultCode(resultCode)
+                .message(message)
+                .build();
         emailLogRepository.save(sendEmailLog);
     }
 }

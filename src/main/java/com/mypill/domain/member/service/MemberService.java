@@ -1,6 +1,6 @@
 package com.mypill.domain.member.service;
 
-import com.mypill.domain.email.emailverification.service.EmailVerificationService;
+import com.mypill.domain.email.service.EmailVerificationService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;

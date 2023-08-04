@@ -1,11 +1,11 @@
-package com.mypill.domain.email.emailverification.service;
+package com.mypill.domain.email.service;
 
 import com.mypill.domain.attr.service.AttrService;
-import com.mypill.domain.email.service.EmailService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -18,19 +18,17 @@ import java.util.concurrent.CompletableFuture;
 public class EmailVerificationService {
     private final EmailService emailService;
     private final AttrService attrService;
+    @Value("${custom.email.expiredTime}")
+    private final Long expiredTime;
 
     @Async
     public CompletableFuture<RsData<Long>> send(Member member) {
         String email = member.getEmail();
         String title = "[%s 이메일인증] 안녕하세요 %s님. 링크를 클릭하여 회원가입을 완료해주세요.".formatted(AppConfig.getSiteName(), member.getName());
-        String url = genEmailVerificationUrl(member);
+        String url = genEmailVerificationUrl(member.getId());
         String body = "해당 링크가 열리지 않는다면, 링크를 복사하여 주소창에 검색해주세요.\n" + url;
         RsData<Long> sendEmailRs = emailService.sendEmail(email, title, body);
         return CompletableFuture.supplyAsync(() -> sendEmailRs);
-    }
-
-    public String genEmailVerificationUrl(Member member) {
-        return genEmailVerificationUrl(member.getId());
     }
 
     public String genEmailVerificationUrl(long memberId) {
@@ -40,7 +38,7 @@ public class EmailVerificationService {
 
     public String genEmailVerificationCode(long memberId) {
         String code = UUID.randomUUID().toString();
-        attrService.set("member__%d__extra__emailVerificationCode".formatted(memberId), code, LocalDateTime.now().plusSeconds(60 * 60));
+        attrService.set("member__%d__extra__emailVerificationCode".formatted(memberId), code, LocalDateTime.now().plusSeconds(expiredTime));
         return code;
     }
 
