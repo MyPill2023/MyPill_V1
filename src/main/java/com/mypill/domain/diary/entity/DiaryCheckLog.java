@@ -28,22 +28,4 @@ public class DiaryCheckLog extends BaseEntity {
     private String name;
 
     private LocalDate checkDate;
-
-    public static DiaryCheckLog of(Diary diary, Member member) {
-        return DiaryCheckLog.builder()
-                .diary(diary)
-                .member(member)
-                .checkDate(LocalDate.now())
-                .build();
-    }
-
-    @Override
-    public String toString() {
-        return "DiaryCheckLog{" +
-                "member=" + member +
-                ", diary=" + diary +
-                ", name='" + name + '\'' +
-                ", checkDate=" + checkDate +
-                '}';
-    }
 }

@@ -1,4 +1,4 @@
-package com.mypill.domain.diary.dto;
+package com.mypill.domain.diary.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;

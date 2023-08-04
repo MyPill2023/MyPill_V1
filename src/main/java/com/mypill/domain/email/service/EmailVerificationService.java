@@ -19,7 +19,7 @@ public class EmailVerificationService {
     private final EmailService emailService;
     private final AttrService attrService;
     @Value("${custom.email.expiredTime}")
-    private final Long expiredTime;
+    private int expiredTime;
 
     @Async
     public CompletableFuture<RsData<Long>> send(Member member) {

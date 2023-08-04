@@ -3,6 +3,7 @@ package com.mypill.domain.diary.entity;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -21,15 +22,23 @@ public class Diary extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
-    @Column(nullable = false)
+    @NotNull
     private LocalTime time;
 
     @Builder.Default
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<DiaryCheckLog> timeChecks = new ArrayList<>();
+
+    public static Diary of(Member member, String name, LocalTime time){
+        return Diary.builder()
+                .member(member)
+                .name(name)
+                .time(time)
+                .build();
+    }
 
     public void removeDiaryCheckLog(DiaryCheckLog diaryCheckLog) {
         timeChecks.remove(diaryCheckLog);

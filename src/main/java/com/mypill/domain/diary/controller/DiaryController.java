@@ -1,6 +1,8 @@
 package com.mypill.domain.diary.controller;
 
-import com.mypill.domain.diary.dto.DiaryRequest;
+import com.mypill.domain.diary.dto.request.DiaryRequest;
+import com.mypill.domain.diary.dto.response.DiaryCheckListResponse;
+import com.mypill.domain.diary.dto.response.DiaryListResponse;
 import com.mypill.domain.diary.entity.Diary;
 import com.mypill.domain.diary.entity.DiaryCheckLog;
 import com.mypill.domain.diary.service.DiaryService;
@@ -33,14 +35,14 @@ public class DiaryController {
     private final DiaryService diaryService;
     private final Rq rq;
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/create")
     @Operation(summary = "영양제 등록 페이지")
-    public String create() {
+    public String showCreateForm() {
         return "usr/diary/create";
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create")
     @Operation(summary = "영양제 등록")
     public String create(@Valid DiaryRequest diaryRequest) {
@@ -51,16 +53,16 @@ public class DiaryController {
         return rq.redirectWithMsg("/diary/list", createRsData);
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/list")
     @Operation(summary = "영양제 목록 페이지")
     public String showList(Model model) {
         List<Diary> diaries = diaryService.getList(rq.getMember().getId());
-        model.addAttribute("diaries", diaries);
+        model.addAttribute("response", DiaryListResponse.of(diaries));
         return "usr/diary/list";
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/list/delete/{diaryId}")
     @Operation(summary = "영양제 정보 삭제")
     public String delete(@PathVariable Long diaryId) {
@@ -71,33 +73,24 @@ public class DiaryController {
         return rq.redirectWithMsg("/diary/list", deleteRsData);
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/todolist")
     @Operation(summary = "영양제 기록 체크 페이지")
-    public String todolist(Model model) {
+    public String showCheckLog(Model model) {
         Member writer = rq.getMember();
         String today = LocalDate.now().toString();
-
         List<Diary> diaries = diaryService.getList(writer.getId());
-
-        model.addAttribute("today", today);
-        model.addAttribute("diaries", diaries);
-
-        List<DiaryCheckLog> history = diaryService.findHistory(writer);
+        List<DiaryCheckLog> history = diaryService.findHistory(writer.getId());
 
         Map<LocalDate, List<DiaryCheckLog>> groupedData = history.stream()
                 .sorted(Comparator.comparing(DiaryCheckLog::getCreateDate))
                 .collect(Collectors.groupingBy(DiaryCheckLog::getCheckDate));
 
-        List<LocalDate> sortedDates = groupedData.keySet().stream()
-                .sorted(Comparator.reverseOrder()).toList();
-
-        model.addAttribute("groupedData", groupedData);
-        model.addAttribute("sortedDates", sortedDates);
+        model.addAttribute("response", DiaryCheckListResponse.of(today, diaries, groupedData));
         return "usr/diary/todolist";
     }
 
-    @PreAuthorize("hasAuthority('MEMBER')")
+    @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/todolist/toggleCheck/{diaryId}")
     @Operation(summary = "영양제 체크 등록")
     public String toggleCheck(@PathVariable Long diaryId) {

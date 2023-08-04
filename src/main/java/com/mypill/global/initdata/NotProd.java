@@ -86,10 +86,10 @@ public class NotProd {
             productService.create(new ProductRequest(4L, "테스트 상품4", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(5L, 4L), asList(4L, 5L)), emptyFile);
             productService.create(new ProductRequest(4L, "테스트 상품5", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(6L, 5L), asList(5L, 6L)), emptyFile);
 
-            AddressRequest addressRequest1 = new AddressRequest(1L, "집", "김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", true);
-            AddressRequest addressRequest2 = new AddressRequest(1L, "집2", "김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", false);
-            Address address1 = addressService.create(addressRequest1).getData();
-            Address address2 = addressService.create(addressRequest2).getData();
+            AddressRequest addressRequest1 = new AddressRequest("집", "김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", true);
+            AddressRequest addressRequest2 = new AddressRequest("집2", "김철수", "서울특별시 중구 세종대로 110", "서울특별시청", "04524", "02-120", false);
+            Address address1 = addressService.create(addressRequest1, memberUser1).getData();
+            Address address2 = addressService.create(addressRequest2, memberUser1).getData();
 
             Order order1 = orderService.createSingleProduct(memberUser1, 1L, 3L).getData();
             Order order2 = orderService.createSingleProduct(memberUser1, 2L, 3L).getData();
