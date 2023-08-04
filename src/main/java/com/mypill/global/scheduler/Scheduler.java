@@ -84,7 +84,7 @@ public class Scheduler {
     public void sendNotifications() {
         LocalTime now = LocalTime.now();
         LocalTime startTime = now.truncatedTo(ChronoUnit.MINUTES);
-        List<Diary> diaries = diaryService.findByDeleteDateNullAndTime(startTime);
+        List<Diary> diaries = diaryService.findByTime(startTime);
 
         for (Diary diary : diaries) {
             publisher.publishEvent(new EventBeforeDiaryCheck(this, diary));

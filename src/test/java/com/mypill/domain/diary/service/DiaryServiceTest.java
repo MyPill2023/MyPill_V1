@@ -61,7 +61,7 @@ class DiaryServiceTest {
     @DisplayName("체크한 기록 불러오기")
     void findHistoryTests() {
         // WHEN
-        List<DiaryCheckLog> history = diaryService.findHistory(testUser1);
+        List<DiaryCheckLog> history = diaryService.findHistory(testUser1.getId());
 
         // THEN
         assertThat(history.size()).isEqualTo(1);

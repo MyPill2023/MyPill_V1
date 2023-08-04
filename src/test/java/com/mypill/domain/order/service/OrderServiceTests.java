@@ -64,8 +64,8 @@ class OrderServiceTests {
         cartProduct1 = cartService.addCartProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L)).getData();
         cartService.addCartProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
 
-        address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수",
-                "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+        address = addressService.create(new AddressRequest("김철수의 집", "김철수",
+                "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
     }
 
     @Test

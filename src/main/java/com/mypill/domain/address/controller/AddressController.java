@@ -41,7 +41,7 @@ public class AddressController {
     @PostMapping("/create")
     @Operation(summary = "배송지 등록")
     public String create(@Valid AddressRequest addressRequest) {
-        RsData<Address> createRsData = addressService.create(addressRequest);
+        RsData<Address> createRsData = addressService.create(addressRequest, rq.getMember());
         if (createRsData.isFail()) {
             return rq.historyBack(createRsData);
         }

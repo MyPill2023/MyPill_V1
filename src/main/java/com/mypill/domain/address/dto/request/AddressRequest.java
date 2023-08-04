@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AddressRequest {
-    private Long memberId;
     private String name;
     @NotBlank(message = "수령인 이름을 입력해주세요.")
     private String receiverName;

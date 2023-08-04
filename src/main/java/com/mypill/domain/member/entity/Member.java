@@ -97,5 +97,20 @@ public class Member extends BaseEntity {
     }
 
     public void setSurveyNutrients(List<Nutrient> surveyNutrients) {
-        this.surveyNutrients = surveyNutrients;}
+        this.surveyNutrients = surveyNutrients;
+    }
+
+    public void updateBusinessNumber(String businessNumber) {
+        this.businessNumber = businessNumber;
+        if (this.nutrientBusinessNumber != null) {
+            this.userType = 2;
+        }
+    }
+
+    public void updateNutrientBusinessNumber(String nutrientBusinessNumber) {
+        this.nutrientBusinessNumber = nutrientBusinessNumber;
+        if (this.businessNumber != null) {
+            this.userType = 2;
+        }
+    }
 }

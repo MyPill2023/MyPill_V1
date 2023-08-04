@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -54,6 +55,7 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    @Transactional
     public void whenBeforeDiaryCheck(Diary diary) {
         Notification notification = Notification.builder()
                 .typeCode(NotificationTypeCode.Recode)
@@ -65,13 +67,16 @@ public class NotificationService {
     }
 
     @Transactional
-    public RsData<Notification> makeAsRead(Member actor, Long notificationId) {
-        Notification notification = findById(notificationId).orElseThrow();
-        if (!notification.getMember().getId().equals(actor.getId())) {
-            return RsData.of("F-1", "권한이 없습니다.");
+    public RsData<Notification> markAsRead(Member actor, Long notificationId) {
+        Notification notification = findById(notificationId).orElse(null);
+        if (notification == null) {
+            return RsData.of("F-1", "존재하지 않는 알림입니다.");
+        }
+        if (!Objects.equals(notification.getMember().getId(), actor.getId())) {
+            return RsData.of("F-2", "권한이 없습니다.");
         }
         notification.markAsRead();
-        return RsData.of("S-1", "");
+        return RsData.of("S-1", "", notification);
     }
 
     public List<Notification> findByMemberId(Long memberId) {

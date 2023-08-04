@@ -1,6 +1,6 @@
 package com.mypill.domain.member.service;
 
-import com.mypill.domain.email.emailverification.service.EmailVerificationService;
+import com.mypill.domain.email.service.EmailVerificationService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.exception.AlreadyJoinException;
 import com.mypill.domain.member.repository.MemberRepository;
@@ -163,12 +163,6 @@ public class MemberService {
 
     public void whenAfterUnlike(Member member, Product product) {
         member.unLike(product);
-    }
-
-    @Transactional
-    public RsData<Member> surveyDelete(Member member) {
-        member.getSurveyNutrients().clear();
-        return RsData.of("S-1", "설문이 초기화 되었습니다");
     }
 
     @Transactional

@@ -54,7 +54,7 @@ class SellerControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(SellerController.class))
-                .andExpect(handler().methodName("certificate"))
+                .andExpect(handler().methodName("showCertificate"))
                 .andExpect(status().is2xxSuccessful())
         ;
     }

@@ -4,7 +4,6 @@ import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.repository.AddressRepository;
 import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.AppConfig;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
@@ -17,21 +16,16 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AddressService {
-    private final MemberService memberService;
     private final AddressRepository addressRepository;
 
     @Transactional
-    public RsData<Address> create(AddressRequest addressRequest) {
-        Member member = memberService.findById(addressRequest.getMemberId()).orElse(null);
-        if (member == null) {
-            return RsData.of("F-1", "로그인 후 이용 가능합니다.");
-        }
-        if (isFull(member.getId())) {
+    public RsData<Address> create(AddressRequest addressRequest, Member actor) {
+        if (isFull(actor.getId())) {
             return RsData.of("F-2", "배송지는 최대 " + AppConfig.getMaxAddressCount() + "개 까지 등록 가능합니다.");
         }
-        Address address = Address.of(member, addressRequest);
+        Address address = Address.of(actor, addressRequest);
         setDefaultNameIfEmpty(address, addressRequest);
-        changeDefaultStatus(address, addressRequest);
+        changeDefaultStatus(address, addressRequest, actor);
         addressRepository.save(address);
         return RsData.of("S-1", "배송지가 추가되었습니다", address);
     }
@@ -53,20 +47,20 @@ public class AddressService {
     @Transactional
     public RsData<Address> update(Member actor, Long addressId, AddressRequest addressRequest) {
         RsData<Address> rsData = get(actor, addressId);
-        if(rsData.isFail()){
+        if (rsData.isFail()) {
             return RsData.of(rsData.getResultCode(), rsData.getMsg());
         }
         Address address = rsData.getData();
         address.updateAddress(addressRequest);
         setDefaultNameIfEmpty(address, addressRequest);
-        changeDefaultStatus(address, addressRequest);
+        changeDefaultStatus(address, addressRequest, actor);
         return RsData.of("S-1", "배송지 수정이 완료되었습니다.", address);
     }
 
     @Transactional
     public RsData<Address> softDelete(Member actor, Long addressId) {
         RsData<Address> rsData = get(actor, addressId);
-        if(rsData.isFail()){
+        if (rsData.isFail()) {
             return RsData.of(rsData.getResultCode(), rsData.getMsg());
         }
         Address address = rsData.getData();
@@ -96,9 +90,9 @@ public class AddressService {
         }
     }
 
-    private void changeDefaultStatus(Address address, AddressRequest addressRequest) {
+    private void changeDefaultStatus(Address address, AddressRequest addressRequest, Member actor) {
         if (addressRequest.isDefault()) {
-            List<Address> myAddresses = findByMemberId(addressRequest.getMemberId());
+            List<Address> myAddresses = findByMemberId(actor.getId());
             myAddresses.forEach(Address::changeDefaultFalse);
             address.changeDefaultTrue();
         } else {

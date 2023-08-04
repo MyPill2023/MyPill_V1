@@ -38,7 +38,7 @@ class AddressServiceTests {
     @DisplayName("배송지 추가 성공")
     void testCreateSuccess() {
         //WHEN
-        RsData<Address> createRsData = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true));
+        RsData<Address> createRsData = addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1);
 
         //THEN
         assertThat(createRsData.getResultCode()).isEqualTo("S-1");
@@ -55,11 +55,10 @@ class AddressServiceTests {
     void testCreateFail() {
         //GIVEN
         for (int i = 0; i < AppConfig.getMaxAddressCount(); i++) {
-            addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", false));
+            addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1);
         }
-
-        //WHEN
-        RsData<Address> createRsData = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true));
+            //WHEN
+        RsData<Address> createRsData = addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1);
 
         //THEN
         assertThat(createRsData.getResultCode()).isEqualTo("F-2");
@@ -71,7 +70,7 @@ class AddressServiceTests {
     @DisplayName("배송지 가져오기 - 성공")
     void testGetSuccess() {
         //WHEN
-        Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+        Address address = addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
 
         //THEN
         assertThat(addressService.get(testUser1, address.getId()).getData()).isEqualTo(address);
@@ -81,7 +80,7 @@ class AddressServiceTests {
     @DisplayName("배송지 가져오기 실패 - 권한 없음")
     void testGetFail03() {
         //GIVEN
-        Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+        Address address = addressService.create(new AddressRequest( "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
 
         //WHEN
         RsData<Address> getRsData = addressService.get(testUser2, address.getId());
@@ -95,10 +94,10 @@ class AddressServiceTests {
     @DisplayName("배송지 수정 성공")
     void testUpdateSuccess() {
         //GIVEN
-        Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+        Address address = addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
 
         //WHEN
-        Address newAddress = addressService.update(testUser1, address.getId(), new AddressRequest(testUser1.getId(), "수정 주소 이름", "수정 이름", "수정 주소", "수정 상세 주소", "11111", "01056785678", true)).getData();
+        Address newAddress = addressService.update(testUser1, address.getId(), new AddressRequest("수정 주소 이름", "수정 이름", "수정 주소", "수정 상세 주소", "11111", "01056785678", true)).getData();
 
         //THEN
         assertThat(newAddress.getName()).isEqualTo("수정 주소 이름");
@@ -112,7 +111,7 @@ class AddressServiceTests {
     @DisplayName("배송지 삭제 성공")
     void testDeleteSuccess() {
         //GIVEN
-        Address address = addressService.create(new AddressRequest(testUser1.getId(), "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true)).getData();
+        Address address = addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
 
         //WHEN
         Address deletedAddress = addressService.softDelete(testUser1, address.getId()).getData();

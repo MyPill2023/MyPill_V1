@@ -9,7 +9,7 @@
         <div class="flex flex-col justify-center">
             <h1 class="text-2xl text-center font-bold text-center mb-5">건강 설문</h1>
             <div class="text-center flex items-center">
-                <span class="text-green-400 font-bold" th:text="${category.get().name}"></span>
+                <span class="text-green-400 font-bold" th:text="${response.category.get().name}"></span>
                 <span>에 해당하는 것을</span>
             </div>
             <span class="text-center">모두 선택해주세요</span>
@@ -19,27 +19,27 @@
         <div class="flex justify-center items-center ">
             <form name="stepForm" th:action="step" class="flex flex-col gap-4 px-4"
                   onsubmit="surveyStepFormsubmit(this); return false;">
-                <input type="hidden" name="stepNo" th:origin-value="${stepParam.stepNo}" th:value="${stepParam.stepNo}"
-                       th:next="${stepParam.nextStepNo}"
-                       th:prev="${stepParam.prevStepNo}">
-                <input th:each="categoryItemId : ${stepParam.categoryItemIds}" type="hidden"
+                <input type="hidden" name="stepNo" th:origin-value="${response.stepParam.stepNo}" th:value="${response.stepParam.stepNo}"
+                       th:next="${response.stepParam.nextStepNo}"
+                       th:prev="${response.stepParam.prevStepNo}">
+                <input th:each="categoryItemId : ${response.stepParam.categoryItemIds}" type="hidden"
                        th:name="|category_${categoryItemId}|" value="Y">
-                <input th:each="questionId : ${stepParam.questionIds}" type="hidden" th:name="|question_${questionId}|"
+                <input th:each="questionId : ${response.stepParam.questionIds}" type="hidden" th:name="|question_${questionId}|"
                        value="Y">
                 <div class="join join-vertical gap-4">
                     <input onchange="if ( this.checked == false ) $(document.stepForm).find('input[type=hidden][name=' + $(this).attr('name') + ']').remove();"
-                           th:each="question : ${questions}" type="checkbox" th:name="|question_${question.id}|"
+                           th:each="question : ${response.questions}" type="checkbox" th:name="|question_${question.id}|"
                            th:aria-label="${question.content}" th:value="Y" class="btn btn-block btn-wide btn-outline bg-green-100 w-full"
-                           th:checked="${stepParam.isChecked(question.id)}"/>
+                           th:checked="${response.stepParam.isChecked(question.id)}"/>
                 </div>
                 <div class="grid flex justify-center gap-2 mt-5">
                     <button onclick="document.stepForm.stepNo.value = document.stepForm.stepNo.getAttribute('prev')"
-                            th:unless="${stepParam.first}" class="btn btn-success w-36">이전 ([[${stepParam.prevStepNo}]]단계)
+                            th:unless="${response.stepParam.first}" class="btn btn-success w-36">이전 ([[${response.stepParam.prevStepNo}]]단계)
                     </button>
                     <button onclick="document.stepForm.stepNo.value = document.stepForm.stepNo.getAttribute('next')"
-                            th:unless="${stepParam.last}" class="btn btn-success  w-36">다음 ([[${stepParam.nextStepNo}]]단계)
+                            th:unless="${response.stepParam.last}" class="btn btn-success  w-36">다음 ([[${response.stepParam.nextStepNo}]]단계)
                     </button>
-                    <button onclick="document.stepForm.stepNo.value = '0';" th:if="${stepParam.last}" class="btn btn-success">작성완료</button>
+                    <button onclick="document.stepForm.stepNo.value = '0';" th:if="${response.stepParam.last}" class="btn btn-success">작성완료</button>
                 </div>
             </form>
         </div>
