@@ -2,6 +2,8 @@ package com.mypill.domain.order.entity;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 public enum OrderStatus {
     BEFORE("주문 전", 0),
@@ -25,5 +27,9 @@ public enum OrderStatus {
             }
         }
         return null;
+    }
+
+    public static OrderStatus[] getManagementStatus() {
+        return new OrderStatus[]{ORDERED, PREPARING, SHIPPING, DELIVERED};
     }
 }

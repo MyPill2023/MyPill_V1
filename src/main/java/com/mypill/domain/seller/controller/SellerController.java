@@ -1,13 +1,13 @@
 package com.mypill.domain.seller.controller;
 
 import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.order.dto.response.OrderListResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
+import com.mypill.domain.seller.dto.OrderManagementResponse;
 import com.mypill.domain.seller.service.SellerService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsdata.RsData;
@@ -41,29 +41,24 @@ public class SellerController {
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/order")
     @Operation(summary = "주문 관리 페이지")
-    public String orderManagement(Model model) {
-        List<OrderListResponse> orderResponses = orderService.findBySellerId(rq.getMember().getId())
+    public String showMyOrder(Model model) {
+        List<Order> orders = orderService.findBySellerId(rq.getMember().getId())
                 .stream()
                 .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
-                .map(OrderListResponse::of).toList();
+                .toList();
 
         List<OrderItem> orderItems = orderService.findOrderItemBySellerId(rq.getMember().getId());
         Map<OrderStatus, Long> orderStatusCount = orderItems.stream()
                 .collect(Collectors.groupingBy(OrderItem::getStatus, Collectors.counting()));
-        model.addAttribute("orders", orderResponses);
-        model.addAttribute("orderStatusCount", orderStatusCount);
 
-        OrderStatus[] filteredOrderStatus = Arrays.stream(OrderStatus.values())
-                .filter(status -> status.getPriority() >= 1 && status.getPriority() <= 4)
-                .toArray(OrderStatus[]::new);
-        model.addAttribute("orderStatuses", filteredOrderStatus);
+        model.addAttribute("response", OrderManagementResponse.of(orders, orderItems, orderStatusCount));
         return "usr/seller/orderList";
     }
 
     @PreAuthorize("hasAuthority('WAITER')")
     @GetMapping("/certificate")
     @Operation(summary = "판매자 인증 페이지")
-    public String certificate() {
+    public String showCertificate() {
         return "usr/seller/certificate";
     }
 
@@ -71,22 +66,22 @@ public class SellerController {
     @PostMapping("/brnoCertificate")
     @Operation(summary = "통신판매업 인증")
     public String brnoCertificate(@RequestParam("businessNumber") String businessNumber) {
-        RsData<Member> rsData = sellerService.businessNumberCheck(businessNumber, rq.getMember());
-        if (rsData.isFail()) {
-            return rq.historyBack(rsData);
+        RsData<Member> checkRsData = sellerService.businessNumberCheck(businessNumber, rq.getMember());
+        if (checkRsData.isFail()) {
+            return rq.historyBack(checkRsData);
         }
-        return rq.redirectWithMsg("/seller/certificate", rsData);
+        return rq.redirectWithMsg("/seller/certificate", checkRsData);
     }
 
     @PreAuthorize("hasAuthority('WAITER')")
     @PostMapping("/nBrnoCertificate")
     @Operation(summary = "건강기능식품 판매업 인증")
     public String nBrnoCertificate(@RequestParam("nutrientBusinessNumber") String nutrientBusinessNumber) {
-        RsData<Member> rsData = sellerService.nutrientBusinessNumberCheck(nutrientBusinessNumber, rq.getMember());
-        if (rsData.isFail()) {
-            return rq.historyBack(rsData);
+        RsData<Member> checkRsData = sellerService.nutrientBusinessNumberCheck(nutrientBusinessNumber, rq.getMember());
+        if (checkRsData.isFail()) {
+            return rq.historyBack(checkRsData);
         }
-        return rq.redirectWithMsg("/seller/certificate", rsData);
+        return rq.redirectWithMsg("/seller/certificate", checkRsData);
     }
 
     @PreAuthorize("hasAuthority('SELLER')")
@@ -94,7 +89,7 @@ public class SellerController {
     @Operation(summary = "상품 관리 페이지")
     public String showMyProduct(@RequestParam(defaultValue = "0") int pageNumber,
                                 @RequestParam(defaultValue = "10") int pageSize,
-                                Model model){
+                                Model model) {
         Page<Product> products = productService.getAllProductBySellerId(rq.getMember().getId(), PageRequest.of(pageNumber, pageSize));
         model.addAttribute("product", products);
         return "usr/seller/myProduct";

@@ -21,17 +21,8 @@ public class SellerService {
         if (!certificationService.businessNumberCertificated(businessNumber)) {
             return RsData.of("F-2", "인증에 실패했습니다.");
         }
-        member = updateBusinessNumber(member, businessNumber);
-        memberRepository.save(member);
+        member.updateBusinessNumber(businessNumber);
         return RsData.of("S-1", "인증에 성공했습니다.", member);
-    }
-
-    private Member updateBusinessNumber(Member member, String businessNumber) {
-        member = member.toBuilder()
-                .businessNumber(businessNumber)
-                .build();
-        member = updateUserType(member);
-        return member;
     }
 
     @Transactional
@@ -42,25 +33,7 @@ public class SellerService {
         if (!certificationService.nutrientBusinessNumberCertificated(nutrientBusinessNumber)) {
             return RsData.of("F-2", "인증에 실패했습니다.");
         }
-        member = updateNutrientBusinessNumber(member, nutrientBusinessNumber);
-        memberRepository.save(member);
+        member.updateNutrientBusinessNumber(nutrientBusinessNumber);
         return RsData.of("S-1", "인증에 성공했습니다.", member);
-    }
-
-    private Member updateNutrientBusinessNumber(Member member, String nutrientBusinessNumber) {
-        member = member.toBuilder()
-                .nutrientBusinessNumber(nutrientBusinessNumber)
-                .build();
-        member = updateUserType(member);
-        return member;
-    }
-
-    private Member updateUserType(Member member) {
-        if (member.getBusinessNumber() != null && member.getNutrientBusinessNumber() != null) {
-            member = member.toBuilder()
-                    .userType(2)
-                    .build();
-        }
-        return member;
     }
 }
