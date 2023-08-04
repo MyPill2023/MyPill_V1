@@ -1,5 +1,6 @@
 package com.mypill.domain.survey.service;
 
+import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.question.entity.NutrientQuestion;
 import com.mypill.domain.question.service.NutrientQuestionService;
@@ -20,38 +21,42 @@ public class SurveyService {
 
     public RsData<String> validStartSurvey(Long[] categoryItemIds) {
         if (categoryItemIds.length > surveyProperties.getStartMaxLength()) {
-            return RsData.of("F-1", "3개 이하로 선택해주세요.");
+            return RsData.of("F-1", "%d개 이하로 선택해주세요.".formatted(surveyProperties.getStartMaxLength()));
         }
         if (categoryItemIds.length < surveyProperties.getStartMinLength()) {
-            return RsData.of("F-2", "1개 이상으로 선택해주세요.");
+            return RsData.of("F-2", "%d개 이상으로 선택해주세요.".formatted(surveyProperties.getStartMinLength()));
         }
         return RsData.of("S-1", "설문 완료");
     }
 
     public RsData<String> validCompleteSurvey(Long[] questionIds) {
         if (questionIds.length > surveyProperties.getCompleteMaxLength()) {
-            return RsData.of("F-1", "9개 이하로 선택해주세요.");
+            return RsData.of("F-1", "%d개 이하로 선택해주세요.".formatted(surveyProperties.getCompleteMaxLength()));
         }
         if (questionIds.length < surveyProperties.getCompleteMinLength()) {
-            return RsData.of("F-2", "1개 이상으로 선택해주세요.");
+            return RsData.of("F-2", "%d개 이상으로 선택해주세요.".formatted(surveyProperties.getCompleteMinLength()));
         }
         return RsData.of("S-1", "질문 완료");
     }
 
     public Map<String, List<Nutrient>> getAnswers(Long[] questionIds) {
-        Map<String, List<Nutrient>> answers = new HashMap<>();
-        for (Long id : questionIds) {
-            List<NutrientQuestion> nutrientQuestions = nutrientQuestionService.findByQuestionId(id);
-            Map<String, List<Nutrient>> collect = nutrientQuestions.stream()
-                    .collect(Collectors.groupingBy((nutrientQuestion ->
-                                    nutrientQuestion.getQuestion().getCategory().getName()),
-                            Collectors.mapping(NutrientQuestion::getNutrient, Collectors.toList())));
-            collect.forEach((k, v) -> answers.merge(k, v, (v1, v2) -> {
-                Set<Nutrient> combined = new HashSet<>(v1);
-                combined.addAll(v2);
-                return new ArrayList<>(combined);
-            }));
-        }
-        return answers;
+        return Arrays.stream(questionIds).map(nutrientQuestionService::findByQuestionId)
+                .flatMap(Collection::stream)
+                .collect(Collectors.groupingBy(
+                        nutrientQuestion -> nutrientQuestion.getQuestion().getCategory().getName(),
+                        Collectors.mapping(NutrientQuestion::getNutrient, Collectors.toSet())
+                ))
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> new ArrayList<>(entry.getValue())
+                ));
+    }
+
+    @Transactional
+    public void extracted(Map<String, List<Nutrient>> answers, Member member) {
+        List<Nutrient> allNutrients = new ArrayList<>();
+        answers.values().forEach(allNutrients::addAll);
+        member.setSurveyNutrients(allNutrients);
     }
 }

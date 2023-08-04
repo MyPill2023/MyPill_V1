@@ -29,4 +29,8 @@ public class CategoryService {
     public Optional<Category> findById(Long categoryId) {
         return categoryRepository.findById(categoryId);
     }
+
+    public Category getCategory(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElse(null);
+    }
 }
