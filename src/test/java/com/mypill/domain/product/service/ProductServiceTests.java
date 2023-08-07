@@ -1,5 +1,6 @@
 package com.mypill.domain.product.service;
 
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.product.dto.request.ProductRequest;
@@ -41,8 +42,8 @@ class ProductServiceTests {
     void beforeEachTest() {
         emptyFile = new MockMultipartFile("imageFile", new byte[0]);
 
-        testUserSeller1 = memberService.join("testUserSeller123", "김철수", "1234", 2, "testSeller123@test.com").getData();
-        testUserSeller2 = memberService.join("testUserSeller223", "김철수", "1234", 2, "testSeller223@test.com").getData();
+        testUserSeller1 = memberService.join(new JoinRequest("testUserSeller123", "김철수", "1234", "testSeller123@test.com", "판매자")).getData();
+        testUserSeller2 = memberService.join(new JoinRequest("testUserSeller223", "김철수", "1234",  "testSeller223@test.com", "판매자")).getData();
         product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
     }
 

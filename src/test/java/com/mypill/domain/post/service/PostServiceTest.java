@@ -1,6 +1,7 @@
 package com.mypill.domain.post.service;
 
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.entity.Role;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.post.dto.request.PostRequest;
 import com.mypill.domain.post.dto.response.PostResponse;
@@ -34,11 +35,10 @@ class PostServiceTest {
     private MemberRepository memberRepository;
     private PostRequest postRequest;
     private Member buyer;
-    private MockMultipartFile emptyFile;
 
     @BeforeEach
     void beforeEach() {
-        emptyFile = new MockMultipartFile("imageFile", new byte[0]);
+        MockMultipartFile emptyFile = new MockMultipartFile("imageFile", new byte[0]);
 
         postRequest = new PostRequest();
         postRequest.setTitle("게시글 제목");
@@ -50,7 +50,7 @@ class PostServiceTest {
                 .username("user1")
                 .name("김철수")
                 .password("1234")
-                .userType(1)
+                .role(Role.BUYER)
                 .email("cs@test.com")
                 .build();
         buyer = memberRepository.save(buyer);
@@ -110,7 +110,7 @@ class PostServiceTest {
                 .username("user2")
                 .name("김영희")
                 .password("1234")
-                .userType(1)
+                .role(Role.BUYER)
                 .email("yh@test.com")
                 .build();
         buyer2 = memberRepository.save(buyer2);
@@ -134,7 +134,7 @@ class PostServiceTest {
                 .username("user2")
                 .name("김영희")
                 .password("1234")
-                .userType(1)
+                .role(Role.BUYER)
                 .email("yh@test.com")
                 .build();
         buyer2 = memberRepository.save(buyer2);

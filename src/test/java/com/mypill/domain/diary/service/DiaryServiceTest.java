@@ -5,6 +5,7 @@ import com.mypill.domain.diary.entity.Diary;
 import com.mypill.domain.diary.entity.DiaryCheckLog;
 import com.mypill.domain.diary.repository.DiaryCheckLogRepository;
 import com.mypill.domain.diary.repository.DiaryRepository;
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import org.junit.jupiter.api.*;
@@ -32,22 +33,20 @@ class DiaryServiceTest {
     private DiaryRepository diaryRepository;
     @Autowired
     private DiaryService diaryService;
-    private Diary savedDiary;
     @Autowired
     private DiaryCheckLogRepository diaryCheckLogRepository;
 
     private Member testUser1;
-    private Diary diary;
 
     @BeforeEach
     void beforeEachTest() {
-        testUser1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
-        diary = Diary.builder()
+        testUser1 = memberService.join(new JoinRequest("testUserSeller1", "김철수", "1234", "testSeller1@test.com", "판매자")).getData();
+        Diary diary = Diary.builder()
                 .member(testUser1)
                 .name("루테인")
                 .time(LocalTime.now())
                 .build();
-        savedDiary = diaryRepository.save(diary);
+        Diary savedDiary = diaryRepository.save(diary);
 
         DiaryCheckLog diaryCheckLog = DiaryCheckLog.builder()
                 .diary(savedDiary)

@@ -7,6 +7,7 @@ import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.entity.Role;
 import com.mypill.domain.order.dto.request.PayRequest;
 import com.mypill.domain.order.dto.response.OrderListResponse;
 import com.mypill.domain.order.dto.response.PayResponse;
@@ -142,7 +143,7 @@ public class OrderService {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
         Member member = rq.getMember();
-        if (member.getUserType() == 1 && !isOrderAccessibleByBuyer(order, member)) {
+        if (member.getRole().equals(Role.BUYER) && !isOrderAccessibleByBuyer(order, member)) {
             return RsData.of("F-2", "접근 권한이 없습니다.");
         }
         return RsData.of("S-1", order);

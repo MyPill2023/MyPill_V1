@@ -4,6 +4,7 @@ import com.mypill.domain.comment.dto.request.CommentRequest;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.entity.Role;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
@@ -55,7 +56,7 @@ class CommentControllerTest {
                 .username("user1")
                 .name("김철수")
                 .password("1234")
-                .userType(1)
+                .role(Role.BUYER)
                 .email("cs@test.com")
                 .build();
         buyer = memberRepository.save(buyer);

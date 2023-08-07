@@ -3,6 +3,7 @@ package com.mypill.domain.cart.controller;
 import com.mypill.domain.cart.dto.request.CartProductRequest;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.product.dto.request.ProductRequest;
@@ -48,8 +49,8 @@ class CartControllerTests {
     @BeforeEach
     void beforeEachTest() {
         emptyFile = new MockMultipartFile("imageFile", new byte[0]);
-        testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
-        testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
+        testUser1 = memberService.join(new JoinRequest("testUser1", "김철수", "1234", "test1@test.com", "구매자")).getData();
+        testUserSeller1 = memberService.join(new JoinRequest("testUserSeller1", "김철수", "1234", "testSeller1@test.com", "판매자")).getData();
     }
 
     @Test

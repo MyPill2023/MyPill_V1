@@ -1,5 +1,6 @@
 package com.mypill.domain.post.controller;
 
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.post.dto.request.PostRequest;
@@ -40,8 +41,7 @@ class PostControllerTest {
     @BeforeEach
     void beforeEach() {
         emptyFile = new MockMultipartFile("imageFile", new byte[0]);
-
-        testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
+        testUser1 = memberService.join(new JoinRequest("testUser1", "김철수", "1234", "test1@test.com", "구매자")).getData();
     }
 
     @Test
