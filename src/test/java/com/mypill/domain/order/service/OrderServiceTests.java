@@ -6,6 +6,7 @@ import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.cart.dto.request.CartProductRequest;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.order.entity.Order;
@@ -54,8 +55,8 @@ class OrderServiceTests {
     void beforeEachTest() {
         MockMultipartFile emptyFile = new MockMultipartFile("imageFile", new byte[0]);
 
-        testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com", true).getData();
-        Member testUserSeller1 = memberService.join("testUserSeller1", "김철수", "1234", 2, "testSeller1@test.com").getData();
+        testUser1 = memberService.join(new JoinRequest("testUser1", "김철수", "1234", "test1@test.com", "구매자"), true).getData();
+        Member testUserSeller1 = memberService.join(new JoinRequest("testUserSeller1", "김철수", "1234", "testSeller1@test.com","판매자")).getData();
 
         Product testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1",
                 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();

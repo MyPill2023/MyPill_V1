@@ -1,6 +1,7 @@
 package com.mypill.domain.seller.controller;
 
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.entity.Role;
 import com.mypill.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ class SellerControllerTest {
                 .username("testUser1")
                 .name("김철수")
                 .password("1234")
-                .userType(3)
+                .role(Role.WAITER)
                 .email("testEmail@test.com")
                 .build();
         memberRepository.save(testUser1);

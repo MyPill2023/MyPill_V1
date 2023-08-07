@@ -1,5 +1,6 @@
 package com.mypill.domain.member.entity;
 
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.address.entity.Address;
 import jakarta.persistence.*;
@@ -34,19 +35,19 @@ public class Member extends BaseEntity {
     @NotNull
     @Column(length = 80)
     private String password;
-    @NotNull
-    private Integer userType;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @NotNull
     @Column(unique = true, length = 30)
     private String email;
-    @Column
     private String providerTypeCode; // 카카오로 가입한 회원인지, 네이버로 가입한 회원인지
-    @Column
     private boolean emailVerified;
+
     @Column(unique = true)
     private String businessNumber;
     @Column(unique = true)
     private String nutrientBusinessNumber;
+
     @ManyToMany(mappedBy = "likedMembers")
     @Builder.Default
     private Set<Product> likedProducts = new HashSet<>();
@@ -63,29 +64,29 @@ public class Member extends BaseEntity {
 
     public List<GrantedAuthority> getGrantedAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("MEMBER"));
+        authorities.add(new SimpleGrantedAuthority(Role.MEMBER.getAuthority()));
         if (isBuyer()) {
-            authorities.add(new SimpleGrantedAuthority("BUYER"));
+            authorities.add(new SimpleGrantedAuthority(Role.BUYER.getAuthority()));
         }
         if (isSeller()) {
-            authorities.add(new SimpleGrantedAuthority("SELLER"));
+            authorities.add(new SimpleGrantedAuthority(Role.SELLER.getAuthority()));
         }
         if (isWaiter()) {
-            authorities.add(new SimpleGrantedAuthority("WAITER"));
+            authorities.add(new SimpleGrantedAuthority(Role.WAITER.getAuthority()));
         }
         return authorities;
     }
 
     public boolean isBuyer() {
-        return userType.equals(1);
+        return role.equals(Role.BUYER);
     }
 
     public boolean isSeller() {
-        return userType.equals(2);
+        return role.equals(Role.SELLER);
     }
 
     public boolean isWaiter() {
-        return userType.equals(3);
+        return role.equals(Role.WAITER);
     }
 
     public void like(Product product) {
@@ -100,17 +101,56 @@ public class Member extends BaseEntity {
         this.surveyNutrients = surveyNutrients;
     }
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void emailVerify(){
+        this.emailVerified = true;
+    }
     public void updateBusinessNumber(String businessNumber) {
         this.businessNumber = businessNumber;
         if (this.nutrientBusinessNumber != null) {
-            this.userType = 2;
+            this.role = Role.SELLER;
         }
     }
 
     public void updateNutrientBusinessNumber(String nutrientBusinessNumber) {
         this.nutrientBusinessNumber = nutrientBusinessNumber;
         if (this.businessNumber != null) {
-            this.userType = 2;
+            this.role = Role.SELLER;
         }
+    }
+
+    public static Member of(JoinRequest joinRequest, String encodedPassword) {
+        return Member.builder()
+                .username(joinRequest.getUsername())
+                .name(joinRequest.getName())
+                .password(encodedPassword)
+                .email(joinRequest.getEmail())
+                .role(Role.findByValue(joinRequest.getUserType()))
+                .build();
+    }
+
+    public static Member of(JoinRequest joinRequest, String password, boolean emailVerified) {
+        return Member.builder()
+                .username(joinRequest.getUsername())
+                .name(joinRequest.getName())
+                .password(password)
+                .email(joinRequest.getEmail())
+                .role(Role.findByValue(joinRequest.getUserType()))
+                .emailVerified(emailVerified)
+                .build();
+    }
+
+    public static Member of(String providerTypeCode, String username, String name, String email, String password, Role role) {
+        return Member.builder()
+                .providerTypeCode(providerTypeCode)
+                .username(username)
+                .name(name)
+                .password(password)
+                .email(email)
+                .role(role)
+                .build();
     }
 }

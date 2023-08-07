@@ -1,11 +1,14 @@
 package com.mypill.domain.member.controller;
 
+import com.mypill.domain.comment.dto.response.CommentsResponse;
 import com.mypill.domain.comment.entity.Comment;
 import com.mypill.domain.comment.service.CommentService;
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.member.exception.AlreadyJoinException;
-import com.mypill.domain.member.form.JoinForm;
 import com.mypill.domain.member.service.MemberService;
+import com.mypill.domain.member.validation.EmailValidationResult;
+import com.mypill.domain.member.validation.UsernameValidationResult;
+import com.mypill.domain.post.dto.response.PostsResponse;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.service.PostService;
 import com.mypill.global.rq.Rq;
@@ -39,7 +42,7 @@ public class MemberController {
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
     @Operation(summary = "로그인 페이지")
-    public String login(HttpServletRequest request, @RequestParam(value = "exception", required = false) String exception) {
+    public String showLogin(HttpServletRequest request, @RequestParam(required = false) String exception) {
         if (exception != null) {
             return rq.historyBack(exception);
         }
@@ -53,68 +56,67 @@ public class MemberController {
     @PreAuthorize("isAnonymous()")
     @GetMapping("/join")
     @Operation(summary = "회원가입 페이지")
-    public String join() {
+    public String showJoin() {
         return "usr/member/join";
     }
 
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
     @Operation(summary = "회원가입")
-    public String join(@Valid JoinForm joinForm) {
-        try {
-            memberService.join(joinForm.getUsername(), joinForm.getName(), joinForm.getPassword(),
-                    Integer.parseInt(joinForm.getUserType()), joinForm.getEmail());
-        } catch (AlreadyJoinException e) {
-            return rq.historyBack(e.getMessage());
-        } catch (NumberFormatException e) {
-            return rq.historyBack("회원 유형이 올바르지 않습니다.");
+    public String join(@Valid JoinRequest joinRequest) {
+        RsData<Member> joinRsData = memberService.join(joinRequest);
+        if (joinRsData.isFail()) {
+            return rq.historyBack(joinRsData);
         }
         return rq.redirectWithMsg("/member/login", "인증 이메일이 발송되었습니다.");
     }
 
     @ResponseBody
-    @GetMapping("/join/idCheck")
+    @GetMapping("/join/usernameCheck")
     @Operation(summary = "회원가입 - 아이디 중복 체크")
-    public int idCheck(String username) {
-        return memberService.idValidation(username);
+    public RsData<UsernameValidationResult> usernameCheck(String username) {
+        UsernameValidationResult result =  memberService.usernameValidation(username);
+        return RsData.of(result.getResultCode(), result.getMessage(), result);
     }
 
     @ResponseBody
     @GetMapping("/join/emailCheck")
     @Operation(summary = "회원가입 - 이메일 중복 체크")
-    public int emailCheck(String email) {
-        return memberService.emailValidation(email);
+    public RsData<EmailValidationResult> emailCheck(String email) {
+        EmailValidationResult result =  memberService.emailValidation(email);
+        return RsData.of(result.getResultCode(), result.getMessage(), result);
     }
 
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPage")
     @Operation(summary = "마이페이지")
-    public String myPage() {
+    public String showMyPage() {
         return "usr/member/myPage";
     }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myInfo")
     @Operation(summary = "내 정보 페이지")
-    public String myInfo() {
+    public String showMyInfo() {
         return "usr/member/myInfo";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myPosts")
     @Operation(summary = "내 게시글 목록 페이지")
-    public String myPosts(Model model) {
+    public String showMyPosts(Model model) {
         List<Post> posts = postService.getMyPosts(rq.getMember());
-        model.addAttribute("posts", posts);
+        model.addAttribute("response", PostsResponse.of(posts));
         return "usr/member/myPosts";
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/myComments")
     @Operation(summary = "내 댓글 목록 페이지")
-    public String myComments(Model model) {
+    public String showMyComments(Model model) {
         List<Comment> comments = commentService.getMyComments(rq.getMember());
-        model.addAttribute("comments", comments);
+        model.addAttribute("response", CommentsResponse.of(comments));
         return "usr/member/myComments";
     }
 
@@ -122,9 +124,9 @@ public class MemberController {
     @GetMapping("/deleteAccount")
     @Operation(summary = "회원 탈퇴")
     public void deleteAccount(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        RsData<Member> rsData = memberService.deleteAccount(rq.getMember());
-        if (rsData.isFail()) {
-            rq.historyBack(rsData.getMsg());
+        RsData<Member> deleteRsData = memberService.softDelete(rq.getMember());
+        if (deleteRsData.isFail()) {
+            rq.historyBack(deleteRsData.getMsg());
         }
         SecurityContextHolder.clearContext();
         request.getSession().invalidate();
@@ -135,8 +137,8 @@ public class MemberController {
     @ResponseBody
     @PostMapping("/name/update")
     @Operation(summary = "이름 변경")
-    public String nameUpdate(String newName) {
-        RsData<Member> rsData = memberService.updateName(rq.getMember(), newName);
-        return rsData.getResultCode();
+    public String updateName(String newName) {
+        RsData<Member> updateRsData = memberService.updateName(rq.getMember(), newName);
+        return updateRsData.getResultCode();
     }
 }

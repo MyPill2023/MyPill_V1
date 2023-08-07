@@ -12,10 +12,10 @@
             <div class="divider divider-horizontal !mx-1"></div>
             <a href="/member/myComments" class="text-2xl text-center">내 답변</a>
         </div>
-        <div th:if="${posts.size()==0}" class="mt-10">
+        <div th:if="${response.posts.size()==0}" class="mt-10">
             <span class="flex items-center justify-center">등록한 질문이 없습니다.</span>
         </div>
-        <div class="flex flex-col gap-5 w-full max-w-md mb-10 px-5" th:if="${posts.size()!=0}">
+        <div class="flex flex-col gap-5 w-full max-w-md mb-10 px-5" th:if="${response.posts.size()!=0}">
             <table class="table px-5">
                 <colgroup>
                     <col style="width: 70%">
@@ -28,7 +28,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="post, loop : ${posts}">
+                <tr th:each="post, loop : ${response.posts}">
                     <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         <div class="flex flex-row items-center">
                             <div style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">

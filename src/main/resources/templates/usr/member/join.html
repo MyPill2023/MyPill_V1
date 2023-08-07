@@ -12,20 +12,20 @@
         </h1>
 
         <div class="max-w-2xl w-full px-5 mt-8">
-            <form th:action method="POST" class="flex flex-col flex-grow" id="joinForm"
+            <form th:action method="POST" class="flex flex-col flex-grow" id="joinRequest"
                   onsubmit="MemberJoin__submit(this); return false;">
                 <div class="flex flex-col gap-2">
                     <div><span class="font-bold text-lg">회원 유형 선택</span></div>
                     <div class="flex justify-around gap-2">
                         <div class="w-1/2">
-                            <input type="radio" name="option" id="1" class="peer hidden" value="1"/>
+                            <input type="radio" name="option" id="1" class="peer hidden" value="구매자"/>
                             <label for="1"
                                    class="block cursor-pointer select-none border border-gray-400 rounded-xl p-2 text-center peer-checked:bg-blue-200 peer-checked:font-bold peer-checked:border-0">
                                 일반 회원
                             </label>
                         </div>
                         <div class="w-1/2">
-                            <input type="radio" name="option" id="3" class="peer hidden" value="3"/>
+                            <input type="radio" name="option" id="3" class="peer hidden" value="대기자"/>
                             <label for="3"
                                    class="block cursor-pointer select-none border border-gray-400 rounded-xl p-2 text-center peer-checked:bg-red-200 peer-checked:font-bold peer-checked:border-0">
                                 판매자 회원
@@ -101,25 +101,22 @@
 
         let validUsername;
         let usernameChecked = false;
+
         $(function () {
             $("#btn-usernameCheck").click(function () {
                 validUsername = $("#username").val();
                 $.ajax({
                     type: "get",
                     async: false,
-                    url: "/member/join/idCheck",
+                    url: "/member/join/usernameCheck",
                     data: {username: validUsername},
+                    dataType: "json",
                     success: function (data) {
-                        if (data === 1) {
-                            $("#userNameCheckMsg").text("아이디가 입력되지 않았습니다.");
-                            $("#userNameCheckMsg").addClass("checkMsgF");
-                            $("#userNameCheckMsg").removeClass("checkMsgT");
-                        } else if (data === 2) {
-                            $("#userNameCheckMsg").text("이미 사용중인 아이디입니다.");
+                        $("#userNameCheckMsg").text(data.msg);
+                        if(data.resultCode.startsWith("F-")){
                             $("#userNameCheckMsg").addClass("checkMsgF");
                             $("#userNameCheckMsg").removeClass("checkMsgT");
                         } else {
-                            $("#userNameCheckMsg").text("사용 가능한 아이디입니다.");
                             $("#userNameCheckMsg").addClass("checkMsgT");
                             $("#userNameCheckMsg").removeClass("checkMsgF");
                             usernameChecked = true;
@@ -140,20 +137,11 @@
                     url: "/member/join/emailCheck",
                     data: {email: validEmail},
                     success: function (data) {
-                        if (data === 1) {
-                            $("#emailCheckMsg").text("이메일이 입력되지 않았습니다.");
-                            $("#emailCheckMsg").addClass("checkMsgF");
-                            $("#emailCheckMsg").removeClass("checkMsgT");
-                        } else if (data === 2) {
-                            $("#emailCheckMsg").text("올바르지 않은 형식입니다.");
-                            $("#emailCheckMsg").addClass("checkMsgF");
-                            $("#emailCheckMsg").removeClass("checkMsgT");
-                        } else if (data === 3) {
-                            $("#emailCheckMsg").text("이미 사용중인 이메일 입니다.");
+                        $("#emailCheckMsg").text(data.msg);
+                        if (data.resultCode.startsWith("F-")) {
                             $("#emailCheckMsg").addClass("checkMsgF");
                             $("#emailCheckMsg").removeClass("checkMsgT");
                         } else {
-                            $("#emailCheckMsg").text("사용 가능한 이메일 입니다.");
                             $("#emailCheckMsg").addClass("checkMsgT");
                             $("#emailCheckMsg").removeClass("checkMsgF");
                             emailChecked = true;

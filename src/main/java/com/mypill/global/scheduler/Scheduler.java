@@ -45,7 +45,7 @@ public class Scheduler {
     public void deleteUnverifiedMembers() {
         List<Member> unverifiedMembers = memberService.getUnverifiedMember();
         for (Member member : unverifiedMembers) {
-            memberService.deleteMember(member);
+            memberService.hardDelete(member);
         }
     }
 

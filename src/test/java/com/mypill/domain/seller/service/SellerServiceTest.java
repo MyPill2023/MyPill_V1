@@ -1,6 +1,7 @@
 package com.mypill.domain.seller.service;
 
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.entity.Role;
 import com.mypill.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ class SellerServiceTest {
                 .username("testUser1")
                 .name("김철수")
                 .password("1234")
-                .userType(3)
+                .role(Role.WAITER)
                 .email("testEmail@test.com")
                 .build();
         memberRepository.save(testUser1);
@@ -54,7 +55,7 @@ class SellerServiceTest {
                 .username("testUser1")
                 .name("김철수")
                 .password("1234")
-                .userType(3)
+                .role(Role.WAITER)
                 .email("testEmail@test.com")
                 .nutrientBusinessNumber(nBrno)
                 .build();
@@ -65,7 +66,7 @@ class SellerServiceTest {
 
         // THEN
         assertThat(testUser1.getBusinessNumber()).isNull();
-        assertThat(testUser1.getUserType()).isEqualTo(3);
+        assertThat(testUser1.getRole()).isEqualTo(Role.WAITER);
     }
 
     @Test
@@ -77,7 +78,7 @@ class SellerServiceTest {
                 .username("testUser1")
                 .name("김철수")
                 .password("1234")
-                .userType(3)
+                .role(Role.WAITER)
                 .email("testEmail@test.com")
                 .build();
         memberRepository.save(testUser1);
@@ -98,7 +99,7 @@ class SellerServiceTest {
                 .username("testUser1")
                 .name("김철수")
                 .password("1234")
-                .userType(3)
+                .role(Role.WAITER)
                 .email("testEmail@test.com")
                 .businessNumber(brno)
                 .build();
@@ -109,6 +110,6 @@ class SellerServiceTest {
 
         // THEN
         assertThat(testUser1.getNutrientBusinessNumber()).isNull();
-        assertThat(testUser1.getUserType()).isEqualTo(3);
+        assertThat(testUser1.getRole()).isEqualTo(Role.WAITER);
     }
 }

@@ -3,7 +3,9 @@ package com.mypill.global.initdata;
 import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.entity.Role;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.service.OrderService;
@@ -73,12 +75,12 @@ public class NotProd {
                 public void transferTo(File dest) throws IllegalStateException {
                 }
             };
-            Member memberUser1 = memberService.join("user1", "김철수", "1234", "1", "cs@test.com", true).getData();
-            Member memberUser2 = memberService.join("user2", "김영희", "1234", "1", "yh@test.com", true).getData();
-            Member memberUser3 = memberService.join("user3", "김짱구", "1234", "2", "zzang@test.com", true).getData();
-            Member memberUser4 = memberService.join("user4", "김맹구", "1234", "2", "mk@test.com", true).getData();
-            Member memberUser5 = memberService.join("user5", "김훈이", "1234", "1", "hoon2@test.com", true).getData();
-            Member memberUser6 = memberService.join("user6", "김멋사", "1234", "3", "ll@test.com", true).getData();
+            Member memberUser1 = memberService.join(new JoinRequest("user1", "김철수", "1234", "cs@test.com", "구매자"), true).getData();
+            Member memberUser2 = memberService.join(new JoinRequest("user2", "김영희", "1234", "yh@test.com", "구매자"), true).getData();
+            Member memberUser3 = memberService.join(new JoinRequest("user3", "김짱구", "1234", "zzang@test.com", "판매자"), true).getData();
+            Member memberUser4 = memberService.join(new JoinRequest("user4", "김맹구", "1234", "mk@test.com", "판매자"), true).getData();
+            Member memberUser5 = memberService.join(new JoinRequest("user5", "김훈이", "1234", "hoon2@test.com", "구매자"), true).getData();
+            Member memberUser6 = memberService.join(new JoinRequest("user6", "김멋사", "1234", "ll@test.com", "대기자"), true).getData();
 
             productService.create(new ProductRequest(3L, "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile);
             productService.create(new ProductRequest(3L, "프로바이오틱스 글루코사민 루테인 170mg x 60캡슐", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(3L, 2L), asList(2L, 3L)), emptyFile);

@@ -1,8 +1,12 @@
 package com.mypill.domain.member.service;
 
 import com.mypill.domain.attr.service.AttrService;
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
+import com.mypill.domain.member.entity.Role;
 import com.mypill.domain.member.repository.MemberRepository;
+import com.mypill.domain.member.validation.EmailValidationResult;
+import com.mypill.domain.member.validation.UsernameValidationResult;
 import com.mypill.domain.product.entity.Product;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -27,163 +30,150 @@ class MemberServiceTest {
     private AttrService attrService;
     @Autowired
     private MemberRepository memberRepository;
-    private String username1;
-    private String name1;
-    private String password1;
-    private Integer userType1;
-    private String email1;
+    private Member testUser1;
 
     @BeforeEach
     void beforeEach() {
-        username1 = "testUser1";
-        name1 = "김철수";
-        password1 = "1234";
-        userType1 = 1;
-        email1 = "test1@test.com";
+        testUser1 = Member.builder()
+                .username("testUser1")
+                .name("김철수")
+                .password("1234")
+                .role(Role.SELLER)
+                .email("test1@test.com")
+                .emailVerified(true)
+                .build();
+        memberRepository.save(testUser1);
     }
 
     @Test
     @DisplayName("자체회원가입 테스트")
     void joinTest() {
         // WHEN
-        Member savedMember = memberService.join(username1, name1, password1, userType1, email1).getData();
+        Member testUser2 = memberService.join(new JoinRequest("testUser2", "김영희", "1234", "test2@test.com", "구매자")).getData();
 
         // THEN
-        assertThat(savedMember).isNotNull();
-        assertThat(savedMember.getUsername()).isEqualTo(username1);
-        assertThat(savedMember.getName()).isEqualTo(name1);
-        assertThat(savedMember.getUserType()).isEqualTo(userType1);
-        assertThat(savedMember.getEmail()).isEqualTo(email1);
+        assertThat(testUser2).isNotNull();
+        assertThat(testUser2.getUsername()).isEqualTo("testUser2");
+        assertThat(testUser2.getName()).isEqualTo("김영희");
+        assertThat(testUser2.getRole()).isEqualTo(Role.BUYER);
+        assertThat(testUser2.getEmail()).isEqualTo("test2@test.com");
     }
 
     @Test
     @DisplayName("소셜로그인 테스트")
     void whenSocialLoginTest() {
         // GIVEN
-        String providerCode = "KAKAO";
+        String providerCode = "K";
 
         // WHEN
-        Member savedMember = memberService.whenSocialLogin(providerCode, username1, name1, email1).getData();
+        Member savedMember = memberService.whenSocialLogin(providerCode, "testUser3", "김짱구", "test9@test.com").getData();
 
         // THEN
         assertThat(savedMember).isNotNull();
-        assertThat(savedMember.getUsername()).isEqualTo(username1);
-        assertThat(savedMember.getName()).isEqualTo(name1);
-        assertThat(savedMember.getUserType()).isEqualTo(userType1);
-        assertThat(savedMember.getEmail()).isEqualTo(email1);
+        assertThat(savedMember.getUsername()).isEqualTo("testUser3");
+        assertThat(savedMember.getName()).isEqualTo("김짱구");
+        assertThat(savedMember.getRole()).isEqualTo(Role.BUYER);
+        assertThat(savedMember.getEmail()).isEqualTo("test9@test.com");
         assertThat(savedMember.getProviderTypeCode()).isEqualTo(providerCode);
     }
 
     @Test
     @DisplayName("ID로 회원검색 테스트")
     void findByIdTest() {
-        // GIVEN
-        Member savedMember = memberService.join(username1, name1, password1, userType1, email1).getData();
-
         // WHEN
-        Member member = memberService.findById(savedMember.getId()).orElse(null);
+        Member member = memberService.findById(testUser1.getId()).orElse(null);
 
         // THEN
         assertThat(member).isNotNull();
-        assertThat(savedMember.getId()).isEqualTo(member.getId());
-        assertThat(savedMember.getUsername()).isEqualTo(member.getUsername());
-        assertThat(savedMember.getName()).isEqualTo(member.getName());
-        assertThat(savedMember.getPassword()).isEqualTo(member.getPassword());
-        assertThat(savedMember.getUserType()).isEqualTo(member.getUserType());
-        assertThat(savedMember.getEmail()).isEqualTo(member.getEmail());
+        assertThat(testUser1.getId()).isEqualTo(member.getId());
+        assertThat(testUser1.getUsername()).isEqualTo(member.getUsername());
+        assertThat(testUser1.getName()).isEqualTo(member.getName());
+        assertThat(testUser1.getPassword()).isEqualTo(member.getPassword());
+        assertThat(testUser1.getRole()).isEqualTo(member.getRole());
+        assertThat(testUser1.getEmail()).isEqualTo(member.getEmail());
     }
 
     @Test
     @DisplayName("회원 아이디로 회원검색 테스트")
     void findByUsernameTest() {
-        // GIVEN
-        Member savedMember = memberService.join(username1, name1, password1, userType1, email1).getData();
-
         // WHEN
-        Member member = memberService.findByUsername(username1).orElse(null);
+        Member member = memberService.findByUsername(testUser1.getUsername()).orElse(null);
 
         // THEN
         assertThat(member).isNotNull();
-        assertThat(savedMember.getId()).isEqualTo(member.getId());
-        assertThat(savedMember.getUsername()).isEqualTo(member.getUsername());
-        assertThat(savedMember.getName()).isEqualTo(member.getName());
-        assertThat(savedMember.getPassword()).isEqualTo(member.getPassword());
-        assertThat(savedMember.getUserType()).isEqualTo(member.getUserType());
-        assertThat(savedMember.getEmail()).isEqualTo(member.getEmail());
+        assertThat(testUser1.getId()).isEqualTo(member.getId());
+        assertThat(testUser1.getUsername()).isEqualTo(member.getUsername());
+        assertThat(testUser1.getName()).isEqualTo(member.getName());
+        assertThat(testUser1.getPassword()).isEqualTo(member.getPassword());
+        assertThat(testUser1.getRole()).isEqualTo(member.getRole());
+        assertThat(testUser1.getEmail()).isEqualTo(member.getEmail());
     }
 
     @Test
     @DisplayName("회원정보 - 이름 변경")
     void updateNameTest() {
-        // GIVEN
-        Member savedMember = memberService.join(username1, name1, password1, userType1, email1).getData();
         String newName = "손흥민";
 
         // WHEN
-        Member member = memberService.updateName(savedMember, newName).getData();
+        Member member = memberService.updateName(testUser1, newName).getData();
 
         // THEN
         assertThat(member).isNotNull();
-        assertThat(member.getUsername()).isEqualTo(username1);
+        assertThat(member.getUsername()).isEqualTo(testUser1.getUsername());
         assertThat(member.getName()).isEqualTo(newName);
-        assertThat(member.getUserType()).isEqualTo(userType1);
-        assertThat(member.getEmail()).isEqualTo(email1);
+        assertThat(member.getRole()).isEqualTo(Role.SELLER);
+        assertThat(member.getEmail()).isEqualTo(testUser1.getEmail());
     }
 
     @Test
     @DisplayName("회원 탈퇴")
     void deleteAccountTest() {
-        // GIVEN
-        Member member = memberService.join(username1, name1, password1, userType1, email1).getData();
-
         // WHEN
-        Member deletedMember = memberService.deleteAccount(member).getData();
+        Member deletedMember = memberService.softDelete(testUser1).getData();
 
         // THEN
         assertThat(deletedMember).isNotNull();
-        assertThat(deletedMember.getUsername()).isEqualTo(username1);
+        assertThat(deletedMember.getUsername()).isEqualTo(testUser1.getUsername());
         assertThat(deletedMember.getDeleteDate()).isNotNull();
     }
 
     @Test
     @DisplayName("회원가입 아이디 유효성 검증 테스트1 : 입력값 없음")
-    void idValidationTest1() {
+    void usernameValidationTest1() {
         // GIVEN
         String username = "";
 
         // WHEN
-        int result = memberService.idValidation(username);
+        UsernameValidationResult result = memberService.usernameValidation(username);
 
         // THEN
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(UsernameValidationResult.USERNAME_EMPTY);
     }
 
     @Test
     @DisplayName("회원가입 아이디 유효성 검증 테스트2 : 중복")
-    void idValidationTest2() {
+    void usernameValidationTest2() {
         // GIVEN
-        memberService.join(username1, name1, password1, userType1, email1);
-        String username = username1;
+        String username = testUser1.getUsername();
 
         // WHEN
-        int result = memberService.idValidation(username);
+        UsernameValidationResult result = memberService.usernameValidation(username);
 
         // THEN
-        assertThat(result).isEqualTo(2);
+        assertThat(result).isEqualTo(UsernameValidationResult.USERNAME_DUPLICATE);
     }
 
     @Test
     @DisplayName("회원가입 아이디 유효성 검증 테스트3 : 통과")
-    void idValidationTest3() {
+    void usernameValidationTest3() {
         // GIVEN
-        memberService.join(username1, name1, password1, userType1, email1);
         String username = "testUser2";
 
         // WHEN
-        int result = memberService.idValidation(username);
+        UsernameValidationResult result = memberService.usernameValidation(username);
 
         // THEN
-        assertThat(result).isEqualTo(0);
+        assertThat(result).isEqualTo(UsernameValidationResult.VALIDATION_OK);
     }
 
     @Test
@@ -193,10 +183,10 @@ class MemberServiceTest {
         String email = "";
 
         // WHEN
-        int result = memberService.emailValidation(email);
+        EmailValidationResult result = memberService.emailValidation(email);
 
         // THEN
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(EmailValidationResult.EMAIL_EMPTY);
     }
 
     @Test
@@ -206,49 +196,46 @@ class MemberServiceTest {
         String email = "testEmail@test,com";
 
         // WHEN
-        int result = memberService.emailValidation(email);
+        EmailValidationResult result = memberService.emailValidation(email);
 
         // THEN
-        assertThat(result).isEqualTo(2);
+        assertThat(result).isEqualTo(EmailValidationResult.EMAIL_FORMAT_ERROR);
     }
 
     @Test
     @DisplayName("회원가입 이메일 유효성 검증 테스트3 : 중복")
     void emailValidationTest3() {
         // GIVEN
-        memberService.join(username1, name1, password1, userType1, email1);
-        String email = email1;
+        String email = testUser1.getEmail();
 
         // WHEN
-        int result = memberService.emailValidation(email);
+        EmailValidationResult result = memberService.emailValidation(email);
 
         // THEN
-        assertThat(result).isEqualTo(3);
+        assertThat(result).isEqualTo(EmailValidationResult.EMAIL_DUPLICATE);
     }
 
     @Test
     @DisplayName("회원가입 이메일 유효성 검증 테스트4 : 통과")
     void emailValidationTest4() {
         // GIVEN
-        memberService.join(username1, name1, password1, userType1, email1);
         String email = "testEmail2@test.com";
 
         // WHEN
-        int result = memberService.emailValidation(email);
+        EmailValidationResult result = memberService.emailValidation(email);
 
         // THEN
-        assertThat(result).isEqualTo(0);
+        assertThat(result).isEqualTo(EmailValidationResult.VALIDATION_OK);
     }
 
     @Test
     @DisplayName("좋아요 표시 이벤트를 받고, 좋아요 목록에 추가")
     void whenAfterLikeTest() {
         // GIVEN
-        Member member = memberService.join(username1, name1, password1, userType1, email1).getData();
-        member = member.toBuilder()
+        testUser1 = testUser1.toBuilder()
                 .likedProducts(new HashSet<>())
                 .build();
-        Member savedMember = memberRepository.save(member);
+        Member savedMember = memberRepository.save(testUser1);
 
         String name = "name";
         String description = "description";
@@ -273,11 +260,10 @@ class MemberServiceTest {
     @DisplayName("좋아요 해제 이벤트를 받고, 좋아요 목록에서 삭제")
     void whenAfterUnlikeTest() {
         // GIVEN
-        Member member = memberService.join(username1, name1, password1, userType1, email1).getData();
-        member = member.toBuilder()
+        testUser1 = testUser1.toBuilder()
                 .likedProducts(new HashSet<>())
                 .build();
-        Member savedMember = memberRepository.save(member);
+        Member savedMember = memberRepository.save(testUser1);
 
         String name = "name";
         String description = "description";
@@ -304,16 +290,15 @@ class MemberServiceTest {
     @DisplayName("이메일 인증")
     void verifyEmailTest() {
         // GIVEN
-        Member savedMember = memberService.join(username1, name1, password1, userType1, email1).getData();
-        String emailVerificationCode = "member__%d__extra__emailVerificationCode".formatted(savedMember.getId());
+        String emailVerificationCode = "member__%d__extra__emailVerificationCode".formatted(testUser1.getId());
         String attr = attrService.get(emailVerificationCode, "");
 
         // WHEN
-        String resultCode = memberService.verifyEmail(savedMember.getId(), attr).getResultCode();
+        String resultCode = memberService.verifyEmail(testUser1.getId(), attr).getResultCode();
 
         // THEN
         assertThat(resultCode).startsWith("S-");
-        assertTrue(memberRepository.findById(savedMember.getId()).isPresent());
-        assertTrue(memberRepository.findById(savedMember.getId()).get().isEmailVerified());
+        assertTrue(memberRepository.findById(testUser1.getId()).isPresent());
+        assertTrue(memberRepository.findById(testUser1.getId()).get().isEmailVerified());
     }
 }

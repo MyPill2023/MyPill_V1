@@ -2,6 +2,7 @@ package com.mypill.domain.address.service;
 
 import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.entity.Address;
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.AppConfig;
@@ -30,8 +31,8 @@ class AddressServiceTests {
 
     @BeforeEach
     void beforeEachTest() {
-        testUser1 = memberService.join("testUser1", "김철수", "1234", "1", "test1@test.com", true).getData();
-        testUser2 = memberService.join("testUser2", "김영희", "1234", "1", "test2@test.com", true).getData();
+        testUser1 = memberService.join(new JoinRequest("testUser1", "김철수", "1234", "test1@test.com", "구매자"), true).getData();
+        testUser2 = memberService.join(new JoinRequest("testUser2", "김영희", "1234", "test2@test.com", "구매자"), true).getData();
     }
 
     @Test
@@ -57,7 +58,7 @@ class AddressServiceTests {
         for (int i = 0; i < AppConfig.getMaxAddressCount(); i++) {
             addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1);
         }
-            //WHEN
+        //WHEN
         RsData<Address> createRsData = addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1);
 
         //THEN
@@ -80,7 +81,7 @@ class AddressServiceTests {
     @DisplayName("배송지 가져오기 실패 - 권한 없음")
     void testGetFail03() {
         //GIVEN
-        Address address = addressService.create(new AddressRequest( "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
+        Address address = addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
 
         //WHEN
         RsData<Address> getRsData = addressService.get(testUser2, address.getId());

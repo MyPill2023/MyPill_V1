@@ -1,6 +1,9 @@
 package com.mypill.domain.member.controller;
 
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.service.MemberService;
+import com.mypill.domain.member.validation.EmailValidationResult;
+import com.mypill.domain.member.validation.UsernameValidationResult;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -47,7 +50,7 @@ class MemberControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(MemberController.class))
-                .andExpect(handler().methodName("login"))
+                .andExpect(handler().methodName("showLogin"))
                 .andExpect(status().is2xxSuccessful())
         ;
     }
@@ -66,7 +69,7 @@ class MemberControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(MemberController.class))
-                .andExpect(handler().methodName("join"))
+                .andExpect(handler().methodName("showJoin"))
                 .andExpect(status().is2xxSuccessful())
         ;
     }
@@ -78,7 +81,7 @@ class MemberControllerTest {
         // GIVEN
         String username = "testUser1";
         String name = "김철수";
-        String password = "1234";
+        String password = "abc12345";
         String email = "testEmail@test.com";
         String userType = "1";
 
@@ -103,14 +106,14 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("ID 중복확인")
-    void idCheckTest() throws Exception {
+    @DisplayName("아이디 중복확인")
+    void UsernameCheckTest() throws Exception {
         // GIVEN
         String username = "testUser1";
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/member/join/idCheck")
+                .perform(get("/member/join/usernameCheck")
                         .with(csrf())
                         .param("username", username)
                 )
@@ -119,9 +122,10 @@ class MemberControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(MemberController.class))
-                .andExpect(handler().methodName("idCheck"))
-                .andExpect(content().string("0"))
-        ;
+                .andExpect(handler().methodName("usernameCheck"))
+                .andExpect(content().json("{\"resultCode\":\"" + UsernameValidationResult.VALIDATION_OK.getResultCode()
+                        + "\",\"msg\":\"" + UsernameValidationResult.VALIDATION_OK.getMessage()
+                        + "\",\"data\":\"VALIDATION_OK\"}"))        ;
     }
 
     @Test
@@ -142,7 +146,9 @@ class MemberControllerTest {
         resultActions
                 .andExpect(handler().handlerType(MemberController.class))
                 .andExpect(handler().methodName("emailCheck"))
-                .andExpect(content().string("0"))
+                .andExpect(content().json("{\"resultCode\":\"" + EmailValidationResult.VALIDATION_OK.getResultCode()
+                        + "\",\"msg\":\"" + EmailValidationResult.VALIDATION_OK.getMessage()
+                        + "\",\"data\":\"VALIDATION_OK\"}"))
         ;
     }
 
@@ -155,8 +161,8 @@ class MemberControllerTest {
         String name = "김철수";
         String password = "1234";
         String email = "testEmail@test.com";
-        Integer userType = 1;
-        memberService.join(username, name, password, userType, email);
+        String userType = "판매자";
+        memberService.join(new JoinRequest(username, name, password, email, userType));
 
         // WHEN
         ResultActions resultActions = mvc
@@ -168,7 +174,7 @@ class MemberControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(MemberController.class))
-                .andExpect(handler().methodName("myPage"))
+                .andExpect(handler().methodName("showMyPage"))
                 .andExpect(status().is2xxSuccessful())
         ;
     }
@@ -182,8 +188,8 @@ class MemberControllerTest {
         String name = "김철수";
         String password = "1234";
         String email = "testEmail@test.com";
-        Integer userType = 1;
-        memberService.join(username, name, password, userType, email);
+        String userType = "판매자";
+        memberService.join(new JoinRequest(username, name, password, email, userType));
 
         // WHEN
         ResultActions resultActions = mvc
@@ -195,7 +201,7 @@ class MemberControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(MemberController.class))
-                .andExpect(handler().methodName("myInfo"))
+                .andExpect(handler().methodName("showMyInfo"))
                 .andExpect(status().is2xxSuccessful())
         ;
     }
@@ -209,8 +215,8 @@ class MemberControllerTest {
         String name = "김철수";
         String password = "1234";
         String email = "testEmail@test.com";
-        Integer userType = 1;
-        memberService.join(username, name, password, userType, email);
+        String userType = "판매자";
+        memberService.join(new JoinRequest(username, name, password, email, userType));
 
         // WHEN
         ResultActions resultActions = mvc
@@ -235,8 +241,8 @@ class MemberControllerTest {
         String name = "김철수";
         String password = "1234";
         String email = "testEmail@test.com";
-        Integer userType = 1;
-        memberService.join(username, name, password, userType, email);
+        String userType = "판매자";
+        memberService.join(new JoinRequest(username, name, password, email, userType));
         String newName = "손흥민";
 
         // WHEN
@@ -250,7 +256,7 @@ class MemberControllerTest {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(MemberController.class))
-                .andExpect(handler().methodName("nameUpdate"))
+                .andExpect(handler().methodName("updateName"))
                 .andExpect(content().string(Matchers.matchesRegex(".*S-.*")))
         ;
     }

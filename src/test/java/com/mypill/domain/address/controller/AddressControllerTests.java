@@ -3,6 +3,7 @@ package com.mypill.domain.address.controller;
 import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
+import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.global.AppConfig;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,8 +46,8 @@ class AddressControllerTests {
 
     @BeforeEach
     void beforeEachTest() {
-        testUser1 = memberService.join("testUser1", "김철수", "1234", 1, "test1@test.com").getData();
-        testUser2 = memberService.join("testUser2", "김영희", "1234", "1", "test2@test.com", true).getData();
+        testUser1 = memberService.join(new JoinRequest("testUser1", "김철수", "1234", "test1@test.com", "구매자")).getData();
+        testUser2 = memberService.join(new JoinRequest("testUser2", "김영희", "1234", "test2@test.com", "구매자"), true).getData();
     }
 
     @Test
@@ -86,8 +86,8 @@ class AddressControllerTests {
     @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testCreateFail() throws Exception {
         //GIVEN
-        for(int i = 0; i< AppConfig.getMaxAddressCount(); i++){
-            addressService.create(new AddressRequest( "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1);
+        for (int i = 0; i < AppConfig.getMaxAddressCount(); i++) {
+            addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1);
         }
 
         //WHEN
@@ -210,7 +210,7 @@ class AddressControllerTests {
     @WithMockUser(username = "testUser2", authorities = "BUYER")
     void testDeleteFail() throws Exception {
         //GIVEN
-        Address address = addressService.create(new AddressRequest( "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true),testUser1).getData();
+        Address address = addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
 
         //WHEN
         ResultActions resultActions = mvc
@@ -234,7 +234,7 @@ class AddressControllerTests {
     @WithMockUser(username = "testUser1", authorities = "BUYER")
     void testGetAddressDetailsSuccess() throws Exception {
         //GIVEN
-        Address address = addressService.create(new AddressRequest( "김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true),testUser1).getData();
+        Address address = addressService.create(new AddressRequest("김철수의 집", "김철수", "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
 
         //WHEN
         ResultActions resultActions = mvc
@@ -249,6 +249,7 @@ class AddressControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.address").value("서울시 강남구"));
     }
+
     @Test
     @DisplayName("주문 시 배송지 세부 정보 가져오기 실패 - 없는 배송지")
     @WithMockUser(username = "testUser1", authorities = "BUYER")
