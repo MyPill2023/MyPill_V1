@@ -4,8 +4,8 @@
     <title>상품 상세</title>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <meta name="productId" th:content="${product.id}"/>
-    <meta name="_isLiked" th:content="${product.isLiked}"/>
+    <meta name="productId" th:content="${response.product.id}"/>
+    <meta name="_isLiked" th:content="${response.isLiked}"/>
 </head>
 
 <body>
@@ -14,33 +14,33 @@
 
         <div class="flex flex-col gap-5 w-full max-w-md mb-10 px-5">
             <div class="border border-gray-200 text-center">
-                <img th:src="${product.image != null ? product.image.filepath : '/'}" alt="product_image"
+                <img th:src="${response.product.image != null ? response.product.image.filepath : '/'}" alt="product_image"
                      style="width: 500px; height: 400px;" />
             </div>
 
             <div class="flex flex-col justify-start w-full gap-2">
-                <h3 th:text="${product.seller.name}"></h3>
-                <h1 class=" text-xl font-bold" th:text="${product.name}"></h1>
+                <h3 th:text="${response.product.seller.name}"></h3>
+                <h1 class=" text-xl font-bold" th:text="${response.product.name}"></h1>
             </div>
             <div class="flex justify-between">
                 <div class="flex items-center">
                     <button id="like-button" class="heart-icon mx-1">
-                        <i th:if="${product.isLiked}" class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
-                        <i th:unless="${product.isLiked}" class="fa-solid fa-heart"
+                        <i th:if="${response.isLiked}" class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
+                        <i th:unless="${response.isLiked}" class="fa-solid fa-heart"
                            style="color: #C0C0C0;"></i>
                     </button>
                     <div id="like-count">
-                            <span class="text-xl" style="color:#ffb0b0;" th:if="${product.isLiked}"
-                                  th:text="${product.likedMembers == null ? 0 : product.likedMembers.size}">
+                            <span class="text-xl" style="color:#ffb0b0;" th:if="${response.isLiked}"
+                                  th:text="${response.product.likedMembers == null ? 0 : response.product.likedMembers.size}">
                             </span>
-                        <span class="text-xl" style="color:black;" th:unless="${product.isLiked}"
-                              th:text="${product.likedMembers == null ? 0 : product.likedMembers.size}">
+                        <span class="text-xl" style="color:black;" th:unless="${response.isLiked}"
+                              th:text="${response.product.likedMembers == null ? 0 : response.product.likedMembers.size}">
                             </span>
                     </div>
                 </div>
                 <div class="flex justify-end w-full items-center">
                     <span class="text-xl font-bold"
-                      th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>
+                      th:text="${#numbers.formatInteger(response.product.price, 0, 'COMMA') + '원'}"></span>
                 </div>
             </div>
             <div class="divider !my-2"></div>
@@ -54,23 +54,23 @@
                                    class="input input-bordered  input-sm w-16" required>
                             <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
                         </div>
-                        <div class="flex justify-end mt-5" th:if="${product.stock < 1}">
+                        <div class="flex justify-end mt-5" th:if="${response.product.stock < 1}">
                             <span class="text-red-300">해당 상품은 품절되었습니다.</span>
                         </div>
                     </div>
                     <div class="flex flex-col gap-3 justify-end">
                         <form id="directBuyForm" th:action="@{/order/create/single}" method="POST">
-                            <input type="hidden" name="productId" th:value="${product.id}">
+                            <input type="hidden" name="productId" th:value="${response.product.id}">
                             <input type="hidden" id="directBuyQuantity" name="quantity">
-                            <button class="btn btn-accent" type="button" onclick="submitDirectBuyForm()" th:disabled="${product.stock < 1}">
+                            <button class="btn btn-accent" type="button" onclick="submitDirectBuyForm()" th:disabled="${response.product.stock < 1}">
                                 바로 구매하기
                             </button>
                         </form>
                         <form th:action="@{|/cart/add|}" method="POST" class="flex justify-between"
                               onsubmit="CartProductRequest__submit(this, event); return false;">
-                            <input type="hidden" id="productId" name="productId" th:value="${product.id}">
+                            <input type="hidden" id="productId" name="productId" th:value="${response.product.id}">
                             <input type="hidden" id="cartProductQuantity" name="quantity">
-                            <button class="btn btn-success" type="submit" th:disabled="${product.stock < 1}">장바구니 담기</button>
+                            <button class="btn btn-success" type="submit" th:disabled="${response.product.stock < 1}">장바구니 담기</button>
                         </form>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
                     <h2 class="card-title mb-2">주요 영양성분</h2>
-                    <div th:each="nutrient, loop : ${product.nutrients}">
+                    <div th:each="nutrient, loop : ${response.product.nutrients}">
                         <p th:text="${nutrient.name}"></p>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
                     <h2 class="card-title mb-2">주요 기능</h2>
-                    <div th:each="category, loop : ${product.categories}">
+                    <div th:each="category, loop : ${response.product.categories}">
                         <p th:text="${category.name}"></p>
                     </div>
                 </div>
@@ -97,13 +97,13 @@
             <div class="card bg-base-100 border border-gray-200">
                 <div class="card-body">
                     <h2 class="card-title mb-2">상품 상세 설명</h2>
-                    <span th:text="${product.description}"></span>
+                    <span th:text="${response.product.description}"></span>
                 </div>
             </div>
 
             <div sec:authorize="isAuthenticated()">
-                <div th:if="${product.seller.id == @rq.member.id}" class="flex justify-end gap-3">
-                    <a th:href="@{|/product/update/${product.id}|}"
+                <div th:if="${response.product.seller.id == @rq.member.id}" class="flex justify-end gap-3">
+                    <a th:href="@{|/product/update/${response.product.id}|}"
                        class="btn flex gap-1">
                         수정하기
                     </a>
@@ -111,7 +111,7 @@
                        href="javascript:;"
                        onclick="if ( confirm('상품을 삭제하시겠습니까?') ) $(this).next().submit();">
                         삭제하기</a>
-                    <form hidden th:action="@{|/product/delete/${product.id}|}"
+                    <form hidden th:action="@{|/product/delete/${response.product.id}|}"
                           method="POST">
                         <input type="hidden" name="_method" value="delete">
                     </form>
@@ -123,16 +123,16 @@
 
     <script>
         function increaseQuantity() {
-            var quantityInput = document.getElementById("quantity");
-            var currentQuantity = parseInt(quantityInput.value);
-            var newQuantity = currentQuantity + 1;
+            let quantityInput = document.getElementById("quantity");
+            let currentQuantity = parseInt(quantityInput.value);
+            let newQuantity = currentQuantity + 1;
             quantityInput.value = newQuantity;
         }
 
         function decreaseQuantity() {
-            var quantityInput = document.getElementById("quantity");
-            var currentQuantity = parseInt(quantityInput.value);
-            var newQuantity = currentQuantity - 1;
+            let quantityInput = document.getElementById("quantity");
+            let currentQuantity = parseInt(quantityInput.value);
+            let newQuantity = currentQuantity - 1;
             if (newQuantity < 1) {
                 newQuantity = 1;
             }
@@ -141,8 +141,8 @@
 
         function CartProductRequest__submit(form, event) {
             // 수량 선택 값 가져오기
-            var quantityInput = document.getElementById("quantity");
-            var quantity = parseInt(quantityInput.value);
+            let quantityInput = document.getElementById("quantity");
+            let quantity = parseInt(quantityInput.value);
 
             // 유효성 검사: 수량이 1 이상인지 확인
             if (quantity < 1) {
@@ -174,7 +174,6 @@
         $(function () {
             $("#like-button").click(function () {
                 let isLikedStr = $("meta[name='_isLiked']").attr("content");
-                console.log(isLikedStr);
                 let isLiked = isLikedStr === "true";
                 isLiked = !isLiked;
                 // 좋아요 상태에 따라 요청 URL 변경
@@ -191,14 +190,12 @@
                         'X-CSRF-TOKEN': $("meta[name='_csrf']").attr("content"),
                         'X-CSRF-TOKEN-HEADER': $("meta[name='_csrf_header']").attr("content")
                     },
+                    dataType: "json",
                     success: function (data) {
-                        if (data == 1) {
-                            toastWarning("로그인 후 사용 가능한 기능입니다.");
-                        }
-                        if (data == 2) {
-                            toastWarning("존재하지 않는 게시물입니다.");
-                        }
-                        if (data == 0) {
+                        console.log("결과");
+                        console.log(data);
+                        if(data.resultCode.startsWith("S-")){
+                            console.log("성공");
                             $('#like-count span').text(isLiked ? likeCount + 1 : likeCount - 1);
                             if (isLiked) {
                                 $('#like-count span').css('color', '#FF0000');
@@ -211,8 +208,10 @@
                             } else {
                                 $('#like-button').html(`<i class="fa-solid fa-heart" style="color: #C0C0C0;"></i>`);
                             }
-                            var metaTag = document.querySelector('meta[name="_isLiked"]');
+                            let metaTag = document.querySelector('meta[name="_isLiked"]');
                             metaTag.setAttribute('content', String(isLiked));
+                        }else {
+                            toastWarning(data.msg);
                         }
                     },
                     error: function (error) {

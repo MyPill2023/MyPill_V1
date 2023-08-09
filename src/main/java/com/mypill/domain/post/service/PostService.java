@@ -40,13 +40,8 @@ public class PostService {
 
     @Transactional
     public Post create(PostRequest postRequest, Member member) {
-        Post post = Post.createPost(postRequest, member.getId());
-        MultipartFile multipartFile = postRequest.getImageFile();
-        if (!multipartFile.isEmpty()) {
-            AmazonS3Dto amazonS3ImageDto = imageService.saveImageOnServer(multipartFile, post);
-            Image image = new Image(amazonS3ImageDto, multipartFile, post);
-            post.addImage(image);
-        }
+        Post post = Post.of(postRequest, member.getId());
+        imageService.save(postRequest.getImageFile(), post);
         return postRepository.save(post);
     }
 
@@ -79,16 +74,7 @@ public class PostService {
             return postRsData;
         }
         Post post = postRsData.getData();
-        MultipartFile multipartFile = postRequest.getImageFile();
-        if (!multipartFile.isEmpty()) {
-            AmazonS3Dto amazonS3ImageDto = imageService.updateImageOnServer(multipartFile, post);
-            Image image = post.getImage();
-            if (image == null) {
-                post.addImage(new Image(amazonS3ImageDto, multipartFile, post));
-            } else {
-                post.getImage().update(amazonS3ImageDto, multipartFile);
-            }
-        }
+        imageService.update(postRequest.getImageFile(),post);
         post.update(postRequest);
         return RsData.of("S-1", "게시글이 수정되었습니다.", post);
     }

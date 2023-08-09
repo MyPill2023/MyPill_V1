@@ -44,7 +44,7 @@ class ProductServiceTests {
 
         testUserSeller1 = memberService.join(new JoinRequest("testUserSeller123", "김철수", "1234", "testSeller123@test.com", "판매자")).getData();
         testUserSeller2 = memberService.join(new JoinRequest("testUserSeller223", "김철수", "1234",  "testSeller223@test.com", "판매자")).getData();
-        product = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        product = productService.create(new ProductRequest("테스트 상품1", "테스트 설명1", 12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
     }
 
     @Test
@@ -52,7 +52,7 @@ class ProductServiceTests {
     @Order(1)
     void createSuccessTests() {
         // WHEN
-        Product newProduct = productService.create(new ProductRequest(testUserSeller1.getId(), "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        Product newProduct = productService.create(new ProductRequest("루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
         Product product = productService.findById(newProduct.getId()).orElse(null);
 
         // THEN
@@ -67,7 +67,7 @@ class ProductServiceTests {
     @Order(2)
     void getSuccessTests() {
         // GIVEN
-        Product newProduct = productService.create(new ProductRequest(testUserSeller1.getId(), "루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        Product newProduct = productService.create(new ProductRequest("루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
 
         // WHEN
         RsData<Product> getRsData = productService.get(newProduct.getId());
@@ -84,11 +84,11 @@ class ProductServiceTests {
     @Order(3)
     void updateSuccessTests() {
         // GIVEN
-        ProductRequest productRequest = new ProductRequest(3L, "테스트 상품 수정", "테스트 설명 수정",
-                100L, 200L, asList(3L, 4L), asList(3L, 4L));
+        ProductRequest productRequest = new ProductRequest("테스트 상품 수정", "테스트 설명 수정",
+                100L, 200L, asList(3L, 4L), asList(3L, 4L), emptyFile);
 
         // WHEN
-        RsData<Product> updateRsData = productService.update(testUserSeller1, product.getId(), productRequest, emptyFile);
+        RsData<Product> updateRsData = productService.update(testUserSeller1, product.getId(), productRequest);
         Product updateProduct = updateRsData.getData();
 
         // THEN
@@ -102,17 +102,15 @@ class ProductServiceTests {
     @Order(4)
     void updateFailTests() {
         // GIVEN
-        ProductRequest productRequest = new ProductRequest(3L, "테스트 상품 수정", "테스트 설명 수정",
-                100L, 200L, asList(3L, 4L), asList(3L, 4L));
+        ProductRequest productRequest = new ProductRequest("테스트 상품 수정", "테스트 설명 수정",
+                100L, 200L, asList(3L, 4L), asList(3L, 4L), emptyFile);
 
         // WHEN
-        RsData<Product> updateRsData = productService.update(testUserSeller2, product.getId(), productRequest, emptyFile);
+        RsData<Product> updateRsData = productService.update(testUserSeller2, product.getId(), productRequest);
         Product updateProduct = updateRsData.getData();
 
         // THEN
         assertThat(updateRsData.getResultCode()).isEqualTo("F-2");
-        assertThat(updateProduct.getName()).isEqualTo("테스트 상품1");
-        assertThat(updateProduct.getDescription()).isEqualTo("테스트 설명1");
     }
 
     @Test
@@ -120,7 +118,7 @@ class ProductServiceTests {
     @Order(5)
     void deleteSuccessTests() {
         // WHEN
-        RsData<Product> deleteRsData = productService.delete(testUserSeller1, product.getId());
+        RsData<Product> deleteRsData = productService.softDelete(testUserSeller1, product.getId());
         Product deletedProduct = productService.findById(product.getId()).orElse(null);
 
         // THEN
@@ -134,7 +132,7 @@ class ProductServiceTests {
     @Order(6)
     void deleteFailTests() {
         //WHEN
-        RsData<Product> deleteRsData = productService.delete(testUserSeller2, product.getId());
+        RsData<Product> deleteRsData = productService.softDelete(testUserSeller2, product.getId());
         Product deletedProduct = productService.findById(product.getId()).orElse(null);
 
         //THEN

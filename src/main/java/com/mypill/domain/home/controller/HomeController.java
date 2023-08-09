@@ -1,7 +1,8 @@
 package com.mypill.domain.home.controller;
 
 
-import com.mypill.domain.product.dto.response.ProductResponse;
+import com.mypill.domain.product.dto.response.ProductsResponse;
+import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,8 +24,8 @@ public class HomeController {
     @GetMapping("/")
     @Operation(summary = "메인 페이지")
     public String showMain(Model model) {
-        List<ProductResponse> productList = productService.findTop5ProductsBySales();
-        model.addAttribute("products", productList);
+        List<Product> productList = productService.getTop5ProductsBySales();
+        model.addAttribute("response", ProductsResponse.of(productList));
         return "usr/home/main";
     }
 }

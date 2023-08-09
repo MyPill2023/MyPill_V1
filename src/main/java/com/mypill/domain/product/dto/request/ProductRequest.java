@@ -4,13 +4,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 public class ProductRequest {
-    private Long sellerId;
     @NotBlank(message = "제품 이름을 입력해주세요.")
     private String name;
     @NotBlank(message = "제품의 상세설명을 입력해주세요.")
@@ -23,4 +23,6 @@ public class ProductRequest {
     private List<Long> nutrientIds;
     @NotNull(message = "제품의 주요기능을 선택해주세요.")
     private List<Long> categoryIds;
+    @NotNull(message = "제품의 이미지를 등록해주세요.")
+    private MultipartFile imageFile;
 }

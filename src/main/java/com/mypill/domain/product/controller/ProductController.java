@@ -5,6 +5,7 @@ import com.mypill.domain.category.service.CategoryService;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.product.dto.request.ProductRequest;
+import com.mypill.domain.product.dto.response.ProductPageResponse;
 import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
@@ -21,7 +22,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/create")
     @Operation(summary = "상품 등록 페이지")
-    public String showCreate(Model model) {
+    public String showCreateForm(Model model) {
         populateModel(model);
         return "usr/product/create";
     }
@@ -46,43 +46,48 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/create")
     @Operation(summary = "상품 등록")
-    public String create(@Valid ProductRequest productRequest, @RequestParam("imageFile") MultipartFile multiPartFile) {
-        RsData<Product> createRsData = productService.create(productRequest, multiPartFile);
+    public String create(@Valid ProductRequest productRequest) {
+        RsData<Product> createRsData = productService.create(productRequest, rq.getMember());
         return rq.redirectWithMsg("/product/detail/%s".formatted(createRsData.getData().getId()), createRsData);
     }
 
     @GetMapping("/detail/{productId}")
     @Operation(summary = "상품 상세 페이지")
     public String showProduct(@PathVariable Long productId, Model model) {
-        Product product = productService.get(productId).getData();
-        if (rq.isLogin() && product.getLikedMembers().contains(rq.getMember())) {
-            model.addAttribute("product", ProductResponse.of(product, true));
+        RsData<Product> productRsData = productService.get(productId);
+        if (productRsData.isFail()) {
+            return rq.historyBack(productRsData);
+        }
+        if (rq.isLogin() && productRsData.getData().getLikedMembers().contains(rq.getMember())) {
+            model.addAttribute("response", ProductResponse.of(productRsData.getData(), true));
         } else {
-            model.addAttribute("product", ProductResponse.of(product, false));
+            model.addAttribute("response", ProductResponse.of(productRsData.getData(), false));
         }
         return "usr/product/detail";
     }
 
     @GetMapping("/list/all")
     @Operation(summary = "상품 전체 목록 페이지")
-    public String list(Model model, HttpServletRequest request,
-                       @RequestParam(defaultValue = "0") int pageNumber,
-                       @RequestParam(defaultValue = "10") int pageSize) {
-        Page<Product> productPageResult = productService.getAllProductList(PageRequest.of(pageNumber, pageSize));
-        model.addAttribute("title", "전체보기");
-        populateModel(model, productPageResult, request);
+    public String showList(Model model, HttpServletRequest request,
+                           @RequestParam(defaultValue = "0") int pageNumber,
+                           @RequestParam(defaultValue = "10") int pageSize) {
+        Page<Product> productPage = productService.getAllProductList(PageRequest.of(pageNumber, pageSize));
+        populateModel(model, "전체보기", productPage, request);
         return "usr/product/list";
     }
 
     @GetMapping("/list/nutrient/{nutrientId}")
     @Operation(summary = "영양 성분별 상품 목록 페이지")
-    public String listByNutrition(@PathVariable Long nutrientId,
-                                  @RequestParam(defaultValue = "0") int pageNumber,
-                                  @RequestParam(defaultValue = "10") int pageSize,
-                                  Model model, HttpServletRequest request) {
-        Page<Product> productPageResult = productService.getAllProductListByNutrientId(nutrientId, PageRequest.of(pageNumber, pageSize));
-        nutrientService.findById(nutrientId).ifPresent(nutrient -> model.addAttribute("title", nutrient.getName()));
-        populateModel(model, productPageResult, request);
+    public String listByNutrient(@PathVariable Long nutrientId,
+                                 @RequestParam(defaultValue = "0") int pageNumber,
+                                 @RequestParam(defaultValue = "10") int pageSize,
+                                 Model model, HttpServletRequest request) {
+        Page<Product> productPage = productService.getAllProductListByNutrientId(nutrientId, PageRequest.of(pageNumber, pageSize));
+        Nutrient nutrient = nutrientService.findById(nutrientId).orElse(null);
+        if (nutrient == null) {
+            return rq.historyBack("잘못된 접근입니다.");
+        }
+        populateModel(model, nutrient.getName(), productPage, request);
         return "usr/product/list";
     }
 
@@ -92,18 +97,24 @@ public class ProductController {
                                  @RequestParam(defaultValue = "0") int pageNumber,
                                  @RequestParam(defaultValue = "10") int pageSize,
                                  Model model, HttpServletRequest request) {
-        Page<Product> productPageResult = productService.getAllProductListByCategoryId(categoryId, PageRequest.of(pageNumber, pageSize));
-        categoryService.findById(categoryId).ifPresent(category -> model.addAttribute("title", category.getName()));
-        populateModel(model, productPageResult, request);
+        Page<Product> productPage = productService.getAllProductListByCategoryId(categoryId, PageRequest.of(pageNumber, pageSize));
+        Category category = categoryService.findById(categoryId).orElse(null);
+        if (category == null) {
+            return rq.historyBack("잘못된 접근입니다.");
+        }
+        populateModel(model, category.getName(), productPage, request);
         return "usr/product/list";
     }
 
     @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/update/{productId}")
     @Operation(summary = "상품 수정 페이지")
-    public String updateBefore(@PathVariable Long productId, Model model) {
-        ProductResponse response = ProductResponse.of(productService.get(productId).getData());
-        model.addAttribute("product", response);
+    public String showUpdateForm(@PathVariable Long productId, Model model) {
+        RsData<Product> productRsData = productService.get(productId);
+        if (productRsData.isFail()) {
+            return rq.historyBack(productRsData);
+        }
+        model.addAttribute("response", ProductResponse.of(productRsData.getData()));
         populateModel(model);
         return "usr/product/update";
     }
@@ -111,17 +122,22 @@ public class ProductController {
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/update/{productId}")
     @Operation(summary = "상품 수정")
-    public String update(@PathVariable Long productId, @Valid ProductRequest productRequest, @RequestParam(value = "imageFile") MultipartFile multipartFile) {
-        RsData<Product> updateRsData = productService.update(rq.getMember(), productId, productRequest, multipartFile);
+    public String update(@PathVariable Long productId, @Valid ProductRequest productRequest) {
+        RsData<Product> updateRsData = productService.update(rq.getMember(), productId, productRequest);
+        if (updateRsData.isFail()) {
+            return rq.historyBack(updateRsData);
+        }
         return rq.redirectWithMsg("/product/detail/%s".formatted(productId), updateRsData);
     }
-
 
     @PostMapping("/delete/{productId}")
     @PreAuthorize("hasAuthority('SELLER')")
     @Operation(summary = "상품 삭제")
     public String delete(@PathVariable Long productId) {
-        RsData<Product> deleteRsData = productService.delete(rq.getMember(), productId);
+        RsData<Product> deleteRsData = productService.softDelete(rq.getMember(), productId);
+        if (deleteRsData.isFail()) {
+            return rq.historyBack(deleteRsData);
+        }
         return rq.redirectWithMsg("/seller/myProduct", deleteRsData);
     }
 
@@ -129,7 +145,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/like/{id}")
     @Operation(summary = "상품 좋아요 등록")
-    public Integer likeProduct(@PathVariable("id") Long id) {
+    public RsData<Product> likeProduct(@PathVariable("id") Long id) {
         return productService.like(rq.getMember(), id);
     }
 
@@ -137,20 +153,19 @@ public class ProductController {
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/unlike/{id}")
     @Operation(summary = "상품 좋아요 취소")
-    public Integer unlikeProduct(@PathVariable("id") Long id) {
+    public RsData unlikeProduct(@PathVariable("id") Long id) {
         return productService.unlike(rq.getMember(), id);
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/unlike/{id}")
-    @Operation(summary = "상품 좋아요 리스트에서 좋아요 삭제")
+    @Operation(summary = "관심 상품 목록에서 좋아요 삭제")
     public String unlike(@PathVariable("id") Long id) {
-        productService.unlike(rq.getMember(), id);
+        RsData<Product> unlikeRsData = productService.unlike(rq.getMember(), id);
+        if (unlikeRsData.isFail()) {
+            return rq.historyBack(unlikeRsData);
+        }
         return rq.redirectWithMsg("/buyer/myLikes", "관심 상품이 삭제되었습니다.");
-    }
-
-    private List<ProductResponse> convertToResponse(List<Product> products) {
-        return products.stream().map(ProductResponse::of).toList();
     }
 
     private void populateModel(Model model) {
@@ -160,15 +175,10 @@ public class ProductController {
         model.addAttribute("categories", categories);
     }
 
-    private void populateModel(Model model, Page<Product> productPageResult, HttpServletRequest request) {
+    private void populateModel(Model model, String title, Page<Product> productPage, HttpServletRequest request) {
         List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
         List<Category> categories = categoryService.findAllByOrderByNameAsc();
-        model.addAttribute("nutrients", nutrients);
-        model.addAttribute("categories", categories);
-        model.addAttribute("page", productPageResult);
-        model.addAttribute("products", convertToResponse(productPageResult.getContent()));
-        model.addAttribute("pagingUrl", getPagingUrl(request));
-
+        model.addAttribute("response", ProductPageResponse.of(title, productPage, nutrients, categories, getPagingUrl(request)));
     }
 
     private String getPagingUrl(HttpServletRequest request) {
