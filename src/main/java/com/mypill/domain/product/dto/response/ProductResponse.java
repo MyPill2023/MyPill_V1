@@ -1,66 +1,25 @@
 package com.mypill.domain.product.dto.response;
 
-import com.mypill.domain.image.entity.Image;
-import com.mypill.domain.category.entity.Category;
-import com.mypill.domain.member.entity.Member;
-import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.product.entity.Product;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @Data
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductResponse {
 
-    private Long id;
-    private Member seller;
-    private String name;
-    private String description;
-    private Long price;
-    private Long stock;
-    @Builder.Default
-    private List<Nutrient> nutrients = new ArrayList<>();
-    @Builder.Default
-    private List<Category> categories = new ArrayList<>();
-    @Builder.Default
-    private Set<Member> likedMembers = new HashSet<>();
+    private Product product;
     private boolean isLiked;
-    private Image image;
+
+    public ProductResponse(Product product) {
+        this.product = product;
+    }
 
     public static ProductResponse of(Product product) {
-        return ProductResponse.builder()
-                .id(product.getId())
-                .seller(product.getSeller())
-                .name(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .stock(product.getStock())
-                .nutrients(product.getNutrients())
-                .categories(product.getCategories())
-                .likedMembers(product.getLikedMembers())
-                .image(product.getImage())
-                .build();
+        return new ProductResponse(product);
     }
 
     public static ProductResponse of(Product product, boolean isLikedInput) {
-        return ProductResponse.builder()
-                .id(product.getId())
-                .seller(product.getSeller())
-                .name(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .stock(product.getStock())
-                .nutrients(product.getNutrients())
-                .categories(product.getCategories())
-                .likedMembers(product.getLikedMembers())
-                .isLiked(isLikedInput)
-                .image(product.getImage())
-                .build();
+        return new ProductResponse(product, isLikedInput);
     }
 }

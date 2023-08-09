@@ -42,10 +42,10 @@ class CartServiceTests {
         testUser1 = memberService.join(new JoinRequest("testUser1", "김철수", "1234", "test1@test.com", "구매자"), true).getData();
         testUser2 = memberService.join(new JoinRequest("testUser2", "김영희", "1234", "test2@test.com", "구매자"), true).getData();
         Member testUserSeller1 = memberService.join(new JoinRequest("testUserSeller1", "김철수", "1234", "testSeller1@test.com", "판매자")).getData();
-        testProduct1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1",
-                12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
-        testProduct2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2",
-                12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        testProduct1 = productService.create(new ProductRequest("테스트 상품1", "테스트 설명1",
+                12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
+        testProduct2 = productService.create(new ProductRequest("테스트 상품2", "테스트 설명2",
+                12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
     }
 
     @Test

@@ -35,9 +35,9 @@
                 <div id="accordion-collapse-body-2" class="hidden" aria-labelledby="accordion-collapse-heading-2">
                     <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
                         <div class="grid grid-cols-2 gap-4">
-                            <div th:each="nutrient, loop : ${nutrients}">
+                            <div th:each="nutrient, loop : ${response.nutrients}">
                                 <a th:href="@{|/product/list/nutrient/${nutrient.id}|}"
-                                   th:class="${nutrient.name == title ? 'badge badge-accent badge-lg hover:bg-green-100' :
+                                   th:class="${nutrient.name == response.title ? 'badge badge-accent badge-lg hover:bg-green-100' :
                                    'badge badge-ghost badge-lg hover:bg-green-100'}"
                                    th:text="${nutrient.name}"></a>
                             </div>
@@ -61,9 +61,9 @@
                 <div id="accordion-collapse-body-3" class="hidden" aria-labelledby="accordion-collapse-heading-3">
                     <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700">
                         <div class="grid grid-cols-2 gap-4">
-                            <div th:each="category, loop : ${categories}">
+                            <div th:each="category, loop : ${response.categories}">
                                 <a th:href="@{|/product/list/category/${category.id}|}"
-                                   th:class="${category.name == title ? 'badge badge-accent badge-lg hover:bg-green-100' :
+                                   th:class="${category.name == response.title ? 'badge badge-accent badge-lg hover:bg-green-100' :
                                    'badge badge-ghost badge-lg hover:bg-green-100'}"
                                    th:text="${category.name}"></a>
                             </div>
@@ -73,10 +73,10 @@
             </div>
 
 
-            <h1 class="text-2xl font-bold text-center my-5" th:text="${title}">
+            <h1 class="text-2xl font-bold text-center my-5" th:text="${response.title}">
             </h1>
 
-            <div th:each="product, loop : ${products}"
+            <div th:each="product, loop : ${response.productPage.content}"
                  class="bg-base-100 border-b border-gray-200 pt-3 pb-6">
                 <a th:href="@{|/product/detail/${product.id}|}">
 
@@ -108,36 +108,36 @@
             <div class="pagination">
                 <ul class="flex justify-center">
                     <li>
-                        <a th:if="${page.hasPrevious()} and ${page.number != 0}"
-                           th:href="@{${pagingUrl}(pageNumber=0, pageSize=${page.size})}"
+                        <a th:if="${response.productPage.hasPrevious()} and ${response.productPage.number != 0}"
+                           th:href="@{${response.pageUrl}(pageNumber=0, pageSize=${response.productPage.size})}"
                            class="text-blue-500 hover:text-blue-700 mr-4">
                             처음
                         </a>
                     </li>
-                    <li th:if="${page.hasPrevious()}">
-                        <a th:href="@{${pagingUrl}(pageNumber=${page.number - 1}, pageSize=${page.size})}"
+                    <li th:if="${response.productPage.hasPrevious()}">
+                        <a th:href="@{${response.pageUrl}(pageNumber=${response.productPage.number - 1}, pageSize=${response.productPage.size})}"
                            class="text-blue-500 hover:text-blue-700 mr-4">
                             이전
                         </a>
                     </li>
-                    <li th:each="pageNum : ${#numbers.sequence(0, page.totalPages - 1)}"
-                        th:class="${page.totalPages > 1 and pageNum >= page.number - 2 and pageNum <= page.number + 2} ? 'mr-4' : ''">
-                        <a th:if="${page.totalPages > 1 and pageNum >= page.number - 2 and pageNum <= page.number + 2}"
-                           th:href="@{${pagingUrl}(pageNumber=${pageNum}, pageSize=${page.size})}"
+                    <li th:each="pageNum : ${#numbers.sequence(0, response.productPage.totalPages - 1)}"
+                        th:class="${response.productPage.totalPages > 1 and pageNum >= response.productPage.number - 2 and pageNum <= response.productPage.number + 2} ? 'mr-4' : ''">
+                        <a th:if="${response.productPage.totalPages > 1 and pageNum >= response.productPage.number - 2 and pageNum <= response.productPage.number + 2}"
+                           th:href="@{${response.pageUrl}(pageNumber=${pageNum}, pageSize=${response.productPage.size})}"
                            class="text-blue-500 hover:text-blue-700 font-bold"
-                           th:class="${pageNum == page.number ? 'text-blue-700' : ''}">
+                           th:class="${pageNum == response.productPage.number ? 'text-blue-700' : ''}">
                             <span th:text="${pageNum + 1}"></span>
                         </a>
                     </li>
-                    <li th:if="${page.hasNext()}">
-                        <a th:href="@{${pagingUrl}(pageNumber=${page.number + 1}, pageSize=${page.size})}"
+                    <li th:if="${response.productPage.hasNext()}">
+                        <a th:href="@{${response.pageUrl}(pageNumber=${response.productPage.number + 1}, pageSize=${response.productPage.size})}"
                            class="text-blue-500 hover:text-blue-700">
                             다음
                         </a>
                     </li>
                     <li>
-                        <a th:if="${page.hasNext()} and ${page.number != page.totalPages - 1}"
-                           th:href="@{${pagingUrl}(pageNumber=${page.totalPages - 1}, pageSize=${page.size})}"
+                        <a th:if="${response.productPage.hasNext()} and ${response.productPage.number != response.productPage.totalPages - 1}"
+                           th:href="@{${response.pageUrl}(pageNumber=${response.productPage.totalPages - 1}, pageSize=${response.productPage.size})}"
                            class="text-blue-500 hover:text-blue-700 ml-4">
                             마지막
                         </a>

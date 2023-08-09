@@ -23,18 +23,23 @@ import java.util.List;
 @SuperBuilder(toBuilder = true)
 public class Post extends BaseEntity implements ImageOperator {
     private Long posterId;
+
     @NotNull
     private String title;
+
     @Column(columnDefinition = "TEXT")
     @NotNull
     private String content;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
     private Image image;
 
-    public static Post createPost(PostRequest postRequest, Long posterId) {
+    public static Post of(PostRequest postRequest, Long posterId) {
         return Post.builder()
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
@@ -51,6 +56,7 @@ public class Post extends BaseEntity implements ImageOperator {
         this.content = postRequest.getContent();
     }
 
+    @Override
     public void addImage(Image image) {
         this.image = image;
     }

@@ -22,13 +22,23 @@ public class Image extends BaseEntity {
     private String filename;
     private String originalUrl;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @OneToOne(mappedBy = "image", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Product product;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @OneToOne(mappedBy = "image", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Post post;
+
+    public Image(AmazonS3Dto amazonS3ImageDto, MultipartFile multipartFile, ImageOperator imageOperator) {
+        this.filename = multipartFile.getOriginalFilename();
+        this.filepath = amazonS3ImageDto.getCdnUrl();
+        this.originalUrl = amazonS3ImageDto.getOriginUrl();
+        if (imageOperator instanceof Product) {
+            this.product = (Product) imageOperator;
+        }
+        if (imageOperator instanceof Post) {
+            this.post = (Post) imageOperator;
+        }
+    }
 
     public Image(AmazonS3Dto amazonS3ImageDto, MultipartFile multipartFile, Product product) {
         this.filename = multipartFile.getOriginalFilename();

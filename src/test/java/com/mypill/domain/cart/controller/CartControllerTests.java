@@ -58,8 +58,8 @@ class CartControllerTests {
     @WithMockUser(username = "testUser1", authorities = "BUYER")
     void addCartProductSuccessTest() throws Exception {
         // GIVEN
-        Product product2 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품2", "테스트 설명2",
-                15000L, 100L, asList(3L, 4L), asList(3L, 4L)), emptyFile).getData();
+        Product product2 = productService.create(new ProductRequest("테스트 상품2", "테스트 설명2",
+                15000L, 100L, asList(3L, 4L), asList(3L, 4L), emptyFile), testUserSeller1).getData();
 
         // WHEN
         ResultActions resultActions = mvc
@@ -83,8 +83,8 @@ class CartControllerTests {
     @WithMockUser(username = "testUser1", authorities = "BUYER")
     void addCartProductFailTest() throws Exception {
         // GIVEN
-        Product product1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1",
-                12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        Product product1 = productService.create(new ProductRequest("테스트 상품1", "테스트 설명1",
+                12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
         CartProduct cartProduct = cartService.addCartProduct(testUser1, new CartProductRequest(product1.getId(), 1L)).getData();
 
         // WHEN
@@ -109,8 +109,8 @@ class CartControllerTests {
     @WithMockUser(username = "testUser1", authorities = "BUYER")
     void softDeleteCartProductSuccessTest() throws Exception {
         // GIVEN
-        Product product1 = productService.create(new ProductRequest(testUserSeller1.getId(), "테스트 상품1", "테스트 설명1",
-                12000L, 100L, asList(1L, 2L), asList(1L, 2L)), emptyFile).getData();
+        Product product1 = productService.create(new ProductRequest("테스트 상품1", "테스트 설명1",
+                12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
         CartProduct cartProduct = cartService.addCartProduct(testUser1, new CartProductRequest(product1.getId(), 1L)).getData();
 
         // WHEN
