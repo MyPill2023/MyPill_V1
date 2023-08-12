@@ -26,9 +26,9 @@
                                     <span>주문하신 </span>
                                     <span th:text="${notification.orderItem.product.name}" class="font-bold "></span>
                                     <span>의 상태가 </span>
-                                    <span th:class="${notification.newStatus.priority <= 1 ? 'f badge-info' :
-                                                (notification.newStatus.priority <= 3 ? 'badge badge-success' :
-                                                (notification.newStatus.priority == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
+                                    <span th:class="${notification.newStatus.getNumber <= 1 ? 'f badge-info' :
+                                                (notification.newStatus.getNumber <= 3 ? 'badge badge-success' :
+                                                (notification.newStatus.getNumber == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
                                           th:text="${notification.newStatus.value}"></span>
                                     <span>(으)로 변경되었습니다.</span>
                                 </div>

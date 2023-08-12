@@ -2,8 +2,6 @@ package com.mypill.domain.order.entity;
 
 import lombok.Getter;
 
-import java.util.Arrays;
-
 @Getter
 public enum OrderStatus {
     BEFORE("주문 전", 0),
@@ -13,11 +11,11 @@ public enum OrderStatus {
     DELIVERED("배송 완료", 4),
     CANCELED("주문 취소", 5);
     private final String value;
-    private final int priority;
+    private final int number;
 
-    OrderStatus(String value, int priority) {
+    OrderStatus(String value, int number) {
         this.value = value;
-        this.priority = priority;
+        this.number = number;
     }
 
     public static OrderStatus findByValue(String value) {

@@ -6,6 +6,7 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.global.AppConfig;
 import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @Table(name = "orders")
 public class Order extends BaseEntity {
 
+    @Column(unique = true)
     private String orderNumber;
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,7 +33,7 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
-    @Column(nullable = false)
+    @NotNull
     private Long totalPrice;
     @Embedded
     private Payment payment;
@@ -59,12 +61,11 @@ public class Order extends BaseEntity {
 
     public void makeName() {
         StringBuilder sb = new StringBuilder();
-        String productName;
         if (orderItems.isEmpty()) {
-            productName = "";
-        } else {
-            productName = orderItems.get(0).getProduct().getName();
+            this.name = "";
+            return;
         }
+        String productName = orderItems.get(0).getProduct().getName();
         int maxOrderNameLength = AppConfig.getMaxOrderNameLength();
         if (productName.length() > maxOrderNameLength) {
             sb.append(productName, 0, maxOrderNameLength + 1);
@@ -73,23 +74,23 @@ public class Order extends BaseEntity {
             sb.append(productName);
         }
         if (orderItems.size() > 1) {
-            sb.append(" 외 %d".formatted(orderItems.size() - 1));
+            sb.append(" 외 %d 건".formatted(orderItems.size() - 1));
         }
         this.name = sb.toString();
     }
 
-    public void setPaymentDone(String orderId) {
+    public void setPaymentDone(String orderNumber) {
         for (OrderItem orderItem : orderItems) {
-            orderItem.setPaymentDone();
+            orderItem.updateStatus(OrderStatus.ORDERED);
         }
-        this.orderNumber = orderId;
+        this.orderNumber = orderNumber;
     }
 
     public void updatePayment(String paymentKey, String method, Long totalAmount, LocalDateTime payDate, String status) {
         this.payment = new Payment(paymentKey, method, totalAmount, payDate, status);
     }
 
-    public void updatePayment(LocalDateTime cancelDate, String status) {
+    public void cancelPayment(LocalDateTime cancelDate, String status) {
         this.payment.updateCancelData(cancelDate, status);
     }
 
@@ -97,7 +98,7 @@ public class Order extends BaseEntity {
         this.primaryOrderStatus = orderStatus;
     }
 
-    public void addAddress(Address address) {
+    public void setAddress(Address address) {
         this.deliveryAddress = address;
     }
 }

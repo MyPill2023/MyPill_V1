@@ -28,8 +28,8 @@ public class Notification extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-    @Enumerated
     @NotNull
+    @Enumerated
     private NotificationTypeCode typeCode;
     private LocalDateTime readDate;
     @ManyToOne(fetch = FetchType.LAZY)

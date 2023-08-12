@@ -3,6 +3,7 @@ package com.mypill.domain.order.entity;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,11 +21,11 @@ public class OrderItem extends BaseEntity {
     private Order order;
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
-    @Column(nullable = false)
+    @NotNull
     private Long totalPrice;
-    @Column(nullable = false)
+    @NotNull
     private Long price;
-    @Column(nullable = false)
+    @NotNull
     private Long quantity;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -44,11 +45,4 @@ public class OrderItem extends BaseEntity {
         this.status = status;
     }
 
-    public void setPaymentDone() {
-        status = OrderStatus.ORDERED;
-    }
-
-    public Long getTotalPrice() {
-        return totalPrice;
-    }
 }

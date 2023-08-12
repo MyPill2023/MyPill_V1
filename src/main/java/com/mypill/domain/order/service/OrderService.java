@@ -51,7 +51,7 @@ public class OrderService {
     private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher publisher;
 
-    public RsData<Order> getOrderForm(Member actor, Long orderId) {
+    public RsData<Order> getOrder(Member actor, Long orderId) {
         Order order = findById(orderId).orElse(null);
         if (order == null) {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
@@ -112,10 +112,10 @@ public class OrderService {
     }
 
     @Transactional
-    public void payByTossPayments(Order order, String orderId, Long addressId) {
-        order.setPaymentDone(orderId);
+    public void payByTossPayments(Order order, String orderNumber, Long addressId) {
+        order.setPaymentDone(orderNumber);
         Address address = addressService.findById(addressId).orElse(null);
-        order.addAddress(address);
+        order.setAddress(address);
         Set<Member> uniqueSellers = new HashSet<>();
         order.getOrderItems()
                 .forEach(orderItem -> {
@@ -136,6 +136,7 @@ public class OrderService {
         order.updatePayment(paymentKey, method, totalAmount, payDate, status);
         orderRepository.save(order);
     }
+
     @Transactional(readOnly = true)
     public RsData<Order> getOrderDetail(Long orderId) {
         Order order = findById(orderId).orElse(null);
@@ -148,6 +149,7 @@ public class OrderService {
         }
         return RsData.of("S-1", order);
     }
+
     @Transactional(readOnly = true)
     public RsData<Order> checkCanCancel(Member buyer, Long orderId) {
         Order order = findByIdAndPaymentIsNotNull(orderId).orElse(null);
@@ -191,7 +193,7 @@ public class OrderService {
                 LocalDateTime cancelDate = LocalDateTime.parse(approvedAt, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                 String status = responseEntity.getBody().get("status").asText();
 
-                order.updatePayment(cancelDate, status);
+                order.cancelPayment(cancelDate, status);
                 Set<Member> uniqueSeller = new HashSet<>();
                 order.getOrderItems()
                         .forEach(orderItem -> {
@@ -232,30 +234,31 @@ public class OrderService {
 
     @Transactional
     public void updatePrimaryOrderStatus(Order order) {
-        order.updatePrimaryOrderStatus(getHighestPriorityOrderItemStatus(order));
+        order.updatePrimaryOrderStatus(getPrimaryOrderItemStatus(order));
     }
 
-    public OrderStatus getHighestPriorityOrderItemStatus(Order order) {
+    public OrderStatus getPrimaryOrderItemStatus(Order order) {
         List<OrderItem> orderItems = order.getOrderItems();
         if (orderItems.isEmpty()) {
             return null;
         }
         return orderItems.stream()
                 .map(OrderItem::getStatus)
-                .min(Comparator.comparing(OrderStatus::getPriority))
+                .min(Comparator.comparing(OrderStatus::getNumber))
                 .orElse(null);
     }
+
     @Transactional(readOnly = true)
-    public RsData<Order> validateOrder(Long id, String orderId, Long amount) {
+    public RsData<Order> validateOrder(Long id, PayRequest payRequest) {
         Order order = findById(id).orElse(null);
         if (order == null) {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
-        long orderIdInputted = Long.parseLong(orderId.split("_")[0]);
+        long orderIdInputted = Long.parseLong(payRequest.getOrderId().split("_")[0]);
         if (id != orderIdInputted) {
             return RsData.of("F-2", "주문번호가 일치하지 않습니다.");
         }
-        if (!amount.equals(order.getTotalPrice())) {
+        if (!payRequest.getAmount().equals(order.getTotalPrice())) {
             return RsData.of("F-3", "주문 가격과 결제 가격이 일치하지 않습니다.");
         }
         for (OrderItem orderItem : order.getOrderItems()) {
@@ -334,7 +337,7 @@ public class OrderService {
 
     public OrderStatus[] getFilteredOrderStatus() {
         return Arrays.stream(OrderStatus.values())
-                .filter(status -> status.getPriority() >= 1 && status.getPriority() <= 4)
+                .filter(status -> status.getNumber() >= 1 && status.getNumber() <= 4)
                 .toArray(OrderStatus[]::new);
     }
 
@@ -362,7 +365,7 @@ public class OrderService {
                 return RsData.of("F-2", "결제 실패", PayResponse.of(payRequest, failNode));
             }
         } catch (Exception e) {
-            return RsData.of("F-1", "결제 실패");
+            return RsData.of("F-1", "API 호출 오류", PayResponse.of(payRequest, "API 호출 오류", "F-1"));
         }
     }
 
@@ -375,6 +378,11 @@ public class OrderService {
         Long totalAmount = body.get("totalAmount").asLong();
         String status = body.get("status").asText();
         updatePayment(order, paymentKey, method, totalAmount, payDate, status);
+    }
+
+    public List<OrderItem> findByProductSellerIdAndOrderId(Long sellerId, Long orderId) {
+        return findByProductSellerIdAndOrderId(sellerId, orderId);
+
     }
 
     public static class SalesCalculator {
