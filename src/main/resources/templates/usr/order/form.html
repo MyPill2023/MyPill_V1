@@ -100,8 +100,8 @@
                     orderId: orderId + "_" + (Math.random() + "").substring(2),
                     orderName: orderName,
                     customerName: customerName,
-                    successUrl: window.location.origin + "/order/" + orderId + "/success?addressId=" + addressId,
-                    failUrl:  window.location.origin + "/order/" + orderId + "/fail"
+                    successUrl: window.location.origin + "/order/success?addressId=" + addressId,
+                    failUrl:  window.location.origin + "/order/fail"
                 });
             }else {
                 toastWarning("배송지를 선택해주세요.");

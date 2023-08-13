@@ -104,6 +104,18 @@ public class CartService {
         return RsData.of("S-1", "장바구니에서 상품이 삭제되었습니다.", cartProduct);
     }
 
+    @Transactional
+    public void hardDeleteCartProduct(CartProduct cartProduct) {
+        cartProductRepository.delete(cartProduct);
+    }
+
+    @Transactional
+    public void hardDeleteCartProducts(List<CartProduct> cartProducts) {
+        for (CartProduct cartProduct : cartProducts) {
+            hardDeleteCartProduct(cartProduct);
+        }
+    }
+
     public Optional<CartProduct> findByCartIdAndProductId(Long cartId, Long productId) {
         return cartProductRepository.findByCartIdAndProductIdAndDeleteDateIsNull(cartId, productId);
     }
@@ -123,4 +135,5 @@ public class CartService {
     private boolean stockNoAvailable(Long stock, Long quantity) {
         return stock < quantity;
     }
+
 }

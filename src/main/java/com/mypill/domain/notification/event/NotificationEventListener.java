@@ -1,10 +1,7 @@
 package com.mypill.domain.notification.event;
 
 import com.mypill.domain.notification.service.NotificationService;
-import com.mypill.global.event.EventAfterOrderCanceled;
-import com.mypill.global.event.EventAfterOrderPayment;
-import com.mypill.global.event.EventAfterOrderStatusUpdate;
-import com.mypill.global.event.EventBeforeDiaryCheck;
+import com.mypill.global.event.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -27,6 +24,10 @@ public class NotificationEventListener {
     @EventListener
     public void listen(EventAfterOrderPayment event) {
         notificationService.whenAfterOrderPayment(event.getSeller(), event.getOrder());
+    }
+    @EventListener
+    public void listen(EventAfterOrderChanged event) {
+        notificationService.whenAfterOrderChanged(event.getSeller(), event.getOrder(), event.getOrderStatus());
     }
 
     @EventListener

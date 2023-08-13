@@ -3,12 +3,11 @@ package com.mypill.domain.order.controller;
 import com.mypill.domain.address.dto.response.AddressResponse;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.order.dto.request.PayRequest;
-import com.mypill.domain.order.dto.response.OrderItemResponse;
+import com.mypill.domain.order.dto.response.OrderManagementResponse;
 import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.dto.response.PayResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
-import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsdata.RsData;
@@ -36,7 +35,7 @@ public class OrderController {
     @GetMapping("/form/{orderId}")
     @Operation(summary = "주문하기 페이지")
     public String showOrderForm(@PathVariable Long orderId, Model model) {
-        RsData<Order> orderRsData = orderService.getOrder(rq.getMember(), orderId);
+        RsData<Order> orderRsData = orderService.getOrderForm(rq.getMember(), orderId);
         if (orderRsData.isFail()) {
             return rq.historyBack(orderRsData);
         }
@@ -92,7 +91,7 @@ public class OrderController {
     @GetMapping("/detail/{orderId}")
     @Operation(summary = "구매자의 주문 내역 조회 페이지")
     public String showOrderDetail(@PathVariable Long orderId, Model model) {
-        RsData<Order> orderDetailRsData = orderService.getOrderDetail(orderId);
+        RsData<Order> orderDetailRsData = orderService.getOrderDetails(rq.getMember(), orderId);
         if (orderDetailRsData.isFail()) {
             return rq.historyBack(orderDetailRsData);
         }
@@ -101,10 +100,10 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @GetMapping("/{id}/success")
+    @GetMapping("/success")
     @Operation(summary = "결제 요청 성공")
-    public String confirmPayment(@PathVariable long id, PayRequest payRequest, Model model) {
-        RsData<Order> validateRsData = orderService.validateOrder(id, payRequest);
+    public String confirmPayment(PayRequest payRequest, Model model) {
+        RsData<Order> validateRsData = orderService.validateOrder(payRequest);
         if (validateRsData.isFail()) {
             return rq.historyBack(validateRsData);
         }
@@ -113,11 +112,11 @@ public class OrderController {
             model.addAttribute("payResponse", payRsData.getData());
             return rq.historyBack(payRsData);
         }
-        return rq.redirectWithMsg("/order/detail/%s".formatted(id), payRsData);
+        return rq.redirectWithMsg("/order/detail/%s".formatted(((Order) payRsData.getData()).getId()), payRsData);
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @GetMapping("/{id}/fail")
+    @GetMapping("/fail")
     @Operation(summary = "결제 실패")
     public String failPayment(PayResponse payResponse, Model model) {
         model.addAttribute("payResponse", payResponse);
@@ -128,7 +127,7 @@ public class OrderController {
     @PostMapping("/cancel/{orderId}")
     @Operation(summary = "주문 취소")
     public String cancel(@PathVariable Long orderId) {
-        RsData<Order> checkRsData = orderService.checkCanCancel(rq.getMember(), orderId);
+        RsData<Order> checkRsData = orderService.checkIfOrderCanBeCancelled(rq.getMember(), orderId);
         if (checkRsData.isFail()) {
             return rq.historyBack(checkRsData);
         }
@@ -143,37 +142,24 @@ public class OrderController {
     @GetMapping("/management/{orderId}")
     @Operation(summary = "판매자의 주문 관리 페이지")
     public String management(@PathVariable Long orderId, Model model) {
-        RsData<Order> orderDetailRsData = orderService.getOrderDetail(orderId);
+        RsData<Order> orderDetailRsData = orderService.getOrderDetails(rq.getMember(), orderId);
         if (orderDetailRsData.isFail()) {
             return rq.historyBack(orderDetailRsData);
         }
         Order order = orderDetailRsData.getData();
         List<OrderItem> orderItems = orderService.findByProductSellerIdAndOrderId(rq.getMember().getId(), orderId);
-        List<OrderItemResponse> orderItemResponses = orderService.findByProductSellerIdAndOrderId(rq.getMember().getId(), orderId)
-                .stream()
-                .map(OrderItemResponse::of)
-                .toList();
-//        List<OrderItemResponse> orderItemResponses = order.getOrderItems().stream()
-//                .filter(orderItem -> orderItem.getProduct().getSeller().getId().equals(rq.getMember().getId()))
-//                .map(OrderItemResponse::of)
-//                .toList();
-        // @Query("select oi FROM orderItem oi JOIN oi.product p WHERE p.seller.id = sellerId AND oi.order = order")
-        //List<OrderItem> orderItems = orderService.findByProductSellerIdAndOrderId(rq.getMember().getId(), orderId);
-        model.addAttribute("order", OrderResponse.of(order));
-        model.addAttribute("orderItems", orderItemResponses);
-        List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.values());
-        model.addAttribute("orderStatuses", orderStatuses);
+        model.addAttribute("response", OrderManagementResponse.of(order, orderItems));
         return "usr/order/management";
     }
 
     @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping("/update/status/{orderItemId}")
     @Operation(summary = "판매자의 주문 상태 업데이트")
-    public String updateOrderStatus(@PathVariable Long orderItemId, @RequestParam Long orderId, @RequestParam String newStatus) {
+    public String updateOrderStatus(@PathVariable Long orderItemId, @RequestParam String newStatus) {
         RsData<OrderItem> updateRsData = orderService.updateOrderStatus(orderItemId, newStatus);
         if (updateRsData.isFail()) {
             rq.historyBack(updateRsData);
         }
-        return rq.redirectWithMsg("/order/management/%s".formatted(orderId), updateRsData);
+        return rq.redirectWithMsg("/order/management/%s".formatted(updateRsData.getData().getOrder().getId()), updateRsData);
     }
 }

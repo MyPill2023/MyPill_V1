@@ -28,17 +28,16 @@ public class Order extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member buyer;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<CartProduct> cartProducts = new ArrayList<>();
+    private List<CartProduct> cartProducts;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<OrderItem> orderItems;
     @NotNull
     private Long totalPrice;
     @Embedded
     private Payment payment;
     @OneToOne(fetch = FetchType.LAZY)
     private Address deliveryAddress;
+    @Enumerated(EnumType.STRING)
     private OrderStatus primaryOrderStatus;
 
     public Order(Member buyer) {
@@ -46,6 +45,7 @@ public class Order extends BaseEntity {
         this.cartProducts = new ArrayList<>();
         this.orderItems = new ArrayList<>();
         this.totalPrice = 0L;
+        this.primaryOrderStatus = OrderStatus.BEFORE;
     }
 
     public void addOrderItem(OrderItem orderItem) {
@@ -60,18 +60,17 @@ public class Order extends BaseEntity {
     }
 
     public void makeName() {
-        StringBuilder sb = new StringBuilder();
         if (orderItems.isEmpty()) {
             this.name = "";
             return;
         }
         String productName = orderItems.get(0).getProduct().getName();
+        StringBuilder sb = new StringBuilder(productName);
         int maxOrderNameLength = AppConfig.getMaxOrderNameLength();
-        if (productName.length() > maxOrderNameLength) {
-            sb.append(productName, 0, maxOrderNameLength + 1);
+
+        if (sb.length() > maxOrderNameLength) {
+            sb.setLength(maxOrderNameLength + 1);
             sb.append("...");
-        } else {
-            sb.append(productName);
         }
         if (orderItems.size() > 1) {
             sb.append(" 외 %d 건".formatted(orderItems.size() - 1));

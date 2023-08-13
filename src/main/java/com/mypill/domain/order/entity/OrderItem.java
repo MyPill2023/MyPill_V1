@@ -34,6 +34,7 @@ public class OrderItem extends BaseEntity {
         this.product = product;
         this.price = product.getPrice();
         this.quantity = quantity;
+        this.status = OrderStatus.BEFORE;
         this.totalPrice = this.price * this.quantity;
     }
 

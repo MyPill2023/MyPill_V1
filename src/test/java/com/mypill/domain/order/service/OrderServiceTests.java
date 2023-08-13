@@ -90,7 +90,7 @@ class OrderServiceTests {
         Order order = orderService.createFromCart(testUser1).getData();
 
         //WHEN
-        orderService.payByTossPayments(order, order.getId() + "_1234", address.getId());
+        orderService.setOrderAsPaymentDone(order, order.getId() + "_1234", address.getId());
 
         //THEN
         assertThat(order).isNotNull();
@@ -123,7 +123,7 @@ class OrderServiceTests {
     void testUpdateOrderStatusSuccess() {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
-        orderService.payByTossPayments(order, order.getId() + "_1234", address.getId());
+        orderService.setOrderAsPaymentDone(order, order.getId() + "_1234", address.getId());
 
         //WHEN
         OrderItem orderItem = order.getOrderItems().get(0);

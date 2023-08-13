@@ -19,8 +19,7 @@ import com.mypill.domain.order.repository.OrderRepository;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
 import com.mypill.global.AppConfig;
-import com.mypill.global.event.EventAfterOrderCanceled;
-import com.mypill.global.event.EventAfterOrderPayment;
+import com.mypill.global.event.EventAfterOrderChanged;
 import com.mypill.global.event.EventAfterOrderStatusUpdate;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsdata.RsData;
@@ -35,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -51,12 +51,13 @@ public class OrderService {
     private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher publisher;
 
-    public RsData<Order> getOrder(Member actor, Long orderId) {
+    @Transactional(readOnly = true)
+    public RsData<Order> getOrderForm(Member buyer, Long orderId) {
         Order order = findById(orderId).orElse(null);
         if (order == null) {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
-        if (!order.getBuyer().getId().equals(actor.getId())) {
+        if (!Objects.equals(order.getBuyer().getId(), buyer.getId())) {
             return RsData.of("F-2", "다른 회원의 주문에 접근할 수 없습니다.");
         }
         if (order.getPayment() != null) {
@@ -84,51 +85,46 @@ public class OrderService {
         if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
-        List<OrderItem> orderItems = new ArrayList<>();
-        orderItems.add(new OrderItem(product, quantity));
-        Order order = create(buyer, orderItems);
+        OrderItem orderItem = new OrderItem(product, quantity);
+        Order order = create(buyer, Collections.singletonList(orderItem));
         return RsData.of("S-1", "주문이 생성되었습니다.", order);
     }
 
-    @Transactional
-    public RsData<Order> createAndConnect(Member buyer, List<CartProduct> cartProducts) {
+    private RsData<Order> createAndConnect(Member buyer, List<CartProduct> cartProducts) {
         List<OrderItem> orderItems = createOrderItemsFromCartProducts(cartProducts);
         Order order = create(buyer, orderItems);
-        addCartProductsToOrder(order, cartProducts);
+        cartProducts.forEach(order::addCartProduct);
         return RsData.of("S-1", "주문이 생성되었습니다.", order);
     }
 
-    @Transactional
-    public Order create(Member buyer, List<OrderItem> orderItems) {
+    private Order create(Member buyer, List<OrderItem> orderItems) {
         Order order = new Order(buyer);
-        for (OrderItem orderItem : orderItems) {
-            order.addOrderItem(orderItem);
-            orderItem.updateStatus(OrderStatus.BEFORE);
-        }
+        orderItems.forEach(order::addOrderItem);
         order.makeName();
-        order.updatePrimaryOrderStatus(OrderStatus.BEFORE);
-        orderRepository.save(order);
-        return order;
+        return orderRepository.save(order);
     }
 
     @Transactional
-    public void payByTossPayments(Order order, String orderNumber, Long addressId) {
-        order.setPaymentDone(orderNumber);
+    public void setOrderAsPaymentDone(Order order, String orderNumber, Long addressId) {
         Address address = addressService.findById(addressId).orElse(null);
         order.setAddress(address);
+        order.setPaymentDone(orderNumber);
+        processAfterPaymentOrCancellation(order, OrderStatus.ORDERED, OrderItem::getQuantity);
+        cartService.hardDeleteCartProducts(order.getCartProducts());
+    }
+
+    private void processAfterPaymentOrCancellation(Order order, OrderStatus orderStatus, Function<OrderItem, Long> quantityModifier) {
         Set<Member> uniqueSellers = new HashSet<>();
         order.getOrderItems()
                 .forEach(orderItem -> {
-                    orderItem.updateStatus(OrderStatus.ORDERED);
-                    productService.updateStockAndSalesByOrder(orderItem.getProduct().getId(), orderItem.getQuantity()); // 재고 업데이트
+                    orderItem.updateStatus(orderStatus);
+                    productService.updateStockAndSalesByOrder(orderItem.getProduct().getId(), quantityModifier.apply(orderItem)); // 재고 업데이트
                     Member seller = orderItem.getProduct().getSeller();
                     if (uniqueSellers.add(seller)) {
-                        publisher.publishEvent(new EventAfterOrderPayment(this, seller, order)); // 이벤트 - 판매자에게 알림
+                        publisher.publishEvent(new EventAfterOrderChanged(this, seller, order, orderStatus)); // 이벤트 - 판매자에게 알림
                     }
                 });
-        order.updatePrimaryOrderStatus(OrderStatus.ORDERED);
-        order.getCartProducts().forEach(CartProduct::softDelete); // 장바구니에서 삭제
-        orderRepository.save(order);
+        order.updatePrimaryOrderStatus(orderStatus);
     }
 
     @Transactional
@@ -138,20 +134,19 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public RsData<Order> getOrderDetail(Long orderId) {
+    public RsData<Order> getOrderDetails(Member member, Long orderId) {
         Order order = findById(orderId).orElse(null);
         if (!isOrderValidAndDonePayment(order)) {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
-        Member member = rq.getMember();
-        if (member.getRole().equals(Role.BUYER) && !isOrderAccessibleByBuyer(order, member)) {
+        if (!isOrderAccessibleByBuyer(order, member)) {
             return RsData.of("F-2", "접근 권한이 없습니다.");
         }
         return RsData.of("S-1", order);
     }
 
     @Transactional(readOnly = true)
-    public RsData<Order> checkCanCancel(Member buyer, Long orderId) {
+    public RsData<Order> checkIfOrderCanBeCancelled(Member buyer, Long orderId) {
         Order order = findByIdAndPaymentIsNotNull(orderId).orElse(null);
         if (order == null) {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
@@ -194,16 +189,7 @@ public class OrderService {
                 String status = responseEntity.getBody().get("status").asText();
 
                 order.cancelPayment(cancelDate, status);
-                Set<Member> uniqueSeller = new HashSet<>();
-                order.getOrderItems()
-                        .forEach(orderItem -> {
-                            orderItem.updateStatus(OrderStatus.CANCELED);
-                            productService.updateStockAndSalesByOrder(orderItem.getProduct().getId(), -orderItem.getQuantity()); // 재고 업데이트
-                            if (uniqueSeller.add(orderItem.getProduct().getSeller())) {
-                                publisher.publishEvent(new EventAfterOrderCanceled(this, orderItem.getProduct().getSeller(), order));
-                            }
-                        });
-                order.updatePrimaryOrderStatus(OrderStatus.CANCELED);
+                processAfterPaymentOrCancellation(order, OrderStatus.CANCELED, orderItem -> -orderItem.getQuantity());
                 orderRepository.save(order);
                 return RsData.of("S-1", "주문번호 %s의 </br> 주문 및 결제가 취소되었습니다.".formatted(order.getOrderNumber()), order);
             } else {
@@ -229,7 +215,7 @@ public class OrderService {
         orderItem.updateStatus(status);
         updatePrimaryOrderStatus(orderItem.getOrder());
         publisher.publishEvent(new EventAfterOrderStatusUpdate(this, orderItem.getOrder().getBuyer(), orderItem, status));
-        return RsData.of("S-1", "주문 상태가 변경되었습니다.");
+        return RsData.of("S-1", "주문 상태가 변경되었습니다.", orderItem);
     }
 
     @Transactional
@@ -249,21 +235,18 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public RsData<Order> validateOrder(Long id, PayRequest payRequest) {
-        Order order = findById(id).orElse(null);
+    public RsData<Order> validateOrder(PayRequest payRequest) {
+        long orderId = Long.parseLong(payRequest.getOrderId().split("_")[0]);
+        Order order = findById(orderId).orElse(null);
         if (order == null) {
             return RsData.of("F-1", "존재하지 않는 주문입니다.");
         }
-        long orderIdInputted = Long.parseLong(payRequest.getOrderId().split("_")[0]);
-        if (id != orderIdInputted) {
-            return RsData.of("F-2", "주문번호가 일치하지 않습니다.");
-        }
         if (!payRequest.getAmount().equals(order.getTotalPrice())) {
-            return RsData.of("F-3", "주문 가격과 결제 가격이 일치하지 않습니다.");
+            return RsData.of("F-2", "주문 가격과 결제 가격이 일치하지 않습니다.");
         }
         for (OrderItem orderItem : order.getOrderItems()) {
             if (orderItem.getProduct().getStock() < orderItem.getQuantity()) {
-                return RsData.of("F-4", "%s의 주문 수량이 재고보다 많습니다.".formatted(orderItem.getProduct().getName()));
+                return RsData.of("F-", "%s의 주문 수량이 재고보다 많습니다.".formatted(orderItem.getProduct().getName()));
             }
         }
         return RsData.of("S-1", "결제 가능합니다.", order);
@@ -302,19 +285,13 @@ public class OrderService {
     }
 
     private boolean isOrderAccessibleByBuyer(Order order, Member member) {
-        return order.getBuyer().getId().equals(member.getId());
+        return !member.getRole().equals(Role.BUYER) || order.getBuyer().getId().equals(member.getId());
     }
 
     private List<OrderItem> createOrderItemsFromCartProducts(List<CartProduct> cartProducts) {
         return cartProducts.stream()
                 .map(cartProduct -> new OrderItem(cartProduct.getProduct(), cartProduct.getQuantity()))
                 .toList();
-    }
-
-    private void addCartProductsToOrder(Order order, List<CartProduct> cartProducts) {
-        for (CartProduct cartProduct : cartProducts) {
-            order.addCartProduct(cartProduct);
-        }
     }
 
     public Map<YearMonth, Long> countOrderPrice(Long sellerId) {
@@ -357,7 +334,7 @@ public class OrderService {
             ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(
                     "https://api.tosspayments.com/v1/payments/confirm", request, JsonNode.class);
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                payByTossPayments(order, payRequest.getOrderId(), Long.parseLong(payRequest.getAddressId()));
+                setOrderAsPaymentDone(order, payRequest.getOrderId(), Long.parseLong(payRequest.getAddressId()));
                 extractMessageFromResponse(responseEntity, order);
                 return RsData.of("S-1", "주문이 완료되었습니다.", order);
             } else {
@@ -381,8 +358,7 @@ public class OrderService {
     }
 
     public List<OrderItem> findByProductSellerIdAndOrderId(Long sellerId, Long orderId) {
-        return findByProductSellerIdAndOrderId(sellerId, orderId);
-
+        return orderItemRepository.findByProductSellerIdAndOrderId(sellerId, orderId);
     }
 
     public static class SalesCalculator {
