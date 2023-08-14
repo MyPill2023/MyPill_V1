@@ -42,15 +42,9 @@ public class SellerController {
     @GetMapping("/order")
     @Operation(summary = "주문 관리 페이지")
     public String showMyOrder(Model model) {
-        List<Order> orders = orderService.findBySellerId(rq.getMember().getId())
-                .stream()
-                .sorted(Comparator.comparing((Order order) -> order.getPayment().getPayDate()).reversed())
-                .toList();
-
+        List<Order> orders = orderService.findBySellerId(rq.getMember().getId());
         List<OrderItem> orderItems = orderService.findOrderItemBySellerId(rq.getMember().getId());
-        Map<OrderStatus, Long> orderStatusCount = orderItems.stream()
-                .collect(Collectors.groupingBy(OrderItem::getStatus, Collectors.counting()));
-
+        Map<OrderStatus, Long> orderStatusCount = orderService.getOrderStatusCount(orderItems);
         model.addAttribute("response", OrderManagementResponse.of(orders, orderItems, orderStatusCount));
         return "usr/seller/orderList";
     }

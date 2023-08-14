@@ -1,6 +1,5 @@
 package com.mypill.domain.cart.entity;
 
-import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -24,8 +23,7 @@ public class CartProduct extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Order order;
+    private Long orderId;
 
     @NotNull
     private Long quantity;
@@ -42,7 +40,8 @@ public class CartProduct extends BaseEntity {
         this.quantity = quantity;
     }
 
-    public void connectOrder(Order order) {
-        this.order = order;
+    public void connectOrderId(Long orderId) {
+        this.orderId = orderId;
     }
+
 }

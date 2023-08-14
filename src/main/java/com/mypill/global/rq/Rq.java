@@ -31,7 +31,6 @@ public class Rq {
     private Member member = null;
     private final NotificationService notificationService;
 
-
     public Rq(HttpServletRequest req, HttpServletResponse resp, HttpSession session, MemberService memberService, NotificationService notificationService) {
         this.req = req;
         this.resp = resp;

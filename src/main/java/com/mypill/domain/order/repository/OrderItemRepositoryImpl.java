@@ -24,6 +24,15 @@ public class OrderItemRepositoryImpl implements OrderItemRepositoryCustom {
     }
 
     @Override
+    public List<OrderItem> findDeliveredOrderItemsBySellerId(Long sellerId) {
+        return jpaQueryFactory.selectFrom(orderItem)
+                .join(orderItem.product, product)
+                .where(product.seller.id.eq(sellerId)
+                        .and(orderItem.status.eq(OrderStatus.DELIVERED)))
+                .fetch();
+    }
+
+    @Override
     public List<OrderItem> findByBuyerId(Long buyerId) {
         return jpaQueryFactory.selectFrom(orderItem)
                 .where(orderItem.order.buyer.id.eq(buyerId)

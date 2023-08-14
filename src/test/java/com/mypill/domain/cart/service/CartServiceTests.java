@@ -1,7 +1,10 @@
 package com.mypill.domain.cart.service;
 
 import com.mypill.domain.cart.dto.request.CartProductRequest;
+import com.mypill.domain.cart.entity.Cart;
 import com.mypill.domain.cart.entity.CartProduct;
+import com.mypill.domain.cart.repository.CartProductRepository;
+import com.mypill.domain.cart.repository.CartRepository;
 import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
@@ -9,8 +12,10 @@ import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
 import com.mypill.global.rsdata.RsData;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,6 +35,12 @@ class CartServiceTests {
     private MemberService memberService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private EntityManager entityManager;
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private CartProductRepository cartProductRepository;
 
     private Member testUser1;
     private Member testUser2;
@@ -118,13 +129,18 @@ class CartServiceTests {
 
     @Test
     @DisplayName("장바구니에서 상품 삭제 성공")
-    void softDeleteCartProductSuccessTest() {
+    void hardDeleteCartProductSuccessTest() {
         // GIVEN
         RsData<CartProduct> addRsData = cartService.addCartProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
+        Cart cart = addRsData.getData().getCart();
+        //cart.initCartProduct();
+        CartProduct cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
+        assertThat(cartProduct).isNotNull();
 
         // WHEN
-        RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(testUser1, addRsData.getData().getId());
-        CartProduct cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
+        RsData<CartProduct> deleteRsData = cartService.hardDeleteCartProduct(testUser1, addRsData.getData().getId());
+        //cart.getCartProducts().remove(0);
+        cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
 
         // THEN
         assertThat(deleteRsData.getResultCode()).isEqualTo("S-1");
@@ -135,7 +151,7 @@ class CartServiceTests {
     @DisplayName("장바구니에서 상품 삭제 실패 - 장바구니에 없는 상품")
     void softDeleteCartProductFailTest() {
         // WHEN
-        RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(testUser1, testProduct1.getId());
+        RsData<CartProduct> deleteRsData = cartService.hardDeleteCartProduct(testUser1, testProduct1.getId());
 
         // THEN
         assertThat(deleteRsData.getResultCode()).isEqualTo("F-1");

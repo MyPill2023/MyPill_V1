@@ -18,7 +18,7 @@ public class Cart extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     @Builder.Default
     private List<CartProduct> cartProducts = new ArrayList<>();
 
@@ -30,5 +30,9 @@ public class Cart extends BaseEntity {
 
     public void addCartProduct(CartProduct cartProduct) {
         this.cartProducts.add(cartProduct);
+    }
+
+    public void initCartProduct() {
+        this.cartProducts = new ArrayList<>();
     }
 }

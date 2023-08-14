@@ -14,4 +14,5 @@ public interface CartProductRepository extends JpaRepository<CartProduct, Long> 
 
     List<CartProduct> findByIdInAndDeleteDateIsNull(List<Long> cartProductIds);
 
+    void deleteByOrderId(Long orderId);
 }

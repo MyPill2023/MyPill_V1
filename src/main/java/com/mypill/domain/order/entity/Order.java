@@ -1,6 +1,5 @@
 package com.mypill.domain.order.entity;
 
-import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.global.AppConfig;
@@ -28,8 +27,6 @@ public class Order extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member buyer;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<CartProduct> cartProducts;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
     @NotNull
     private Long totalPrice;
@@ -42,7 +39,6 @@ public class Order extends BaseEntity {
 
     public Order(Member buyer) {
         this.buyer = buyer;
-        this.cartProducts = new ArrayList<>();
         this.orderItems = new ArrayList<>();
         this.totalPrice = 0L;
         this.primaryOrderStatus = OrderStatus.BEFORE;
@@ -52,11 +48,6 @@ public class Order extends BaseEntity {
         this.orderItems.add(orderItem);
         this.totalPrice += orderItem.getTotalPrice();
         orderItem.connectOrder(this);
-    }
-
-    public void addCartProduct(CartProduct cartProduct) {
-        cartProducts.add(cartProduct);
-        cartProduct.connectOrder(this);
     }
 
     public void makeName() {
@@ -85,8 +76,8 @@ public class Order extends BaseEntity {
         this.orderNumber = orderNumber;
     }
 
-    public void updatePayment(String paymentKey, String method, Long totalAmount, LocalDateTime payDate, String status) {
-        this.payment = new Payment(paymentKey, method, totalAmount, payDate, status);
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     public void cancelPayment(LocalDateTime cancelDate, String status) {
@@ -100,4 +91,5 @@ public class Order extends BaseEntity {
     public void setAddress(Address address) {
         this.deliveryAddress = address;
     }
+
 }

@@ -9,6 +9,7 @@ import com.mypill.domain.order.dto.response.PayResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.service.OrderService;
+import com.mypill.domain.order.service.TossPaymentService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,7 @@ import java.util.*;
 public class OrderController {
 
     private final OrderService orderService;
+    private final TossPaymentService tossPaymentService;
     private final AddressService addressService;
     private final Rq rq;
 
@@ -103,11 +105,11 @@ public class OrderController {
     @GetMapping("/success")
     @Operation(summary = "결제 요청 성공")
     public String confirmPayment(PayRequest payRequest, Model model) {
-        RsData<Order> validateRsData = orderService.validateOrder(payRequest);
+        RsData<Order> validateRsData = orderService.checkIfOrderCanBePaid(payRequest);
         if (validateRsData.isFail()) {
             return rq.historyBack(validateRsData);
         }
-        RsData<?> payRsData = orderService.pay(validateRsData.getData(), payRequest);
+        RsData<?> payRsData = tossPaymentService.pay(validateRsData.getData(), payRequest);
         if (payRsData.isFail()) {
             model.addAttribute("payResponse", payRsData.getData());
             return rq.historyBack(payRsData);
@@ -131,7 +133,7 @@ public class OrderController {
         if (checkRsData.isFail()) {
             return rq.historyBack(checkRsData);
         }
-        RsData<?> cancelRsData = orderService.cancel(checkRsData.getData());
+        RsData<?> cancelRsData = tossPaymentService.cancel(checkRsData.getData());
         if (cancelRsData.isFail()) {
             return rq.historyBack(cancelRsData);
         }
@@ -156,7 +158,7 @@ public class OrderController {
     @PostMapping("/update/status/{orderItemId}")
     @Operation(summary = "판매자의 주문 상태 업데이트")
     public String updateOrderStatus(@PathVariable Long orderItemId, @RequestParam String newStatus) {
-        RsData<OrderItem> updateRsData = orderService.updateOrderStatus(orderItemId, newStatus);
+        RsData<OrderItem> updateRsData = orderService.updateOrderItemStatus(orderItemId, newStatus);
         if (updateRsData.isFail()) {
             rq.historyBack(updateRsData);
         }

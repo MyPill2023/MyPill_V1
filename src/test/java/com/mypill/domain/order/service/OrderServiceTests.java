@@ -4,7 +4,6 @@ import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
 import com.mypill.domain.cart.dto.request.CartProductRequest;
-import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.cart.service.CartService;
 import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
@@ -12,6 +11,7 @@ import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
+import com.mypill.domain.order.entity.Payment;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
@@ -48,8 +48,8 @@ class OrderServiceTests {
     private AddressService addressService;
 
     private Member testUser1;
-    private CartProduct cartProduct1;
     private Address address;
+    private Payment payment;
 
     @BeforeEach
     void beforeEachTest() {
@@ -62,11 +62,12 @@ class OrderServiceTests {
                 12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
         Product testProduct2 = productService.create(new ProductRequest("테스트 상품2", "테스트 설명2",
                 12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
-        cartProduct1 = cartService.addCartProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L)).getData();
+        cartService.addCartProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
         cartService.addCartProduct(testUser1, new CartProductRequest(testProduct2.getId(), 1L));
 
         address = addressService.create(new AddressRequest("김철수의 집", "김철수",
                 "서울시 강남구", "도산대로1", "12121", "01012341234", true), testUser1).getData();
+        payment = new Payment("123", "카드", 24000L, LocalDateTime.now(), "DONE");
     }
 
     @Test
@@ -85,51 +86,35 @@ class OrderServiceTests {
 
     @Test
     @DisplayName("주문 결제 완료")
-    void testPayByTossPaymentsSuccess() {
+    void testUpdateOrderAsPaymentDoneSuccess() {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
 
         //WHEN
-        orderService.setOrderAsPaymentDone(order, order.getId() + "_1234", address.getId());
+        orderService.updateOrderAsPaymentDone(order, order.getId() + "_1234", address.getId(), payment);
 
         //THEN
         assertThat(order).isNotNull();
         assertThat(order.getDeliveryAddress()).isNotNull();
         assertThat(order.getPrimaryOrderStatus()).isEqualTo(OrderStatus.ORDERED);
         assertThat(order.getOrderItems().get(0).getStatus()).isEqualTo(OrderStatus.ORDERED);
-        assertThat(cartProduct1).isNotNull();
-        assertThat(cartProduct1.getDeleteDate()).isNotNull();
-        assertThat(cartProduct1.getProduct().getStock()).isEqualTo(99L);
-    }
-
-    @Test
-    @DisplayName("주문 결제 완료 후 결제정보 업데이트")
-    void testUpdatePaymentSuccess() {
-        //GIVEN
-        Order order = orderService.createFromCart(testUser1).getData();
-
-        //WHEN
-        orderService.updatePayment(order, "123", "카드", 24000L, LocalDateTime.now(), "Done");
-
-        //THEN
-        assertThat(order).isNotNull();
-        assertThat(order.getPayment()).isNotNull();
-        assertThat(order.getPayment().getMethod()).isEqualTo("카드");
-        assertThat(order.getPayment().getTotalAmount()).isEqualTo(24000L);
     }
 
     @Test
     @DisplayName("주문 상태 업데이트")
-    void testUpdateOrderStatusSuccess() {
+    void testUpdateOrderItemStatusSuccess() {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
-        orderService.setOrderAsPaymentDone(order, order.getId() + "_1234", address.getId());
+        orderService.updateOrderAsPaymentDone(order, order.getId() + "_1234", address.getId(), payment);
 
         //WHEN
         OrderItem orderItem = order.getOrderItems().get(0);
-        orderService.updateOrderStatus(order.getOrderItems().get(0).getId(), "배송 중");
+        orderService.updateOrderItemStatus(order.getOrderItems().get(0).getId(), "배송 중");
 
         //THEN
         assertThat(orderItem.getStatus()).isEqualTo(OrderStatus.SHIPPING);
+        assertThat(order.getPayment()).isNotNull();
+        assertThat(order.getPayment().getMethod()).isEqualTo("카드");
+        assertThat(order.getPayment().getTotalAmount()).isEqualTo(24000L);
     }
 }

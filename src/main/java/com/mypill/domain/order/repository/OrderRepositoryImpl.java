@@ -21,6 +21,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .join(orderItem.product, product)
                 .where(product.seller.id.eq(sellerId)
                         .and(order.payment.isNotNull()))
+                .orderBy(order.payment.payDate.desc())
                 .fetch();
     }
 }

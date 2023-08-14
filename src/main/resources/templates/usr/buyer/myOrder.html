@@ -12,21 +12,21 @@
         </h1>
 
         <div class="flex flex-col w-full max-w-md mb-10 mt-5 px-5">
-            <div th:if="${orders.size() == 0}" class="flex justify-center my-16">
+            <div th:if="${response.orders.size() == 0}" class="flex justify-center my-16">
                 <span>주문 내역이 없습니다.</span>
             </div>
-            <div th:if="${orders.size() != 0}">
+            <div th:if="${response.orders.size() != 0}">
                 <div class="flex flex-grow justify-between p-5 mb-10">
-                    <th:block th:each="status, statusIndex : ${orderStatuses}">
+                    <th:block th:each="status, statusIndex : ${response.filteredOrderStatus}">
                         <div class="flex flex-col justify-center items-center gap-2">
-                        <span th:text="${orderStatusCount.containsKey(status) ? orderStatusCount.get(status) : 0}"
+                        <span th:text="${response.orderStatusCount.containsKey(status) ? response.orderStatusCount.get(status) : 0}"
                               class="font-bold"></span>
                             <span th:text="${status.value}" class="text-sm text-center"></span>
                         </div>
                     </th:block>
                 </div>
-                <div th:each="order, loop : ${orders}">
-                    <a th:href="@{|/order/detail/${order.orderId}|}">
+                <div th:each="order, loop : ${response.orders}">
+                    <a th:href="@{|/order/detail/${order.id}|}">
                         <div th:class="'bg-base-100 border-b border-gray-200 p-5' + (${loop.first} ? ' border-t' : '')">
                             <div class="flex flex-col gap-1">
                                 <div class="flex justify-between">

@@ -7,6 +7,7 @@ import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.order.entity.Order;
+import com.mypill.domain.order.entity.Payment;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.product.service.ProductService;
 import com.mypill.domain.product.dto.request.ProductRequest;
@@ -94,10 +95,8 @@ public class NotProd {
 
             Order order1 = orderService.createSingleProduct(memberUser1, 1L, 3L).getData();
             Order order2 = orderService.createSingleProduct(memberUser1, 2L, 3L).getData();
-            orderService.setOrderAsPaymentDone(order1, "1_0001", 1L);
-            orderService.setOrderAsPaymentDone(order2, "2_0002", 1L);
-            orderService.updatePayment(order1, "123", "카드", 36000L, LocalDateTime.now(), "DONE");
-            orderService.updatePayment(order2, "123", "카드", 36000L, LocalDateTime.now(), "DONE");
+            orderService.updateOrderAsPaymentDone(order1, "1_0001", 1L, new Payment("123", "카드", 36000L, LocalDateTime.now(), "DONE"));
+            orderService.updateOrderAsPaymentDone(order2, "2_0002", 1L, new Payment("123", "카드", 36000L, LocalDateTime.now(), "DONE"));
         };
     }
 }

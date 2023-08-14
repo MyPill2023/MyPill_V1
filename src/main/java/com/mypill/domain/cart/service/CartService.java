@@ -92,28 +92,21 @@ public class CartService {
     }
 
     @Transactional
-    public RsData<CartProduct> softDeleteCartProduct(Member actor, Long cartProductId) {
+    public RsData<CartProduct> hardDeleteCartProduct(Member actor, Long cartProductId) {
         CartProduct cartProduct = findCartProductById(cartProductId).orElse(null);
         if (cartProduct == null) {
             return RsData.of("F-1", "장바구니에 없는 상품입니다.");
         }
         if (hasNoPermission(actor, cartProduct)) {
-            return RsData.of("F-2", "삭제 권한이 없습니다.", cartProduct);
+            return RsData.of("F-2", "삭제 권한이 없습니다.");
         }
-        cartProduct.softDelete();
-        return RsData.of("S-1", "장바구니에서 상품이 삭제되었습니다.", cartProduct);
-    }
-
-    @Transactional
-    public void hardDeleteCartProduct(CartProduct cartProduct) {
         cartProductRepository.delete(cartProduct);
+        return RsData.of("S-1", "장바구니에서 상품이 삭제되었습니다.");
     }
 
     @Transactional
-    public void hardDeleteCartProducts(List<CartProduct> cartProducts) {
-        for (CartProduct cartProduct : cartProducts) {
-            hardDeleteCartProduct(cartProduct);
-        }
+    public void hardDeleteCartProductByOrderId(Long orderId) {
+        cartProductRepository.deleteByOrderId(orderId);
     }
 
     public Optional<CartProduct> findByCartIdAndProductId(Long cartId, Long productId) {
