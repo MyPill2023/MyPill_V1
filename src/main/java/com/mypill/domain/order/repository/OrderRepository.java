@@ -7,10 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long>, OrderRepositoryCustom {
-    List<Order> findByBuyerId(Long buyerId);
 
     Optional<Order> findByIdAndPaymentIsNotNull(Long id);
 
-    List<Order> findByBuyerIdAndPaymentIsNotNull(Long buyerId);
-
+    List<Order> findByBuyerIdAndPaymentIsNotNullOrderByPayment_PayDateDesc(Long buyerId);
 }

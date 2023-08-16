@@ -124,7 +124,7 @@ public class ProductService {
         }
         product.addLikedMember(member);
         publisher.publishEvent(new EventAfterLike(this, member, product));
-        return RsData.of("S-1", "상품 좋아요", product);
+        return RsData.of("S-1", "상품 좋아요");
     }
 
     @Transactional
@@ -135,6 +135,6 @@ public class ProductService {
         }
         product.deleteLikedMember(member);
         publisher.publishEvent(new EventAfterUnlike(this, member, product));
-        return RsData.of("S-1", "상품 좋아요 취소", product);
+        return RsData.of("S-1", "상품 좋아요 취소");
     }
 }

@@ -7,5 +7,7 @@ import java.util.List;
 public interface OrderItemRepositoryCustom {
     List<OrderItem> findBySellerId(Long sellerId);
 
+    List<OrderItem> findDeliveredOrderItemsBySellerId(Long sellerId);
+
     List<OrderItem> findByBuyerId(Long buyerId);
 }

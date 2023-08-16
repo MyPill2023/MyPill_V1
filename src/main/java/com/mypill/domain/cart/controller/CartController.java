@@ -66,7 +66,7 @@ public class CartController {
     @PostMapping("/delete")
     @Operation(summary = "장바구니에서 상품 삭제")
     public String softDeleteCartProduct(@RequestParam Long cartProductId) {
-        RsData<CartProduct> deleteRsData = cartService.softDeleteCartProduct(rq.getMember(), cartProductId);
+        RsData<CartProduct> deleteRsData = cartService.hardDeleteCartProduct(rq.getMember(), cartProductId);
         if (deleteRsData.isFail()) {
             return rq.historyBack(deleteRsData);
         }

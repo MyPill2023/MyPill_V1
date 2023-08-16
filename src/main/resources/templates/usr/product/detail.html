@@ -192,10 +192,7 @@
                     },
                     dataType: "json",
                     success: function (data) {
-                        console.log("결과");
-                        console.log(data);
                         if(data.resultCode.startsWith("S-")){
-                            console.log("성공");
                             $('#like-count span').text(isLiked ? likeCount + 1 : likeCount - 1);
                             if (isLiked) {
                                 $('#like-count span').css('color', '#FF0000');

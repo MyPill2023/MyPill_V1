@@ -11,6 +11,7 @@ import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
+import com.mypill.domain.order.entity.Payment;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
@@ -68,7 +69,7 @@ class OrderControllerTests {
         memberService.join(new JoinRequest("testUser2", "김영희", "1234", "test2@test.com", "구매자"), true);
         Member testUserSeller1 = memberService.join(new JoinRequest("testUserSeller1", "김철수", "1234", "testSeller1@test.com", "판매자"), true).getData();
 
-        testProduct1 = productService.create(new ProductRequest( "테스트 상품1", "테스트 설명1",
+        testProduct1 = productService.create(new ProductRequest("테스트 상품1", "테스트 설명1",
                 12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
         Product testProduct2 = productService.create(new ProductRequest("테스트 상품2", "테스트 설명2",
                 12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), testUserSeller1).getData();
@@ -141,7 +142,7 @@ class OrderControllerTests {
     @Test
     @DisplayName("주문 폼 가져오기 성공")
     @WithMockUser(username = "testUser1", authorities = "BUYER")
-    void testGetOrderFormSuccess() throws Exception {
+    void testShowOrderFormSuccess() throws Exception {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
 
@@ -153,14 +154,14 @@ class OrderControllerTests {
         //THEN
         resultActions
                 .andExpect(handler().handlerType(OrderController.class))
-                .andExpect(handler().methodName("getOrderForm"))
+                .andExpect(handler().methodName("showOrderForm"))
                 .andExpect(status().is2xxSuccessful());
     }
 
     @Test
     @DisplayName("주문 폼 가져오기 실패 - 다른 사람의 주문")
     @WithMockUser(username = "testUser2", authorities = "BUYER")
-    void testGetOrderFormFail() throws Exception {
+    void testShowOrderFormFail() throws Exception {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
 
@@ -172,18 +173,18 @@ class OrderControllerTests {
         //THEN
         resultActions
                 .andExpect(handler().handlerType(OrderController.class))
-                .andExpect(handler().methodName("getOrderForm"))
+                .andExpect(handler().methodName("showOrderForm"))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     @DisplayName("주문 상세 정보")
     @WithMockUser(username = "testUser1", authorities = "BUYER")
-    void testGetOrderDetailSuccess() throws Exception {
+    void testShowOrderDetailSuccess() throws Exception {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
-        orderService.payByTossPayments(order, order.getId() + "_1234", address.getId());
-        orderService.updatePayment(order, "123", "카드", 24000L, LocalDateTime.now(), "Done");
+        Payment payment = new Payment("123", "카드", 24000L, LocalDateTime.now(), "Done");
+        orderService.updateOrderAsPaymentDone(order, order.getId() + "_1234", address.getId(), payment);
 
         //WHEN
         ResultActions resultActions = mvc
@@ -192,7 +193,7 @@ class OrderControllerTests {
         //THEN
         resultActions
                 .andExpect(handler().handlerType(OrderController.class))
-                .andExpect(handler().methodName("getOrderDetail"))
+                .andExpect(handler().methodName("showOrderDetail"))
                 .andExpect(status().is2xxSuccessful());
     }
 
@@ -202,8 +203,8 @@ class OrderControllerTests {
     void testUpdateOrderStatusSuccess() throws Exception {
         //GIVEN
         Order order = orderService.createFromCart(testUser1).getData();
-        orderService.payByTossPayments(order, order.getId() + "_1234", address.getId());
-        orderService.updatePayment(order, "123", "카드", 24000L, LocalDateTime.now(), "Done");
+        Payment payment = new Payment("123", "카드", 24000L, LocalDateTime.now(), "Done");
+        orderService.updateOrderAsPaymentDone(order, order.getId() + "_1234", address.getId(), payment);
         OrderItem orderItem = order.getOrderItems().get(0);
 
         //WHEN

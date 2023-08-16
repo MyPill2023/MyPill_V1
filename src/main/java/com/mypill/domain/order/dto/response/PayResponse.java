@@ -22,6 +22,14 @@ public class PayResponse {
                 .build();
     }
 
+    public static PayResponse of(PayRequest payRequest, String message, String code) {
+        return PayResponse.builder()
+                .orderNumber(payRequest.getOrderId())
+                .message(message)
+                .code(code)
+                .build();
+    }
+
     public static PayResponse of(JsonNode failNode) {
         return PayResponse.builder()
                 .message(failNode.get("message").asText())

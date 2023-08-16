@@ -145,7 +145,7 @@ public class ProductController {
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/like/{id}")
     @Operation(summary = "상품 좋아요 등록")
-    public RsData<Product> likeProduct(@PathVariable("id") Long id) {
+    public RsData<Product> likeProduct(@PathVariable Long id) {
         return productService.like(rq.getMember(), id);
     }
 
@@ -153,14 +153,14 @@ public class ProductController {
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/unlike/{id}")
     @Operation(summary = "상품 좋아요 취소")
-    public RsData unlikeProduct(@PathVariable("id") Long id) {
+    public RsData unlikeProduct(@PathVariable Long id) {
         return productService.unlike(rq.getMember(), id);
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/unlike/{id}")
     @Operation(summary = "관심 상품 목록에서 좋아요 삭제")
-    public String unlike(@PathVariable("id") Long id) {
+    public String unlike(@PathVariable Long id) {
         RsData<Product> unlikeRsData = productService.unlike(rq.getMember(), id);
         if (unlikeRsData.isFail()) {
             return rq.historyBack(unlikeRsData);

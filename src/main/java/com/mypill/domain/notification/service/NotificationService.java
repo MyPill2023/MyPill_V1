@@ -46,6 +46,20 @@ public class NotificationService {
     }
 
     @Transactional
+    public void whenAfterOrderChanged(Member seller, Order order, OrderStatus orderStatus) {
+        NotificationTypeCode notificationTypeCode = NotificationTypeCode.OrderPayment;
+        if (orderStatus.equals(OrderStatus.CANCELED)) {
+            notificationTypeCode = NotificationTypeCode.OrderCanceled;
+        }
+        Notification notification = Notification.builder()
+                .typeCode(notificationTypeCode)
+                .member(seller)
+                .order(order)
+                .build();
+        notificationRepository.save(notification);
+    }
+
+    @Transactional
     public void whenAfterOrderCanceled(Member seller, Order order) {
         Notification notification = Notification.builder()
                 .typeCode(NotificationTypeCode.OrderCanceled)

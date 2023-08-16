@@ -3,9 +3,11 @@ package com.mypill.domain.buyer.controller;
 import com.mypill.domain.address.dto.response.AddressResponse;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
+import com.mypill.domain.buyer.dto.response.MyOrderResponse;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.nutrient.entity.Nutrient;
-import com.mypill.domain.order.dto.response.OrderListResponse;
+import com.mypill.domain.order.entity.Order;
+import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.service.OrderService;
 import com.mypill.global.rq.Rq;
@@ -18,7 +20,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -47,12 +50,10 @@ public class BuyerController {
     @GetMapping("/myOrder")
     @Operation(summary = "내 주문 페이지")
     public String myOrder(Model model) {
-        List<OrderListResponse> orderListResponses = orderService.getOrderListResponses(rq.getMember().getId());
-        model.addAttribute("orders", orderListResponses);
-        Map<OrderStatus, Long> orderStatusCount = orderService.getOrderStatusCount(rq.getMember().getId());
-        model.addAttribute("orderStatusCount", orderStatusCount);
-        OrderStatus[] filteredOrderStatus = orderService.getFilteredOrderStatus();
-        model.addAttribute("orderStatuses", filteredOrderStatus);
+        List<Order> orders = orderService.findByBuyerId(rq.getMember().getId());
+        List<OrderItem> orderItems = orderService.findOrderItemByBuyerId(rq.getMember().getId());
+        Map<OrderStatus, Long> orderStatusCount = orderService.getOrderStatusCount(orderItems);
+        model.addAttribute("response", MyOrderResponse.of(orders, orderStatusCount));
         return "usr/buyer/myOrder";
     }
 

@@ -11,10 +11,9 @@
         <h1 class="text-2xl font-bold mb-10">
             주문 결제실패
         </h1>
-
         <div th:text="'주문번호 : ' + ${payResponse.orderNumber}" class="text-lg"></div>
         <div th:text="${payResponse.message}"></div>
-        <<div th:text="${payResponse.code}"></div>
+        <div th:text="${payResponse.code}"></div>
     </div>
 </main>
 </body>

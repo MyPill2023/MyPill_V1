@@ -31,9 +31,9 @@
                         <div class="flex flex-col gap-1">
                             <div class="flex justify-between">
                                 <span th:text="${#temporals.format(order.payment.payDate, 'yyyy-MM-dd')}"></span>
-                                <span th:class="${order.primaryOrderStatus.priority <= 1 ? 'badge badge-info' :
-                                    (order.primaryOrderStatus.priority <= 3 ? 'badge badge-success' :
-                                    (order.primaryOrderStatus.priority == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
+                                <span th:class="${order.primaryOrderStatus.getNumber <= 1 ? 'badge badge-info' :
+                                    (order.primaryOrderStatus.getNumber <= 3 ? 'badge badge-success' :
+                                    (order.primaryOrderStatus.getNumber == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
                                       th:text="${order.primaryOrderStatus.value}"></span>
                             </div>
                             <div th:text="${order.orderNumber}"
