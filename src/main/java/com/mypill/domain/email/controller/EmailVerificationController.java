@@ -22,12 +22,9 @@ public class EmailVerificationController {
     @Operation(summary = "이메일 인증 검증")
     public String verify(Long memberId, String code) {
         RsData verifyEmailRsData = memberService.verifyEmail(memberId, code);
-        if (verifyEmailRsData.isFail()) {
-            return rq.redirectWithMsg("/", verifyEmailRsData);
-        }
-        if (rq.isLogout()) {
+        if (verifyEmailRsData.isFail() || rq.isLogout()) {
             return rq.redirectWithMsg("/member/login", verifyEmailRsData);
         }
-        return rq.redirectWithMsg("/", verifyEmailRsData);
+        return rq.redirectWithMsg("/home", verifyEmailRsData);
     }
 }

@@ -31,8 +31,4 @@ public class Cart extends BaseEntity {
     public void addCartProduct(CartProduct cartProduct) {
         this.cartProducts.add(cartProduct);
     }
-
-    public void initCartProduct() {
-        this.cartProducts = new ArrayList<>();
-    }
 }
