@@ -25,8 +25,8 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
 @ActiveProfiles("test")
+@Transactional
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 class CartServiceTests {
     @Autowired
@@ -37,10 +37,6 @@ class CartServiceTests {
     private ProductService productService;
     @Autowired
     private EntityManager entityManager;
-    @Autowired
-    private CartRepository cartRepository;
-    @Autowired
-    private CartProductRepository cartProductRepository;
 
     private Member testUser1;
     private Member testUser2;
@@ -133,13 +129,13 @@ class CartServiceTests {
         // GIVEN
         RsData<CartProduct> addRsData = cartService.addCartProduct(testUser1, new CartProductRequest(testProduct1.getId(), 1L));
         Cart cart = addRsData.getData().getCart();
-        //cart.initCartProduct();
         CartProduct cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
         assertThat(cartProduct).isNotNull();
 
         // WHEN
+        cart.getCartProducts().remove(0); // TODO : 삭제과정 고민해봐야함
         RsData<CartProduct> deleteRsData = cartService.hardDeleteCartProduct(testUser1, addRsData.getData().getId());
-        //cart.getCartProducts().remove(0);
+//        entityManager.flush();
         cartProduct = cartService.findCartProductById(addRsData.getData().getId()).orElse(null);
 
         // THEN

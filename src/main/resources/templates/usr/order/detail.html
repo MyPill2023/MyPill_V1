@@ -42,7 +42,7 @@
                                 <div class="flex gap-3 justify-between">
                                     <span class="text-lg" th:text="${orderItem.quantity} + '개'"></span>
                                     <span class="text-lg"
-                                          th:text="${#numbers.formatInteger(orderItem.product.price * orderItem.quantity, 0, 'COMMA') + '원'}"></span>
+                                          th:text="${#numbers.formatInteger(orderItem.totalPrice, 0, 'COMMA') + '원'}"></span>
                                 </div>
                             </div>
                         </div>
