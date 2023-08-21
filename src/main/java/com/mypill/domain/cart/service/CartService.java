@@ -110,15 +110,15 @@ public class CartService {
     }
 
     public Optional<CartProduct> findByCartIdAndProductId(Long cartId, Long productId) {
-        return cartProductRepository.findByCartIdAndProductIdAndDeleteDateIsNull(cartId, productId);
+        return cartProductRepository.findByCartIdAndProductId(cartId, productId);
     }
 
     public Optional<CartProduct> findCartProductById(Long cartProductId) {
-        return cartProductRepository.findByIdAndDeleteDateIsNull(cartProductId);
+        return cartProductRepository.findById(cartProductId);
     }
 
     public List<CartProduct> findCartProductByIdIn(List<Long> cartProductIds) {
-        return cartProductRepository.findByIdInAndDeleteDateIsNull(cartProductIds);
+        return cartProductRepository.findByIdIn(cartProductIds);
     }
 
     private boolean hasNoPermission(Member actor, CartProduct cartProduct) {

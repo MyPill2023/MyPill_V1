@@ -11,8 +11,10 @@
 
     <div class="flex flex-col items-center gap-4">
         <span>🦁 멋쟁이 사자처럼 백엔드스쿨 3기</span>
-        <span>개발기간 : 23/06/19 ~ 23/07/14(4주)</span>
-        <span>리팩토링 : 23/07/24 ~ </span>
+        <div class="flex flex-col gap-1">
+            <span>개발기간 : 23/06/19 ~ 23/07/14(4주)</span>
+            <span>리팩토링 : 23/07/24 ~ </span>
+        </div>
     </div>
 
     <div class="flex flex-col gap-4 items-center">
@@ -108,7 +110,7 @@
             </div>
         </div>
         <div class="navbar-center">
-            <a href="/" class="normal-case text-xl font-bold">MyPill </a>
+            <a href="/home" class="normal-case text-xl font-bold">MyPill </a>
         </div>
         <div class="navbar-end">
             <a th:if="${@rq.logout}" href="/member/login" class="btn btn-ghost btn-circle">
@@ -179,7 +181,7 @@
             </svg>
             <span class="btm-nav-label text-[10px]">질문게시판</span>
         </a>
-        <a href="/" class="flex flex-col items-center justify-center cursor-pointer" style="flex-basis: 20%;">
+        <a href="/home" class="flex flex-col items-center justify-center cursor-pointer" style="flex-basis: 20%;">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 p-0.5" fill="none" viewBox="0 0 24 24"
                  stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

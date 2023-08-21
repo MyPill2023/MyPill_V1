@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.mypill.domain.product.entity.QProduct.product;
+import static com.mypill.domain.member.entity.QMember.member;
 
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
@@ -20,6 +21,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     @Override
     public List<Product> findTop5ProductsBySales() {
         return jpaQueryFactory.selectFrom(product)
+                .leftJoin(product.seller, member).fetchJoin()
                 .where(
                         product.deleteDate.isNull(),
                         product.stock.gt(0)
