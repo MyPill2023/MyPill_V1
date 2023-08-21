@@ -30,7 +30,7 @@
                             <div class="flex justify-between items-center">
                                 <div class="items-center">
                                     <i class="fa-solid fa-heart" style="color: #ffb0b0;"></i>
-                                    <span th:text="${product.likedMembers.size()}"></span>
+                                    <span th:text="${product.likeCount}"></span>
                                 </div>
                                 <span class="text-lg font-bold"
                                       th:text="${#numbers.formatInteger(product.price, 0, 'COMMA') + '원'}"></span>

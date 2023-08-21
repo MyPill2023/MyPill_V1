@@ -7,7 +7,6 @@ import com.mypill.domain.member.entity.Role;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.member.validation.EmailValidationResult;
 import com.mypill.domain.member.validation.UsernameValidationResult;
-import com.mypill.domain.product.entity.Product;
 import com.mypill.global.event.EventAfterDeleteMember;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
@@ -74,16 +73,6 @@ public class MemberService {
     @Transactional
     public void hardDelete(Member member) {
         memberRepository.delete(member);
-    }
-
-    @Transactional
-    public void whenAfterLike(Member member, Product product) {
-        member.like(product);
-    }
-
-    @Transactional
-    public void whenAfterUnlike(Member member, Product product) {
-        member.unLike(product);
     }
 
     @Transactional

@@ -9,11 +9,8 @@ import com.mypill.domain.nutrient.service.NutrientService;
 import com.mypill.domain.product.dto.request.ProductRequest;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.repository.ProductRepository;
-import com.mypill.global.event.EventAfterLike;
-import com.mypill.global.event.EventAfterUnlike;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,7 +27,6 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final NutrientService nutrientService;
     private final CategoryService categoryService;
-    private final ApplicationEventPublisher publisher;
     private final ImageService imageService;
 
     @Transactional
@@ -58,7 +54,7 @@ public class ProductService {
         if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
-        if (!Objects.equals(actor.getId(),product.getSeller().getId())) {
+        if (!Objects.equals(actor.getId(), product.getSeller().getId())) {
             return RsData.of("F-2", "수정 권한이 없습니다.");
         }
         List<Nutrient> nutrients = nutrientService.findByIdIn(request.getNutrientIds());
@@ -74,7 +70,7 @@ public class ProductService {
         if (product == null) {
             return RsData.of("F-1", "존재하지 않는 상품입니다.");
         }
-        if (!Objects.equals(actor.getId(),product.getSeller().getId())) {
+        if (!Objects.equals(actor.getId(), product.getSeller().getId())) {
             return RsData.of("F-2", "삭제 권한이 없습니다.");
         }
         product.softDelete();
@@ -86,6 +82,14 @@ public class ProductService {
         Product lockedProduct = findByIdWithPessimisticLock(productId);
         lockedProduct.updateStockAndSalesByOrder(quantity);
         productRepository.saveAndFlush(lockedProduct);
+    }
+
+    public void whenAfterLike(Product product) {
+        product.plusLikeCount();
+    }
+
+    public void whenAfterUnlike(Product product) {
+        product.minusLikeCount();
     }
 
     public Optional<Product> findById(Long productId) {
@@ -114,27 +118,5 @@ public class ProductService {
 
     public Page<Product> getAllProductBySellerId(Long sellerId, Pageable pageable) {
         return productRepository.findAllProductBySellerId(sellerId, pageable);
-    }
-
-    @Transactional
-    public RsData<Product> like(Member member, Long productId) {
-        Product product = productRepository.findById(productId).orElse(null);
-        if (product == null) {
-            return RsData.of("F-1", "존재하지 않는 상품입니다.");
-        }
-        product.addLikedMember(member);
-        publisher.publishEvent(new EventAfterLike(this, member, product));
-        return RsData.of("S-1", "상품 좋아요");
-    }
-
-    @Transactional
-    public RsData<Product> unlike(Member member, Long productId) {
-        Product product = productRepository.findById(productId).orElse(null);
-        if (product == null) {
-            return RsData.of("F-1", "존재하지 않는 상품입니다.");
-        }
-        product.deleteLikedMember(member);
-        publisher.publishEvent(new EventAfterUnlike(this, member, product));
-        return RsData.of("S-1", "상품 좋아요 취소");
     }
 }

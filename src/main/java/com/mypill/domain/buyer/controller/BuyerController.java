@@ -36,6 +36,7 @@ public class BuyerController {
     @GetMapping("/myLikes")
     @Operation(summary = "내 관심상품 페이지")
     public String myLikes() {
+
         return "usr/buyer/myLikes";
     }
 

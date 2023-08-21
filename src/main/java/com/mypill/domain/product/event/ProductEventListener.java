@@ -1,6 +1,6 @@
-package com.mypill.domain.member.event;
+package com.mypill.domain.product.event;
 
-import com.mypill.domain.member.service.MemberService;
+import com.mypill.domain.product.service.ProductService;
 import com.mypill.global.event.EventAfterLike;
 import com.mypill.global.event.EventAfterUnlike;
 import lombok.RequiredArgsConstructor;
@@ -11,16 +11,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 @RequiredArgsConstructor
-public class MemberEventListener {
-    private final MemberService memberService;
+public class ProductEventListener {
 
+    private final ProductService productService;
     @EventListener
     public void listen(EventAfterLike event) {
-        memberService.whenAfterLike(event.getMember(), event.getProduct());
+        productService.whenAfterLike(event.getProduct());
     }
 
     @EventListener
     public void listen(EventAfterUnlike event) {
-        memberService.whenAfterUnlike(event.getMember(), event.getProduct());
+        productService.whenAfterUnlike(event.getProduct());
     }
 }
+
