@@ -32,7 +32,7 @@ public class Order extends BaseEntity {
     private Long totalPrice;
     @Embedded
     private Payment payment;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Address deliveryAddress;
     @Enumerated(EnumType.STRING)
     private OrderStatus primaryOrderStatus;

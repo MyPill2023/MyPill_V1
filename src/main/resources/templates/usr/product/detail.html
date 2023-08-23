@@ -31,12 +31,6 @@
                            style="color: #C0C0C0;"></i>
                     </button>
                     <div id="like-count">
-<!--                        <span class="text-xl" style="color:#ffb0b0;" th:if="${response.isLiked}"-->
-<!--                              th:text="${response.product.likeCount}">-->
-<!--                        </span>-->
-<!--                        <span class="text-xl" style="color:black;" th:unless="${response.isLiked}"-->
-<!--                              th:text="${response.product.likeCount}">-->
-<!--                        </span>-->
                         <span class="text-xl" th:style="${response.isLiked()} ? 'color:#ffb0b0;' : 'color:black;'"
                               th:text="${response.product.likeCount}">
                         </span>
@@ -204,7 +198,7 @@
                         if (data.resultCode.startsWith("S-")) {
                             $('#like-count span').text(isLiked ? likeCount + 1 : likeCount - 1);
                             if (isLiked) {
-                                $('#like-count span').css('color', '#FF0000');
+                                $('#like-count span').css('color', '#ffb0b0');
                             } else {
                                 $('#like-count span').css('color', 'black');
                             }

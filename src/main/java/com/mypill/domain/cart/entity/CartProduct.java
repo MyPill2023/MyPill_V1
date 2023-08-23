@@ -20,7 +20,7 @@ public class CartProduct extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Cart cart;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
     private Long orderId;
@@ -43,5 +43,4 @@ public class CartProduct extends BaseEntity {
     public void connectOrderId(Long orderId) {
         this.orderId = orderId;
     }
-
 }
