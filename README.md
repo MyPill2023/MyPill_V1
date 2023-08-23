@@ -2,7 +2,7 @@
 `2023.06.19` ~ `2023.07.14`
 > 영양제 이커머스 플랫폼</br>
 MyPill에서는 설문 기반 맞춤형 영양소를 추천하고, 복약 관리 기능을 더한, 영양제 이커머스 플랫폼 입니다!
-- [🔗 MyPill](https://www.mypill.shop)
+- [🔗 MyPill](https://www.mypill.shop/home)
 - [🔗 시연영상](https://youtu.be/VYYzGUSq1Hk)
 </br>
 
