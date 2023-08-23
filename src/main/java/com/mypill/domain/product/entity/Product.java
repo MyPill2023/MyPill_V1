@@ -11,17 +11,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "delete_date IS NULL")
 public class Product extends BaseEntity implements ImageOperator {
 
     @NotNull
@@ -62,14 +62,8 @@ public class Product extends BaseEntity implements ImageOperator {
     )
     private List<Category> categories = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "product_member",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
-    )
     @Builder.Default
-    private Set<Member> likedMembers = new HashSet<>();
+    private Long likeCount = 0L;
 
     public static Product of(ProductRequest request, List<Nutrient> nutrients, List<Category> categories,
                              Member seller) {
@@ -98,12 +92,12 @@ public class Product extends BaseEntity implements ImageOperator {
         this.sales += quantity;
     }
 
-    public void addLikedMember(Member member) {
-        this.likedMembers.add(member);
+    public void plusLikeCount() {
+        this.likeCount += 1;
     }
 
-    public void deleteLikedMember(Member member) {
-        this.likedMembers.remove(member);
+    public void minusLikeCount() {
+        this.likeCount -= 1;
     }
 
     @Override

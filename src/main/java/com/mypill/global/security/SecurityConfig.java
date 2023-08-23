@@ -55,7 +55,6 @@ public class SecurityConfig {
                                 .loginPage("/member/login") // GET
                                 .loginProcessingUrl("/member/login") // POST
                                 .successHandler(customAuthenticationSuccessHandler)
-                                .defaultSuccessUrl("/home")
                                 .failureHandler(customAuthenticationFailureHandler)
                 )
                 .oauth2Login(
@@ -65,16 +64,14 @@ public class SecurityConfig {
                                         .accessTokenResponseClient(oAuth2AccessTokenResponseClient)
                                 )
                                 .successHandler(customOAuth2SuccessHandler)
-                                .defaultSuccessUrl("/home")
                                 .failureHandler(customAuthenticationFailureHandler)
                 )
                 .logout(
                         logout -> logout
                                 .logoutUrl("/member/logout")
-//                                .invalidateHttpSession(true) // 로그아웃 이후 세션 전체 삭제 여부
-//                                .deleteCookies("JSESSIONID")
+                                .invalidateHttpSession(true) // 로그아웃 이후 세션 전체 삭제 여부
+                                .deleteCookies("JSESSIONID")
                 );
-
         return http.build();
     }
 }

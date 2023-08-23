@@ -22,7 +22,7 @@
                     <div class="flex justify-around gap-5">
                         <div class="border border-gray-200 flex justify-center w-2/6 p-5">
                             <div style="width: 100px; height: 100px;">
-                                <img th:src="${orderItem.getProduct().image != null ? orderItem.getProduct().image.filepath : '/'}" alt="product_image"
+                                <img th:src="${orderItem.getProduct().image != null ? orderItem.getProduct().image.filepath : '/image-null'}" alt="product_image"
                                      class="object-contain"
                                      style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
                             </div>

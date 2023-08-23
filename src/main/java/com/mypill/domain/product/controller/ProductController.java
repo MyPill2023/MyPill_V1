@@ -9,6 +9,7 @@ import com.mypill.domain.product.dto.response.ProductPageResponse;
 import com.mypill.domain.product.dto.response.ProductResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
+import com.mypill.domain.productlike.service.ProductLikeService;
 import com.mypill.global.rq.Rq;
 import com.mypill.global.rsdata.RsData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,7 @@ import java.util.List;
 @Tag(name = "ProductController", description = "상품")
 public class ProductController {
     private final ProductService productService;
+    private final ProductLikeService productLikeService;
     private final NutrientService nutrientService;
     private final CategoryService categoryService;
     private final Rq rq;
@@ -58,11 +60,13 @@ public class ProductController {
         if (productRsData.isFail()) {
             return rq.historyBack(productRsData);
         }
-        if (rq.isLogin() && productRsData.getData().getLikedMembers().contains(rq.getMember())) {
-            model.addAttribute("response", ProductResponse.of(productRsData.getData(), true));
-        } else {
-            model.addAttribute("response", ProductResponse.of(productRsData.getData(), false));
+
+        boolean isLikedInput = false;
+        if (rq.isLogin() && productLikeService.findByMemberIdAndProductId(rq.getMember().getId(), productId) != null) {
+            isLikedInput = true;
         }
+        model.addAttribute("response", ProductResponse.of(productRsData.getData(), isLikedInput));
+
         return "usr/product/detail";
     }
 
@@ -139,33 +143,6 @@ public class ProductController {
             return rq.historyBack(deleteRsData);
         }
         return rq.redirectWithMsg("/seller/myProduct", deleteRsData);
-    }
-
-    @ResponseBody
-    @PreAuthorize("hasAuthority('BUYER')")
-    @PostMapping("/like/{id}")
-    @Operation(summary = "상품 좋아요 등록")
-    public RsData<Product> likeProduct(@PathVariable Long id) {
-        return productService.like(rq.getMember(), id);
-    }
-
-    @ResponseBody
-    @PreAuthorize("hasAuthority('BUYER')")
-    @PostMapping("/unlike/{id}")
-    @Operation(summary = "상품 좋아요 취소")
-    public RsData unlikeProduct(@PathVariable Long id) {
-        return productService.unlike(rq.getMember(), id);
-    }
-
-    @PreAuthorize("hasAuthority('BUYER')")
-    @GetMapping("/unlike/{id}")
-    @Operation(summary = "관심 상품 목록에서 좋아요 삭제")
-    public String unlike(@PathVariable Long id) {
-        RsData<Product> unlikeRsData = productService.unlike(rq.getMember(), id);
-        if (unlikeRsData.isFail()) {
-            return rq.historyBack(unlikeRsData);
-        }
-        return rq.redirectWithMsg("/buyer/myLikes", "관심 상품이 삭제되었습니다.");
     }
 
     private void populateModel(Model model) {

@@ -39,7 +39,6 @@ class BuyerControllerTest {
                 .password("1234")
                 .role(Role.BUYER)
                 .email("testEmail@test.com")
-                .likedProducts(new HashSet<>())
                 .build();
         memberRepository.save(testUser1);
     }

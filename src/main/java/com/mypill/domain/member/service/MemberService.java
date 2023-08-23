@@ -7,7 +7,6 @@ import com.mypill.domain.member.entity.Role;
 import com.mypill.domain.member.repository.MemberRepository;
 import com.mypill.domain.member.validation.EmailValidationResult;
 import com.mypill.domain.member.validation.UsernameValidationResult;
-import com.mypill.domain.product.entity.Product;
 import com.mypill.global.event.EventAfterDeleteMember;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +52,7 @@ public class MemberService {
     public RsData<Member> whenSocialLogin(String providerTypeCode, String username, String name, String email) {
         Member member = findByUsername(username).orElse(null);
         if (member == null) {
-            member = oauthJoin(providerTypeCode, username, name, email).getData();
+            return oauthJoin(providerTypeCode, username, name, email);
         }
         return RsData.of("S-2", "로그인 되었습니다.", member);
     }
@@ -74,16 +73,6 @@ public class MemberService {
     @Transactional
     public void hardDelete(Member member) {
         memberRepository.delete(member);
-    }
-
-    @Transactional
-    public void whenAfterLike(Member member, Product product) {
-        member.like(product);
-    }
-
-    @Transactional
-    public void whenAfterUnlike(Member member, Product product) {
-        member.unLike(product);
     }
 
     @Transactional
@@ -140,12 +129,9 @@ public class MemberService {
     }
 
     private RsData<Member> oauthJoin(String providerTypeCode, String username, String name, String email) {
-        if (findByUsername(username).isPresent()) {
-            return RsData.of("F-1", "해당 아이디(%s)는 이미 사용중입니다.".formatted(username));
-        }
         Optional<Member> opMember = memberRepository.findByEmail(email);
         if (opMember.isPresent()) {
-            return RsData.of("F-2", "이미 가입된 이메일입니다.");
+            return RsData.of("F-1", "이미 가입된 이메일입니다.");
         }
         String encodedPassword = passwordEncoder.encode("");
         Member member = Member.of(providerTypeCode, username, name, email, encodedPassword, Role.BUYER);

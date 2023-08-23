@@ -14,8 +14,9 @@
 
         <div class="flex flex-col gap-5 w-full max-w-md mb-10 px-5">
             <div class="border border-gray-200 text-center">
-                <img th:src="${response.product.image != null ? response.product.image.filepath : '/'}" alt="product_image"
-                     style="width: 500px; height: 400px;" />
+                <img th:src="${response.product.image != null ? response.product.image.filepath : '/image-null'}"
+                     alt="product_image"
+                     style="width: 500px; height: 400px;"/>
             </div>
 
             <div class="flex flex-col justify-start w-full gap-2">
@@ -30,17 +31,14 @@
                            style="color: #C0C0C0;"></i>
                     </button>
                     <div id="like-count">
-                            <span class="text-xl" style="color:#ffb0b0;" th:if="${response.isLiked}"
-                                  th:text="${response.product.likedMembers == null ? 0 : response.product.likedMembers.size}">
-                            </span>
-                        <span class="text-xl" style="color:black;" th:unless="${response.isLiked}"
-                              th:text="${response.product.likedMembers == null ? 0 : response.product.likedMembers.size}">
-                            </span>
+                        <span class="text-xl" th:style="${response.isLiked()} ? 'color:#ffb0b0;' : 'color:black;'"
+                              th:text="${response.product.likeCount}">
+                        </span>
                     </div>
                 </div>
                 <div class="flex justify-end w-full items-center">
                     <span class="text-xl font-bold"
-                      th:text="${#numbers.formatInteger(response.product.price, 0, 'COMMA') + '원'}"></span>
+                          th:text="${#numbers.formatInteger(response.product.price, 0, 'COMMA') + '원'}"></span>
                 </div>
             </div>
             <div class="divider !my-2"></div>
@@ -48,11 +46,13 @@
                 <div class="flex justify-between">
                     <div class="flex flex-col items-center justify-center">
                         <div class="flex gap-3 justify-center items-center">
-                            <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-</button>
+                            <button class="badge badge-ghost badge-lg" type="button" onclick="decreaseQuantity()">-
+                            </button>
                             <label for="quantity">수량</label>
                             <input type="number" id="quantity" name="quantity" min="1" value="1"
                                    class="input input-bordered  input-sm w-16" required>
-                            <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+</button>
+                            <button class="badge badge-ghost badge-lg" type="button" onclick="increaseQuantity()">+
+                            </button>
                         </div>
                         <div class="flex justify-end mt-5" th:if="${response.product.stock < 1}">
                             <span class="text-red-300">해당 상품은 품절되었습니다.</span>
@@ -62,7 +62,8 @@
                         <form id="directBuyForm" th:action="@{/order/create/single}" method="POST">
                             <input type="hidden" name="productId" th:value="${response.product.id}">
                             <input type="hidden" id="directBuyQuantity" name="quantity">
-                            <button class="btn btn-accent" type="button" onclick="submitDirectBuyForm()" th:disabled="${response.product.stock < 1}">
+                            <button class="btn btn-accent" type="button" onclick="submitDirectBuyForm()"
+                                    th:disabled="${response.product.stock < 1}">
                                 바로 구매하기
                             </button>
                         </form>
@@ -70,7 +71,9 @@
                               onsubmit="CartProductRequest__submit(this, event); return false;">
                             <input type="hidden" id="productId" name="productId" th:value="${response.product.id}">
                             <input type="hidden" id="cartProductQuantity" name="quantity">
-                            <button class="btn btn-success" type="submit" th:disabled="${response.product.stock < 1}">장바구니 담기</button>
+                            <button class="btn btn-success" type="submit" th:disabled="${response.product.stock < 1}">
+                                장바구니 담기
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -177,7 +180,7 @@
                 let isLiked = isLikedStr === "true";
                 isLiked = !isLiked;
                 // 좋아요 상태에 따라 요청 URL 변경
-                let url = isLiked ? '/product/like/' : '/product/unlike/';
+                let url = isLiked ? '/product/like/create/' : '/product/like/delete/';
 
                 // 좋아요 수
                 let likeCount = parseInt($('#like-count').text());
@@ -192,10 +195,10 @@
                     },
                     dataType: "json",
                     success: function (data) {
-                        if(data.resultCode.startsWith("S-")){
+                        if (data.resultCode.startsWith("S-")) {
                             $('#like-count span').text(isLiked ? likeCount + 1 : likeCount - 1);
                             if (isLiked) {
-                                $('#like-count span').css('color', '#FF0000');
+                                $('#like-count span').css('color', '#ffb0b0');
                             } else {
                                 $('#like-count span').css('color', 'black');
                             }
@@ -207,7 +210,7 @@
                             }
                             let metaTag = document.querySelector('meta[name="_isLiked"]');
                             metaTag.setAttribute('content', String(isLiked));
-                        }else {
+                        } else {
                             toastWarning(data.msg);
                         }
                     },

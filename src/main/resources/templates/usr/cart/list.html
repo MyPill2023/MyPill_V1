@@ -29,7 +29,7 @@
                                                th:data-product-quantity="${cartProduct.quantity}"
                                                onclick="updateSelectedItem(this)">
                                         <div style="width: 100px; height: 100px;">
-                                            <img th:src="${cartProduct.product.image != null ? cartProduct.product.image.filepath : '/'}" alt="product_image"
+                                            <img th:src="${cartProduct.product.image != null ? cartProduct.product.image.filepath : '/image-null'}" alt="product_image"
                                                  class="object-contain"
                                                  style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
                                         </div>

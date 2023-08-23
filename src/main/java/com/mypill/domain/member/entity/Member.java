@@ -4,7 +4,6 @@ import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.nutrient.entity.Nutrient;
 import com.mypill.domain.address.entity.Address;
 import jakarta.persistence.*;
-import com.mypill.domain.product.entity.Product;
 import com.mypill.global.base.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,9 +47,6 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String nutrientBusinessNumber;
 
-    @ManyToMany(mappedBy = "likedMembers")
-    @Builder.Default
-    private Set<Product> likedProducts = new HashSet<>();
     @ManyToMany(cascade = CascadeType.ALL)
     @Builder.Default
     @JoinTable(name = "member_nutrients",
@@ -87,14 +83,6 @@ public class Member extends BaseEntity {
 
     public boolean isWaiter() {
         return role.equals(Role.WAITER);
-    }
-
-    public void like(Product product) {
-        likedProducts.add(product);
-    }
-
-    public void unLike(Product product) {
-        likedProducts.remove(product);
     }
 
     public void setSurveyNutrients(List<Nutrient> surveyNutrients) {

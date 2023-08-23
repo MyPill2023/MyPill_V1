@@ -229,64 +229,6 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("좋아요 표시 이벤트를 받고, 좋아요 목록에 추가")
-    void whenAfterLikeTest() {
-        // GIVEN
-        testUser1 = testUser1.toBuilder()
-                .likedProducts(new HashSet<>())
-                .build();
-        Member savedMember = memberRepository.save(testUser1);
-
-        String name = "name";
-        String description = "description";
-        Long price = 100_000L;
-        Long stock = 100L;
-        Product product = Product.builder()
-                .id(1L)
-                .name(name)
-                .description(description)
-                .price(price)
-                .stock(stock)
-                .build();
-
-        // WHEN
-        memberService.whenAfterLike(savedMember, product);
-
-        // THEN
-        assertThat(savedMember.getLikedProducts().size()).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("좋아요 해제 이벤트를 받고, 좋아요 목록에서 삭제")
-    void whenAfterUnlikeTest() {
-        // GIVEN
-        testUser1 = testUser1.toBuilder()
-                .likedProducts(new HashSet<>())
-                .build();
-        Member savedMember = memberRepository.save(testUser1);
-
-        String name = "name";
-        String description = "description";
-        Long price = 100_000L;
-        Long stock = 100L;
-        Product product = Product.builder()
-                .id(1L)
-                .name(name)
-                .description(description)
-                .price(price)
-                .stock(stock)
-                .build();
-
-        // WHEN
-        memberService.whenAfterLike(savedMember, product);
-        memberService.whenAfterUnlike(savedMember, product);
-
-
-        // THEN
-        assertThat(savedMember.getLikedProducts().size()).isEqualTo(0);
-    }
-
-    @Test
     @DisplayName("이메일 인증")
     void verifyEmailTest() {
         // GIVEN

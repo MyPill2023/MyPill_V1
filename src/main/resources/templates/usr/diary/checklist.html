@@ -42,7 +42,7 @@
                             <div class="flex flex-auto justify-end">
                                 <input th:checked="${diary.isCheckedWhen(response.today)}" type="checkbox" class="checkbox checkbox-info"
                                        onclick="$(this).next().submit(); return false;"/>
-                                <form hidden th:action="@{|/diary/todolist/toggleCheck/${diary.id}|}" method="POST">
+                                <form hidden th:action="@{|/diary/check/${diary.id}|}" method="POST">
                                     <input type="hidden" name="_method" value="POST"/>
                                 </form>
                             </div>

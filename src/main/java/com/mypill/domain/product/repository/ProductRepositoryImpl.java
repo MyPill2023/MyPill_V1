@@ -23,7 +23,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         return jpaQueryFactory.selectFrom(product)
                 .leftJoin(product.seller, member).fetchJoin()
                 .where(
-                        product.deleteDate.isNull(),
                         product.stock.gt(0)
                 )
                 .orderBy(product.sales.desc())
@@ -36,7 +35,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         JPAQuery<Product> query = jpaQueryFactory.selectFrom(product)
                 .leftJoin(product.image).fetchJoin()
                 .where(
-                        product.deleteDate.isNull(),
                         product.stock.gt(0)
                 );
 
@@ -45,7 +43,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .orderBy(product.sales.desc())
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetch();
-        System.out.println("시작끝");
 
         return new PageImpl<>(content, pageable, total);
     }
@@ -56,7 +53,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .leftJoin(product.image).fetchJoin()
                 .where(
                         product.nutrients.any().id.eq(nutrientId),
-                        product.deleteDate.isNull(),
                         product.stock.gt(0)
                 );
         long total = query.fetch().size();
@@ -73,7 +69,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .leftJoin(product.image).fetchJoin()
                 .where(
                         product.categories.any().id.eq(categoryId),
-                        product.deleteDate.isNull(),
                         product.stock.gt(0)
                 );
         long total = query.fetch().size();
@@ -89,8 +84,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         JPAQuery<Product> query = jpaQueryFactory.selectFrom(product)
                 .leftJoin(product.image).fetchJoin()
                 .where(
-                        product.seller.id.eq(sellerId),
-                        product.deleteDate.isNull()
+                        product.seller.id.eq(sellerId)
                 );
         long total = query.fetch().size();
         List<Product> content = query
