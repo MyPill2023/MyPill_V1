@@ -12,6 +12,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductLikeService {
@@ -55,5 +57,9 @@ public class ProductLikeService {
 
     public ProductLike findByMemberIdAndProductId(Long memberId, Long productId) {
         return productLikeRepository.findByMemberIdAndProductId(memberId, productId);
+    }
+
+    public List<Long> findProductIdsByMemberId(Long id) {
+        return productLikeRepository.findProductIdsByMemberId(id);
     }
 }

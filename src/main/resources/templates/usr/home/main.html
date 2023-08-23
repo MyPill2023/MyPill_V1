@@ -29,10 +29,9 @@
             <div th:each="product, loop : ${response.products}"
                  class="bg-base-100 border-b border-gray-200 pt-3 pb-6">
                 <a th:href="@{|/product/detail/${product.id}|}">
-
                     <div class="flex justify-around gap-5">
                         <div style="width: 100px; height: 100px;">
-                            <img th:src="${product.image != null ? product.image.filepath : '/'}" alt="product_image"
+                            <img th:src="${product.image != null ? product.image.filepath : '/image-null'}" alt="product_image"
                                  class="object-contain"
                                  style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
                         </div>

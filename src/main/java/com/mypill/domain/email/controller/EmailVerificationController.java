@@ -25,6 +25,6 @@ public class EmailVerificationController {
         if (verifyEmailRsData.isFail() || rq.isLogout()) {
             return rq.redirectWithMsg("/member/login", verifyEmailRsData);
         }
-        return rq.redirectWithMsg("/home", verifyEmailRsData);
+        return rq.redirectWithMsg("/", verifyEmailRsData);
     }
 }

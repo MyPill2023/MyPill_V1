@@ -119,4 +119,9 @@ public class ProductService {
     public Page<Product> getAllProductBySellerId(Long sellerId, Pageable pageable) {
         return productRepository.findAllProductBySellerId(sellerId, pageable);
     }
+
+    public List<Product> findByIdIn(List<Long> productIds){
+        return productRepository.findByIdIn(productIds);
+    }
+
 }

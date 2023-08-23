@@ -130,7 +130,7 @@ public class MemberController {
         }
         SecurityContextHolder.clearContext();
         request.getSession().invalidate();
-        response.sendRedirect("/home");
+        response.sendRedirect("/");
     }
 
     @PreAuthorize("isAuthenticated()")

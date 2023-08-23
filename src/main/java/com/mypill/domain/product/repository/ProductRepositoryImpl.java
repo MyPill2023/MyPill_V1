@@ -43,7 +43,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .orderBy(product.sales.desc())
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetch();
-        System.out.println("시작끝");
 
         return new PageImpl<>(content, pageable, total);
     }

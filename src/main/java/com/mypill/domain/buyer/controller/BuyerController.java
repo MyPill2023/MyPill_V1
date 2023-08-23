@@ -10,6 +10,10 @@ import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.order.service.OrderService;
+import com.mypill.domain.product.dto.response.ProductsResponse;
+import com.mypill.domain.product.entity.Product;
+import com.mypill.domain.product.service.ProductService;
+import com.mypill.domain.productlike.service.ProductLikeService;
 import com.mypill.global.rq.Rq;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +32,8 @@ import java.util.Map;
 @RequestMapping("/buyer")
 @Tag(name = "BuyerController", description = "구매자 회원")
 public class BuyerController {
+    private final ProductService productService;
+    private final ProductLikeService productLikeService;
     private final OrderService orderService;
     private final AddressService addressService;
     private final Rq rq;
@@ -35,8 +41,10 @@ public class BuyerController {
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/myLikes")
     @Operation(summary = "내 관심상품 페이지")
-    public String myLikes() {
-        
+    public String myLikes(Model model) {
+        List<Long> productIds = productLikeService.findProductIdsByMemberId(rq.getMember().getId());
+        List<Product> products = productService.findByIdIn(productIds);
+        model.addAttribute("response", ProductsResponse.of(products));
         return "usr/buyer/myLikes";
     }
 

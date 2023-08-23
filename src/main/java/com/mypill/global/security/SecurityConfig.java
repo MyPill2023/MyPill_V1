@@ -55,7 +55,6 @@ public class SecurityConfig {
                                 .loginPage("/member/login") // GET
                                 .loginProcessingUrl("/member/login") // POST
                                 .successHandler(customAuthenticationSuccessHandler)
-                                .defaultSuccessUrl("/home")
                                 .failureHandler(customAuthenticationFailureHandler)
                 )
                 .oauth2Login(
@@ -65,7 +64,6 @@ public class SecurityConfig {
                                         .accessTokenResponseClient(oAuth2AccessTokenResponseClient)
                                 )
                                 .successHandler(customOAuth2SuccessHandler)
-                                .defaultSuccessUrl("/home")
                                 .failureHandler(customAuthenticationFailureHandler)
                 )
                 .logout(

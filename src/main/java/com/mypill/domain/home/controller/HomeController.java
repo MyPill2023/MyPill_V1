@@ -21,7 +21,7 @@ public class HomeController {
 
     private final ProductService productService;
 
-    @GetMapping("/home")
+    @GetMapping("/")
     @Operation(summary = "메인 페이지")
     public String showMain(Model model) {
         List<Product> productList = productService.getTop5ProductsBySales();

@@ -14,7 +14,7 @@
 
         <div class="flex flex-col gap-5 w-full max-w-md mb-10 px-5">
             <div class="border border-gray-200 text-center">
-                <img th:src="${response.product.image != null ? response.product.image.filepath : '/'}"
+                <img th:src="${response.product.image != null ? response.product.image.filepath : '/image-null'}"
                      alt="product_image"
                      style="width: 500px; height: 400px;"/>
             </div>

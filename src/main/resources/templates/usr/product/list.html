@@ -13,8 +13,7 @@
             <div id="accordion-collapse" data-accordion="collapse">
                 <h2 id="accordion-collapse-heading-1">
                     <a th:href="@{|/product/list/all|}"
-                       class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-                    >
+                       class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
                         <span>전체보기</span>
                     </a>
                 </h2>
@@ -82,7 +81,7 @@
 
                     <div class="flex justify-around gap-5">
                         <div style="width: 100px; height: 100px;">
-                            <img th:src="${product.image != null ? product.image.filepath : '/'}" alt="product_image"
+                            <img th:src="${product.image != null ? product.image.filepath : '/image-null'}" alt="product_image"
                                  class="object-contain"
                                  style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
                         </div>

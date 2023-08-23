@@ -35,9 +35,9 @@ public class ProductLikeController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @GetMapping("/delete/{id}")
+    @PostMapping("/my-list/delete/{id}")
     @Operation(summary = "관심 상품 목록에서 좋아요 삭제")
-    public String unlike(@PathVariable Long id) {
+    public String unlikeFromMyLikes(@PathVariable Long id) {
         RsData<ProductLike> unlikeRsData = productLikeService.unlike(rq.getMember().getId(), id);
         if (unlikeRsData.isFail()) {
             return rq.historyBack(unlikeRsData);

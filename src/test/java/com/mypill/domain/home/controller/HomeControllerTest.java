@@ -40,7 +40,7 @@ class HomeControllerTest {
     void showMainTest1() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/home")
+                .perform(get("/")
                         .with(csrf())
                 )
                 .andDo(print());
@@ -62,7 +62,7 @@ class HomeControllerTest {
 
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/home")
+                .perform(get("/")
                         .with(csrf())
                 )
                 .andDo(print());
