@@ -71,10 +71,9 @@ public class SecurityConfig {
                 .logout(
                         logout -> logout
                                 .logoutUrl("/member/logout")
-//                                .invalidateHttpSession(true) // 로그아웃 이후 세션 전체 삭제 여부
-//                                .deleteCookies("JSESSIONID")
+                                .invalidateHttpSession(true) // 로그아웃 이후 세션 전체 삭제 여부
+                                .deleteCookies("JSESSIONID")
                 );
-
         return http.build();
     }
 }

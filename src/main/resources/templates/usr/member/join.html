@@ -256,10 +256,10 @@
         }
 
         function enableInputEnglishAndNumber(element) {
-            const regex = /^[a-zA-Z0-9]+$/;
+            const regex = /^[a-z0-9]+$/;
             const inputValue = element.value;
             if (!regex.test(inputValue)) {
-                element.value = inputValue.replace(/[^a-zA-Z0-9]/g, '');
+                element.value = inputValue.replace(/[^a-z0-9]/g, '');
             }
         }
 
