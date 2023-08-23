@@ -37,14 +37,14 @@ public class DiaryController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/create")
-    @Operation(summary = "영양제 등록 페이지")
+    @Operation(summary = "복용 스케줄 등록 페이지")
     public String showCreateForm() {
         return "usr/diary/create";
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
     @PostMapping("/create")
-    @Operation(summary = "영양제 등록")
+    @Operation(summary = "복용 스케줄 등록")
     public String create(@Valid DiaryRequest diaryRequest) {
         RsData<Diary> createRsData = diaryService.create(diaryRequest, rq.getMember());
         if (createRsData.isFail()) {
@@ -55,7 +55,7 @@ public class DiaryController {
 
     @PreAuthorize("hasAuthority('BUYER')")
     @GetMapping("/list")
-    @Operation(summary = "영양제 목록 페이지")
+    @Operation(summary = "복용 스케줄 목록 페이지")
     public String showList(Model model) {
         List<Diary> diaries = diaryService.getList(rq.getMember().getId());
         model.addAttribute("response", DiaryListResponse.of(diaries));
@@ -63,8 +63,8 @@ public class DiaryController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @PostMapping("/list/delete/{diaryId}")
-    @Operation(summary = "영양제 정보 삭제")
+    @PostMapping("/delete/{diaryId}")
+    @Operation(summary = "복용 스케줄 정보 삭제")
     public String delete(@PathVariable Long diaryId) {
         RsData<Diary> deleteRsData = diaryService.delete(diaryId, rq.getMember());
         if (deleteRsData.isFail()) {
@@ -74,8 +74,8 @@ public class DiaryController {
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @GetMapping("/todolist")
-    @Operation(summary = "영양제 기록 체크 페이지")
+    @GetMapping("/checklist")
+    @Operation(summary = "복용 스케줄 기록 체크 페이지")
     public String showCheckLog(Model model) {
         Member writer = rq.getMember();
         String today = LocalDate.now().toString();
@@ -87,18 +87,18 @@ public class DiaryController {
                 .collect(Collectors.groupingBy(DiaryCheckLog::getCheckDate));
 
         model.addAttribute("response", DiaryCheckListResponse.of(today, diaries, groupedData));
-        return "usr/diary/todolist";
+        return "usr/diary/checklist";
     }
 
     @PreAuthorize("hasAuthority('BUYER')")
-    @PostMapping("/todolist/toggleCheck/{diaryId}")
-    @Operation(summary = "영양제 체크 등록")
+    @PostMapping("/check/{diaryId}")
+    @Operation(summary = "복용 스케줄 기록 체크 등록")
     public String toggleCheck(@PathVariable Long diaryId) {
         Member writer = rq.getMember();
         RsData<Diary> diaryRsData = diaryService.toggleCheck(writer, diaryId, LocalDate.now());
         if (diaryRsData.isFail()) {
             return rq.historyBack(diaryRsData);
         }
-        return rq.redirectWithMsg("/diary/todolist", diaryRsData);
+        return rq.redirectWithMsg("/diary/checklist", diaryRsData);
     }
 }

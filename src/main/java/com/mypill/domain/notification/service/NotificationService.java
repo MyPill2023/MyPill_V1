@@ -72,7 +72,7 @@ public class NotificationService {
     @Transactional
     public void whenBeforeDiaryCheck(Diary diary) {
         Notification notification = Notification.builder()
-                .typeCode(NotificationTypeCode.Recode)
+                .typeCode(NotificationTypeCode.Record)
                 .member(diary.getMember())
                 .diaryName(diary.getName())
                 .diaryTime(diary.getTime())
