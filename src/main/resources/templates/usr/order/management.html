@@ -23,18 +23,18 @@
                     <div class="bg-base-100 border-b border-gray-200 p-5 ">
                         <div class="flex justify-around gap-5">
                             <div style="width: 100px; height: 100px;">
-                                <img th:src="${orderItem.product.image != null ? orderItem.product.image.filepath : '/image-null'}" alt="product_image"
+                                <img th:src="${orderItem.product.imageFilePath}" alt="product_image"
                                      class="object-contain"
                                      style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
                             </div>
                             <div class="flex flex-col gap-3 w-4/6">
                                 <div class="flex flex-col gap-1">
                                     <div class="flex justify-between">
-                                        <h3 th:text="${orderItem.product.seller.name}"></h3>
-                                        <span th:class="${orderItem.status.number <= 1 ? 'badge badge-info' :
-                                                    (orderItem.status.number <= 3 ? 'badge badge-success' :
-                                                    (orderItem.status.number == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
-                                              th:text="${orderItem.status.value}"></span>
+                                        <h3 th:text="${orderItem.product.sellerName}"></h3>
+                                        <span th:class="${orderItem.orderStatus.number <= 1 ? 'badge badge-info' :
+                                                    (orderItem.orderStatus.number <= 3 ? 'badge badge-success' :
+                                                    (orderItem.orderStatus.number == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"
+                                              th:text="${orderItem.orderStatus.value}"></span>
                                     </div>
                                     <a th:text="${orderItem.product.name}"
                                        class="font-bold "></a>
@@ -50,7 +50,7 @@
                                         <option th:each="orderStatus, loop : ${response.orderStatuses}" th:unless="${loop.index < 1}"
                                                 th:disabled="${loop.index == 1}"
                                                 th:value="${orderStatus.value}" th:text="${orderStatus.value}"
-                                                th:selected="${orderStatus.value.equals(orderItem.status.value)}"></option>
+                                                th:selected="${orderStatus.value.equals(orderItem.orderStatus.value)}"></option>
                                     </select>
                                     <button class="btn btn-success w-1/4" type="submit">변경</button>
                                 </form>
@@ -81,7 +81,7 @@
                 <h3 class="text-lg font-bold mb-2 mt-10">주문 회원 정보</h3>
                 <div class="flex gap-2">
                     <span class="w-1/4 text-gray-400">이름</span>
-                    <span th:text="${response.order.buyer.name}"></span>
+                    <span th:text="${response.order.buyerName}"></span>
                 </div>
             </div>
             <div class="flex flex-col gap-2">

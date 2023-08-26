@@ -13,15 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderManagementResponse {
-    private Order order;
-    private List<OrderItem> orderItems;
+    private OrderResponse order;
+    private List<OrderItemResponse> orderItems;
     @Builder.Default
     List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.values());
 
     public static OrderManagementResponse of(Order order, List<OrderItem> orderItems) {
         return OrderManagementResponse.builder()
-                .order(order)
-                .orderItems(orderItems)
+                .order(OrderResponse.of(order))
+                .orderItems(orderItems.stream().map(OrderItemResponse::of).toList())
                 .build();
     }
 }

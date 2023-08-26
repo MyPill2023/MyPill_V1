@@ -26,7 +26,7 @@
             </div>
 
             <div th:each="order, loop : ${response.orders}">
-                <a th:href="@{|/order/management/${order.id}|}">
+                <a th:href="@{|/order/management/${order.orderId}|}">
                     <div th:class="'bg-base-100 border-b border-gray-200 p-5' + (${loop.first} ? ' border-t' : '')">
                         <div class="flex flex-col gap-1">
                             <div class="flex justify-between">
