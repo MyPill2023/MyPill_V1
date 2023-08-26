@@ -44,7 +44,7 @@ public class BuyerController {
     public String myLikes(Model model) {
         List<Long> productIds = productLikeService.findProductIdsByMemberId(rq.getMember().getId());
         List<Product> products = productService.findByIdIn(productIds);
-        model.addAttribute("response", ProductsResponse.of(products));
+        model.addAttribute("productsResponse", ProductsResponse.of(products));
         return "usr/buyer/myLikes";
     }
 

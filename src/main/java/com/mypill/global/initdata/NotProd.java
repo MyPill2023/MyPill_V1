@@ -3,6 +3,7 @@ package com.mypill.global.initdata;
 import com.mypill.domain.address.dto.request.AddressRequest;
 import com.mypill.domain.address.entity.Address;
 import com.mypill.domain.address.service.AddressService;
+import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.member.dto.request.JoinRequest;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
@@ -81,6 +82,8 @@ public class NotProd {
             Member memberUser4 = memberService.join(new JoinRequest("user4", "김맹구", "1234", "mk@test.com", "판매자"), true).getData();
             Member memberUser5 = memberService.join(new JoinRequest("user5", "김훈이", "1234", "hoon2@test.com", "구매자"), true).getData();
             Member memberUser6 = memberService.join(new JoinRequest("user6", "김멋사", "1234", "ll@test.com", "대기자"), true).getData();
+
+            Image image = Image.builder().filepath("/image-null").build();
 
             productService.create(new ProductRequest("루테인 베스트", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(1L, 2L), asList(1L, 2L), emptyFile), memberUser3);
             productService.create(new ProductRequest("프로바이오틱스 글루코사민 루테인 170mg x 60캡슐", "1일 1회 1정 저녁직후에 복용하는 것이 좋습니다", 12000L, 100L, asList(3L, 2L), asList(2L, 3L), emptyFile), memberUser3);

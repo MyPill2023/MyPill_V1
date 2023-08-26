@@ -65,7 +65,7 @@ public class ProductController {
         if (rq.isLogin() && productLikeService.findByMemberIdAndProductId(rq.getMember().getId(), productId) != null) {
             isLikedInput = true;
         }
-        model.addAttribute("response", ProductResponse.of(productRsData.getData(), isLikedInput));
+        model.addAttribute("productResponse", ProductResponse.of(productRsData.getData(), isLikedInput));
 
         return "usr/product/detail";
     }
@@ -118,7 +118,7 @@ public class ProductController {
         if (productRsData.isFail()) {
             return rq.historyBack(productRsData);
         }
-        model.addAttribute("response", ProductResponse.of(productRsData.getData()));
+        model.addAttribute("productResponse", ProductResponse.of(productRsData.getData()));
         populateModel(model);
         return "usr/product/update";
     }
@@ -155,7 +155,7 @@ public class ProductController {
     private void populateModel(Model model, String title, Page<Product> productPage, HttpServletRequest request) {
         List<Nutrient> nutrients = nutrientService.findAllByOrderByNameAsc();
         List<Category> categories = categoryService.findAllByOrderByNameAsc();
-        model.addAttribute("response", ProductPageResponse.of(title, productPage, nutrients, categories, getPagingUrl(request)));
+        model.addAttribute("productPageResponse", ProductPageResponse.of(title, productPage, nutrients, categories, getPagingUrl(request)));
     }
 
     private String getPagingUrl(HttpServletRequest request) {
