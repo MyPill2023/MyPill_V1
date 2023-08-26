@@ -1,6 +1,5 @@
 package com.mypill.domain.home.controller;
 
-
 import com.mypill.domain.product.dto.response.ProductsResponse;
 import com.mypill.domain.product.entity.Product;
 import com.mypill.domain.product.service.ProductService;
@@ -25,7 +24,7 @@ public class HomeController {
     @Operation(summary = "메인 페이지")
     public String showMain(Model model) {
         List<Product> productList = productService.getTop5ProductsBySales();
-        model.addAttribute("response", ProductsResponse.of(productList));
+        model.addAttribute("productsResponse", ProductsResponse.of(productList));
         return "usr/home/main";
     }
 }

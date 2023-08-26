@@ -48,17 +48,17 @@
                     <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         <div class="flex flex-row items-center">
                             <div style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                <a th:text="${postRepsonse.post.title}" th:href="@{/post/detail/{id}(id=${postRepsonse.post.id})}"></a>
+                                <a th:text="${postRepsonse.title}" th:href="@{/post/detail/{id}(id=${postRepsonse.postId})}"></a>
                             </div>
                             <span class="ml-2"
-                                  th:text="${(postRepsonse.post.getCommentCnt() >= 1 ? ' (' + postRepsonse.post.getCommentCnt() + ')' : '')}"></span>
+                                  th:text="${(postRepsonse.commentCount >= 1 ? ' (' + postRepsonse.commentCount + ')' : '')}"></span>
                         </div>
                     </td>
-                    <td th:text="${#strings.length(postRepsonse.poster.name) >= 2 ?
-                           postRepsonse.poster.name.substring(0, 1) +
+                    <td th:text="${#strings.length(postRepsonse.posterName) >= 2 ?
+                           postRepsonse.posterName.substring(0, 1) +
                             '*' +
-                           postRepsonse.poster.name.substring(2) : postRepsonse.poster.name}"></td>
-                    <td th:text="${#temporals.format(postRepsonse.post.createDate, 'MM/dd')}"></td>
+                           postRepsonse.posterName.substring(2) : postRepsonse.posterName}"></td>
+                    <td th:text="${#temporals.format(postRepsonse.createDate, 'MM/dd')}"></td>
                 </tr>
                 </tbody>
             </table>

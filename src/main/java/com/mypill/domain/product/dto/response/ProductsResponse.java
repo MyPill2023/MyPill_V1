@@ -10,9 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductsResponse {
 
-    private List<Product> products;
+    private List<ProductResponse> products;
 
     public static ProductsResponse of(List<Product> products) {
-        return new ProductsResponse(products);
+        return new ProductsResponse(products.stream().map(ProductResponse::of).toList());
     }
 }

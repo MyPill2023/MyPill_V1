@@ -70,7 +70,7 @@
             <div>
                 <label for="title" class="block text-gray-700 font-bold mb-2 text-xl">제목</label>
                 <input type="text" id="title" name="title"
-                          th:value="${postResponse.post.title}"
+                          th:value="${postResponse.title}"
                           class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline
                         whitespace-normal" rows="2">
             </div>
@@ -81,8 +81,8 @@
                 <div class="relative">
                     <textarea id="content" name="content"
                               class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
-                              th:text="${postResponse.post.content}" style="height: 200px;"></textarea>
-                    <div id="contentCount" class="absolute right-5 bottom-5" th:text="'(' + ${postResponse.post.content.length()} + '/1000)'"></div>
+                              th:text="${postResponse.content}" style="height: 200px;"></textarea>
+                    <div id="contentCount" class="absolute right-5 bottom-5" th:text="'(' + ${postResponse.content.length()} + '/1000)'"></div>
                 </div>
             </div>
 

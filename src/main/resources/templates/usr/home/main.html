@@ -26,18 +26,18 @@
             <div class="font-bold text-2xl mt-10">
                 ⭐인기상품 TOP 5⭐
             </div>
-            <div th:each="product, loop : ${response.products}"
+            <div th:each="product, loop : ${productsResponse.products}"
                  class="bg-base-100 border-b border-gray-200 pt-3 pb-6">
                 <a th:href="@{|/product/detail/${product.id}|}">
                     <div class="flex justify-around gap-5">
                         <div style="width: 100px; height: 100px;">
-                            <img th:src="${product.image != null ? product.image.filepath : '/image-null'}" alt="product_image"
+                            <img th:src="${product.imageFilePath}" alt="product_image"
                                  class="object-contain"
                                  style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
                         </div>
                         <div class="flex flex-col gap-3 w-4/6">
                             <div class="flex flex-col gap-1">
-                                <h3 th:text="${product.seller.name}"></h3>
+                                <h3 th:text="${product.sellerName}"></h3>
                                 <h1 th:text="${product.name}" class="text-lg font-bold"></h1>
                             </div>
                             <div class="flex justify-between items-center">
