@@ -107,7 +107,7 @@ public class MemberController {
     @Operation(summary = "내 게시글 목록 페이지")
     public String showMyPosts(Model model) {
         List<Post> posts = postService.getMyPosts(rq.getMember());
-        model.addAttribute("response", PostsResponse.of(posts));
+        model.addAttribute("postsResponse", PostsResponse.of(posts));
         return "usr/member/myPosts";
     }
 
