@@ -116,7 +116,7 @@ public class MemberController {
     @Operation(summary = "내 댓글 목록 페이지")
     public String showMyComments(Model model) {
         List<Comment> comments = commentService.getMyComments(rq.getMember());
-        model.addAttribute("response", CommentsResponse.of(comments));
+        model.addAttribute("commentsResponse", CommentsResponse.of(comments));
         return "usr/member/myComments";
     }
 

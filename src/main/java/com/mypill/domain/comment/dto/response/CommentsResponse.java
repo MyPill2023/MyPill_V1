@@ -1,17 +1,20 @@
 package com.mypill.domain.comment.dto.response;
 
 import com.mypill.domain.comment.entity.Comment;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class CommentsResponse {
-    private List<Comment> comments;
+    private List<CommentResponse> comments;
+
 
     public static CommentsResponse of(List<Comment> comments) {
-        return new CommentsResponse(comments);
+        return CommentsResponse.builder()
+                .comments(comments.stream().map(CommentResponse::of).toList())
+                .build();
     }
 }
