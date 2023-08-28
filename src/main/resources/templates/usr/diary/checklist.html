@@ -71,7 +71,7 @@
                             <div class="card-body">
                                     <div th:each="diaryCheckLog : ${entry.value}" class="flex gap-3 mt-2">
                                         <span class="badge badge-accent" th:text="${#temporals.format(diaryCheckLog.createDate, 'HH시 mm분')}"></span>
-                                        <span th:text="${diaryCheckLog.diary.name}"></span>
+                                        <span th:text="${diaryCheckLog.diaryName}"></span>
                                     </div>
                             </div>
                         </div>
