@@ -79,60 +79,60 @@
                          style="word-wrap: break-word; word-break: break-all;">
                         <span
                                 style="white-space: pre-wrap;"
-                                th:id="'commentContent-' + ${commentResponse.comment.id}"
-                                th:text="${commentResponse.comment.content}"></span>
-                        <div th:id="'commentEditForm-' + ${commentResponse.comment.id}" class="comment-edit-form"
+                                th:id="'commentContent-' + ${commentResponse.commentId}"
+                                th:text="${commentResponse.content}"></span>
+                        <div th:id="'commentEditForm-' + ${commentResponse.commentId}" class="comment-edit-form"
                              style="display: none;">
                             <div class="relative">
                                 <textarea
                                         class="input input-bordered w-full rounded py-2 px-3 focus:outline-none focus:shadow-outline"
-                                        th:id="'commentEdit-' + ${commentResponse.comment.id}" name="commentEdit"
+                                        th:id="'commentEdit-' + ${commentResponse.commentId}" name="commentEdit"
                                         style="height: 100px;"></textarea>
-                                <div th:id="'commentEditCount-' + ${commentResponse.comment.id}"
+                                <div th:id="'commentEditCount-' + ${commentResponse.commentId}"
                                      class="absolute right-5 bottom-5">
                                     (0/1000)
                                 </div>
                             </div>
                             <div class="flex justify-end gap-2">
                                 <button class="btn btn-success btn-sm"
-                                        th:attr="onclick='saveComment(this, ' + ${commentResponse.comment.id} + ');'">저장
+                                        th:attr="onclick='saveComment(this, ' + ${commentResponse.commentId} + ');'">저장
                                 </button>
                                 <button class="btn btn-danger btn-sm"
-                                        th:attr="onclick='cancelEditComment(this, ' + ${commentResponse.comment.id} + ');'">
+                                        th:attr="onclick='cancelEditComment(this, ' + ${commentResponse.commentId} + ');'">
                                     취소
                                 </button>
                             </div>
                         </div>
                         <div class="flex flex-col gap-1 items-end">
                         <span class="text-gray-500 text-sm" style="word-wrap: break-word; word-break: break-all;"
-                              th:text="${#strings.length(commentResponse.commenter.name) >= 2 ?
-                           commentResponse.commenter.name.substring(0, 1) + '*' + commentResponse.commenter.name.substring(2) : commentResponse.commenter.name}">
+                              th:text="${#strings.length(commentResponse.commenterName) >= 2 ?
+                           commentResponse.commenterName.substring(0, 1) + '*' + commentResponse.commenterName.substring(2) : commentResponse.commenterName}">
                         </span>
                             <th:block
-                                    th:if="${commentResponse.comment.createDate}==${commentResponse.comment.modifyDate}">
+                                    th:if="${commentResponse.createDate}==${commentResponse.modifyDate}">
                                 <span class="text-gray-500 text-sm"
-                                      th:text="'작성 : ' + ${#temporals.format(commentResponse.comment.createDate, 'yy-MM-dd hh:mm')}">
+                                      th:text="'작성 : ' + ${#temporals.format(commentResponse.createDate, 'yy-MM-dd hh:mm')}">
                                 </span>
                             </th:block>
                             <th:block
-                                    th:unless="${commentResponse.comment.createDate}==${commentResponse.comment.modifyDate}">
+                                    th:unless="${commentResponse.createDate}==${commentResponse.modifyDate}">
                                 <span class="text-gray-500 text-sm"
-                                      th:text="'수정 : ' + ${#temporals.format(commentResponse.comment.modifyDate, 'yy-MM-dd hh:mm')}">
+                                      th:text="'수정 : ' + ${#temporals.format(commentResponse.modifyDate, 'yy-MM-dd hh:mm')}">
                                 </span>
                             </th:block>
                         </div>
                         <th:block th:if="${@rq.isLogin()}">
-                            <div th:if="${commentResponse.comment.commenterId}==${@rq.member.id}"
+                            <div th:if="${commentResponse.commenterId}==${@rq.member.id}"
                                  class="flex justify-end gap-2">
                                 <button class="btn btn-outline flex gap-1 btn-xs"
-                                        th:attr="onclick='editComment(this, ' + ${commentResponse.comment.id} + ');'">
+                                        th:attr="onclick='editComment(this, ' + ${commentResponse.commentId} + ');'">
                                     수정
                                 </button>
                                 <a class="btn btn-outline flex gap-1 btn-xs" href="javascript:"
                                    onclick="if ( confirm('댓글을 삭제하시겠습니까?') ) $(this).next().submit();">
                                     삭제</a>
                                 <form hidden
-                                      th:action="@{/comment/delete/{postId}/{commentId}(commentId=${commentResponse.comment.id}, postId=${postResponse.postId})}"
+                                      th:action="@{/comment/delete/{postId}/{commentId}(commentId=${commentResponse.commentId}, postId=${postResponse.postId})}"
                                       method="POST"></form>
                             </div>
                         </th:block>

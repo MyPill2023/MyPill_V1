@@ -1,17 +1,19 @@
 package com.mypill.domain.post.dto.response;
 
 import com.mypill.domain.post.entity.Post;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class PostsResponse {
-    private List<Post> posts;
+    private List<PostResponse> posts;
 
     public static PostsResponse of(List<Post> posts) {
-        return new PostsResponse(posts);
+        return PostsResponse.builder()
+                .posts(posts.stream().map(PostResponse::of).toList())
+                .build();
     }
 }
