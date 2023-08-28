@@ -9,9 +9,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class CategoriesResponse {
-    private List<Category> categories;
+    private List<CategoryResponse> categories;
 
     public static CategoriesResponse of(List<Category> categories) {
-        return new CategoriesResponse(categories);
+        return new CategoriesResponse(categories.stream().map(CategoryResponse::of).toList());
     }
 }
