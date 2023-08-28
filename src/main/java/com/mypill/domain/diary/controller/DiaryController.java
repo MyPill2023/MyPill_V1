@@ -2,6 +2,7 @@ package com.mypill.domain.diary.controller;
 
 import com.mypill.domain.diary.dto.request.DiaryRequest;
 import com.mypill.domain.diary.dto.response.DiaryCheckListResponse;
+import com.mypill.domain.diary.dto.response.DiaryCheckLogResponse;
 import com.mypill.domain.diary.dto.response.DiaryListResponse;
 import com.mypill.domain.diary.entity.Diary;
 import com.mypill.domain.diary.entity.DiaryCheckLog;
@@ -58,7 +59,7 @@ public class DiaryController {
     @Operation(summary = "복용 스케줄 목록 페이지")
     public String showList(Model model) {
         List<Diary> diaries = diaryService.getList(rq.getMember().getId());
-        model.addAttribute("response", DiaryListResponse.of(diaries));
+        model.addAttribute("diaryResponse", DiaryListResponse.of(diaries));
         return "usr/diary/list";
     }
 
@@ -81,12 +82,7 @@ public class DiaryController {
         String today = LocalDate.now().toString();
         List<Diary> diaries = diaryService.getList(writer.getId());
         List<DiaryCheckLog> history = diaryService.findHistory(writer.getId());
-
-        Map<LocalDate, List<DiaryCheckLog>> groupedData = history.stream()
-                .sorted(Comparator.comparing(DiaryCheckLog::getCreateDate))
-                .collect(Collectors.groupingBy(DiaryCheckLog::getCheckDate));
-
-        model.addAttribute("response", DiaryCheckListResponse.of(today, diaries, groupedData));
+        model.addAttribute("diaryResponse", DiaryCheckListResponse.of(today, diaries, history));
         return "usr/diary/checklist";
     }
 

@@ -167,7 +167,7 @@ class PostServiceTest {
 
         // THEN
         assertThat(postResponse.getTotalElements()).isEqualTo(1);
-        assertTrue(postResponse.getContent().get(0).getPost().getTitle().contains(keyword));
+        assertTrue(postResponse.getContent().get(0).getTitle().contains(keyword));
     }
 
     @Test
@@ -185,6 +185,6 @@ class PostServiceTest {
 
         // THEN
         assertThat(postResponse.getTotalElements()).isEqualTo(1);
-        assertTrue(postResponse.getContent().get(0).getPost().getContent().contains(keyword));
+        assertTrue(postResponse.getContent().get(0).getContent().contains(keyword));
     }
 }

@@ -46,7 +46,7 @@ public class SurveyController {
     @Operation(summary = "설문 시작 페이지")
     public String showStart(Model model) {
         List<Category> categories = categoryService.findAll();
-        model.addAttribute("response", CategoriesResponse.of(categories));
+        model.addAttribute("categoriesResponse", CategoriesResponse.of(categories));
         return "usr/survey/start";
     }
 
@@ -62,7 +62,7 @@ public class SurveyController {
         }
         List<Question> questions = questionService.findByCategoryId(categoryItemId);
         Category category = categoryService.getCategory(categoryItemId);
-        model.addAttribute("response", StepResponse.of(stepParam, questions, category));
+        model.addAttribute("stepResponse", StepResponse.of(stepParam, questions, category));
         return "usr/survey/step";
     }
 

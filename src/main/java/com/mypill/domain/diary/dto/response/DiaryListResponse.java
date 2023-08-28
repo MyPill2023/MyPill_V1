@@ -1,17 +1,19 @@
 package com.mypill.domain.diary.dto.response;
 
 import com.mypill.domain.diary.entity.Diary;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class DiaryListResponse {
-    private final List<Diary> diaries;
+    private List<DiaryResponse> diaries;
 
-    public static DiaryListResponse of(List<Diary> diaries){
-        return new DiaryListResponse(diaries);
+    public static DiaryListResponse of(List<Diary> diaries) {
+        return DiaryListResponse.builder()
+                .diaries(diaries.stream().map(diary -> DiaryResponse.of(diary, diary.getMember())).toList())
+                .build();
     }
 }
