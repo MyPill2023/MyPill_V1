@@ -4,7 +4,6 @@ package com.mypill.domain.buyer.dto.response;
 import com.mypill.domain.order.dto.response.OrderResponse;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderStatus;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,7 +12,6 @@ import java.util.Map;
 
 @Data
 @Builder
-@AllArgsConstructor
 public class MyOrderResponse {
     private List<OrderResponse> orders;
     private Map<OrderStatus, Long> orderStatusCount;

@@ -3,14 +3,11 @@ package com.mypill.domain.order.dto.response;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
 import com.mypill.domain.product.dto.response.ProductResponse;
-import com.mypill.domain.product.entity.Product;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-@AllArgsConstructor
 public class OrderItemResponse {
     private Long id;
     private ProductResponse product;

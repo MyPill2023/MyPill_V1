@@ -32,7 +32,7 @@ public class NotificationController {
     @Operation(summary = "알림 목록 페이지")
     public String showList(Model model) {
         List<Notification> notifications = notificationService.findByMemberId(rq.getMember().getId());
-        model.addAttribute("response", notifications.stream().map(NotificationResponse::of).toList());
+        model.addAttribute("notificationsResponse", notifications.stream().map(NotificationResponse::of).toList());
         return "usr/notification/list";
     }
 

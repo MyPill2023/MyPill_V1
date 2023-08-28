@@ -3,15 +3,14 @@ package com.mypill.domain.order.dto.response;
 import com.mypill.domain.order.entity.Order;
 import com.mypill.domain.order.entity.OrderItem;
 import com.mypill.domain.order.entity.OrderStatus;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class OrderManagementResponse {
     private OrderResponse order;
     private List<OrderItemResponse> orderItems;
