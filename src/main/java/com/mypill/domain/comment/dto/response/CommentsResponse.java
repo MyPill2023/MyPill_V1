@@ -11,7 +11,6 @@ import java.util.List;
 public class CommentsResponse {
     private List<CommentResponse> comments;
 
-
     public static CommentsResponse of(List<Comment> comments) {
         return CommentsResponse.builder()
                 .comments(comments.stream().map(CommentResponse::of).toList())

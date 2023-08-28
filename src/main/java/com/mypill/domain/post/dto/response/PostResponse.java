@@ -27,7 +27,7 @@ public class PostResponse {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createDate(post.getCreateDate())
-                .imageFilePath(Optional.ofNullable(post.getImage()).map(Image::getFilepath).orElse("/image-null"))
+                .imageFilePath(Optional.ofNullable(post.getImage()).map(Image::getFilepath).orElse(null))
                 .commentCount(post.getCommentCnt())
                 .posterId(poster.getId())
                 .posterName(poster.getName())
