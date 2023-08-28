@@ -23,14 +23,14 @@
                     <div class="bg-base-100 border-b border-gray-200 p-5 ">
                         <div class="flex justify-around gap-5">
                             <div style="width: 100px; height: 100px;">
-                                <img th:src="${orderItem.product.image != null ? orderItem.product.image.filepath : '/image-null'}" alt="product_image"
+                                <img th:src="${orderItem.product.imageFilePath}" alt="product_image"
                                      class="object-contain"
                                      style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
                             </div>
                             <div class="flex flex-col gap-3 w-4/6">
                                 <div class="flex flex-col gap-1">
                                     <div class="flex justify-between">
-                                        <h3 th:text="${orderItem.product.seller.name}"></h3>
+                                        <h3 th:text="${orderItem.product.sellerName}"></h3>
                                         <span th:class="${orderItem.orderStatus.getNumber <= 1 ? 'badge badge-info' :
                                                 (orderItem.orderStatus.getNumber <= 3 ? 'badge badge-success' :
                                                 (orderItem.orderStatus.getNumber == 4 ? 'badge badge-ghost' : 'badge badge-error'))}"

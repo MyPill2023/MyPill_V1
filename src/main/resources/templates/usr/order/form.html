@@ -22,14 +22,14 @@
                     <div class="flex justify-around gap-5">
                         <div class="border border-gray-200 flex justify-center w-2/6 p-5">
                             <div style="width: 100px; height: 100px;">
-                                <img th:src="${orderItem.getProduct().image != null ? orderItem.getProduct().image.filepath : '/image-null'}" alt="product_image"
+                                <img th:src="${orderItem.product.imageFilePath}" alt="product_image"
                                      class="object-contain"
                                      style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
                             </div>
                         </div>
                         <div class="flex flex-col gap-3 w-4/6">
                             <div class="flex flex-col gap-1">
-                                <h3 th:text="${orderItem.product.seller.name}"></h3>
+                                <h3 th:text="${orderItem.product.sellerName}"></h3>
                                 <a th:text="${orderItem.product.name}"
                                    class="font-bold"></a>
                             </div>
