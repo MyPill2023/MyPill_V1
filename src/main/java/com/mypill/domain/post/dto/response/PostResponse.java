@@ -21,7 +21,7 @@ public class PostResponse {
     private Long posterId;
     private String posterName;
 
-    public static PostResponse of(Post post, Member poster){
+    public static PostResponse of(Post post, Member poster) {
         return PostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -31,6 +31,15 @@ public class PostResponse {
                 .commentCount(post.getCommentCnt())
                 .posterId(poster.getId())
                 .posterName(poster.getName())
+                .build();
+    }
+
+    public static PostResponse of(Post post) {
+        return PostResponse.builder()
+                .postId(post.getId())
+                .title(post.getTitle())
+                .commentCount(post.getCommentCnt())
+                .createDate(post.getCreateDate())
                 .build();
     }
 }

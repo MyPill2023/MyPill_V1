@@ -24,21 +24,21 @@
                                 <div class="flex flex-col gap-5">
                                     <div class="flex justify-around gap-5">
                                         <input name="selectedItems" type="checkbox" checked="checked" class="checkbox checkbox-success"
-                                               th:data-product-price="${cartProduct.product.price}"
+                                               th:data-product-price="${cartProduct.price}"
                                                th:data-product-id="${cartProduct.id}"
                                                th:data-product-quantity="${cartProduct.quantity}"
                                                onclick="updateSelectedItem(this)">
                                         <div style="width: 100px; height: 100px;">
-                                            <img th:src="${cartProduct.product.image != null ? cartProduct.product.image.filepath : '/image-null'}" alt="product_image"
+                                            <img th:src="${cartProduct.imageFilePath}" alt="product_image"
                                                  class="object-contain"
                                                  style="width: 100px; height: 100px; object-fit: cover; object-position: center; ">
                                         </div>
                                         <div class="flex flex-col gap-3 w-4/6">
                                             <div class="flex justify-between gap-1">
                                                 <div class="flex flex-col gap-1">
-                                                    <h3 th:text="${cartProduct.product.seller.name}"></h3>
-                                                    <a th:text="${cartProduct.product.name}"
-                                                       th:href="@{|/product/detail/${cartProduct.product.id}|}"
+                                                    <h3 th:text="${cartProduct.sellerName}"></h3>
+                                                    <a th:text="${cartProduct.productName}"
+                                                       th:href="@{|/product/detail/${cartProduct.productId}|}"
                                                        class="text-lg font-bold hover:text-green-300"></a>
                                                 </div>
                                                 <a href="javascript:;"
@@ -64,7 +64,7 @@
                                             </div>
                                             <div class="flex justify-end">
                                                 <span class="text-lg font-bold"
-                                                      th:text="${#numbers.formatInteger(cartProduct.product.price * cartProduct.quantity, 0, 'COMMA') + '원'}"></span>
+                                                      th:text="${#numbers.formatInteger(cartProduct.price * cartProduct.quantity, 0, 'COMMA') + '원'}"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -124,7 +124,7 @@
         /*[# th:each="cartProduct : ${cartResponse.cartProducts}"]*/
         cartProductInfo = {
             id: /*[[${cartProduct.id}]]*/null,
-            price: /*[[${cartProduct.product.price}]]*/null,
+            price: /*[[${cartProduct.price}]]*/null,
             quantity: /*[[${cartProduct.quantity}]]*/null,
         };
         cartProductArray.push(cartProductInfo);
