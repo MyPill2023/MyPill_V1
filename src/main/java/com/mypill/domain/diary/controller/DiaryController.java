@@ -58,7 +58,7 @@ public class DiaryController {
     @Operation(summary = "복용 스케줄 목록 페이지")
     public String showList(Model model) {
         List<Diary> diaries = diaryService.getList(rq.getMember().getId());
-        model.addAttribute("DiaryResponse", DiaryListResponse.of(diaries));
+        model.addAttribute("diaryResponse", DiaryListResponse.of(diaries));
         return "usr/diary/list";
     }
 
@@ -86,7 +86,7 @@ public class DiaryController {
                 .sorted(Comparator.comparing(DiaryCheckLog::getCreateDate))
                 .collect(Collectors.groupingBy(DiaryCheckLog::getCheckDate));
 
-        model.addAttribute("DiaryResponse", DiaryCheckListResponse.of(today, diaries, groupedData));
+        model.addAttribute("diaryResponse", DiaryCheckListResponse.of(today, diaries, groupedData));
         return "usr/diary/checklist";
     }
 

@@ -13,10 +13,10 @@
         </h1>
 
         <div class="flex flex-col p-5 w-full gap-5 mt-5">
-            <div class="text-black p-2 flex justify-center items-center gap-2" th:if="${DiaryResponse.diaries.isEmpty()}">
+            <div class="text-black p-2 flex justify-center items-center gap-2" th:if="${diaryResponse.diaries.isEmpty()}">
                 <i class="fa-regular fa-face-laugh"></i> 등록한 영양제가 없습니다.
             </div>
-            <div class="flex flex-col justify-center items-center w-full" th:each="diary:${DiaryResponse.diaries}">
+            <div class="flex flex-col justify-center items-center w-full" th:each="diary:${diaryResponse.diaries}">
                 <div class="flex justify-start items-center gap-4 border border-gray-200 rounded-lg p-5 w-full">
                     <span class="badge badge-accent" th:text="${#temporals.format(diary.time, 'HH시 mm분')}"></span>
                     <span th:text="${diary.name}" class="text-lg font-bold  w-2/5"></span>
