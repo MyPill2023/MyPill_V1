@@ -108,10 +108,10 @@ public class Scheduler {
         LocalDateTime cutoffDate = LocalDateTime.now().minusDays(1);
         orderService.hardDelete(cutoffDate);
     }
-
-    @Scheduled(cron = "*/30 * * * * ?")
-    public void testTest() {
-        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(1);
-        orderService.hardDelete(cutoffDate);
-    }
+//
+//    @Scheduled(cron = "*/30 * * * * ?")
+//    public void testTest() {
+//        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(1);
+//        orderService.hardDelete(cutoffDate);
+//    }
 }
