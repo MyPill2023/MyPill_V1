@@ -69,13 +69,14 @@ public class CommentService {
         return commentRepository.findByCommenterIdAndDeleteDateIsNullOrderByIdDesc(member.getId());
     }
 
-    public List<Comment> getDeletedComments() {
-        return commentRepository.findByDeleteDateIsNotNull();
+    @Transactional
+    public void hardDelete() {
+        commentRepository.hardDelete();
     }
 
     @Transactional
-    public void hardDelete(Comment comment) {
-        commentRepository.delete(comment);
+    public void hardDeleteBeforePostDelete() {
+        commentRepository.hardDeleteBeforePostDelete();
     }
 
     @Transactional

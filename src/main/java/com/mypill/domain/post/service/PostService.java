@@ -120,9 +120,8 @@ public class PostService {
     }
 
     @Transactional
-    public void hardDelete(Post post) {
-        imageService.deleteImageFromServer(post);
-        postRepository.delete(post);
+    public void hardDelete() {
+        postRepository.hardDelete();
     }
 
     @Transactional

@@ -268,4 +268,10 @@ public class OrderService {
                 });
         order.updatePrimaryOrderStatus(orderStatus);
     }
+
+    @Transactional
+    public void hardDelete(LocalDateTime cutoffDate) {
+        orderItemRepository.hardDelete(cutoffDate);
+        orderRepository.hardDelete(cutoffDate);
+    }
 }

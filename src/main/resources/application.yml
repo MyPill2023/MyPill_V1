@@ -59,11 +59,6 @@ spring:
           auth: true
           starttls:
             enable: true
-  batch:
-    job:
-      enabled: true
-    jdbc:
-      initialize-schema: always
 logging:
   level:
     root: INFO

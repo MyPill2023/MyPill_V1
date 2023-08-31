@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,8 +70,8 @@ public class MemberService {
     }
 
     @Transactional
-    public void hardDelete(Member member) {
-        memberRepository.delete(member);
+    public void hardDeleteUnverifiedMembers() {
+        memberRepository.deleteUnverifiedMembers();
     }
 
     @Transactional
@@ -99,10 +98,6 @@ public class MemberService {
 
     public Optional<Member> findByEmail(String email) {
         return memberRepository.findByEmail(email);
-    }
-
-    public List<Member> getUnverifiedMember() {
-        return memberRepository.findByEmailVerifiedFalse();
     }
 
     public UsernameValidationResult usernameValidation(String username) {
