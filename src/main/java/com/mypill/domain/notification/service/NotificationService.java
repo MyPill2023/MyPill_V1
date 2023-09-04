@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -103,5 +104,10 @@ public class NotificationService {
 
     public boolean countUnreadNotificationsByMember(Member member) {
         return notificationRepository.countByMemberAndReadDateIsNull(member) > 0;
+    }
+
+    @Transactional
+    public void hardDelete(LocalDateTime cutoffDate) {
+        notificationRepository.hardDelete(cutoffDate);
     }
 }

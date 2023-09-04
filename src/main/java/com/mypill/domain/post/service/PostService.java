@@ -1,6 +1,5 @@
 package com.mypill.domain.post.service;
 
-import com.mypill.domain.image.entity.Image;
 import com.mypill.domain.image.service.ImageService;
 import com.mypill.domain.member.entity.Member;
 import com.mypill.domain.member.service.MemberService;
@@ -8,7 +7,6 @@ import com.mypill.domain.post.dto.response.PostResponse;
 import com.mypill.domain.post.dto.request.PostRequest;
 import com.mypill.domain.post.entity.Post;
 import com.mypill.domain.post.repository.PostRepository;
-import com.mypill.global.aws.s3.dto.AmazonS3Dto;
 import com.mypill.global.rsdata.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -120,9 +117,8 @@ public class PostService {
     }
 
     @Transactional
-    public void hardDelete(Post post) {
-        imageService.deleteImageFromServer(post);
-        postRepository.delete(post);
+    public void hardDelete() {
+        postRepository.hardDelete();
     }
 
     @Transactional
