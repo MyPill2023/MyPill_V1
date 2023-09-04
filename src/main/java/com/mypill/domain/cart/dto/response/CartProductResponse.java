@@ -1,6 +1,5 @@
 package com.mypill.domain.cart.dto.response;
 
-import com.mypill.domain.cart.entity.Cart;
 import com.mypill.domain.cart.entity.CartProduct;
 import com.mypill.domain.image.entity.Image;
 import lombok.Builder;
