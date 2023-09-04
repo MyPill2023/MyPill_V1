@@ -11,15 +11,9 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long>, CommentRepositoryCustom {
     List<Comment> findByCommenterIdAndDeleteDateIsNullOrderByIdDesc(Long commenterId);
 
-    List<Comment> findByDeleteDateIsNotNull();
-
     List<Comment> findByCommenterId(Long id);
 
     Optional<Comment> findByIdAndDeleteDateIsNull(Long commentId);
-
-    @Modifying
-    @Query("delete from Comment c where c.post.id IN (select p.id from Post p where p.deleteDate != null)")
-    void hardDeleteBeforePostDelete();
 
     @Modifying
     @Query("delete from Comment c where c.deleteDate != null")

@@ -83,7 +83,6 @@ public class Scheduler {
         for (Post post : deletedPosts) {
             imageService.deleteImageFromServer(post);
         }
-        commentService.hardDeleteBeforePostDelete();
         postService.hardDelete();
     }
 
@@ -109,8 +108,12 @@ public class Scheduler {
         orderService.hardDelete(cutoffDate);
     }
 
-//    @Scheduled(cron = "*/30 * * * * ?")
-//    public void testTest() {
-//        postService.hardDelete();
-//    }
+    @Scheduled(cron = "*/30 * * * * ?")
+    public void testTest() {
+        List<Post> deletedPosts = postService.getDeletedPosts();
+        for (Post post : deletedPosts) {
+            imageService.deleteImageFromServer(post);
+        }
+        postService.hardDelete();
+    }
 }

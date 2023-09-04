@@ -42,7 +42,7 @@ public class CommentService {
         Comment comment = commentRepository.findByIdAndDeleteDateIsNull(commentId).orElse(null);
         String newContent = commentRequest.getNewContent();
         if (comment == null) {
-            return RsData.of("F-1", "존재하지 않는 댓글입니다.",  newContent);
+            return RsData.of("F-1", "존재하지 않는 댓글입니다.", newContent);
 
         }
         if (!Objects.equals(comment.getCommenterId(), member.getId())) {
@@ -72,11 +72,6 @@ public class CommentService {
     @Transactional
     public void hardDelete() {
         commentRepository.hardDelete();
-    }
-
-    @Transactional
-    public void hardDeleteBeforePostDelete() {
-        commentRepository.hardDeleteBeforePostDelete();
     }
 
     @Transactional
