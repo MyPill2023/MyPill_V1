@@ -271,7 +271,6 @@ public class OrderService {
 
     @Transactional
     public void hardDelete(LocalDateTime cutoffDate) {
-        orderItemRepository.hardDelete(cutoffDate);
         orderRepository.hardDelete(cutoffDate);
     }
 }

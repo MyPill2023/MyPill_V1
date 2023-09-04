@@ -110,10 +110,7 @@ public class Scheduler {
 
     @Scheduled(cron = "*/30 * * * * ?")
     public void testTest() {
-        List<Post> deletedPosts = postService.getDeletedPosts();
-        for (Post post : deletedPosts) {
-            imageService.deleteImageFromServer(post);
-        }
-        postService.hardDelete();
+        LocalDateTime cutoffDate = LocalDateTime.now().minusDays(1);
+        orderService.hardDelete(cutoffDate);
     }
 }
